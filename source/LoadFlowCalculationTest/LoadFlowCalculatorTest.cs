@@ -48,14 +48,14 @@ namespace LoadFlowCalculationTest
             double expectedOutputVoltage;
             double expectedInputPower;
             CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            var admittancesToKnownVoltages = DenseMatrix.OfArray(new Complex[,]{{new Complex(-10, 0)}});
-            var admittancesToUnknownVoltages = DenseMatrix.OfArray(new Complex[,]{{new Complex(10, 0)}});
-            var knownVoltages = new DenseVector(new Complex[] {new Complex(1, 0)});
-            var knownPowers = new DenseVector(new Complex[]{new Complex(-1, 0)});
+            var admittancesToKnownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(-10, 0)}});
+            var admittancesToUnknownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(10, 0)}});
+            var knownVoltages = new DenseVector(new[] {new Complex(1, 0)});
+            var knownPowers = new DenseVector(new[]{new Complex(-1, 0)});
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
                 .Setup(o => o.CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages, nominalVoltage, knownVoltages, knownPowers))
-                .Returns(new DenseVector(new Complex[]{new Complex(0.9, 0)}));
+                .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             var calculator = calculatorInternalMock.Object;
 
             var result = calculator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
@@ -84,7 +84,7 @@ namespace LoadFlowCalculationTest
             var outputNode = new Node();
             inputNode.Voltage = new Complex(1, 0);
             outputNode.Power = new Complex(-1, 0);
-            nodes = new Node[2]
+            nodes = new[]
             {
                 inputNode,
                 outputNode
