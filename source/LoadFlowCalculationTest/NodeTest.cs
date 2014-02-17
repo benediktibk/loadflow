@@ -12,13 +12,7 @@ namespace LoadFlowCalculationTest
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(2);
-        }
-
-        [TestMethod]
-        public void constructor_idSetTo2_idIs2()
-        {
-            Assert.AreEqual((uint)2, _node.ID);
+            _node = new Node();
         }
 
         [TestMethod]

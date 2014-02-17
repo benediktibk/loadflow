@@ -9,7 +9,6 @@ namespace LoadFlowCalculation
         private bool _powerSet;
         private Complex _voltage;
         private bool _voltageSet;
-        private uint _id;
 
         public Complex Power
         {
@@ -43,11 +42,6 @@ namespace LoadFlowCalculation
             }
         }
 
-        public uint ID
-        {
-            get { return _id; }
-        }
-
         public bool VoltageIsKnown
         {
             get { return _voltageSet; }
@@ -58,9 +52,8 @@ namespace LoadFlowCalculation
             get { return _powerSet; }
         }
 
-        public Node(uint id)
+        public Node()
         {
-            _id = id;
             _voltageSet = false;
             _powerSet = false;
         }

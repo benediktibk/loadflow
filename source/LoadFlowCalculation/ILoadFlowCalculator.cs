@@ -7,6 +7,6 @@ namespace LoadFlowCalculation
 {
     public interface ILoadFlowCalculator
     {
-        List<Node> calculateNodeVoltages(Matrix admittances, double nominalVoltage, List<Node> nodes);
+        Dictionary<uint, Node> CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Dictionary<uint, Node> nodes);
     }
 }
