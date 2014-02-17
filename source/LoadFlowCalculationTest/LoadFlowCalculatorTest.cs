@@ -17,7 +17,8 @@ namespace LoadFlowCalculationTest
             Matrix admittances;
             Node[] nodes;
             double nominalVoltage;
-            createOneSideSuppliedConnection(out admittances, out nodes, out nominalVoltage);
+            double expectedOutputVoltage;
+            createOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage);
             LoadFlowCalculator caclulator = new NodePotentialMethod();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
@@ -30,7 +31,7 @@ namespace LoadFlowCalculationTest
             var outputPower = outputNode.Power;
             Assert.AreEqual(1, inputVoltage.Real, 0.0001);
             Assert.AreEqual(0, inputVoltage.Imaginary, 0.0001);
-            Assert.AreEqual((1 + Math.Sqrt(0.6))/2, outputVoltage.Real, 0.1);
+            Assert.AreEqual(expectedOutputVoltage, outputVoltage.Real, 0.1);
             Assert.AreEqual(0, outputVoltage.Imaginary, 0.0001);
             Assert.AreEqual(1.127016654, inputPower.Real, 0.2);
             Assert.AreEqual(0, inputPower.Imaginary, 0.0001);
@@ -44,7 +45,8 @@ namespace LoadFlowCalculationTest
             Matrix admittances;
             Node[] nodes;
             double nominalVoltage;
-            createOneSideSuppliedConnection(out admittances, out nodes, out nominalVoltage);
+            double expectedOutputVoltage;
+            createOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage);
             var admittancesToKnownVoltages = DenseMatrix.OfArray(new Complex[,]{{new Complex(-10, 0)}});
             var admittancesToUnknownVoltages = DenseMatrix.OfArray(new Complex[,]{{new Complex(10, 0)}});
             var knownVoltages = new DenseVector(new Complex[] {new Complex(1, 0)});
@@ -71,10 +73,9 @@ namespace LoadFlowCalculationTest
             Assert.AreEqual(0, secondNodePower.Imaginary, 0.0001);
         }
 
-        private void createOneSideSuppliedConnection(out Matrix admittances, out Node[] nodes, out double nominalVoltage)
+        private void createOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage)
         {
-            const double R = 0.1;
-            const double Y = 1.0 / R;
+            double Y = 1.0 / R;
             Complex[,] admittancesArray = { { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
 
@@ -89,6 +90,7 @@ namespace LoadFlowCalculationTest
             };
 
             nominalVoltage = 1;
+            expectedOutputVoltage = (1 + Math.Sqrt(1 - 4*R))/2;
         }
     }
 }
