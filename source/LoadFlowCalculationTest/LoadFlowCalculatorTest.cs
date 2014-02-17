@@ -20,12 +20,12 @@ namespace LoadFlowCalculationTest
             var outputNode = new Node();
             inputNode.Voltage = new Complex(1, 0);
             outputNode.Power = new Complex(1, 0);
-            var nodes = new Dictionary<uint, Node>()
+            var nodes = new Node[2]
             {
-                {0, inputNode},
-                {1, outputNode}
+                inputNode,
+                outputNode
             };
-            ILoadFlowCalculator caclulator = new NodePotentialMethod();
+            LoadFlowCalculator caclulator = new NodePotentialMethod();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, 1, nodes);
 

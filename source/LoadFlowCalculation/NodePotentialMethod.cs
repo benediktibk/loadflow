@@ -1,18 +1,18 @@
-﻿using System.Numerics;
-using System;
-using System.Collections.Generic;
-using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Complex.Factorization;
+﻿using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation
 {
     public class NodePotentialMethod :
-        ILoadFlowCalculator
+        LoadFlowCalculator
     {
-        public Dictionary<uint, Node> CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Dictionary<uint, Node> nodes)
+        override protected Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages, Matrix admittancesToUnknownVoltages, double nominalVoltage, Vector knownVoltages, Vector knownPowers)
         {
-            throw new NotImplementedException();
+            var rightHandSide = knownPowers;
+            rightHandSide.Divide(nominalVoltage);
+            rightHandSide.Subtract(admittancesToKnownVoltages.Multiply(knownVoltages));
+            var factorization = admittancesToUnknownVoltages.QR();
+            var result = factorization.Solve(rightHandSide);
+            return new DenseVector(result.ToArray());
         }
     }
 }
