@@ -8,8 +8,10 @@ using LoadFlowCalculation;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class LoadFlowCalculatorTest
+    abstract public class LoadFlowCalculatorTest
     {
+        abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
+
         [TestMethod]
         public void calculateNodeVoltages_fromOneSideSuppliedConnection_correctVoltages()
         {
@@ -19,7 +21,7 @@ namespace LoadFlowCalculationTest
             double expectedOutputVoltage;
             double expectedInputPower;
             CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            LoadFlowCalculator caclulator = new NodePotentialMethod();
+            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
 
