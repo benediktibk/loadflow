@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Security;
 using System.Numerics;
 using System;
 using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation
 {
-    public abstract class LoadFlowCalculator
+    public class LoadFlowCalculator
     {
+        private readonly ILoadFlowCalculatorInternal _calculatorInternal;
+
+        public LoadFlowCalculator(ILoadFlowCalculatorInternal calculatorInternal)
+        {
+            _calculatorInternal = calculatorInternal;
+        }
+
         public Node[] CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Node[] nodes)
         {
             var rows = admittances.RowCount;
@@ -67,7 +73,7 @@ namespace LoadFlowCalculation
                 knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
 
             var knownPowers = new DenseVector(knownPowersArray);
-            var unknownVoltages = CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
+            var unknownVoltages = _calculatorInternal.CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
                 nominalVoltage, knownVoltages, knownPowers);
 
             var voltagesArray = new Complex[nodeCount];
@@ -92,8 +98,5 @@ namespace LoadFlowCalculation
 
             return result;
         }
-
-        protected abstract Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages,
-            Matrix admittancesToUnknownVoltages, double nominalVoltage, Vector knownVoltages, Vector knownPowers);
     }
 }
