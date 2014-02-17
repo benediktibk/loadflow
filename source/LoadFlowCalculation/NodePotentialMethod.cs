@@ -8,11 +8,11 @@ namespace LoadFlowCalculation
         override public Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages, Matrix admittancesToUnknownVoltages,
             double nominalVoltage, Vector knownVoltages, Vector knownPowers)
         {
-            var rightHandSide = knownPowers;
-            rightHandSide.Divide(nominalVoltage);
-            rightHandSide.Subtract(admittancesToKnownVoltages.Multiply(knownVoltages));
+            var ownCurrents = knownPowers.Divide(nominalVoltage);
+            var otherCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
+            var totalCurrents = ownCurrents.Subtract(otherCurrents);
             var factorization = admittancesToUnknownVoltages.QR();
-            var result = factorization.Solve(rightHandSide);
+            var result = factorization.Solve(totalCurrents);
             return new DenseVector(result.ToArray());
         }
     }
