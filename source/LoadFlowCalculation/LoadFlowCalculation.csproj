@@ -46,10 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ILoadFlowCalculatorInternal.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
     <Compile Include="NodePotentialMethod.cs" />
-    <Compile Include="NodePotentialMethodInternal.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NotQuadraticException.cs" />
     <Compile Include="OverDeterminedProblemException.cs" />

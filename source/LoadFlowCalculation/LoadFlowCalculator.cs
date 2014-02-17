@@ -6,14 +6,10 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation
 {
-    public class LoadFlowCalculator
+    abstract public class LoadFlowCalculator
     {
-        private readonly ILoadFlowCalculatorInternal _calculatorInternal;
-
-        public LoadFlowCalculator(ILoadFlowCalculatorInternal calculatorInternal)
-        {
-            _calculatorInternal = calculatorInternal;
-        }
+        abstract public Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages,
+            Matrix admittancesToUnknownVoltages, double nominalVoltage, Vector knownVoltages, Vector knownPowers);
 
         public Node[] CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Node[] nodes)
         {
@@ -73,7 +69,7 @@ namespace LoadFlowCalculation
                 knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
 
             var knownPowers = new DenseVector(knownPowersArray);
-            var unknownVoltages = _calculatorInternal.CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
+            var unknownVoltages = CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
                 nominalVoltage, knownVoltages, knownPowers);
 
             var voltagesArray = new Complex[nodeCount];
