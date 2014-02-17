@@ -10,12 +10,9 @@ namespace LoadFlowCalculation
     public class NodePotentialMethod :
         ILoadFlowCalculator
     {
-        public Vector calculateNodeVoltages(Matrix admittances, Vector powers, Complex nominalVoltage, List<Tuple<uint, Complex>> knownVoltages)
+        public List<Node> calculateNodeVoltages(Matrix admittances, double nominalVoltage, List<Node> nodes)
         {
-            LU factorization = admittances.LU();
-            Vector currents = new DenseVector(powers / nominalVoltage);
-            //return factorization.Solve(currents);
-            return currents;
+            throw new NotImplementedException();
         }
     }
 }

@@ -48,6 +48,16 @@ namespace LoadFlowCalculation
             get { return _id; }
         }
 
+        public bool VoltageIsKnown
+        {
+            get { return _voltageSet; }
+        }
+
+        public bool PowerIsKnown
+        {
+            get { return _powerSet; }
+        }
+
         public Node(uint id)
         {
             _id = id;
