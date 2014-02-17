@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlow", "LoadFlow\LoadFlow.csproj", "{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculation", "LoadFlowCalculation\LoadFlowCalculation.csproj", "{D019F54A-FB70-4BBC-AB53-102C78E54880}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculationTest", "LoadFlowCalculationTest\LoadFlowCalculationTest.csproj", "{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

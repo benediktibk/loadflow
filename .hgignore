@@ -1,3 +1,5 @@
 syntax: glob
 source/*/bin/**
 source/*/obj/**
+source/packages/**
+source/TestResults/**
