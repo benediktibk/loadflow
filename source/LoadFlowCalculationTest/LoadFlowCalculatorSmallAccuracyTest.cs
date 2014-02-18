@@ -1,5 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MathNet.Numerics.LinearAlgebra.Complex;
+﻿using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoadFlowCalculation;
 
 namespace LoadFlowCalculationTest
@@ -11,46 +12,43 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnectionWithBigResistance_correctResults()
         {
-            Matrix admittances;
-            Node[] nodes;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
-            double expectedOutputVoltage;
-            double expectedInputPower;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage,
-                out expectedOutputVoltage, out expectedInputPower);
+            CreateOneSideSuppliedConnection(0.1, out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] {new Node(), new Node()};
+            nodes[0].Voltage = voltages.At(0);
+            nodes[1].Power = powers.At(1);
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
-            ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.1);
-            ComplexAssert.AreEqual(expectedInputPower, 0, nodes[0].Power, 0.2);
-            ComplexAssert.AreEqual(-1, 0, nodes[1].Power, 0.2);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.1, 0.2);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnectionWithSmallResistance_correctResults()
         {
-            Matrix admittances;
-            Node[] nodes;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
-            double expectedOutputVoltage;
-            double expectedInputPower;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
+            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = voltages.At(0);
+            nodes[1].Power = powers.At(1);
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
-            
-            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
-            ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.0001);
-            ComplexAssert.AreEqual(expectedInputPower, 0, nodes[0].Power, 0.01);
-            ComplexAssert.AreEqual(-1, 0, nodes[1].Power, 0.01);
+
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyPowersGiven_correctResults()
         {
-            Matrix admittances;
-            Vector voltages;
-            Vector powers;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
             var nodes = new[] {new Node(), new Node(), new Node(), new Node(), new Node()};
@@ -68,9 +66,9 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyVoltagesGiven_correctResults()
         {
-            Matrix admittances;
-            Vector voltages;
-            Vector powers;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -88,9 +86,9 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndVoltagesAndPowersGiven_correctResults()
         {
-            Matrix admittances;
-            Vector voltages;
-            Vector powers;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };

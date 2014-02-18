@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Moq;
@@ -23,12 +24,14 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
         {
-            Matrix admittances;
-            Node[] nodes;
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
             double nominalVoltage;
-            double expectedOutputVoltage;
-            double expectedInputPower;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
+            CreateOneSideSuppliedConnection(0.1, out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = voltages.At(0);
+            nodes[1].Power = powers.At(1);
             var admittancesToKnownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(-10, 0)}});
             var admittancesToUnknownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(10, 0)}});
             var knownVoltages = new DenseVector(new[] {new Complex(1, 0)});
@@ -40,7 +43,7 @@ namespace LoadFlowCalculationTest
             _calculator = calculatorInternalMock.Object;
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
-            
+
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
             ComplexAssert.AreEqual(1, 0, nodes[0].Power, 0.0001);
@@ -88,23 +91,23 @@ namespace LoadFlowCalculationTest
             _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
-        protected static void CreateOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage, out double expectedInputPower)
+        protected static void CreateOneSideSuppliedConnection(double R, out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             double Y = 1.0 / R;
             Complex[,] admittancesArray = { { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
 
-            nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = new Complex(1, 0);
-            nodes[1].Power = new Complex(-1, 0);
-
+            var inputVoltage = new Complex(1, 0);
+            var outputVoltage = new Complex((1 + Math.Sqrt(1 - 4*R))/2, 0);
+            var voltageDifference = 1 - outputVoltage.Real;
+            var inputPower = new Complex(1 + voltageDifference*voltageDifference/R, 0);
+            var outputPower = new Complex(-1, 0);
+            voltages = new DenseVector(new []{inputVoltage, outputVoltage});
+            powers = new DenseVector(new []{inputPower, outputPower});
             nominalVoltage = 1;
-            expectedOutputVoltage = (1 + Math.Sqrt(1 - 4*R))/2;
-            var voltageDifference = 1 - expectedOutputVoltage;
-            expectedInputPower = 1 + voltageDifference*voltageDifference/R;
         }
 
-        protected static void CreateFiveNodeProblem(out Matrix admittances, out Vector voltages, out Vector powers,
+        protected static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = DenseMatrix.OfArray(new[,]
