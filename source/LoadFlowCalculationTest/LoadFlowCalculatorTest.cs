@@ -105,6 +105,48 @@ namespace LoadFlowCalculationTest
             Assert.AreEqual(0, secondNodePower.Imaginary, 0.0001);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(OverDeterminedProblemException))]
+        public void calculateNodeVoltages_overdeterminedProblem_exceptionThrown()
+        {
+            var admittances = DenseMatrix.OfArray(
+                new [,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
+                            {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
+            var nodeOne = new Node();
+            var nodeTwo = new Node();
+            nodeOne.Power = new Complex(-1, 2);
+            nodeOne.Voltage = new Complex(1, 2);
+            nodeTwo.Power = new Complex(0.5, -1);
+            var nodes = new Node[]
+            {
+                nodeOne,
+                nodeTwo
+            };
+            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+
+            caclulator.CalculateNodeVoltages(admittances, 1, nodes);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnderDeterminedProblemException))]
+        public void calculateNodeVoltages_underdeterminedProblem_exceptionThrown()
+        {
+            var admittances = DenseMatrix.OfArray(
+                new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
+                            {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
+            var nodeOne = new Node();
+            var nodeTwo = new Node();
+            nodeTwo.Power = new Complex(0.5, -1);
+            var nodes = new Node[]
+            {
+                nodeOne,
+                nodeTwo
+            };
+            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+
+            caclulator.CalculateNodeVoltages(admittances, 1, nodes);
+        }
+
         private static void CreateOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage, out double expectedInputPower)
         {
             double Y = 1.0 / R;
