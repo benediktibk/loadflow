@@ -10,7 +10,15 @@ namespace LoadFlowCalculationTest
     [TestClass]
     abstract public class LoadFlowCalculatorTest
     {
+        protected LoadFlowCalculator _calculator;
+
         abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            _calculator = CreateLoadFlowCalculator();
+        }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
@@ -29,9 +37,9 @@ namespace LoadFlowCalculationTest
             calculatorInternalMock
                 .Setup(o => o.CalculateUnknownVoltages(admittancesToKnownVoltages, admittancesToUnknownVoltages, nominalVoltage, knownVoltages, knownPowers))
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
-            var calculator = calculatorInternalMock.Object;
+            _calculator = calculatorInternalMock.Object;
 
-            nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
             
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
@@ -50,9 +58,8 @@ namespace LoadFlowCalculationTest
             nodes[0].Power = new Complex(-1, 2);
             nodes[0].Voltage = new Complex(1, 2);
             nodes[1].Power = new Complex(0.5, -1);
-            var caclulator = CreateLoadFlowCalculator();
 
-            caclulator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
         [TestMethod]
@@ -64,9 +71,8 @@ namespace LoadFlowCalculationTest
                             {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
             var nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
-            var caclulator = CreateLoadFlowCalculator();
 
-            caclulator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
         protected static void CreateOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage, out double expectedInputPower)

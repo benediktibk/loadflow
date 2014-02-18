@@ -16,10 +16,10 @@ namespace LoadFlowCalculationTest
             double nominalVoltage;
             double expectedOutputVoltage;
             double expectedInputPower;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            var caclulator = CreateLoadFlowCalculator();
+            CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage,
+                out expectedOutputVoltage, out expectedInputPower);
 
-            nodes = caclulator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.1);
@@ -36,9 +36,8 @@ namespace LoadFlowCalculationTest
             double expectedOutputVoltage;
             double expectedInputPower;
             CreateOneSideSuppliedConnection(0.001, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            var caclulator = CreateLoadFlowCalculator();
 
-            nodes = caclulator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
             
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.0001);
@@ -54,7 +53,6 @@ namespace LoadFlowCalculationTest
             Vector powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
-            var calculator = CreateLoadFlowCalculator();
             var nodes = new[] {new Node(), new Node(), new Node(), new Node(), new Node()};
             nodes[0].Power = powers.At(0);
             nodes[1].Power = powers.At(1);
@@ -62,7 +60,7 @@ namespace LoadFlowCalculationTest
             nodes[3].Power = powers.At(3);
             nodes[4].Power = powers.At(4);
 
-            nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
             NodeAssert.AreEqual(nodes, voltages, powers, 0.2, 2);
         }
@@ -75,7 +73,6 @@ namespace LoadFlowCalculationTest
             Vector powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
-            var calculator = CreateLoadFlowCalculator();
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
             nodes[0].Voltage = voltages.At(0);
             nodes[1].Voltage = voltages.At(1);
@@ -83,7 +80,7 @@ namespace LoadFlowCalculationTest
             nodes[3].Voltage = voltages.At(3);
             nodes[4].Voltage = voltages.At(4);
 
-            nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
             NodeAssert.AreEqual(nodes, voltages, powers, 0.05, 1);
         }
@@ -96,7 +93,6 @@ namespace LoadFlowCalculationTest
             Vector powers;
             double nominalVoltage;
             CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
-            var calculator = CreateLoadFlowCalculator();
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
             nodes[0].Power = powers.At(0);
             nodes[1].Power = powers.At(1);
@@ -104,7 +100,7 @@ namespace LoadFlowCalculationTest
             nodes[3].Power = powers.At(3);
             nodes[4].Voltage = voltages.At(4);
 
-            nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
             NodeAssert.AreEqual(nodes, voltages, powers, 0.05, 1);
         }
