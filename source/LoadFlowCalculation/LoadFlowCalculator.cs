@@ -60,9 +60,11 @@ namespace LoadFlowCalculation
 
             for (var i = 0; i < nodeCount; ++i)
             {
-                var node = new Node();
-                node.Power = allPowers[i];
-                node.Voltage = allVoltages[i];
+                var node = new Node()
+                {
+                    Power = allPowers[i],
+                    Voltage = allVoltages[i]
+                };
                 result[i] = node;
             }
 
