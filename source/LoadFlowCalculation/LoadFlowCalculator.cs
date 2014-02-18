@@ -38,9 +38,10 @@ namespace LoadFlowCalculation
                 var admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
                     indexOfNodesWithUnknownVoltage);
 
-                var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
+                var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
+                var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
                 var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
-                    nominalVoltage, constantCurrents, knownPowers);
+                    nominalVoltage, constantCurrentRightHandSide, knownPowers);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);

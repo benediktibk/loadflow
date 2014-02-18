@@ -35,7 +35,7 @@ namespace LoadFlowCalculation
             do
             {
                 var loadCurrents = knownPowersConjugated.PointwiseDivide(voltages.Conjugate());
-                var currents = loadCurrents.Subtract(constantCurrents);
+                var currents = loadCurrents.Add(constantCurrents);
                 var newVoltages = factorization.Solve(currents);
                 var voltageDifference = newVoltages.Subtract(voltages);
                 var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();

@@ -12,7 +12,7 @@ namespace LoadFlowCalculation
             double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
             var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
-            var totalCurrents = ownCurrents.Subtract(constantCurrents);
+            var totalCurrents = ownCurrents.Add(constantCurrents);
             var factorization = admittances.QR();
             var determinant = factorization.Determinant;
 

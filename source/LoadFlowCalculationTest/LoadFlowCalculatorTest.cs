@@ -36,7 +36,7 @@ namespace LoadFlowCalculationTest
             var admittancesToUnknownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(10, 0)}});
             var knownVoltages = new DenseVector(new[] {new Complex(1, 0)});
             var knownPowers = new DenseVector(new[]{new Complex(-1, 0)});
-            var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
+            var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages).Multiply(new Complex(-1, 0));
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
                 .Setup(o => o.CalculateUnknownVoltages(admittancesToUnknownVoltages, nominalVoltage, constantCurrents, knownPowers))
