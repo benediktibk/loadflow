@@ -31,20 +31,12 @@ namespace LoadFlowCalculationTest
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             var calculator = calculatorInternalMock.Object;
 
-            var result = calculator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
-
-            var firstNodeVoltage = result[0].Voltage;
-            var firstNodePower = result[0].Power;
-            var secondNodeVoltage = result[1].Voltage;
-            var secondNodePower = result[1].Power;
-            Assert.AreEqual(1, firstNodeVoltage.Real, 0.0001);
-            Assert.AreEqual(0, firstNodeVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(0.9, secondNodeVoltage.Real, 0.0001);
-            Assert.AreEqual(0, secondNodeVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(1, firstNodePower.Real, 0.0001);
-            Assert.AreEqual(0, firstNodePower.Imaginary, 0.0001);
-            Assert.AreEqual(-0.9, secondNodePower.Real, 0.0001);
-            Assert.AreEqual(0, secondNodePower.Imaginary, 0.0001);
+            nodes = calculator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
+            
+            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
+            ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
+            ComplexAssert.AreEqual(1, 0, nodes[0].Power, 0.0001);
+            ComplexAssert.AreEqual(-0.9, 0, nodes[1].Power, 0.0001);
         }
 
         [TestMethod]
@@ -64,7 +56,7 @@ namespace LoadFlowCalculationTest
                 nodeOne,
                 nodeTwo
             };
-            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+            var caclulator = CreateLoadFlowCalculator();
 
             caclulator.CalculateNodeVoltages(admittances, 1, nodes);
         }
@@ -84,7 +76,7 @@ namespace LoadFlowCalculationTest
                 nodeOne,
                 nodeTwo
             };
-            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+            var caclulator = CreateLoadFlowCalculator();
 
             caclulator.CalculateNodeVoltages(admittances, 1, nodes);
         }
