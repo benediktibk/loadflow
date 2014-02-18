@@ -8,10 +8,12 @@ namespace LoadFlowCalculation
         LoadFlowCalculator
     {
         private readonly double _coefficientTerminationCriteria;
+        private readonly int _maximumNumberOfCoefficients;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double coefficientTerminationCriteria)
+        public HolomorphicEmbeddedLoadFlowMethod(double coefficientTerminationCriteria, int maximumNumberOfCoefficients)
         {
             _coefficientTerminationCriteria = coefficientTerminationCriteria;
+            _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
         }
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
