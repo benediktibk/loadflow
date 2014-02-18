@@ -15,6 +15,11 @@ namespace LoadFlowCalculation
             var otherCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
             var totalCurrents = ownCurrents.Subtract(otherCurrents);
             var factorization = admittancesToUnknownVoltages.QR();
+            var determinant = factorization.Determinant;
+
+            if (determinant.Magnitude < 0.0001)
+                throw new NotFullRankException();
+
             return factorization.Solve(totalCurrents);
         }
 
@@ -22,6 +27,11 @@ namespace LoadFlowCalculation
         {
             var currents = knownPowers.Divide(nominalVoltage);
             var factorization = admittances.QR();
+            var determinant = factorization.Determinant;
+
+            if (determinant.Magnitude < 0.0001)
+                throw new NotFullRankException();
+
             return factorization.Solve(currents);
         }
     }

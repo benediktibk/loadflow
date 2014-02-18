@@ -67,6 +67,7 @@
     <Compile Include="NodeTest.cs" />
     <Compile Include="NodePotentialMethodTest.cs" />
     <Compile Include="LoadFlowCalculatorSmallAccuracyTest.cs" />
+    <Compile Include="LoadFlowCalculationHighAccuracyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">

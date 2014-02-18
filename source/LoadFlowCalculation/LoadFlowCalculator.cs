@@ -26,9 +26,7 @@ namespace LoadFlowCalculation
             Vector<Complex> allVoltages;
 
             if (countOfUnknownVoltages == 0)
-            {
                 allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
-            }
             else if (countOfKnownVoltages == 0)
             {
                 var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
