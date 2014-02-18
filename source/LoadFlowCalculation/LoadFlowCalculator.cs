@@ -9,8 +9,7 @@ namespace LoadFlowCalculation
 {
     abstract public class LoadFlowCalculator
     {
-        abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittancesToKnownVoltages,
-            Matrix<Complex> admittancesToUnknownVoltages, double nominalVoltage, Vector<Complex> knownVoltages, Vector<Complex> knownPowers);
+        abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers);
 
         public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
         {
@@ -39,8 +38,9 @@ namespace LoadFlowCalculation
                 var admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
                     indexOfNodesWithUnknownVoltage);
 
-                var unknownVoltages = CalculateUnknownVoltages(admittancesToKnownVoltages, admittancesToUnknownVoltages,
-                    nominalVoltage, knownVoltages, knownPowers);
+                var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
+                var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
+                    nominalVoltage, constantCurrents, knownPowers);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);

@@ -8,14 +8,12 @@ namespace LoadFlowCalculation
     public class NodePotentialMethod :
         LoadFlowCalculator
     {
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittancesToKnownVoltages,
-            Matrix<Complex> admittancesToUnknownVoltages,
-            double nominalVoltage, Vector<Complex> knownVoltages, Vector<Complex> knownPowers)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
+            double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
-            var ownCurrents = knownPowers.Divide(nominalVoltage);
-            var otherCurrents = admittancesToKnownVoltages.Multiply(knownVoltages);
-            var totalCurrents = ownCurrents.Conjugate().Subtract(otherCurrents);
-            var factorization = admittancesToUnknownVoltages.QR();
+            var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
+            var totalCurrents = ownCurrents.Subtract(constantCurrents);
+            var factorization = admittances.QR();
             var determinant = factorization.Determinant;
 
             if (determinant.Magnitude < 0.0001)
