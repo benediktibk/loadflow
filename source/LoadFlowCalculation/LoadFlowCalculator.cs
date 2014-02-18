@@ -14,20 +14,20 @@ namespace LoadFlowCalculation
 
         public Node[] CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Node[] nodes)
         {
-            var nodeCount = GetNodeCountAndCheckDimensions(admittances, nodes);
+            CheckDimensions(admittances, nodes);
 
             List<int> indexOfNodesWithKnownVoltage;
             List<int> indexOfNodesWithUnknownVoltage;
-            SeperateNodesInKnownAndUnknownVoltages(nodes, nodeCount, out indexOfNodesWithKnownVoltage, out indexOfNodesWithUnknownVoltage);
+            SeperateNodesInKnownAndUnknownVoltages(nodes, out indexOfNodesWithKnownVoltage, out indexOfNodesWithUnknownVoltage);
 
             //var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             //var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            
+
             var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
+            var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
             var admittancesReduced = ExtractRowsOfUnknownVoltages(admittances, indexOfNodesWithUnknownVoltage);
             var admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced, indexOfNodesWithKnownVoltage);
             var admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced, indexOfNodesWithUnknownVoltage);
-            var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
 
             var unknownVoltages = CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
                 nominalVoltage, knownVoltages, knownPowers);
@@ -40,7 +40,7 @@ namespace LoadFlowCalculation
         private static Node[] CombineVoltagesAndPowersToNodes(Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             if (allPowers.Count != allVoltages.Count)
-                throw new System.ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
 
             var nodeCount = allPowers.Count;
             var result = new Node[nodeCount];
@@ -138,13 +138,13 @@ namespace LoadFlowCalculation
             return admittancesReduced;
         }
 
-        private static void SeperateNodesInKnownAndUnknownVoltages(Node[] nodes, int nodeCount,
+        private static void SeperateNodesInKnownAndUnknownVoltages(Node[] nodes,
             out List<int> indexOfNodesWithKnownVoltage, out List<int> indexOfNodesWithUnknownVoltage)
         {
             indexOfNodesWithKnownVoltage = new List<int>();
             indexOfNodesWithUnknownVoltage = new List<int>();
 
-            for (var i = 0; i < nodeCount; ++i)
+            for (var i = 0; i < nodes.Count(); ++i)
             {
                 var node = nodes[i];
 
@@ -161,7 +161,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static int GetNodeCountAndCheckDimensions(Matrix admittances, Node[] nodes)
+        private static void CheckDimensions(Matrix admittances, Node[] nodes)
         {
             var rows = admittances.RowCount;
             var columns = admittances.ColumnCount;
@@ -172,8 +172,6 @@ namespace LoadFlowCalculation
 
             if (rows != nodeCount)
                 throw new ArgumentOutOfRangeException();
-
-            return nodeCount;
         }
     }
 }
