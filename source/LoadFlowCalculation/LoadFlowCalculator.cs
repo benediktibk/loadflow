@@ -21,28 +21,20 @@ namespace LoadFlowCalculation
 
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var knownVoltagesArray = new Complex[countOfKnownVoltages];
-
-            for (var i = 0; i < countOfKnownVoltages; ++i)
-                knownVoltagesArray[i] = nodes[indexOfNodesWithKnownVoltage[i]].Voltage;
-
-            var knownVoltages = new DenseVector(knownVoltagesArray);
-            var admittancesToKnownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfKnownVoltages);
-            var admittancesToUnknownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfUnknownVoltages);
+            
+            var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
             var admittancesReduced = ExtractRowsOfUnknownVoltages(admittances, indexOfNodesWithUnknownVoltage);
+            var admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced, indexOfNodesWithKnownVoltage);
 
-            for (var i = 0; i < countOfKnownVoltages; ++i)
-                admittancesToKnownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithKnownVoltage[i]));
-
+            var admittancesToUnknownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfUnknownVoltages);
             for (var i = 0; i < countOfUnknownVoltages; ++i)
                 admittancesToUnknownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithUnknownVoltage[i]));
 
             var knownPowersArray = new Complex[countOfUnknownVoltages];
-
             for (var i = 0; i < countOfKnownVoltages; ++i)
                 knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
-
             var knownPowers = new DenseVector(knownPowersArray);
+
             var unknownVoltages = CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages,
                 nominalVoltage, knownVoltages, knownPowers);
 
@@ -67,6 +59,29 @@ namespace LoadFlowCalculation
             }
 
             return result;
+        }
+
+        private static SparseMatrix ExtractAdmittancesToKnownVoltages(SparseMatrix admittancesReduced, List<int> indexOfNodesWithKnownVoltage)
+        {
+            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            var admittancesToKnownVoltages = new SparseMatrix(admittancesReduced.RowCount, countOfKnownVoltages);
+
+            for (var i = 0; i < countOfKnownVoltages; ++i)
+                admittancesToKnownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithKnownVoltage[i]));
+
+            return admittancesToKnownVoltages;
+        }
+
+        private static DenseVector ExtractKnownVoltages(Node[] nodes, List<int> indexOfNodesWithKnownVoltage)
+        {
+            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            var knownVoltagesArray = new Complex[countOfKnownVoltages];
+
+            for (var i = 0; i < countOfKnownVoltages; ++i)
+                knownVoltagesArray[i] = nodes[indexOfNodesWithKnownVoltage[i]].Voltage;
+
+            var knownVoltages = new DenseVector(knownVoltagesArray);
+            return knownVoltages;
         }
 
         private static SparseMatrix ExtractRowsOfUnknownVoltages(Matrix admittances, List<int> indexOfNodesWithUnknownVoltage)
