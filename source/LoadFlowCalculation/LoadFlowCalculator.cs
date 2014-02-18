@@ -28,10 +28,7 @@ namespace LoadFlowCalculation
             if (countOfUnknownVoltages == 0)
                 allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
             else if (countOfKnownVoltages == 0)
-            {
-                var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
-                allVoltages = CalculateUnknownVoltages(admittances, nominalVoltage, knownPowers);
-            }
+                throw new NotFullRankException();
             else
             {
                 var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
