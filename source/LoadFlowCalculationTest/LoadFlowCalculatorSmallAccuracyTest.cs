@@ -17,7 +17,7 @@ namespace LoadFlowCalculationTest
             double expectedOutputVoltage;
             double expectedInputPower;
             CreateOneSideSuppliedConnection(0.1, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+            var caclulator = CreateLoadFlowCalculator();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
 
@@ -46,16 +46,14 @@ namespace LoadFlowCalculationTest
             double expectedOutputVoltage;
             double expectedInputPower;
             CreateOneSideSuppliedConnection(0.001, out admittances, out nodes, out nominalVoltage, out expectedOutputVoltage, out expectedInputPower);
-            LoadFlowCalculator caclulator = CreateLoadFlowCalculator();
+            var caclulator = CreateLoadFlowCalculator();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
 
-            var inputNode = nodes[0];
-            var outputNode = nodes[1];
-            var inputVoltage = inputNode.Voltage;
-            var outputVoltage = outputNode.Voltage;
-            var inputPower = inputNode.Power;
-            var outputPower = outputNode.Power;
+            var inputVoltage = nodes[0].Voltage;
+            var outputVoltage = nodes[1].Voltage;
+            var inputPower = nodes[0].Power;
+            var outputPower = nodes[1].Power;
             Assert.AreEqual(1, inputVoltage.Real, 0.0001);
             Assert.AreEqual(0, inputVoltage.Imaginary, 0.0001);
             Assert.AreEqual(expectedOutputVoltage, outputVoltage.Real, 0.0001);
