@@ -22,12 +22,13 @@ namespace LoadFlowCalculation
 
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            Vector<Complex> allVoltages;
 
+            if (countOfKnownVoltages == 0)
+                throw new NotFullRankException();
+
+            Vector<Complex> allVoltages;
             if (countOfUnknownVoltages == 0)
                 allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
-            else if (countOfKnownVoltages == 0)
-                throw new NotFullRankException();
             else
             {
                 var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
