@@ -13,7 +13,7 @@ namespace LoadFlowCalculationTest
         abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
 
         [TestMethod]
-        public void calculateNodeVoltages_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblem()
+        public void calculateNodeVoltages_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
         {
             Matrix admittances;
             Node[] nodes;
@@ -46,16 +46,10 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(
                 new [,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
                             {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
-            var nodeOne = new Node();
-            var nodeTwo = new Node();
-            nodeOne.Power = new Complex(-1, 2);
-            nodeOne.Voltage = new Complex(1, 2);
-            nodeTwo.Power = new Complex(0.5, -1);
-            var nodes = new Node[]
-            {
-                nodeOne,
-                nodeTwo
-            };
+            var nodes = new[]{new Node(), new Node()};
+            nodes[0].Power = new Complex(-1, 2);
+            nodes[0].Voltage = new Complex(1, 2);
+            nodes[1].Power = new Complex(0.5, -1);
             var caclulator = CreateLoadFlowCalculator();
 
             caclulator.CalculateNodeVoltages(admittances, 1, nodes);
@@ -68,14 +62,8 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
                             {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
-            var nodeOne = new Node();
-            var nodeTwo = new Node();
-            nodeTwo.Power = new Complex(0.5, -1);
-            var nodes = new Node[]
-            {
-                nodeOne,
-                nodeTwo
-            };
+            var nodes = new[] { new Node(), new Node() };
+            nodes[1].Power = new Complex(0.5, -1);
             var caclulator = CreateLoadFlowCalculator();
 
             caclulator.CalculateNodeVoltages(admittances, 1, nodes);
@@ -87,15 +75,9 @@ namespace LoadFlowCalculationTest
             Complex[,] admittancesArray = { { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
 
-            var inputNode = new Node();
-            var outputNode = new Node();
-            inputNode.Voltage = new Complex(1, 0);
-            outputNode.Power = new Complex(-1, 0);
-            nodes = new[]
-            {
-                inputNode,
-                outputNode
-            };
+            nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = new Complex(1, 0);
+            nodes[1].Power = new Complex(-1, 0);
 
             nominalVoltage = 1;
             expectedOutputVoltage = (1 + Math.Sqrt(1 - 4*R))/2;
@@ -106,7 +88,7 @@ namespace LoadFlowCalculationTest
         protected static void CreateFiveNodeProblem(out Matrix admittances, out Vector voltages, out Vector powers,
             out double nominalVoltage)
         {
-            admittances = DenseMatrix.OfArray(new Complex[,]
+            admittances = DenseMatrix.OfArray(new[,]
             {
                 {
                     new Complex(120, 20),   new Complex(-100, -50), new Complex(0, 0),      new Complex(-20, 10),   new Complex(0, 20)
