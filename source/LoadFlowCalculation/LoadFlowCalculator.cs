@@ -15,24 +15,9 @@ namespace LoadFlowCalculation
         {
             var nodeCount = GetNodeCountAndCheckDimensions(admittances, nodes);
 
-            var indexOfNodesWithKnownVoltage = new List<int>();
-            var indexOfNodesWithUnknownVoltage = new List<int>();
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var node = nodes[i];
-
-                if (node.VoltageIsKnown)
-                    indexOfNodesWithKnownVoltage.Add(i);
-                else
-                    indexOfNodesWithUnknownVoltage.Add(i);
-
-                if (!node.VoltageIsKnown && !node.PowerIsKnown)
-                    throw new UnderDeterminedProblemException();
-
-                if (node.VoltageIsKnown && node.PowerIsKnown)
-                    throw new OverDeterminedProblemException();
-            }
+            List<int> indexOfNodesWithKnownVoltage;
+            List<int> indexOfNodesWithUnknownVoltage;
+            SeperateNodesInKnownAndUnknownVoltages(nodes, nodeCount, out indexOfNodesWithKnownVoltage, out indexOfNodesWithUnknownVoltage);
 
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
@@ -85,6 +70,29 @@ namespace LoadFlowCalculation
             }
 
             return result;
+        }
+
+        private static void SeperateNodesInKnownAndUnknownVoltages(Node[] nodes, int nodeCount,
+            out List<int> indexOfNodesWithKnownVoltage, out List<int> indexOfNodesWithUnknownVoltage)
+        {
+            indexOfNodesWithKnownVoltage = new List<int>();
+            indexOfNodesWithUnknownVoltage = new List<int>();
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var node = nodes[i];
+
+                if (node.VoltageIsKnown)
+                    indexOfNodesWithKnownVoltage.Add(i);
+                else
+                    indexOfNodesWithUnknownVoltage.Add(i);
+
+                if (!node.VoltageIsKnown && !node.PowerIsKnown)
+                    throw new UnderDeterminedProblemException();
+
+                if (node.VoltageIsKnown && node.PowerIsKnown)
+                    throw new OverDeterminedProblemException();
+            }
         }
 
         private static int GetNodeCountAndCheckDimensions(Matrix admittances, Node[] nodes)
