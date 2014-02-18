@@ -75,6 +75,19 @@ namespace LoadFlowCalculationTest
             _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(NotSymmetricException))]
+        public void CalculateNodeVoltagesAndPowers_notSymmetricAdmittanceMatrix_exceptionThrown()
+        {
+            var admittances = DenseMatrix.OfArray(
+                new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
+                            {new Complex(0, 0.2), new Complex(1, -0.5)}});
+            var nodes = new[] { new Node(), new Node() };
+            nodes[1].Power = new Complex(0.5, -1);
+
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+        }
+
         protected static void CreateOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage, out double expectedInputPower)
         {
             double Y = 1.0 / R;
@@ -97,19 +110,19 @@ namespace LoadFlowCalculationTest
             admittances = DenseMatrix.OfArray(new[,]
             {
                 {
-                    new Complex(120, 20),   new Complex(-100, -50), new Complex(0, 0),      new Complex(-20, 10),   new Complex(0, 20)
+                    new Complex(1200, 200),   new Complex(-1000, -500), new Complex(0, 0),      new Complex(-200, 100),   new Complex(0, 200)
                 },
                 {
-                    new Complex(-100, -50), new Complex(110, 80),   new Complex(-10, -30),  new Complex(0, 0),      new Complex(0, 0)
+                    new Complex(-1000, -500), new Complex(1100, 800),   new Complex(-100, -300),  new Complex(0, 0),      new Complex(0, 0)
                 },
                 {
-                    new Complex(0, 0),      new Complex(-10, -30),  new Complex(30, -20),   new Complex(-20, 50),   new Complex(0, 0)
+                    new Complex(0, 0),      new Complex(-100, -300),  new Complex(300, -200),   new Complex(-200, 500),   new Complex(0, 0)
                 },
                 {
-                    new Complex(-20, 10),   new Complex(0, 0),      new Complex(-20, 50),   new Complex(110, -10),  new Complex(-70, 50)
+                    new Complex(-200, 100),   new Complex(0, 0),      new Complex(-200, 500),   new Complex(1100, -100),  new Complex(-700, -500)
                 },
                 {
-                    new Complex(0, 20),     new Complex(0, 0),      new Complex(0, 0),      new Complex(-70, -50),  new Complex(70, 30)
+                    new Complex(0, 200),     new Complex(0, 0),      new Complex(0, 0),      new Complex(-700, -500),  new Complex(700, 300)
                 }
             });
 

@@ -50,6 +50,7 @@
     <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NotQuadraticException.cs" />
+    <Compile Include="NotSymmetricException.cs" />
     <Compile Include="OverDeterminedProblemException.cs" />
     <Compile Include="UnderDeterminedProblemException.cs" />
     <Compile Include="PowerNotSetException.cs" />

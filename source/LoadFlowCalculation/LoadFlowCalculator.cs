@@ -190,6 +190,9 @@ namespace LoadFlowCalculation
 
             if (rows != nodeCount)
                 throw new ArgumentOutOfRangeException();
+
+            if (!admittances.IsSymmetric)
+                throw new NotSymmetricException();
         }
     }
 }
