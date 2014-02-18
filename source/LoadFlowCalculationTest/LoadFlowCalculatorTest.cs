@@ -110,26 +110,39 @@ namespace LoadFlowCalculationTest
         protected static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
+            CreateFiveNodeProblem(
+                new Complex(1000, 500), new Complex(0, 0), new Complex(200, -100), new Complex(0, -200), 
+                new Complex(100, 300), new Complex(0, 0), new Complex(0, 0), 
+                new Complex(200, -500), new Complex(0, 0), 
+                new Complex(700, 500),
+                out admittances, out voltages, out powers, out nominalVoltage);
+        }
+
+        protected static void CreateFiveNodeProblem(Complex oneTwo, Complex oneThree, Complex oneFour, Complex oneFive,
+            Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive,
+            out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+            out double nominalVoltage)
+        {
             admittances = DenseMatrix.OfArray(new[,]
             {
                 {
-                    new Complex(1200, 200),   new Complex(-1000, -500), new Complex(0, 0),      new Complex(-200, 100),   new Complex(0, 200)
+                    oneTwo + oneThree + oneFour + oneFive, (-1)*oneTwo, (-1)*oneThree, (-1)*oneFour, (-1)*oneFive
                 },
                 {
-                    new Complex(-1000, -500), new Complex(1100, 800),   new Complex(-100, -300),  new Complex(0, 0),      new Complex(0, 0)
+                    (-1)*oneTwo, oneTwo + twoThree + twoFour + twoFive, (-1)*twoThree, (-1)*twoFour, (-1)*twoFive
                 },
                 {
-                    new Complex(0, 0),      new Complex(-100, -300),  new Complex(300, -200),   new Complex(-200, 500),   new Complex(0, 0)
+                    (-1)*oneThree, (-1)*twoThree, oneThree + twoThree + threeFour + threeFive, (-1)*threeFour, (-1)*threeFive
                 },
                 {
-                    new Complex(-200, 100),   new Complex(0, 0),      new Complex(-200, 500),   new Complex(1100, -100),  new Complex(-700, -500)
+                    (-1)*oneFour, (-1)*twoFour, (-1)*threeFour, oneFour + twoFour + threeFour + fourFive, (-1)*fourFive
                 },
                 {
-                    new Complex(0, 200),     new Complex(0, 0),      new Complex(0, 0),      new Complex(-700, -500),  new Complex(700, 300)
+                    (-1)*oneFive, (-1)*twoFive, (-1)*threeFive, (-1)*fourFive, oneFive + twoFive + threeFive + fourFive
                 }
             });
 
-            voltages = new DenseVector(new []{new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12)});
+            voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
             var powersCalculated = (voltages.Conjugate()).PointwiseMultiply(admittances.Multiply(voltages));
             powers = new DenseVector(powersCalculated.ToArray());
             nominalVoltage = 1;
