@@ -27,7 +27,7 @@ namespace LoadFlowCalculationTest
             var knownPowers = new DenseVector(new[]{new Complex(-1, 0)});
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
-                .Setup(o => o.CalculateNodeVoltagesInternal(admittancesToKnownVoltages, admittancesToUnknownVoltages, nominalVoltage, knownVoltages, knownPowers))
+                .Setup(o => o.CalculateUnknownVoltages(admittancesToKnownVoltages, admittancesToUnknownVoltages, nominalVoltage, knownVoltages, knownPowers))
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             var calculator = calculatorInternalMock.Object;
 

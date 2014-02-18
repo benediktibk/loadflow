@@ -5,7 +5,7 @@ namespace LoadFlowCalculation
     public class NodePotentialMethod :
         LoadFlowCalculator
     {
-        override public Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages, Matrix admittancesToUnknownVoltages,
+        override public Vector CalculateUnknownVoltages(Matrix admittancesToKnownVoltages, Matrix admittancesToUnknownVoltages,
             double nominalVoltage, Vector knownVoltages, Vector knownPowers)
         {
             var ownCurrents = knownPowers.Divide(nominalVoltage);
