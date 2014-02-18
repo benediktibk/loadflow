@@ -5,7 +5,7 @@ namespace LoadFlowCalculationTest
 {
     [TestClass]
     public class NodePotentialMethodTest :
-        LoadFlowCalculatorTest
+        LoadFlowCalculatorSmallAccuracyTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
