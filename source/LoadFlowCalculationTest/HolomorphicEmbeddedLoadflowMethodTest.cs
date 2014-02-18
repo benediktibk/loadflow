@@ -9,7 +9,7 @@ namespace LoadFlowCalculationTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod();
+            return new HolomorphicEmbeddedLoadFlowMethod(0.0001);
         }
     }
 }
