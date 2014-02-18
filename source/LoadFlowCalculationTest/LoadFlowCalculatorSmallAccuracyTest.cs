@@ -64,7 +64,7 @@ namespace LoadFlowCalculationTest
 
             nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.05);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.2, 2);
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace LoadFlowCalculationTest
 
             nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.05);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.05, 1);
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace LoadFlowCalculationTest
 
             nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.05);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.05, 1);
         }
     }
 }

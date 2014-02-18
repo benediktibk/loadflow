@@ -20,7 +20,9 @@ namespace LoadFlowCalculation
 
         override public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> knownPowers)
         {
-            throw new NotImplementedException();
+            var currents = knownPowers.Divide(nominalVoltage);
+            var factorization = admittances.QR();
+            return factorization.Solve(currents);
         }
     }
 }

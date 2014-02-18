@@ -7,7 +7,7 @@ namespace LoadFlowCalculationTest
 {
     public static class NodeAssert
     {
-        public static void AreEqual(Node[] nodes, Vector voltages, Vector powers, double delta)
+        public static void AreEqual(Node[] nodes, Vector voltages, Vector powers, double voltageDelta, double powerDelta)
         {
             Assert.AreEqual(nodes.Count(), voltages.Count);
             Assert.AreEqual(nodes.Count(), powers.Count);
@@ -17,8 +17,8 @@ namespace LoadFlowCalculationTest
                 var node = nodes[i];
                 var voltage = voltages.At(i);
                 var power = powers.At(i);
-                ComplexAssert.AreEqual(voltage, node.Voltage, delta);
-                ComplexAssert.AreEqual(power, node.Power, delta);
+                ComplexAssert.AreEqual(voltage, node.Voltage, voltageDelta);
+                ComplexAssert.AreEqual(power, node.Power, powerDelta);
             }
         }
     }
