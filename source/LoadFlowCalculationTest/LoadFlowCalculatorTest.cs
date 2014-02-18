@@ -13,7 +13,7 @@ namespace LoadFlowCalculationTest
         abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
 
         [TestMethod]
-        public void calculateNodeVoltages_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
+        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
         {
             Matrix admittances;
             Node[] nodes;
@@ -31,7 +31,7 @@ namespace LoadFlowCalculationTest
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             var calculator = calculatorInternalMock.Object;
 
-            nodes = calculator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
+            nodes = calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
             
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
@@ -41,7 +41,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(OverDeterminedProblemException))]
-        public void calculateNodeVoltages_overdeterminedProblem_exceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_overdeterminedProblem_exceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
                 new [,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
@@ -52,12 +52,12 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = new Complex(0.5, -1);
             var caclulator = CreateLoadFlowCalculator();
 
-            caclulator.CalculateNodeVoltages(admittances, 1, nodes);
+            caclulator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
         [TestMethod]
         [ExpectedException(typeof(UnderDeterminedProblemException))]
-        public void calculateNodeVoltages_underdeterminedProblem_exceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_underdeterminedProblem_exceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
@@ -66,7 +66,7 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = new Complex(0.5, -1);
             var caclulator = CreateLoadFlowCalculator();
 
-            caclulator.CalculateNodeVoltages(admittances, 1, nodes);
+            caclulator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
         }
 
         protected static void CreateOneSideSuppliedConnection(double R, out Matrix admittances, out Node[] nodes, out double nominalVoltage, out double expectedOutputVoltage, out double expectedInputPower)

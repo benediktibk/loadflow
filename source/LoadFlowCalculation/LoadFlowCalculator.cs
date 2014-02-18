@@ -12,7 +12,7 @@ namespace LoadFlowCalculation
         abstract public Vector CalculateNodeVoltagesInternal(Matrix admittancesToKnownVoltages,
             Matrix admittancesToUnknownVoltages, double nominalVoltage, Vector knownVoltages, Vector knownPowers);
 
-        public Node[] CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Node[] nodes)
+        public Node[] CalculateNodeVoltagesAndPowers(Matrix admittances, double nominalVoltage, Node[] nodes)
         {
             CheckDimensions(admittances, nodes);
 
