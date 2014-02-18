@@ -61,6 +61,23 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedAndInverseInformationGiven_correctResults()
+        {
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
+            double nominalVoltage;
+            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Power = powers.At(0);
+            nodes[1].Voltage = voltages.At(1);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.0001);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyVoltagesGiven_correctResults()
         {
             Matrix<Complex> admittances;

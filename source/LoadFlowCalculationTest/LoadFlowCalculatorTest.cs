@@ -159,7 +159,8 @@ namespace LoadFlowCalculationTest
             });
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
-            var powersCalculated = (voltages.Conjugate()).PointwiseMultiply(admittances.Multiply(voltages));
+            var currents = admittances.Multiply(voltages);
+            var powersCalculated = voltages.PointwiseMultiply(currents.Conjugate());
             powers = new DenseVector(powersCalculated.ToArray());
             nominalVoltage = 1;
         }
