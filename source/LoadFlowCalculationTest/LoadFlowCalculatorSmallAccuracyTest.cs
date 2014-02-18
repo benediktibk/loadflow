@@ -21,20 +21,10 @@ namespace LoadFlowCalculationTest
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
 
-            var inputNode = nodes[0];
-            var outputNode = nodes[1];
-            var inputVoltage = inputNode.Voltage;
-            var outputVoltage = outputNode.Voltage;
-            var inputPower = inputNode.Power;
-            var outputPower = outputNode.Power;
-            Assert.AreEqual(1, inputVoltage.Real, 0.0001);
-            Assert.AreEqual(0, inputVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(expectedOutputVoltage, outputVoltage.Real, 0.1);
-            Assert.AreEqual(0, outputVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(expectedInputPower, inputPower.Real, 0.2);
-            Assert.AreEqual(0, inputPower.Imaginary, 0.0001);
-            Assert.AreEqual(-1, outputPower.Real, 0.2);
-            Assert.AreEqual(0, outputPower.Imaginary, 0.0001);
+            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
+            ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.1);
+            ComplexAssert.AreEqual(expectedInputPower, 0, nodes[0].Power, 0.2);
+            ComplexAssert.AreEqual(-1, 0, nodes[1].Power, 0.2);
         }
 
         [TestMethod]
@@ -49,19 +39,11 @@ namespace LoadFlowCalculationTest
             var caclulator = CreateLoadFlowCalculator();
 
             nodes = caclulator.CalculateNodeVoltages(admittances, nominalVoltage, nodes);
-
-            var inputVoltage = nodes[0].Voltage;
-            var outputVoltage = nodes[1].Voltage;
-            var inputPower = nodes[0].Power;
-            var outputPower = nodes[1].Power;
-            Assert.AreEqual(1, inputVoltage.Real, 0.0001);
-            Assert.AreEqual(0, inputVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(expectedOutputVoltage, outputVoltage.Real, 0.0001);
-            Assert.AreEqual(0, outputVoltage.Imaginary, 0.0001);
-            Assert.AreEqual(expectedInputPower, inputPower.Real, 0.01);
-            Assert.AreEqual(0, inputPower.Imaginary, 0.0001);
-            Assert.AreEqual(-1, outputPower.Real, 0.01);
-            Assert.AreEqual(0, outputPower.Imaginary, 0.0001);
+            
+            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
+            ComplexAssert.AreEqual(expectedOutputVoltage, 0, nodes[1].Voltage, 0.0001);
+            ComplexAssert.AreEqual(expectedInputPower, 0, nodes[0].Power, 0.01);
+            ComplexAssert.AreEqual(-1, 0, nodes[1].Power, 0.01);
         }
     }
 }
