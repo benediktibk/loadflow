@@ -78,8 +78,8 @@ namespace LoadFlowCalculation
             return allPowers;
         }
 
-        private static Vector<Complex> CombineKnownAndUnknownVoltages(List<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
-            List<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)
+        private static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
@@ -96,7 +96,7 @@ namespace LoadFlowCalculation
             return allVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownPowers(Node[] nodes, List<int> indexOfNodesWithUnknownVoltage)
+        private static Vector<Complex> ExtractKnownPowers(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var knownPowersArray = new Complex[countOfUnknownVoltages];
@@ -109,7 +109,7 @@ namespace LoadFlowCalculation
         }
 
         private static Matrix<Complex> ExtractAdmittancesToUnknownVoltages(Matrix<Complex> admittancesReduced,
-            List<int> indexOfNodesWithUnknownVoltage)
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var admittancesToUnknownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfUnknownVoltages);
@@ -120,7 +120,7 @@ namespace LoadFlowCalculation
             return admittancesToUnknownVoltages;
         }
 
-        private static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced, List<int> indexOfNodesWithKnownVoltage)
+        private static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var admittancesToKnownVoltages = new SparseMatrix(admittancesReduced.RowCount, countOfKnownVoltages);
@@ -131,7 +131,7 @@ namespace LoadFlowCalculation
             return admittancesToKnownVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownVoltages(Node[] nodes, List<int> indexOfNodesWithKnownVoltage)
+        private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var knownVoltagesArray = new Complex[countOfKnownVoltages];
@@ -143,7 +143,7 @@ namespace LoadFlowCalculation
             return knownVoltages;
         }
 
-        private static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances, List<int> indexOfNodesWithUnknownVoltage)
+        private static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var nodeCount = admittances.ColumnCount;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
@@ -154,7 +154,7 @@ namespace LoadFlowCalculation
             return admittancesReduced;
         }
 
-        private static void SeperateNodesInKnownAndUnknownVoltages(Node[] nodes,
+        private static void SeperateNodesInKnownAndUnknownVoltages(IList<Node> nodes,
             out List<int> indexOfNodesWithKnownVoltage, out List<int> indexOfNodesWithUnknownVoltage)
         {
             indexOfNodesWithKnownVoltage = new List<int>();
@@ -177,7 +177,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static void CheckDimensions(Matrix<Complex> admittances, Node[] nodes)
+        private static void CheckDimensions(Matrix<Complex> admittances, IEnumerable<Node> nodes)
         {
             var rows = admittances.RowCount;
             var columns = admittances.ColumnCount;
