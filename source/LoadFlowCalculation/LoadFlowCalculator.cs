@@ -34,8 +34,17 @@ namespace LoadFlowCalculation
 
             var allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages, indexOfNodesWithUnknownVoltage, unknownVoltages);
             var allPowers = CalculateAllPowers(admittances, allVoltages);
+            return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+        }
 
+        private static Node[] CombineVoltagesAndPowersToNodes(Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        {
+            if (allPowers.Count != allVoltages.Count)
+                throw new System.ArgumentOutOfRangeException();
+
+            var nodeCount = allPowers.Count;
             var result = new Node[nodeCount];
+
             for (var i = 0; i < nodeCount; ++i)
             {
                 var node = new Node();
