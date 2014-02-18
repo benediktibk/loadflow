@@ -110,5 +110,33 @@ namespace LoadFlowCalculationTest
             var voltageDifference = 1 - expectedOutputVoltage;
             expectedInputPower = 1 + voltageDifference*voltageDifference/R;
         }
+
+        protected static void CreateFiveNodeProblem(out Matrix admittances, out Vector voltages, out Vector powers,
+            out double nominalVoltage)
+        {
+            admittances = DenseMatrix.OfArray(new Complex[,]
+            {
+                {
+                    new Complex(120, 20),   new Complex(-100, -50), new Complex(0, 0),      new Complex(-20, 10),   new Complex(0, 20)
+                },
+                {
+                    new Complex(-100, -50), new Complex(110, 80),   new Complex(-10, -30),  new Complex(0, 0),      new Complex(0, 0)
+                },
+                {
+                    new Complex(0, 0),      new Complex(-10, -30),  new Complex(30, -20),   new Complex(-20, 50),   new Complex(0, 0)
+                },
+                {
+                    new Complex(-20, 10),   new Complex(0, 0),      new Complex(-20, 50),   new Complex(110, -10),  new Complex(-70, 50)
+                },
+                {
+                    new Complex(0, 20),     new Complex(0, 0),      new Complex(0, 0),      new Complex(-70, -50),  new Complex(70, 30)
+                }
+            });
+
+            voltages = new DenseVector(new []{new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12)});
+            var powersCalculated = (voltages.Conjugate()).PointwiseMultiply(admittances.Multiply(voltages));
+            powers = new DenseVector(powersCalculated.ToArray());
+            nominalVoltage = 1;
+        }
     }
 }
