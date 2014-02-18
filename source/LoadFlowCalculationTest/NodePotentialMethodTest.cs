@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoadFlowCalculation;
 
 namespace LoadFlowCalculationTest
