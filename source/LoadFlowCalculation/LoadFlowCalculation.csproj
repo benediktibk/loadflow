@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurrentIteration.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
     <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    abstract public class LoadFlowCalculationHighAccuracyTest :
+    abstract public class LoadFlowCalculatorHighAccuracyTest :
         LoadFlowCalculatorSmallAccuracyTest
     {
         [TestMethod]
