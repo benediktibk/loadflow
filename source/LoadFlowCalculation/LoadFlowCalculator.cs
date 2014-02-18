@@ -11,7 +11,6 @@ namespace LoadFlowCalculation
     {
         abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittancesToKnownVoltages,
             Matrix<Complex> admittancesToUnknownVoltages, double nominalVoltage, Vector<Complex> knownVoltages, Vector<Complex> knownPowers);
-        abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> knownPowers);
 
         public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
         {
