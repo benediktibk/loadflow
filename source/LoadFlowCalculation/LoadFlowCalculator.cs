@@ -13,15 +13,7 @@ namespace LoadFlowCalculation
 
         public Node[] CalculateNodeVoltages(Matrix admittances, double nominalVoltage, Node[] nodes)
         {
-            var rows = admittances.RowCount;
-            var columns = admittances.ColumnCount;
-            var nodeCount = nodes.Count();
-
-            if (rows != columns)
-                throw new NotQuadraticException();
-
-            if (rows != nodeCount)
-                throw new ArgumentOutOfRangeException();
+            var nodeCount = GetNodeCountAndCheckDimensions(admittances, nodes);
 
             var indexOfNodesWithKnownVoltage = new List<int>();
             var indexOfNodesWithUnknownVoltage = new List<int>();
@@ -93,6 +85,21 @@ namespace LoadFlowCalculation
             }
 
             return result;
+        }
+
+        private static int GetNodeCountAndCheckDimensions(Matrix admittances, Node[] nodes)
+        {
+            var rows = admittances.RowCount;
+            var columns = admittances.ColumnCount;
+            var nodeCount = nodes.Count();
+
+            if (rows != columns)
+                throw new NotQuadraticException();
+
+            if (rows != nodeCount)
+                throw new ArgumentOutOfRangeException();
+
+            return nodeCount;
         }
     }
 }
