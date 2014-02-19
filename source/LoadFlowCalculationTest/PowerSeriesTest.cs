@@ -1,0 +1,52 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LoadFlowCalculation;
+
+namespace LoadFlowCalculationTest
+{
+    [TestClass]
+    public class PowerSeriesTest
+    {
+        PowerSeries _exponential;
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            var numberOfCoefficients = 50;
+            _exponential = new PowerSeries(numberOfCoefficients);
+            _exponential.SetCoefficient(0, 1);
+            var divisor = 1;
+
+            for (var i = 1; i < numberOfCoefficients; ++i)
+            {
+                _exponential.SetCoefficient(i, 1.0/divisor);
+                divisor *= (i + 1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_0_exceptionThrown()
+        {
+            var function = new PowerSeries(0);
+        }
+
+        [TestMethod]
+        public void Evaluatae_exponentialFunctionAt1_e()
+        {
+            Assert.AreEqual(Math.E, _exponential.Evaluate(1).Magnitude, 0.0001);
+        }
+
+        [TestMethod]
+        public void Evaluate_exponentialFunctionAt2_ESquare()
+        {
+            Assert.AreEqual(Math.Pow(Math.E, 2), _exponential.Evaluate(2).Magnitude, 0.0001);
+        }
+
+        [TestMethod]
+        public void Evaluate_exponentialFunctionAt0_1()
+        {
+            Assert.AreEqual(1, _exponential.Evaluate(0).Magnitude, 0.0001);
+        }
+    }
+}

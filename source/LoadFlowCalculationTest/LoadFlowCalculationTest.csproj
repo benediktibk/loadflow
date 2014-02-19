@@ -70,6 +70,7 @@
     <Compile Include="LoadFlowCalculatorHighAccuracyTest.cs" />
     <Compile Include="CurrentIterationTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
+    <Compile Include="PowerSeriesTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">
