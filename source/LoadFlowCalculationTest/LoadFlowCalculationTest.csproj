@@ -71,6 +71,7 @@
     <Compile Include="CurrentIterationTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
     <Compile Include="PowerSeriesTest.cs" />
+    <Compile Include="PadeApproximantTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">

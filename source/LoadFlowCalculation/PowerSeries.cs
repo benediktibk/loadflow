@@ -32,5 +32,15 @@ namespace LoadFlowCalculation
 
             return result;
         }
+
+        public Complex EvaluateAt1()
+        {
+            var result = new Complex(0, 0);
+
+            foreach (var coefficient in _coefficients)
+                result = result + coefficient;
+
+            return result;
+        }
     }
 }

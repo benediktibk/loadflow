@@ -48,5 +48,11 @@ namespace LoadFlowCalculationTest
         {
             Assert.AreEqual(1, _exponential.Evaluate(0).Magnitude, 0.0001);
         }
+
+        [TestMethod]
+        public void EvaluateAt1_empty_sameResultAsEvaluatedDirectAt1()
+        {
+            ComplexAssert.AreEqual(_exponential.Evaluate(1), _exponential.EvaluateAt1(), 0.000001);
+        }
     }
 }
