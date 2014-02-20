@@ -8,13 +8,13 @@ namespace LoadFlowCalculationTest
     public class PadeApproximantTest
     {
         private PowerSeries<double> _powerSeriesExponential;
-        private PadeApproximantDouble _padeApproximantExponential;
+        private PadeApproximant<double> _padeApproximantExponential;
 
         [TestInitialize]
         public void SetUp()
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(4, new CalculatorDouble());
-            _padeApproximantExponential = new PadeApproximantDouble(4, 4, _powerSeriesExponential);
+            _padeApproximantExponential = new PadeApproximant<double>(4, 4, _powerSeriesExponential);
         }
 
         [TestMethod]

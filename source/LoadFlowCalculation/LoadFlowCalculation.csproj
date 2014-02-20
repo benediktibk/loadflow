@@ -59,8 +59,6 @@
     <Compile Include="NotSymmetricException.cs" />
     <Compile Include="OverDeterminedProblemException.cs" />
     <Compile Include="PadeApproximant.cs" />
-    <Compile Include="PadeApproximantComplex.cs" />
-    <Compile Include="PadeApproximantDouble.cs" />
     <Compile Include="PowerSeries.cs" />
     <Compile Include="PowerSeriesComplex.cs" />
     <Compile Include="PowerSeriesDouble.cs" />

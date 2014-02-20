@@ -9,14 +9,14 @@ namespace LoadFlowCalculation
         private PowerSeries<T> _q;
         private readonly CalculatorGeneric<T> _calculator; 
 
-        public PadeApproximant(int m, int n, PowerSeries<T> powerSeries, CalculatorGeneric<T> calculator)
+        public PadeApproximant(int m, int n, PowerSeries<T> powerSeries)
         {
-            _calculator = calculator;
+            _calculator = powerSeries.getCalculator();
             if (m < 1 || n < 1)
                 throw new ArgumentOutOfRangeException();
 
-            _p = new PowerSeries<T>(m, calculator);
-            _q = new PowerSeries<T>(n, calculator);
+            _p = new PowerSeries<T>(m, _calculator);
+            _q = new PowerSeries<T>(n, _calculator);
         }
 
         public T Evaluate(T x)

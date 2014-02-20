@@ -46,6 +46,11 @@ namespace LoadFlowCalculation
             return result;
         }
 
+        public CalculatorGeneric<T> getCalculator()
+        {
+            return _calculator;
+        }
+
         public static PowerSeries<T> CreateExponential(int numberOfCoefficients, CalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
