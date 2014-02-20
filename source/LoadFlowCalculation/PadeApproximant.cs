@@ -3,28 +3,30 @@ using System.Numerics;
 
 namespace LoadFlowCalculation
 {
-    public class PadeApproximant
+    public class PadeApproximant<T> where T : new()
     {
-        private PowerSeries _p;
-        private PowerSeries _q;
+        private PowerSeries<T> _p;
+        private PowerSeries<T> _q;
+        private readonly CalculatorGeneric<T> _calculator; 
 
-        public PadeApproximant(int m, int n, PowerSeries powerSeries)
+        public PadeApproximant(int m, int n, PowerSeries<T> powerSeries, CalculatorGeneric<T> calculator)
         {
+            _calculator = calculator;
             if (m < 1 || n < 1)
                 throw new ArgumentOutOfRangeException();
 
-            _p = new PowerSeries(m);
-            _q = new PowerSeries(n);
+            _p = new PowerSeries<T>(m, calculator);
+            _q = new PowerSeries<T>(n, calculator);
         }
 
-        public Complex Evaluate(Complex x)
+        public T Evaluate(T x)
         {
-            return _p.Evaluate(x) / _q.Evaluate(x);
+            return _calculator.Divide(_p.Evaluate(x), _q.Evaluate(x));
         }
 
-        public Complex EvaluateAt1()
+        public T EvaluateAt1()
         {
-            return _p.EvaluateAt1() / _q.EvaluateAt1();
+            return _calculator.Divide(_p.EvaluateAt1(), _q.EvaluateAt1());
         }
     }
 }

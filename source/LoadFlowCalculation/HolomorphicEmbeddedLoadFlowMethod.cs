@@ -17,17 +17,17 @@ namespace LoadFlowCalculation
             _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
-            double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
+        public override Vector<System.Numerics.Complex> CalculateUnknownVoltages(Matrix<System.Numerics.Complex> admittances,
+            double nominalVoltage, Vector<System.Numerics.Complex> constantCurrents, Vector<System.Numerics.Complex> knownPowers)
         {
             var nodeCount = admittances.RowCount;
             var factorization = admittances.QR();
-            var c = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
-            var d = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
+            var c = new List<Vector<System.Numerics.Complex>>(_maximumNumberOfCoefficients);
+            var d = new List<Vector<System.Numerics.Complex>>(_maximumNumberOfCoefficients);
 
             var c0 = factorization.Solve(new SparseVector(nodeCount));
-            Vector<Complex> d0 = new DenseVector(nodeCount);
-            c0.DivideByThis(new Complex(1, 0), d0);
+            Vector<System.Numerics.Complex> d0 = new DenseVector(nodeCount);
+            c0.DivideByThis(new System.Numerics.Complex(1, 0), d0);
             c.Add(c0);
             d.Add(d0);
             var n = 0;
@@ -41,7 +41,7 @@ namespace LoadFlowCalculation
                 var rightHandSide = constantCurrents.Add(ownCurrents);
                 var newC = factorization.Solve(rightHandSide);
                 c.Add(newC);
-                Vector<Complex> newD = new DenseVector(nodeCount);
+                Vector<System.Numerics.Complex> newD = new DenseVector(nodeCount);
 
                 for (var m = 0; m <= n - 1; ++m)
                     newD = newD.Subtract(c[n - m].PointwiseMultiply(d[m]));
@@ -52,7 +52,7 @@ namespace LoadFlowCalculation
             } while (n <= _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
 
             // TODO use an analytic continuation here
-            Vector<Complex> voltages = new DenseVector(nodeCount);
+            Vector<System.Numerics.Complex> voltages = new DenseVector(nodeCount);
             foreach (var ci in c)
                 voltages = voltages.Add(ci);
 

@@ -3,80 +3,83 @@ using System.Numerics;
 
 namespace LoadFlowCalculation
 {
-    public class PowerSeries
+    public class PowerSeries<T> where T : new()
     {
-        private readonly Complex[] _coefficients;
+        private readonly T[] _coefficients;
+        private readonly CalculatorGeneric<T> _calculator; 
 
-        public PowerSeries(int numberOfCoefficients)
+        public PowerSeries(int numberOfCoefficients, CalculatorGeneric<T> calculator)
         {
+            _calculator = calculator;
+
             if (numberOfCoefficients <= 1)
                 throw new ArgumentOutOfRangeException();
 
-            _coefficients = new Complex[numberOfCoefficients];
+            _coefficients = new T[numberOfCoefficients];
 
             for (var i = 0; i < _coefficients.Length; ++i)
-                _coefficients[i] = new Complex(0, 0);
+                _coefficients[i] = new T();
         }
 
-        public void SetCoefficient(int index, Complex value)
+        public void SetCoefficient(int index, T value)
         {
             _coefficients[index] = value;
         }
 
-        public Complex Evaluate(Complex x)
+        public T Evaluate(T x)
         {
-            var result = new Complex(0, 0);
+            var result = new T();
 
             for (var i = _coefficients.Length - 1; i >= 0; --i)
-                result = result*x + _coefficients[i];
+                result = _calculator.Add(_calculator.Multiply(result, x), _coefficients[i]);
 
             return result;
         }
 
-        public Complex EvaluateAt1()
+        public T EvaluateAt1()
         {
-            var result = new Complex(0, 0);
+            var result = new T();
 
             foreach (var coefficient in _coefficients)
-                result = result + coefficient;
+                result = _calculator.Add(result, coefficient);
 
             return result;
         }
 
-        public static PowerSeries CreateExponential(int numberOfCoefficients)
+        public static PowerSeries<T> CreateExponential(int numberOfCoefficients, CalculatorGeneric<T> calculator)
         {
-            var function = new PowerSeries(numberOfCoefficients);
-            function.SetCoefficient(0, 1);
+            var function = new PowerSeries<T>(numberOfCoefficients, calculator);
+            function.SetCoefficient(0, calculator.AssignFromDouble(1));
             var divisor = 1;
 
             for (var i = 1; i < numberOfCoefficients; ++i)
             {
-                function.SetCoefficient(i, 1.0 / divisor);
+                function.SetCoefficient(i, calculator.AssignFromDouble(1.0/divisor));
                 divisor *= (i + 1);
             }
 
             return function;
         }
 
-        public static PowerSeries CreateSin(int numberOfCoefficients)
+        public static PowerSeries<T> CreateSin(int numberOfCoefficients, CalculatorGeneric<T> calculator)
         {
-            var function = new PowerSeries(numberOfCoefficients);
+            var function = new PowerSeries<T>(numberOfCoefficients, calculator);
 
             for (var i = 0; i < numberOfCoefficients; ++i)
             {
-                if (i%2 == 0)
-                    function.SetCoefficient(i, 0);
+                if (i % 2 == 0)
+                    function.SetCoefficient(i, new T());
                 else
                 {
-                    var n = (i - 1)/2;
-                    var sign = 0.0;
+                    var n = (i - 1) / 2;
+                    double sign;
 
-                    if (n%2 == 0)
+                    if (n % 2 == 0)
                         sign = 1;
                     else
                         sign = -1;
 
-                    function.SetCoefficient(i, sign/Factorial(i));
+                    function.SetCoefficient(i, calculator.AssignFromDouble(sign/Factorial(i)));
                 }
             }
 

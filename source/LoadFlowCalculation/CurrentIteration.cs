@@ -17,16 +17,16 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
-            double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
+        public override Vector<System.Numerics.Complex> CalculateUnknownVoltages(Matrix<System.Numerics.Complex> admittances,
+            double nominalVoltage, Vector<System.Numerics.Complex> constantCurrents, Vector<System.Numerics.Complex> knownPowers)
         {
             var nodeCount = admittances.RowCount;
-            var initialVoltages = new Complex[nodeCount];
+            var initialVoltages = new System.Numerics.Complex[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
-                initialVoltages[i] = new Complex(nominalVoltage, 0);
+                initialVoltages[i] = new System.Numerics.Complex(nominalVoltage, 0);
 
-            Vector<Complex> voltages = new DenseVector(initialVoltages);
+            Vector<System.Numerics.Complex> voltages = new DenseVector(initialVoltages);
             var iterations = 0;
             var knownPowersConjugated = knownPowers.Conjugate();
             var factorization = admittances.QR();

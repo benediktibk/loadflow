@@ -9,9 +9,9 @@ namespace LoadFlowCalculation
 {
     abstract public class LoadFlowCalculator
     {
-        abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers);
+        abstract public Vector<System.Numerics.Complex> CalculateUnknownVoltages(Matrix<System.Numerics.Complex> admittances, double nominalVoltage, Vector<System.Numerics.Complex> constantCurrents, Vector<System.Numerics.Complex> knownPowers);
 
-        public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
+        public Node[] CalculateNodeVoltagesAndPowers(Matrix<System.Numerics.Complex> admittances, double nominalVoltage, Node[] nodes)
         {
             CheckDimensions(admittances, nodes);
 
@@ -25,7 +25,7 @@ namespace LoadFlowCalculation
             if (countOfKnownVoltages == 0)
                 throw new NotFullRankException();
 
-            Vector<Complex> allVoltages;
+            Vector<System.Numerics.Complex> allVoltages;
             if (countOfUnknownVoltages == 0)
                 allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
             else
@@ -39,7 +39,7 @@ namespace LoadFlowCalculation
                     indexOfNodesWithUnknownVoltage);
 
                 var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
-                var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
+                var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new System.Numerics.Complex(-1, 0));
                 var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
                     nominalVoltage, constantCurrentRightHandSide, knownPowers);
 
@@ -51,7 +51,7 @@ namespace LoadFlowCalculation
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
         }
 
-        private static Node[] CombineVoltagesAndPowersToNodes(Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        private static Node[] CombineVoltagesAndPowersToNodes(Vector<System.Numerics.Complex> allPowers, Vector<System.Numerics.Complex> allVoltages)
         {
             if (allPowers.Count != allVoltages.Count)
                 throw new ArgumentOutOfRangeException();
@@ -72,20 +72,20 @@ namespace LoadFlowCalculation
             return result;
         }
 
-        private static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)
+        private static Vector<System.Numerics.Complex> CalculateAllPowers(Matrix<System.Numerics.Complex> admittances, Vector<System.Numerics.Complex> allVoltages)
         {
             var currents = admittances.Multiply(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
         }
 
-        private static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
-            IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)
+        private static Vector<System.Numerics.Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<System.Numerics.Complex> knownVoltages,
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<System.Numerics.Complex> unknownVoltages)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var nodeCount = countOfKnownVoltages + countOfUnknownVoltages;
-            var voltagesArray = new Complex[nodeCount];
+            var voltagesArray = new System.Numerics.Complex[nodeCount];
 
             for (var i = 0; i < countOfKnownVoltages; ++i)
                 voltagesArray[indexOfNodesWithKnownVoltage[i]] = knownVoltages.At(i);
@@ -97,10 +97,10 @@ namespace LoadFlowCalculation
             return allVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownPowers(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static Vector<System.Numerics.Complex> ExtractKnownPowers(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var knownPowersArray = new Complex[countOfUnknownVoltages];
+            var knownPowersArray = new System.Numerics.Complex[countOfUnknownVoltages];
 
             for (var i = 0; i < countOfUnknownVoltages; ++i)
                 knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
@@ -109,7 +109,7 @@ namespace LoadFlowCalculation
             return knownPowers;
         }
 
-        private static Matrix<Complex> ExtractAdmittancesToUnknownVoltages(Matrix<Complex> admittancesReduced,
+        private static Matrix<System.Numerics.Complex> ExtractAdmittancesToUnknownVoltages(Matrix<System.Numerics.Complex> admittancesReduced,
             IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
@@ -121,7 +121,7 @@ namespace LoadFlowCalculation
             return admittancesToUnknownVoltages;
         }
 
-        private static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
+        private static Matrix<System.Numerics.Complex> ExtractAdmittancesToKnownVoltages(Matrix<System.Numerics.Complex> admittancesReduced, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var admittancesToKnownVoltages = new SparseMatrix(admittancesReduced.RowCount, countOfKnownVoltages);
@@ -132,10 +132,10 @@ namespace LoadFlowCalculation
             return admittancesToKnownVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
+        private static Vector<System.Numerics.Complex> ExtractKnownVoltages(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
             var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var knownVoltagesArray = new Complex[countOfKnownVoltages];
+            var knownVoltagesArray = new System.Numerics.Complex[countOfKnownVoltages];
 
             for (var i = 0; i < countOfKnownVoltages; ++i)
                 knownVoltagesArray[i] = nodes[indexOfNodesWithKnownVoltage[i]].Voltage;
@@ -144,7 +144,7 @@ namespace LoadFlowCalculation
             return knownVoltages;
         }
 
-        private static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static Matrix<System.Numerics.Complex> ExtractRowsOfUnknownVoltages(Matrix<System.Numerics.Complex> admittances, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var nodeCount = admittances.ColumnCount;
             var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
@@ -178,7 +178,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static void CheckDimensions(Matrix<Complex> admittances, IEnumerable<Node> nodes)
+        private static void CheckDimensions(Matrix<System.Numerics.Complex> admittances, IEnumerable<Node> nodes)
         {
             var rows = admittances.RowCount;
             var columns = admittances.ColumnCount;

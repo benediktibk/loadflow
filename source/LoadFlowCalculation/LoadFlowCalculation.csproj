@@ -46,7 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculatorComplex.cs" />
     <Compile Include="CurrentIteration.cs" />
+    <Compile Include="CalculatorDouble.cs" />
+    <Compile Include="CalculatorGeneric.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethod.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
     <Compile Include="NodePotentialMethod.cs" />
@@ -57,6 +60,8 @@
     <Compile Include="OverDeterminedProblemException.cs" />
     <Compile Include="PadeApproximant.cs" />
     <Compile Include="PowerSeries.cs" />
+    <Compile Include="PowerSeriesComplex.cs" />
+    <Compile Include="PowerSeriesDouble.cs" />
     <Compile Include="UnderDeterminedProblemException.cs" />
     <Compile Include="PowerNotSetException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
