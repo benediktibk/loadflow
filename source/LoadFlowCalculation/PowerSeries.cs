@@ -57,5 +57,42 @@ namespace LoadFlowCalculation
 
             return function;
         }
+
+        public static PowerSeries CreateSin(int numberOfCoefficients)
+        {
+            var function = new PowerSeries(numberOfCoefficients);
+
+            for (var i = 0; i < numberOfCoefficients; ++i)
+            {
+                if (i%2 == 0)
+                    function.SetCoefficient(i, 0);
+                else
+                {
+                    var n = (i - 1)/2;
+                    var sign = 0.0;
+
+                    if (n%2 == 0)
+                        sign = 1;
+                    else
+                        sign = -1;
+
+                    function.SetCoefficient(i, sign/Factorial(i));
+                }
+            }
+
+            return function;
+        }
+
+        public static int Factorial(int x)
+        {
+            if (x == 0)
+                return 1;
+
+            var result = 1;
+            for (var i = 2; i <= x; ++i)
+                result *= i;
+
+            return result;
+        }
     }
 }

@@ -7,12 +7,14 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class PowerSeriesTest
     {
-        PowerSeries _exponential;
+        private PowerSeries _exponential;
+        private PowerSeries _sin;
 
         [TestInitialize]
         public void SetUp()
         {
             _exponential = PowerSeries.CreateExponential(50);
+            _sin = PowerSeries.CreateSin(10);
         }
 
         [TestMethod]
@@ -44,6 +46,24 @@ namespace LoadFlowCalculationTest
         public void EvaluateAt1_empty_sameResultAsEvaluatedDirectAt1()
         {
             ComplexAssert.AreEqual(_exponential.Evaluate(1), _exponential.EvaluateAt1(), 0.000001);
+        }
+
+        [TestMethod]
+        public void Evaluate_sinFunctionAt0_0()
+        {
+            Assert.AreEqual(0, _sin.Evaluate(0).Magnitude, 0.0001);
+        }
+
+        [TestMethod]
+        public void Evaluate_sinFunctionAt3Half_correctResult()
+        {
+            Assert.AreEqual(Math.Sin(1.5), _sin.Evaluate(1.5).Magnitude, 0.0001);
+        }
+
+        [TestMethod]
+        public void Evaluate_sinFunctionAt1_correctResult()
+        {
+            Assert.AreEqual(Math.Sin(1), _sin.Evaluate(1).Magnitude, 0.0001);
         }
     }
 }
