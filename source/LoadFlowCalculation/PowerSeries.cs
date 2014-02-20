@@ -5,7 +5,7 @@ namespace LoadFlowCalculation
 {
     public class PowerSeries
     {
-        private Complex[] _coefficients;
+        private readonly Complex[] _coefficients;
 
         public PowerSeries(int numberOfCoefficients)
         {
@@ -41,6 +41,21 @@ namespace LoadFlowCalculation
                 result = result + coefficient;
 
             return result;
+        }
+
+        public static PowerSeries CreateExponential(int numberOfCoefficients)
+        {
+            var function = new PowerSeries(numberOfCoefficients);
+            function.SetCoefficient(0, 1);
+            var divisor = 1;
+
+            for (var i = 1; i < numberOfCoefficients; ++i)
+            {
+                function.SetCoefficient(i, 1.0 / divisor);
+                divisor *= (i + 1);
+            }
+
+            return function;
         }
     }
 }

@@ -12,16 +12,7 @@ namespace LoadFlowCalculationTest
         [TestInitialize]
         public void SetUp()
         {
-            var numberOfCoefficients = 50;
-            _exponential = new PowerSeries(numberOfCoefficients);
-            _exponential.SetCoefficient(0, 1);
-            var divisor = 1;
-
-            for (var i = 1; i < numberOfCoefficients; ++i)
-            {
-                _exponential.SetCoefficient(i, 1.0/divisor);
-                divisor *= (i + 1);
-            }
+            _exponential = PowerSeries.CreateExponential(50);
         }
 
         [TestMethod]
