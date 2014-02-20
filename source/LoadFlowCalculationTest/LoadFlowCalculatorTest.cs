@@ -109,6 +109,27 @@ namespace LoadFlowCalculationTest
             _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof (InvalidAdmittanceMatrix))]
+        public void CalculateNodeVoltagesAndPowers_invalidAdmittanceMatrix_throwsException()
+        {
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
+            double nominalVoltage;
+            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            var diagonal = admittances.Diagonal();
+            var diagonalArray = diagonal.ToArray();
+            diagonalArray[0] += new Complex(1, 0);
+            diagonal.SetValues(diagonalArray);
+            admittances.SetDiagonal(diagonal);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = voltages.At(0);
+            nodes[1].Power = powers.At(1);
+
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+        }
+
         protected static void CreateOneSideSuppliedConnection(double R, out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             double Y = 1.0 / R;
