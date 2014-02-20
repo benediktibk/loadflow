@@ -33,7 +33,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void Evaluate_exponentialFunctionAt2_ESquare()
         {
-            Assert.AreEqual(Math.Pow(Math.E, 2), _exponential.Evaluate(2), 0.0001);
+            Assert.AreEqual(Math.Pow(Math.E, 2), _exponential.Evaluate(2), 0.01);
         }
 
         [TestMethod]
