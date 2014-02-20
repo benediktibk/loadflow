@@ -110,7 +110,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof (InvalidAdmittanceMatrix))]
+        [ExpectedException(typeof (InvalidAdmittanceMatrixException))]
         public void CalculateNodeVoltagesAndPowers_invalidAdmittanceMatrix_throwsException()
         {
             Matrix<Complex> admittances;

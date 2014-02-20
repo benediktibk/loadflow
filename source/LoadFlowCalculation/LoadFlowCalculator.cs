@@ -17,7 +17,7 @@ namespace LoadFlowCalculation
             CheckDimensions(admittances, nodes);
             
             if (!IsAdmittanceMatrixValid(admittances))
-                throw new InvalidAdmittanceMatrix();
+                throw new InvalidAdmittanceMatrixException();
 
             List<int> indexOfNodesWithKnownVoltage;
             List<int> indexOfNodesWithUnknownVoltage;

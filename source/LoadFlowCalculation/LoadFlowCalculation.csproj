@@ -48,10 +48,11 @@
   <ItemGroup>
     <Compile Include="CurrentIteration.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethod.cs" />
-    <Compile Include="InvalidAdmittanceMatrix.cs" />
+    <Compile Include="InvalidAdmittanceMatrixException.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
     <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NotConvergingException.cs" />
     <Compile Include="NotFullRankException.cs" />
     <Compile Include="NotQuadraticException.cs" />
     <Compile Include="NotSymmetricException.cs" />

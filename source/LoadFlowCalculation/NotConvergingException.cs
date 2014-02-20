@@ -2,6 +2,6 @@
 
 namespace LoadFlowCalculation
 {
-    public class InvalidAdmittanceMatrix : Exception
+    public class NotConvergingException : Exception
     { }
 }
