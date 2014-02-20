@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Numerics;
 
-namespace LoadFlowCalculation
+namespace AnalyticContinuation
 {
     public class PadeApproximant<T> where T : new()
     {

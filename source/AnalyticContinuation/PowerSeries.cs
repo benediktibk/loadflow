@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Numerics;
 
-namespace LoadFlowCalculation
+namespace AnalyticContinuation
 {
     public class PowerSeries<T> where T : new()
     {

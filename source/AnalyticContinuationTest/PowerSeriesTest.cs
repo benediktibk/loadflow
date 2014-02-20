@@ -1,8 +1,8 @@
 ﻿using System;
+using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LoadFlowCalculation;
 
-namespace LoadFlowCalculationTest
+namespace AnalyticContinuationTest
 {
     [TestClass]
     public class PowerSeriesTest

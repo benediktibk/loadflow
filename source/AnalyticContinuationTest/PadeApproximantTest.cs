@@ -1,8 +1,8 @@
 ﻿using System;
-using LoadFlowCalculation;
+using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest
+namespace AnalyticContinuationTest
 {
     [TestClass]
     public class PadeApproximantTest
@@ -33,7 +33,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void EvaluateAt1_empty_sameAsEvaluateCalledWith1()
         {
-            Assert.AreEqual(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
+            Assert.AreEqual<double>(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
         }
     }
 }

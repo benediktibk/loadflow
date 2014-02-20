@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace LoadFlowCalculation
+namespace AnalyticContinuation
 {
     public class CalculatorComplex : CalculatorGeneric<Complex>
     {

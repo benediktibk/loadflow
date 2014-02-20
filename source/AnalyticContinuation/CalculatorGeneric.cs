@@ -1,4 +1,4 @@
-﻿namespace LoadFlowCalculation
+﻿namespace AnalyticContinuation
 {
     public abstract class CalculatorGeneric<T>
     {

@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}</ProjectGuid>
+    <ProjectGuid>{6289EE1B-A390-4FE6-9899-D1359ACBB4AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoadFlowCalculationTest</RootNamespace>
-    <AssemblyName>LoadFlowCalculationTest</AssemblyName>
+    <RootNamespace>AnalyticContinuationTest</RootNamespace>
+    <AssemblyName>AnalyticContinuationTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,17 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics.IO">
-      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -60,25 +50,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ComplexAssert.cs" />
-    <Compile Include="LoadFlowCalculatorTest.cs" />
-    <Compile Include="NodeAssert.cs" />
+    <Compile Include="PadeApproximantTest.cs" />
+    <Compile Include="PowerSeriesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NodeTest.cs" />
-    <Compile Include="NodePotentialMethodTest.cs" />
-    <Compile Include="LoadFlowCalculatorSmallAccuracyTest.cs" />
-    <Compile Include="LoadFlowCalculatorHighAccuracyTest.cs" />
-    <Compile Include="CurrentIterationTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">
-      <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
-      <Name>LoadFlowCalculation</Name>
+    <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
+      <Project>{3726d19c-8b14-4ba4-b193-54973a802278}</Project>
+      <Name>AnalyticContinuation</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
