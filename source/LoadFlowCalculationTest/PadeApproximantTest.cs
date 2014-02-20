@@ -29,5 +29,11 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
             Assert.IsTrue(directError > analyticContinuatedError);
         }
+
+        [TestMethod]
+        public void EvaluateAt1_empty_sameAsEvaluateCalledWith1()
+        {
+            Assert.AreEqual(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
+        }
     }
 }
