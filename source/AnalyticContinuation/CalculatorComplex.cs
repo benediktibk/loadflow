@@ -2,29 +2,29 @@
 
 namespace AnalyticContinuation
 {
-    public class CalculatorComplex : CalculatorGeneric<Complex>
+    public class CalculatorComplex : ICalculatorGeneric<Complex>
     {
-        public override Complex Add(Complex a, Complex b)
+        public Complex Add(Complex a, Complex b)
         {
             return a + b;
         }
 
-        public override Complex Subtract(Complex a, Complex b)
+        public Complex Subtract(Complex a, Complex b)
         {
             return a - b;
         }
 
-        public override Complex Multiply(Complex a, Complex b)
+        public Complex Multiply(Complex a, Complex b)
         {
             return a * b;
         }
 
-        public override Complex Divide(Complex a, Complex b)
+        public Complex Divide(Complex a, Complex b)
         {
             return a / b;
         }
 
-        public override Complex AssignFromDouble(double x)
+        public Complex AssignFromDouble(double x)
         {
             return new Complex(x, 0);
         }

@@ -5,9 +5,9 @@ namespace AnalyticContinuation
     public class PowerSeries<T> where T : new()
     {
         private readonly T[] _coefficients;
-        private readonly CalculatorGeneric<T> _calculator; 
+        private readonly ICalculatorGeneric<T> _calculator; 
 
-        public PowerSeries(int numberOfCoefficients, CalculatorGeneric<T> calculator)
+        public PowerSeries(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             _calculator = calculator;
 
@@ -45,12 +45,12 @@ namespace AnalyticContinuation
             return result;
         }
 
-        public CalculatorGeneric<T> getCalculator()
+        public ICalculatorGeneric<T> getCalculator()
         {
             return _calculator;
         }
 
-        public static PowerSeries<T> CreateExponential(int numberOfCoefficients, CalculatorGeneric<T> calculator)
+        public static PowerSeries<T> CreateExponential(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
             function.SetCoefficient(0, calculator.AssignFromDouble(1));
@@ -65,7 +65,7 @@ namespace AnalyticContinuation
             return function;
         }
 
-        public static PowerSeries<T> CreateSin(int numberOfCoefficients, CalculatorGeneric<T> calculator)
+        public static PowerSeries<T> CreateSin(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
 

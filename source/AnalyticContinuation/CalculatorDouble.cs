@@ -1,28 +1,28 @@
 ﻿namespace AnalyticContinuation
 {
-    public class CalculatorDouble : CalculatorGeneric<double>
+    public class CalculatorDouble : ICalculatorGeneric<double>
     {
-        public override double Add(double a, double b)
+        public double Add(double a, double b)
         {
             return a + b;
         }
 
-        public override double Subtract(double a, double b)
+        public double Subtract(double a, double b)
         {
             return a - b;
         }
 
-        public override double Multiply(double a, double b)
+        public double Multiply(double a, double b)
         {
             return a * b;
         }
 
-        public override double Divide(double a, double b)
+        public double Divide(double a, double b)
         {
             return a / b;
         }
 
-        public override double AssignFromDouble(double x)
+        public double AssignFromDouble(double x)
         {
             return x;
         }

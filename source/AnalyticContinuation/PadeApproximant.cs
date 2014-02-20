@@ -6,7 +6,7 @@ namespace AnalyticContinuation
     {
         private PowerSeries<T> _p;
         private PowerSeries<T> _q;
-        private readonly CalculatorGeneric<T> _calculator; 
+        private readonly ICalculatorGeneric<T> _calculator; 
 
         public PadeApproximant(int m, int n, PowerSeries<T> powerSeries)
         {

@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="CalculatorComplex.cs" />
     <Compile Include="CalculatorDouble.cs" />
-    <Compile Include="CalculatorGeneric.cs" />
+    <Compile Include="ICalculatorGeneric.cs" />
     <Compile Include="PadeApproximant.cs" />
     <Compile Include="PowerSeries.cs" />
     <Compile Include="PowerSeriesComplex.cs" />
