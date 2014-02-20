@@ -57,8 +57,8 @@ namespace LoadFlowCalculationTest
         public void CalculateNodeVoltagesAndPowers_overdeterminedProblem_exceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
-                new [,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
-                            {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
+                new [,] {   {new Complex(2, -1),    new Complex(-2, 1)},
+                            {new Complex(-2, 1), new Complex(2, -1)}});
             var nodes = new[]{new Node(), new Node()};
             nodes[0].Power = new Complex(-1, 2);
             nodes[0].Voltage = new Complex(1, 2);
@@ -72,8 +72,8 @@ namespace LoadFlowCalculationTest
         public void CalculateNodeVoltagesAndPowers_underdeterminedProblem_exceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
-                new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
-                            {new Complex(0.1, 0.2), new Complex(1, -0.5)}});
+                new[,] {   {new Complex(2, -1),    new Complex(-2, 1)},
+                            {new Complex(-2, 1), new Complex(2, -1)}});
             var nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
 

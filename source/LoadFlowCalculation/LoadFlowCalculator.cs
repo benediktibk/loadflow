@@ -15,6 +15,9 @@ namespace LoadFlowCalculation
         public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
         {
             CheckDimensions(admittances, nodes);
+            
+            if (!IsAdmittanceMatrixValid(admittances))
+                throw new InvalidAdmittanceMatrix();
 
             List<int> indexOfNodesWithKnownVoltage;
             List<int> indexOfNodesWithUnknownVoltage;
@@ -200,6 +203,18 @@ namespace LoadFlowCalculation
 
             if (!admittances.IsSymmetric)
                 throw new NotSymmetricException();
+        }
+
+        private static bool IsAdmittanceMatrixValid(Matrix<Complex> admittances)
+        {
+            for (var i = 0; i < admittances.RowCount; ++i)
+            {
+                var row = admittances.Row(i);
+                if (row.Sum().Magnitude > 0.00001)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
