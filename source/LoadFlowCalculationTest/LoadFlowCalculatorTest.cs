@@ -161,6 +161,21 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
+        protected static void CreateFiveNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+            out double nominalVoltage)
+        {
+            admittances = CreateFiveNodeProblemAdmittanceMatrix(
+                new Complex(1000, 500), new Complex(0, 0), new Complex(200, -100), new Complex(50, -20),
+                new Complex(100, 300), new Complex(0, 0), new Complex(0, 0),
+                new Complex(200, -500), new Complex(0, 0),
+                new Complex(10, -5));
+
+            voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
+
         protected static Matrix<Complex> CreateFiveNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
             Complex oneFour, Complex oneFive,
             Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive)
