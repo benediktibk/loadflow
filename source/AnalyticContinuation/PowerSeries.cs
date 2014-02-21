@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
@@ -14,7 +13,7 @@ namespace AnalyticContinuation
             _calculator = calculator;
 
             if (numberOfCoefficients <= 1)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("numberOfCoefficients", "there must be at least one coefficient");
 
             _coefficients = new T[numberOfCoefficients];
 
@@ -24,29 +23,17 @@ namespace AnalyticContinuation
 
         public T this[int i]
         {
-            get
+            get 
             {
-                if (i < _coefficients.Count())
-                    return _coefficients[i];
-                else
-                    return _calculator.AssignFromDouble(0);
+                return i < _coefficients.Count() ? _coefficients[i] : _calculator.AssignFromDouble(0);
             }
             set
             {
                 if (i >= _coefficients.Count())
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException("i", "this coefficient for the power series cant be set");
 
                 _coefficients[i] = value;
             }
-        }
-
-        public void SetCoefficients(Vector<T> coefficients)
-        {
-            if (coefficients.Count > _coefficients.Length)
-                throw new ArgumentOutOfRangeException();
-
-            for (var i = 0; i < coefficients.Count; ++i)
-                _coefficients[i] = coefficients[i];
         }
 
         public T Evaluate(T x)

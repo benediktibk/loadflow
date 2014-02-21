@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
@@ -51,9 +52,8 @@ namespace AnalyticContinuation
         {
             Matrix<T> matrix = _calculator.CreateDenseMatrix(M, M);
             Vector<T> rightSide = _calculator.CreateDenseVector(M);
-            var tempArray = new T[M + 1];
-            tempArray[0] = _calculator.AssignFromDouble(1);
-            for (var i = 1; i <= M; ++i)
+            var tempArray = new T[M];
+            for (var i = 0; i < M; ++i)
                 tempArray[i] = powerSeries[L + i + 1];
 
             rightSide.SetValues(tempArray);
@@ -67,7 +67,10 @@ namespace AnalyticContinuation
             }
 
             var p = _calculator.SolveEquationSystem(matrix, rightSide);
-            _p.SetCoefficients(p);
+            _p[0] = _calculator.AssignFromDouble(1);
+
+            for (var i = 0; i < p.Count; ++i)
+                _p[i + 1] = p[i];
         }
 
         private void CalculateCoefficientsForP(PowerSeries<T> powerSeries)
