@@ -52,25 +52,27 @@ namespace AnalyticContinuation
         {
             Matrix<T> matrix = _calculator.CreateDenseMatrix(M, M);
             Vector<T> rightSide = _calculator.CreateDenseVector(M);
+            var minusOne = _calculator.AssignFromDouble(-1);
+
             var tempArray = new T[M];
             for (var i = 0; i < M; ++i)
-                tempArray[i] = powerSeries[L + i + 1];
+                tempArray[i] = _calculator.Multiply(powerSeries[L + i + 1], minusOne);
 
             rightSide.SetValues(tempArray);
 
             for (var column = 0; column < M; ++column)
             {
                 for (var row = 0; row < M; ++row)
-                    tempArray[row] = powerSeries[L + row];
+                    tempArray[row] = powerSeries[L + row - column];
 
                 matrix.SetColumn(column, tempArray);
             }
 
-            var p = _calculator.SolveEquationSystem(matrix, rightSide);
-            _p[0] = _calculator.AssignFromDouble(1);
+            var q = _calculator.SolveEquationSystem(matrix, rightSide);
+            _q[0] = _calculator.AssignFromDouble(1);
 
-            for (var i = 0; i < p.Count - 1; ++i)
-                _p[i + 1] = p[i];
+            for (var i = 0; i < q.Count - 1; ++i)
+                _q[i + 1] = q[i];
         }
 
         private void CalculateCoefficientsForP(PowerSeries<T> powerSeries)
