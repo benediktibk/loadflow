@@ -135,7 +135,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
             // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 1000);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 30);
         }
     }
 }

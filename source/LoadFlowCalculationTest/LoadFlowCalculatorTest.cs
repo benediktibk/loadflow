@@ -191,7 +191,7 @@ namespace LoadFlowCalculationTest
             out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
-            CreateThreeNodeProblemWithGroundNode(new Complex(1000, 500), new Complex(0, 0), new Complex(5000, -6000),
+            CreateThreeNodeProblemWithGroundNode(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60),
                 out admittances, out voltages, out powers, out nominalVoltage);
         }
 
@@ -206,7 +206,7 @@ namespace LoadFlowCalculationTest
                 {(-1)*oneThree, (-1)*twoThree, oneThree + twoThree}
             });
 
-            voltages = new DenseVector(new []{new Complex(1.2, 0.1), new Complex(0.9, 0.1), new Complex(0, 0)});
+            voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
             var currents = admittances.Multiply(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
