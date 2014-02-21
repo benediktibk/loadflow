@@ -15,6 +15,9 @@ namespace AnalyticContinuation
             if (m < 1 || n < 1)
                 throw new ArgumentOutOfRangeException();
 
+            if (m + n + 2 > powerSeries.GetDegree() + 1)
+                throw new ArgumentOutOfRangeException();
+
             _p = new PowerSeries<T>(m + 1, _calculator);
             _q = new PowerSeries<T>(n + 1, _calculator);
 

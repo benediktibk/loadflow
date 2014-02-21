@@ -50,5 +50,36 @@ namespace AnalyticContinuationTest
             Assert.AreEqual(9.0/60, padeApproximant.GetDenominatorCoefficient(2), 0.0001);
             Assert.AreEqual(-1.0/60, padeApproximant.GetDenominatorCoefficient(3), 0.0001);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        public void Constructor_0And2_throwsException()
+        {
+            var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
+            var padeApproximant = new PadeApproximant<double>(0, 2, powerSeries);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_2And0_throwsException()
+        {
+            var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
+            var padeApproximant = new PadeApproximant<double>(2, 0, powerSeries);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_4And5ButOnly11Coefficients_throwsException()
+        {
+            var powerSeries = PowerSeriesDouble.CreateExponential(11, new CalculatorDouble());
+            var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
+        }
+
+        [TestMethod]
+        public void Constructor_4And5And12Coefficients_runsThrough()
+        {
+            var powerSeries = PowerSeriesDouble.CreateExponential(12, new CalculatorDouble());
+            var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
+        }
     }
 }
