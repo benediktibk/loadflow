@@ -44,5 +44,22 @@ namespace AnalyticContinuationTest
         {
             Assert.AreEqual(Math.PI, _calculator.AssignFromDouble(Math.PI));
         }
+
+        [TestMethod]
+        public void CreateDenseMatrix_3And4_3RowsAnd4Columns()
+        {
+            var matrix = _calculator.CreateDenseMatrix(3, 4);
+
+            Assert.AreEqual(3, matrix.RowCount);
+            Assert.AreEqual(4, matrix.ColumnCount);
+        }
+
+        [TestMethod]
+        public void CreateDenseVector_5_countIs5()
+        {
+            var vector = _calculator.CreateDenseVector(5);
+
+            Assert.AreEqual(5, vector.Count);
+        }
     }
 }

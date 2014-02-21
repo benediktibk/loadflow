@@ -1,4 +1,7 @@
-﻿namespace AnalyticContinuation
+﻿using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Generic;
+
+namespace AnalyticContinuation
 {
     public class CalculatorDouble : ICalculatorGeneric<double>
     {
@@ -25,6 +28,16 @@
         public double AssignFromDouble(double x)
         {
             return x;
+        }
+
+        public Matrix<double> CreateDenseMatrix(int rows, int columns)
+        {
+            return new DenseMatrix(rows, columns);
+        }
+
+        public Vector<double> CreateDenseVector(int n)
+        {
+            return new DenseVector(n);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Linq;
 
 namespace AnalyticContinuation
 {
-    public class PowerSeries<T> where T : new()
+    public class PowerSeries<T> where T : struct, IEquatable<T>, IFormattable
     {
         private readonly T[] _coefficients;
         private readonly ICalculatorGeneric<T> _calculator; 
@@ -45,9 +46,19 @@ namespace AnalyticContinuation
             return result;
         }
 
-        public ICalculatorGeneric<T> getCalculator()
+        public ICalculatorGeneric<T> GetCalculator()
         {
             return _calculator;
+        }
+
+        public T GetCoefficient(int i)
+        {
+            return _coefficients[i];
+        }
+
+        public int GetDegree()
+        {
+            return _coefficients.Count();
         }
 
         public static PowerSeries<T> CreateExponential(int numberOfCoefficients, ICalculatorGeneric<T> calculator)

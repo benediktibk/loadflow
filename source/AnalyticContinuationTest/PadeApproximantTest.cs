@@ -35,5 +35,20 @@ namespace AnalyticContinuationTest
         {
             Assert.AreEqual<double>(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
         }
+
+        [TestMethod]
+        public void Constructor_exponentialFunction_coefficientsAreCorrect()
+        {
+            var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
+            var padeApproximant = new PadeApproximant<double>(2, 3, powerSeries);
+
+            Assert.AreEqual(1, padeApproximant.GetNominatorCoefficient(0), 0.0001);
+            Assert.AreEqual(24.0/60, padeApproximant.GetNominatorCoefficient(1), 0.0001);
+            Assert.AreEqual(3.0/60, padeApproximant.GetNominatorCoefficient(2), 0.0001);
+            Assert.AreEqual(1, padeApproximant.GetDenominatorCoefficient(0), 0.0001);
+            Assert.AreEqual(-36.0/60, padeApproximant.GetDenominatorCoefficient(1), 0.0001);
+            Assert.AreEqual(9.0/60, padeApproximant.GetDenominatorCoefficient(2), 0.0001);
+            Assert.AreEqual(-1.0/60, padeApproximant.GetDenominatorCoefficient(3), 0.0001);
+        }
     }
 }

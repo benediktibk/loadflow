@@ -49,5 +49,13 @@ namespace AnalyticContinuationTest
         {
             Assert.AreEqual(new Complex(Math.PI, 0), _calculator.AssignFromDouble(Math.PI));
         }
+
+        [TestMethod]
+        public void CreateDenseVector_5_countIs5()
+        {
+            var vector = _calculator.CreateDenseVector(5);
+
+            Assert.AreEqual(5, vector.Count);
+        }
     }
 }
