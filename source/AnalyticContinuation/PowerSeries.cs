@@ -22,9 +22,22 @@ namespace AnalyticContinuation
                 _coefficients[i] = new T();
         }
 
-        public void SetCoefficient(int index, T value)
+        public T this[int i]
         {
-            _coefficients[index] = value;
+            get
+            {
+                if (i < _coefficients.Count())
+                    return _coefficients[i];
+                else
+                    return _calculator.AssignFromDouble(0);
+            }
+            set
+            {
+                if (i >= _coefficients.Count())
+                    throw new ArgumentOutOfRangeException();
+
+                _coefficients[i] = value;
+            }
         }
 
         public void SetCoefficients(Vector<T> coefficients)
@@ -61,11 +74,6 @@ namespace AnalyticContinuation
             return _calculator;
         }
 
-        public T GetCoefficient(int i)
-        {
-            return _coefficients[i];
-        }
-
         public int GetNumberOfCoefficients()
         {
             return _coefficients.Count();
@@ -74,12 +82,12 @@ namespace AnalyticContinuation
         public static PowerSeries<T> CreateExponential(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
-            function.SetCoefficient(0, calculator.AssignFromDouble(1));
+            function[0] = calculator.AssignFromDouble(1);
             var divisor = 1;
 
             for (var i = 1; i < numberOfCoefficients; ++i)
             {
-                function.SetCoefficient(i, calculator.AssignFromDouble(1.0/divisor));
+                function[i] = calculator.AssignFromDouble(1.0/divisor);
                 divisor *= (i + 1);
             }
 
@@ -92,19 +100,19 @@ namespace AnalyticContinuation
 
             for (var i = 0; i < numberOfCoefficients; ++i)
             {
-                if (i % 2 == 0)
-                    function.SetCoefficient(i, new T());
+                if (i%2 == 0)
+                    function[i] = calculator.AssignFromDouble(0);
                 else
                 {
-                    var n = (i - 1) / 2;
+                    var n = (i - 1)/2;
                     double sign;
 
-                    if (n % 2 == 0)
+                    if (n%2 == 0)
                         sign = 1;
                     else
                         sign = -1;
 
-                    function.SetCoefficient(i, calculator.AssignFromDouble(sign/Factorial(i)));
+                    function[i] = calculator.AssignFromDouble(sign/Factorial(i));
                 }
             }
 

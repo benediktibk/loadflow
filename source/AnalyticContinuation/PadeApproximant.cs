@@ -37,12 +37,12 @@ namespace AnalyticContinuation
 
         public T GetNominatorCoefficient(int m)
         {
-            return _p.GetCoefficient(m);
+            return _p[m];
         }
 
         public T GetDenominatorCoefficient(int n)
         {
-            return _q.GetCoefficient(n);
+            return _q[n];
         }
 
         private void CalculateCoefficientsForQ(PowerSeries<T> powerSeries)
@@ -54,14 +54,14 @@ namespace AnalyticContinuation
             var tempArray = new T[M + 1];
             tempArray[0] = _calculator.AssignFromDouble(1);
             for (var i = 1; i <= M; ++i)
-                tempArray[i] = powerSeries.GetCoefficient(L + i + 1);
+                tempArray[i] = powerSeries[L + i + 1];
 
             rightSide.SetValues(tempArray);
 
             for (var column = 0; column < M; ++column)
             {
                 for (var row = 0; row < M; ++row)
-                    tempArray[row] = powerSeries.GetCoefficient(L + row);
+                    tempArray[row] = powerSeries[L + row];
 
                 matrix.SetColumn(column, tempArray);
             }
@@ -77,16 +77,16 @@ namespace AnalyticContinuation
 
             for (var i = 0; i <= L; ++i)
             {
-                var p = powerSeries.GetCoefficient(i);
+                var p = powerSeries[i];
 
                 for (var j = 0; j < i; ++j)
                 {
-                    var a = powerSeries.GetCoefficient(j);
-                    var q = _q.GetCoefficient(i - j);
+                    var a = powerSeries[j];
+                    var q = _q[i - j];
                     p = _calculator.Add(p, _calculator.Multiply(a, q));
                 }
 
-                _p.SetCoefficient(i, p);
+                _p[i] = p;
             }
         }
     }
