@@ -68,5 +68,23 @@ namespace LoadFlowCalculationTest
 
             NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.01);
         }
+        
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_threeNodeProblemAndOnlyGroundVoltageGiven_correctResults()
+        {
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
+            double nominalVoltage;
+            CreateThreeNodeProblemWithGroundNode(out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Power = powers.At(0);
+            nodes[1].Power = powers.At(1);
+            nodes[2].Voltage = voltages.At(2);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 10);
+        }
     }
 }
