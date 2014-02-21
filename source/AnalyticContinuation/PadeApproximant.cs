@@ -47,8 +47,6 @@ namespace AnalyticContinuation
 
         private void CalculateCoefficientsForQ(PowerSeries<T> powerSeries)
         {
-            var L = _p.GetNumberOfCoefficients() - 1;
-            var M = _q.GetNumberOfCoefficients() - 1;
             Matrix<T> matrix = _calculator.CreateDenseMatrix(M, M);
             Vector<T> rightSide = _calculator.CreateDenseVector(M);
             var tempArray = new T[M + 1];
@@ -72,9 +70,6 @@ namespace AnalyticContinuation
 
         private void CalculateCoefficientsForP(PowerSeries<T> powerSeries)
         {
-            var L = _p.GetNumberOfCoefficients() - 1;
-            var M = _q.GetNumberOfCoefficients() - 1;
-
             for (var i = 0; i <= L; ++i)
             {
                 var p = powerSeries[i];
@@ -88,6 +83,16 @@ namespace AnalyticContinuation
 
                 _p[i] = p;
             }
+        }
+
+        public int L
+        {
+            get { return _p.GetDegree(); }
+        }
+
+        public int M
+        {
+            get { return _q.GetDegree(); }
         }
     }
 }

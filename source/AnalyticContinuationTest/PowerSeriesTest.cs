@@ -65,5 +65,17 @@ namespace AnalyticContinuationTest
         {
             Assert.AreEqual(Math.Sin(1), _sin.Evaluate(1), 0.0001);
         }
+
+        [TestMethod]
+        public void GetNumberOfCoefficients_powerSeriesWith10Coefficients_10()
+        {
+            Assert.AreEqual(10, _exponential.GetNumberOfCoefficients());
+        }
+
+        [TestMethod]
+        public void GetDegree_powerSeriesWith10Coefficients_9()
+        {
+            Assert.AreEqual(9, _exponential.GetDegree());
+        }
     }
 }

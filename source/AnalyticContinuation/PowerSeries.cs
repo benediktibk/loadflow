@@ -79,6 +79,11 @@ namespace AnalyticContinuation
             return _coefficients.Count();
         }
 
+        public int GetDegree()
+        {
+            return _coefficients.Count() - 1;
+        }
+
         public static PowerSeries<T> CreateExponential(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
