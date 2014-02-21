@@ -9,17 +9,19 @@ namespace AnalyticContinuation
         private PowerSeries<T> _q;
         private readonly ICalculatorGeneric<T> _calculator; 
 
-        public PadeApproximant(int m, int n, PowerSeries<T> powerSeries)
+        public PadeApproximant(int L, int M, PowerSeries<T> powerSeries)
         {
             _calculator = powerSeries.GetCalculator();
-            if (m < 1 || n < 1)
-                throw new ArgumentOutOfRangeException();
+            if (L < 1)
+                throw new ArgumentOutOfRangeException("L", "the degree for the power series in the nominator must be at least 1");
+            if (M < 1)
+                throw new ArgumentOutOfRangeException("M", "the degree for the power series in the denominator must be at least 1");
 
-            if (m + n + 2 > powerSeries.GetNumberOfCoefficients() + 1)
-                throw new ArgumentOutOfRangeException();
+            if (L + M + 2 > powerSeries.GetNumberOfCoefficients() + 1)
+                throw new ArgumentOutOfRangeException("L", "there are not enough source coefficients for this setup");
 
-            _p = new PowerSeries<T>(m + 1, _calculator);
-            _q = new PowerSeries<T>(n + 1, _calculator);
+            _p = new PowerSeries<T>(L + 1, _calculator);
+            _q = new PowerSeries<T>(M + 1, _calculator);
 
             CalculateCoefficientsForQ(powerSeries);
             CalculateCoefficientsForP(powerSeries);

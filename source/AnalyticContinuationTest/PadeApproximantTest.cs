@@ -52,7 +52,7 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_0And2_throwsException()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
