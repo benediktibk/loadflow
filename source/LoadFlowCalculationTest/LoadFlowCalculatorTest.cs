@@ -149,21 +149,11 @@ namespace LoadFlowCalculationTest
         protected static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
-            CreateFiveNodeProblem(
-                new Complex(1000, 500), new Complex(0, 0), new Complex(200, -100), new Complex(0, -200), 
-                new Complex(100, 300), new Complex(0, 0), new Complex(0, 0), 
-                new Complex(200, -500), new Complex(0, 0), 
-                new Complex(700, 500),
-                out admittances, out voltages, out powers, out nominalVoltage);
-        }
-
-        protected static void CreateFiveNodeProblem(Complex oneTwo, Complex oneThree, Complex oneFour, Complex oneFive,
-            Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive,
-            out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
-            out double nominalVoltage)
-        {
-            admittances = CreateFiveNodeProblemAdmittanceMatrix(oneTwo, oneThree, oneFour, oneFive, twoThree, twoFour,
-                twoFive, threeFour, threeFive, fourFive);
+            admittances = CreateFiveNodeProblemAdmittanceMatrix(
+                new Complex(1000, 500), new Complex(0, 0), new Complex(200, -100), new Complex(0, -200),
+                new Complex(100, 300), new Complex(0, 0), new Complex(0, 0),
+                new Complex(200, -500), new Complex(0, 0),
+                new Complex(700, 500));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
             var currents = admittances.Multiply(voltages);
@@ -195,19 +185,10 @@ namespace LoadFlowCalculationTest
             });
         }
 
-        protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances,
-            out Vector<Complex> voltages, out Vector<Complex> powers,
+        protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
-            CreateThreeNodeProblemWithGroundNode(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60),
-                out admittances, out voltages, out powers, out nominalVoltage);
-        }
-
-        protected static void CreateThreeNodeProblemWithGroundNode(Complex oneTwo, Complex oneThree, Complex twoThree,
-            out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
-            out double nominalVoltage)
-        {
-            admittances = CreateThreeNodeProblemAdmittanceMatrix(oneTwo, oneThree, twoThree);
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
 
             voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
             var currents = admittances.Multiply(voltages);
