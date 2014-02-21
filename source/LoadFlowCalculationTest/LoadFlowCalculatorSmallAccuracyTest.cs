@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoadFlowCalculation;
+using Complex = System.Numerics.Complex;
 
 namespace LoadFlowCalculationTest
 {
@@ -116,6 +117,24 @@ namespace LoadFlowCalculationTest
             
             // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
             NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 400);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_threeNodeProblemAndOnlyGroundVoltageGiven_correctResults()
+        {
+            Matrix<Complex> admittances;
+            Vector<Complex> voltages;
+            Vector<Complex> powers;
+            double nominalVoltage;
+            CreateThreeNodeProblemWithGroundNode(out admittances, out voltages, out powers, out nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Power = powers.At(0);
+            nodes[1].Power = powers.At(1);
+            nodes[2].Voltage = voltages.At(2);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 50);
         }
     }
 }

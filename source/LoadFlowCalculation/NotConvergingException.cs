@@ -2,6 +2,6 @@
 
 namespace LoadFlowCalculation
 {
-    public class PowerNotSetException : Exception
+    public class NotConvergingException : Exception
     { }
 }

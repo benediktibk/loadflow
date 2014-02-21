@@ -5,12 +5,12 @@ namespace LoadFlowCalculation
 {
     public class Node
     {
-        private Complex _power;
+        private System.Numerics.Complex _power;
         private bool _powerSet;
-        private Complex _voltage;
+        private System.Numerics.Complex _voltage;
         private bool _voltageSet;
 
-        public Complex Power
+        public System.Numerics.Complex Power
         {
             get
             {
@@ -26,7 +26,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        public Complex Voltage
+        public System.Numerics.Complex Voltage
         {
             get
             {

@@ -1,26 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    abstract public class LoadFlowCalculator
+    public abstract class LoadFlowCalculator
     {
-        abstract public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers);
+        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage,
+            Vector<Complex> constantCurrents, Vector<Complex> knownPowers);
 
         public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
         {
             CheckDimensions(admittances, nodes);
+            
+            if (!IsAdmittanceMatrixValid(admittances))
+                throw new InvalidAdmittanceMatrixException();
 
             List<int> indexOfNodesWithKnownVoltage;
             List<int> indexOfNodesWithUnknownVoltage;
-            SeperateNodesInKnownAndUnknownVoltages(nodes, out indexOfNodesWithKnownVoltage, out indexOfNodesWithUnknownVoltage);
+            SeperateNodesInKnownAndUnknownVoltages(nodes, out indexOfNodesWithKnownVoltage,
+                out indexOfNodesWithUnknownVoltage);
 
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            int countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
 
             if (countOfKnownVoltages == 0)
                 throw new NotFullRankException();
@@ -30,24 +35,25 @@ namespace LoadFlowCalculation
                 allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
             else
             {
-                var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
-                var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
-                var admittancesReduced = ExtractRowsOfUnknownVoltages(admittances, indexOfNodesWithUnknownVoltage);
-                var admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced,
+                Vector<Complex> knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
+                Vector<Complex> knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
+                Matrix<Complex> admittancesReduced = ExtractRowsOfUnknownVoltages(admittances,
+                    indexOfNodesWithUnknownVoltage);
+                Matrix<Complex> admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced,
                     indexOfNodesWithKnownVoltage);
-                var admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
+                Matrix<Complex> admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
                     indexOfNodesWithUnknownVoltage);
 
-                var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
-                var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
-                var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
+                Vector<Complex> constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
+                Vector<Complex> constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
+                Vector<Complex> unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
                     nominalVoltage, constantCurrentRightHandSide, knownPowers);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);
             }
 
-            var allPowers = CalculateAllPowers(admittances, allVoltages);
+            Vector<Complex> allPowers = CalculateAllPowers(admittances, allVoltages);
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
         }
 
@@ -56,12 +62,12 @@ namespace LoadFlowCalculation
             if (allPowers.Count != allVoltages.Count)
                 throw new ArgumentOutOfRangeException();
 
-            var nodeCount = allPowers.Count;
+            int nodeCount = allPowers.Count;
             var result = new Node[nodeCount];
 
-            for (var i = 0; i < nodeCount; ++i)
+            for (int i = 0; i < nodeCount; ++i)
             {
-                var node = new Node()
+                var node = new Node
                 {
                     Power = allPowers[i],
                     Voltage = allVoltages[i]
@@ -74,35 +80,37 @@ namespace LoadFlowCalculation
 
         private static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)
         {
-            var currents = admittances.Multiply(allVoltages);
-            var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
+            Vector<Complex> currents = admittances.Multiply(allVoltages);
+            Vector<Complex> allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
         }
 
-        private static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
+        private static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage,
+            Vector<Complex> knownVoltages,
             IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)
         {
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var nodeCount = countOfKnownVoltages + countOfUnknownVoltages;
+            int countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            int nodeCount = countOfKnownVoltages + countOfUnknownVoltages;
             var voltagesArray = new Complex[nodeCount];
 
-            for (var i = 0; i < countOfKnownVoltages; ++i)
+            for (int i = 0; i < countOfKnownVoltages; ++i)
                 voltagesArray[indexOfNodesWithKnownVoltage[i]] = knownVoltages.At(i);
 
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
+            for (int i = 0; i < countOfUnknownVoltages; ++i)
                 voltagesArray[indexOfNodesWithUnknownVoltage[i]] = unknownVoltages.At(i);
 
             var allVoltages = new DenseVector(voltagesArray);
             return allVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownPowers(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static Vector<Complex> ExtractKnownPowers(IList<Node> nodes,
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var knownPowersArray = new Complex[countOfUnknownVoltages];
 
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
+            for (int i = 0; i < countOfUnknownVoltages; ++i)
                 knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
 
             var knownPowers = new DenseVector(knownPowersArray);
@@ -112,45 +120,48 @@ namespace LoadFlowCalculation
         private static Matrix<Complex> ExtractAdmittancesToUnknownVoltages(Matrix<Complex> admittancesReduced,
             IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var admittancesToUnknownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfUnknownVoltages);
 
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
+            for (int i = 0; i < countOfUnknownVoltages; ++i)
                 admittancesToUnknownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithUnknownVoltage[i]));
 
             return admittancesToUnknownVoltages;
         }
 
-        private static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
+        private static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced,
+            IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            int countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var admittancesToKnownVoltages = new SparseMatrix(admittancesReduced.RowCount, countOfKnownVoltages);
 
-            for (var i = 0; i < countOfKnownVoltages; ++i)
+            for (int i = 0; i < countOfKnownVoltages; ++i)
                 admittancesToKnownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithKnownVoltage[i]));
 
             return admittancesToKnownVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes, IReadOnlyList<int> indexOfNodesWithKnownVoltage)
+        private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes,
+            IReadOnlyList<int> indexOfNodesWithKnownVoltage)
         {
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            int countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
             var knownVoltagesArray = new Complex[countOfKnownVoltages];
 
-            for (var i = 0; i < countOfKnownVoltages; ++i)
+            for (int i = 0; i < countOfKnownVoltages; ++i)
                 knownVoltagesArray[i] = nodes[indexOfNodesWithKnownVoltage[i]].Voltage;
 
             var knownVoltages = new DenseVector(knownVoltagesArray);
             return knownVoltages;
         }
 
-        private static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances,
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
-            var nodeCount = admittances.ColumnCount;
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            int nodeCount = admittances.ColumnCount;
+            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
             var admittancesReduced = new SparseMatrix(countOfUnknownVoltages, nodeCount);
 
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
+            for (int i = 0; i < countOfUnknownVoltages; ++i)
                 admittancesReduced.SetRow(i, admittances.Row(indexOfNodesWithUnknownVoltage[i]));
             return admittancesReduced;
         }
@@ -161,9 +172,9 @@ namespace LoadFlowCalculation
             indexOfNodesWithKnownVoltage = new List<int>();
             indexOfNodesWithUnknownVoltage = new List<int>();
 
-            for (var i = 0; i < nodes.Count(); ++i)
+            for (int i = 0; i < nodes.Count(); ++i)
             {
-                var node = nodes[i];
+                Node node = nodes[i];
 
                 if (node.VoltageIsKnown)
                     indexOfNodesWithKnownVoltage.Add(i);
@@ -180,9 +191,9 @@ namespace LoadFlowCalculation
 
         private static void CheckDimensions(Matrix<Complex> admittances, IEnumerable<Node> nodes)
         {
-            var rows = admittances.RowCount;
-            var columns = admittances.ColumnCount;
-            var nodeCount = nodes.Count();
+            int rows = admittances.RowCount;
+            int columns = admittances.ColumnCount;
+            int nodeCount = nodes.Count();
 
             if (rows != columns)
                 throw new NotQuadraticException();
@@ -192,6 +203,18 @@ namespace LoadFlowCalculation
 
             if (!admittances.IsSymmetric)
                 throw new NotSymmetricException();
+        }
+
+        private static bool IsAdmittanceMatrixValid(Matrix<Complex> admittances)
+        {
+            for (var i = 0; i < admittances.RowCount; ++i)
+            {
+                var row = admittances.Row(i);
+                if (row.Sum().Magnitude > 0.00001)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
