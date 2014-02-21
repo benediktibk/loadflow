@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using AnalyticContinuation;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnalyticContinuationTest
@@ -56,6 +57,22 @@ namespace AnalyticContinuationTest
             var vector = _calculator.CreateDenseVector(5);
 
             Assert.AreEqual(5, vector.Count);
+        }
+
+        [TestMethod]
+        public void SolveEquationSystem_solvableProblem_correctSolution()
+        {
+            var x = new DenseVector(new[]{ new Complex(1, 0), new Complex(2, -1)});
+            var A = DenseMatrix.OfArray(new[,] { { new Complex(-2, 1), new Complex(2, 3) }, { new Complex(-1, 5), new Complex(0, 2)} });
+            var b = A.Multiply(x);
+
+            var solution = _calculator.SolveEquationSystem(A, b);
+
+            Assert.AreEqual(x.Count, solution.Count);
+            Assert.AreEqual(x.At(0).Real, solution.At(0).Real, 0.0001);
+            Assert.AreEqual(x.At(0).Imaginary, solution.At(0).Imaginary, 0.0001);
+            Assert.AreEqual(x.At(1).Real, solution.At(1).Real, 0.0001);
+            Assert.AreEqual(x.At(1).Imaginary, solution.At(1).Imaginary, 0.0001);
         }
     }
 }

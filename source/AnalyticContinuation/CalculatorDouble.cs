@@ -39,5 +39,12 @@ namespace AnalyticContinuation
         {
             return new DenseVector(n);
         }
+
+        public Vector<double> SolveEquationSystem(Matrix<double> matrix, Vector<double> vector)
+        {
+            var matrixCasted = (Matrix) matrix;
+            var factorization = matrixCasted.QR();
+            return factorization.Solve(vector);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using AnalyticContinuation;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnalyticContinuationTest
@@ -60,6 +61,20 @@ namespace AnalyticContinuationTest
             var vector = _calculator.CreateDenseVector(5);
 
             Assert.AreEqual(5, vector.Count);
+        }
+
+        [TestMethod]
+        public void SolveEquationSystem_solvableProblem_correctSolution()
+        {
+            var x = new DenseVector(new double[] {1, 2});
+            var A = DenseMatrix.OfArray(new double[,] {{2, 3}, {-1, 5}});
+            var b = A.Multiply(x);
+
+            var solution = _calculator.SolveEquationSystem(A, b);
+
+            Assert.AreEqual(x.Count, solution.Count);
+            Assert.AreEqual(x.At(0), solution.At(0), 0.0001);
+            Assert.AreEqual(x.At(1), solution.At(1), 0.0001);
         }
     }
 }

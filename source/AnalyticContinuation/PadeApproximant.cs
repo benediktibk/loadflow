@@ -15,14 +15,14 @@ namespace AnalyticContinuation
             if (m < 1 || n < 1)
                 throw new ArgumentOutOfRangeException();
 
-            if (m + n + 2 > powerSeries.GetDegree() + 1)
+            if (m + n + 2 > powerSeries.GetNumberOfCoefficients() + 1)
                 throw new ArgumentOutOfRangeException();
 
             _p = new PowerSeries<T>(m + 1, _calculator);
             _q = new PowerSeries<T>(n + 1, _calculator);
 
-            CalculateCoefficientsForQ();
-            CalculateCoefficientsForP();
+            CalculateCoefficientsForQ(powerSeries);
+            CalculateCoefficientsForP(powerSeries);
         }
 
         public T Evaluate(T x)
@@ -45,18 +45,49 @@ namespace AnalyticContinuation
             return _q.GetCoefficient(n);
         }
 
-        private void CalculateCoefficientsForQ()
+        private void CalculateCoefficientsForQ(PowerSeries<T> powerSeries)
         {
-            var L = _p.GetDegree();
-            var M = _q.GetDegree();
+            var L = _p.GetNumberOfCoefficients() - 1;
+            var M = _q.GetNumberOfCoefficients() - 1;
             Matrix<T> matrix = _calculator.CreateDenseMatrix(M, M);
             Vector<T> rightSide = _calculator.CreateDenseVector(M);
-            throw new NotImplementedException();
+            var tempArray = new T[M + 1];
+            tempArray[0] = _calculator.AssignFromDouble(1);
+            for (var i = 1; i <= M; ++i)
+                tempArray[i] = powerSeries.GetCoefficient(L + i + 1);
+
+            rightSide.SetValues(tempArray);
+
+            for (var column = 0; column < M; ++column)
+            {
+                for (var row = 0; row < M; ++row)
+                    tempArray[row] = powerSeries.GetCoefficient(L + row);
+
+                matrix.SetColumn(column, tempArray);
+            }
+
+            var p = _calculator.SolveEquationSystem(matrix, rightSide);
+            _p.SetCoefficients(p);
         }
 
-        private void CalculateCoefficientsForP()
+        private void CalculateCoefficientsForP(PowerSeries<T> powerSeries)
         {
-            throw new NotImplementedException();
+            var L = _p.GetNumberOfCoefficients() - 1;
+            var M = _q.GetNumberOfCoefficients() - 1;
+
+            for (var i = 0; i <= L; ++i)
+            {
+                var p = powerSeries.GetCoefficient(i);
+
+                for (var j = 0; j < i; ++j)
+                {
+                    var a = powerSeries.GetCoefficient(j);
+                    var q = _q.GetCoefficient(i - j);
+                    p = _calculator.Add(p, _calculator.Multiply(a, q));
+                }
+
+                _p.SetCoefficient(i, p);
+            }
         }
     }
 }

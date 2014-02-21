@@ -12,5 +12,6 @@ namespace AnalyticContinuation
         T AssignFromDouble(double x);
         Matrix<T> CreateDenseMatrix(int rows, int columns);
         Vector<T> CreateDenseVector(int n);
+        Vector<T> SolveEquationSystem(Matrix<T> matrix, Vector<T> vector);
     }
 }

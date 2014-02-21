@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
@@ -24,6 +25,15 @@ namespace AnalyticContinuation
         public void SetCoefficient(int index, T value)
         {
             _coefficients[index] = value;
+        }
+
+        public void SetCoefficients(Vector<T> coefficients)
+        {
+            if (coefficients.Count > _coefficients.Length)
+                throw new ArgumentOutOfRangeException();
+
+            for (var i = 0; i < coefficients.Count; ++i)
+                _coefficients[i] = coefficients[i];
         }
 
         public T Evaluate(T x)
@@ -56,7 +66,7 @@ namespace AnalyticContinuation
             return _coefficients[i];
         }
 
-        public int GetDegree()
+        public int GetNumberOfCoefficients()
         {
             return _coefficients.Count();
         }
