@@ -71,7 +71,7 @@ namespace AnalyticContinuation
             var q = _calculator.SolveEquationSystem(matrix, rightSide);
             _q[0] = _calculator.AssignFromDouble(1);
 
-            for (var i = 0; i < q.Count - 1; ++i)
+            for (var i = 0; i < q.Count; ++i)
                 _q[i + 1] = q[i];
         }
 
