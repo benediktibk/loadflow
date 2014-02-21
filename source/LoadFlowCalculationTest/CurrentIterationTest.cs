@@ -16,7 +16,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(NotConvergingException))]
-        public void CalculateNodeVoltagesAndPowers_onlyTwoIterationsAllowed_throwsException()
+        public void CalculateNodeVoltagesAndPowers_OnlyTwoIterationsAllowed_ThrowsException()
         {
             var calculator = new CurrentIteration(0.00000001, 2);
             Matrix<Complex> admittances;

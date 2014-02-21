@@ -10,7 +10,7 @@ namespace LoadFlowCalculationTest
         LoadFlowCalculatorSmallAccuracyTest
     {
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndVoltagesAndPowersGivenVersionTwo_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGivenVersionTwo_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -30,7 +30,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyOneVoltageGivenVersionOne_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionOne_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -50,7 +50,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyOneVoltageGivenVersionTwo_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionTwo_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -70,7 +70,7 @@ namespace LoadFlowCalculationTest
         }
         
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_threeNodeProblemAndTwoVoltagesGivenVersionTwo_correctResults()
+        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGivenVersionTwo_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -88,7 +88,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemWithGroundNodeVersionTwo_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNodeVersionTwo_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;

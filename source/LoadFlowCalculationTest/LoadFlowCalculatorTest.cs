@@ -23,7 +23,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnection_calculatorReceivesCorrectProblemAndCorrectResults()
+        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnection_CalculatorReceivesCorrectProblemAndCorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -54,7 +54,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(OverDeterminedProblemException))]
-        public void CalculateNodeVoltagesAndPowers_overdeterminedProblem_exceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
                 new [,] {   {new Complex(2, -1),    new Complex(-2, 1)},
@@ -69,7 +69,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(UnderDeterminedProblemException))]
-        public void CalculateNodeVoltagesAndPowers_underdeterminedProblem_exceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(-2, 1)},
@@ -82,7 +82,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(NotSymmetricException))]
-        public void CalculateNodeVoltagesAndPowers_notSymmetricAdmittanceMatrix_exceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_NotSymmetricAdmittanceMatrix_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
@@ -95,7 +95,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(NotFullRankException))]
-        public void CalculateNodeVoltagesAndPowers_onlyPowersKnown_throwsException()
+        public void CalculateNodeVoltagesAndPowers_OnlyPowersKnown_ThrowsException()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -111,7 +111,7 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof (InvalidAdmittanceMatrixException))]
-        public void CalculateNodeVoltagesAndPowers_invalidAdmittanceMatrix_throwsException()
+        public void CalculateNodeVoltagesAndPowers_InvalidAdmittanceMatrix_ThrowsException()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;

@@ -18,7 +18,7 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void Evaluate_exponentialAt2_resultIsMoreAccurateThanDirectPowerSeries()
+        public void Evaluate_ExponentialAt2_ResultIsMoreAccurateThanDirectPowerSeries()
         {
             var correctValue = Math.Exp(2);
             var directValue = _powerSeriesExponential.Evaluate(2);
@@ -31,13 +31,13 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void EvaluateAt1_empty_sameAsEvaluateCalledWith1()
+        public void EvaluateAt1_Empty_SameAsEvaluateCalledWith1()
         {
             Assert.AreEqual<double>(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
         }
 
         [TestMethod]
-        public void Constructor_exponentialFunction_coefficientsAreCorrect()
+        public void Constructor_ExponentialFunction_CoefficientsAreCorrect()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(2, 3, powerSeries);
@@ -53,7 +53,7 @@ namespace AnalyticContinuationTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_0And2_throwsException()
+        public void Constructor_0And2_ThrowsException()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(0, 2, powerSeries);
@@ -61,7 +61,7 @@ namespace AnalyticContinuationTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_2And0_throwsException()
+        public void Constructor_2And0_ThrowsException()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(2, 0, powerSeries);
@@ -69,14 +69,14 @@ namespace AnalyticContinuationTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_4And5ButOnly9Coefficients_throwsException()
+        public void Constructor_4And5ButOnly9Coefficients_ThrowsException()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(9, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
         }
 
         [TestMethod]
-        public void Constructor_4And5And10Coefficients_runsThrough()
+        public void Constructor_4And5And10Coefficients_RunsThrough()
         {
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);

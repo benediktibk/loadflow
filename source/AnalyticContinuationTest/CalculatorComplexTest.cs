@@ -22,37 +22,37 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void Add_oneAndTwo_correctResult()
+        public void Add_OneAndTwo_CorrectResult()
         {
             Assert.AreEqual(_one + _two, _calculator.Add(_one, _two));
         }
 
         [TestMethod]
-        public void Subtract_oneAndTwo_correctResult()
+        public void Subtract_OneAndTwo_CorrectResult()
         {
             Assert.AreEqual(_one - _two, _calculator.Subtract(_one, _two));
         }
 
         [TestMethod]
-        public void Multiply_oneAndTwo_correctResult()
+        public void Multiply_OneAndTwo_CorrectResult()
         {
             Assert.AreEqual(_one * _two, _calculator.Multiply(_one, _two));
         }
 
         [TestMethod]
-        public void Divide_oneAndTwo_correctResult()
+        public void Divide_OneAndTwo_CorrectResult()
         {
             Assert.AreEqual(_one / _two, _calculator.Divide(_one, _two));
         }
 
         [TestMethod]
-        public void AssignFromDouble_pi_correctResult()
+        public void AssignFromDouble_Pi_CorrectResult()
         {
             Assert.AreEqual(new Complex(Math.PI, 0), _calculator.AssignFromDouble(Math.PI));
         }
 
         [TestMethod]
-        public void CreateDenseVector_5_countIs5()
+        public void CreateDenseVector_5_CountIs5()
         {
             var vector = _calculator.CreateDenseVector(5);
 
@@ -60,7 +60,7 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void SolveEquationSystem_solvableProblem_correctSolution()
+        public void SolveEquationSystem_SolvableProblem_CorrectSolution()
         {
             var x = new DenseVector(new[]{ new Complex(1, 0), new Complex(2, -1)});
             var A = DenseMatrix.OfArray(new[,] { { new Complex(-2, 1), new Complex(2, 3) }, { new Complex(-1, 5), new Complex(0, 2)} });

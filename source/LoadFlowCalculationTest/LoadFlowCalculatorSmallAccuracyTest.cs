@@ -11,7 +11,7 @@ namespace LoadFlowCalculationTest
         LoadFlowCalculatorTest
     {
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnectionWithBigResistance_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -28,7 +28,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnectionWithSmallResistance_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithSmallResistance_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -45,7 +45,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedConnectionAndOnlyVoltagesKnown_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionAndOnlyVoltagesKnown_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -62,7 +62,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fromOneSideSuppliedAndInverseInformationGiven_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedAndInverseInformationGiven_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -79,7 +79,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndOnlyVoltagesGiven_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyVoltagesGiven_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -99,7 +99,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemAndVoltagesAndPowersGiven_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGiven_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -120,7 +120,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_threeNodeProblemAndTwoVoltagesGiven_correctResults()
+        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGiven_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;
@@ -139,7 +139,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_fiveNodeProblemWithGroundNode_correctResults()
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNode_CorrectResults()
         {
             Matrix<Complex> admittances;
             Vector<Complex> voltages;

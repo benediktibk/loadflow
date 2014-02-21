@@ -18,20 +18,20 @@ namespace LoadFlowCalculationTest
 
         [TestMethod]
         [ExpectedException(typeof(VoltageNotSetException))]
-        public void getVoltage_notYetSet_exception()
+        public void getVoltage_NotYetSet_ThrowsException()
         {
             Complex voltage = _node.Voltage;
         }
 
         [TestMethod]
         [ExpectedException(typeof(PowerNotSetException))]
-        public void getPower_notYetSet_exception()
+        public void getPower_NotYetSet_ThrowsException()
         {
             Complex power = _node.Power;
         }
 
         [TestMethod]
-        public void setPower_4And3_powerIs4And3()
+        public void setPower_4And3_PowerIs4And3()
         {
             _node.Power = new Complex(4, 3);
 
@@ -39,7 +39,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void setVoltage_2And4_voltageIs2And4()
+        public void setVoltage_2And4_VoltageIs2And4()
         {
             _node.Voltage = new Complex(2, 4);
 
@@ -47,13 +47,13 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void VoltageIsKnown_voltageNotSet_false()
+        public void VoltageIsKnown_VoltageNotSet_False()
         {
             Assert.IsFalse(_node.VoltageIsKnown);
         }
 
         [TestMethod]
-        public void VoltageIsKnown_voltageSet_true()
+        public void VoltageIsKnown_VoltageSet_True()
         {
             _node.Voltage = new Complex(0, 2);
 
@@ -61,13 +61,13 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void PowerIsKnown_powerIsNotSet_false()
+        public void PowerIsKnown_PowerIsNotSet_False()
         {
             Assert.IsFalse(_node.PowerIsKnown);
         }
 
         [TestMethod]
-        public void PowerIsKnown_powerIsSet_true()
+        public void PowerIsKnown_PowerIsSet_True()
         {
             _node.Power = new Complex(2, 2);
 

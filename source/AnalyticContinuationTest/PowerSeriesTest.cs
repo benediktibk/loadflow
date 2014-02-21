@@ -19,61 +19,61 @@ namespace AnalyticContinuationTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_0_exceptionThrown()
+        public void Constructor_0_ExceptionThrown()
         {
             var function = new PowerSeriesDouble(0);
         }
 
         [TestMethod]
-        public void Evaluatae_exponentialFunctionAt1_e()
+        public void Evaluatae_ExponentialFunctionAt1_E()
         {
             Assert.AreEqual(Math.E, _exponential.Evaluate(1), 0.0001);
         }
 
         [TestMethod]
-        public void Evaluate_exponentialFunctionAt2_ESquare()
+        public void Evaluate_ExponentialFunctionAt2_ESquare()
         {
             Assert.AreEqual(Math.Pow(Math.E, 2), _exponential.Evaluate(2), 0.01);
         }
 
         [TestMethod]
-        public void Evaluate_exponentialFunctionAt0_1()
+        public void Evaluate_ExponentialFunctionAt0_1()
         {
             Assert.AreEqual(1, _exponential.Evaluate(0), 0.0001);
         }
 
         [TestMethod]
-        public void EvaluateAt1_empty_sameResultAsEvaluatedDirectAt1()
+        public void EvaluateAt1_Empty_SameResultAsEvaluatedDirectAt1()
         {
             Assert.AreEqual(_exponential.Evaluate(1), _exponential.EvaluateAt1(), 0.000001);
         }
 
         [TestMethod]
-        public void Evaluate_sinFunctionAt0_0()
+        public void Evaluate_SinFunctionAt0_0()
         {
             Assert.AreEqual(0, _sin.Evaluate(0), 0.0001);
         }
 
         [TestMethod]
-        public void Evaluate_sinFunctionAt3Half_correctResult()
+        public void Evaluate_SinFunctionAt3Half_CorrectResult()
         {
             Assert.AreEqual(Math.Sin(1.5), _sin.Evaluate(1.5), 0.0001);
         }
 
         [TestMethod]
-        public void Evaluate_sinFunctionAt1_correctResult()
+        public void Evaluate_SinFunctionAt1_CorrectResult()
         {
             Assert.AreEqual(Math.Sin(1), _sin.Evaluate(1), 0.0001);
         }
 
         [TestMethod]
-        public void GetNumberOfCoefficients_powerSeriesWith10Coefficients_10()
+        public void GetNumberOfCoefficients_PowerSeriesWith10Coefficients_10()
         {
             Assert.AreEqual(10, _exponential.GetNumberOfCoefficients());
         }
 
         [TestMethod]
-        public void GetDegree_powerSeriesWith10Coefficients_9()
+        public void GetDegree_PowerSeriesWith10Coefficients_9()
         {
             Assert.AreEqual(9, _exponential.GetDegree());
         }
