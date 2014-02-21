@@ -162,7 +162,20 @@ namespace LoadFlowCalculationTest
             out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
-            admittances = DenseMatrix.OfArray(new[,]
+            admittances = CreateFiveNodeProblemAdmittanceMatrix(oneTwo, oneThree, oneFour, oneFive, twoThree, twoFour,
+                twoFive, threeFour, threeFive, fourFive);
+
+            voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
+
+        protected static Matrix<Complex> CreateFiveNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
+            Complex oneFour, Complex oneFive,
+            Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive)
+        {
+            return DenseMatrix.OfArray(new[,]
             {
                 {
                     oneTwo + oneThree + oneFour + oneFive, (-1)*oneTwo, (-1)*oneThree, (-1)*oneFour, (-1)*oneFive
@@ -180,11 +193,6 @@ namespace LoadFlowCalculationTest
                     (-1)*oneFive, (-1)*twoFive, (-1)*threeFive, (-1)*fourFive, oneFive + twoFive + threeFive + fourFive
                 }
             });
-
-            voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
-            var currents = admittances.Multiply(voltages);
-            powers = voltages.PointwiseMultiply(currents.Conjugate());
-            nominalVoltage = 1;
         }
 
         protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances,
@@ -199,17 +207,23 @@ namespace LoadFlowCalculationTest
             out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
-            admittances = DenseMatrix.OfArray(new[,]
-            {
-                {oneTwo + oneThree, (-1)*oneTwo, (-1)*oneThree},
-                {(-1)*oneTwo, oneTwo + twoThree, (-1)*twoThree},
-                {(-1)*oneThree, (-1)*twoThree, oneThree + twoThree}
-            });
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(oneTwo, oneThree, twoThree);
 
             voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
             var currents = admittances.Multiply(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
+        }
+
+        protected static Matrix<Complex> CreateThreeNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
+            Complex twoThree)
+        {
+            return DenseMatrix.OfArray(new[,]
+            {
+                {oneTwo + oneThree, (-1)*oneTwo, (-1)*oneThree},
+                {(-1)*oneTwo, oneTwo + twoThree, (-1)*twoThree},
+                {(-1)*oneThree, (-1)*twoThree, oneThree + twoThree}
+            });
         }
     }
 }
