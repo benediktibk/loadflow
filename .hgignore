@@ -5,3 +5,4 @@ source/packages/**
 source/TestResults/**
 documents/~$*.xlsx
 *.sln.DotSettings.user
+*.suo
