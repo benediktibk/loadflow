@@ -69,16 +69,16 @@ namespace AnalyticContinuationTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_4And5ButOnly11Coefficients_throwsException()
+        public void Constructor_4And5ButOnly9Coefficients_throwsException()
         {
-            var powerSeries = PowerSeriesDouble.CreateExponential(11, new CalculatorDouble());
+            var powerSeries = PowerSeriesDouble.CreateExponential(9, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
         }
 
         [TestMethod]
-        public void Constructor_4And5And12Coefficients_runsThrough()
+        public void Constructor_4And5And10Coefficients_runsThrough()
         {
-            var powerSeries = PowerSeriesDouble.CreateExponential(12, new CalculatorDouble());
+            var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
         }
     }

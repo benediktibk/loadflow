@@ -69,7 +69,7 @@ namespace AnalyticContinuation
             var p = _calculator.SolveEquationSystem(matrix, rightSide);
             _p[0] = _calculator.AssignFromDouble(1);
 
-            for (var i = 0; i < p.Count; ++i)
+            for (var i = 0; i < p.Count - 1; ++i)
                 _p[i + 1] = p[i];
         }
 
