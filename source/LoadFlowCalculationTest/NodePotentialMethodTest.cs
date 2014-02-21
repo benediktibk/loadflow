@@ -4,8 +4,7 @@ using LoadFlowCalculation;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class NodePotentialMethodTest :
-        LoadFlowCalculatorSmallAccuracyTest
+    public class NodePotentialMethodTest : LoadFlowCalculatorSmallAccuracyTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {

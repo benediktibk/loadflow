@@ -5,8 +5,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class CurrentIteration :
-        LoadFlowCalculator
+    public class CurrentIteration : LoadFlowCalculator
     {
         private readonly int _maximumIterations;
         private readonly double _terminationCriteria;
