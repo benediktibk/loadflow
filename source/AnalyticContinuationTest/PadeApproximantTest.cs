@@ -8,13 +8,17 @@ namespace AnalyticContinuationTest
     public class PadeApproximantTest
     {
         private PowerSeries<double> _powerSeriesExponential;
+        private PowerSeries<double> _powerSeriesSine;
         private PadeApproximant<double> _padeApproximantExponential;
+        private PadeApproximant<double> _padeApproximantSine;
 
         [TestInitialize]
         public void SetUp()
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(8, new CalculatorDouble());
             _padeApproximantExponential = new PadeApproximant<double>(3, 4, _powerSeriesExponential);
+            _powerSeriesSine = PowerSeriesDouble.CreateSine(8, new CalculatorDouble());
+            _padeApproximantSine = new PadeApproximant<double>(3, 4, _powerSeriesSine);
         }
 
         [TestMethod]
@@ -23,6 +27,19 @@ namespace AnalyticContinuationTest
             var correctValue = Math.Exp(2);
             var directValue = _powerSeriesExponential.Evaluate(2);
             var analyticContinuatedValue = _padeApproximantExponential.Evaluate(2);
+            var directError = Math.Abs(directValue - correctValue);
+            var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
+
+            Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
+            Assert.IsTrue(directError > analyticContinuatedError);
+        }
+
+        [TestMethod]
+        public void Evaluate_SinAt1_ResultIsMoreAccurateThanDirectPowerSeries()
+        {
+            var correctValue = Math.Sin(1);
+            var directValue = _powerSeriesSine.Evaluate(2);
+            var analyticContinuatedValue = _padeApproximantSine.Evaluate(2);
             var directError = Math.Abs(directValue - correctValue);
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 

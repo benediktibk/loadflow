@@ -14,7 +14,7 @@ namespace AnalyticContinuationTest
         public void SetUp()
         {
             _exponential = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
-            _sin = PowerSeriesDouble.CreateSin(10, new CalculatorDouble());
+            _sin = PowerSeriesDouble.CreateSine(10, new CalculatorDouble());
         }
 
         [TestMethod]

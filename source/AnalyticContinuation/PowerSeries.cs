@@ -86,7 +86,7 @@ namespace AnalyticContinuation
             return function;
         }
 
-        public static PowerSeries<T> CreateSin(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
+        public static PowerSeries<T> CreateSine(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
         {
             var function = new PowerSeries<T>(numberOfCoefficients, calculator);
 
