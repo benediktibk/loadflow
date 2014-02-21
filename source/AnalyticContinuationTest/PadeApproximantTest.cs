@@ -13,8 +13,8 @@ namespace AnalyticContinuationTest
         [TestInitialize]
         public void SetUp()
         {
-            _powerSeriesExponential = PowerSeriesDouble.CreateExponential(5, new CalculatorDouble());
-            _padeApproximantExponential = new PadeApproximant<double>(2, 2, _powerSeriesExponential);
+            _powerSeriesExponential = PowerSeriesDouble.CreateExponential(8, new CalculatorDouble());
+            _padeApproximantExponential = new PadeApproximant<double>(3, 4, _powerSeriesExponential);
         }
 
         [TestMethod]
