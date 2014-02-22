@@ -52,7 +52,7 @@ namespace AnalyticContinuationTest
         [TestMethod]
         public void EvaluateAt1_Empty_SameAsEvaluateCalledWith1()
         {
-            Assert.AreEqual<double>(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
+            Assert.AreEqual(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
         }
     }
 }
