@@ -22,18 +22,13 @@ namespace AnalyticContinuation
 
         public T Evaluate(T x)
         {
-            for (var i = 0; i < _epsilonPrevious.Count(); ++i)
-                _epsilonPrevious[i] = _calculator.AssignFromDouble(0);
+            InitializePreviousEpsilon();
+            InitializeCurrentEpsilon(x);
+            return ExecuteEpsilonAlgorithm();
+        }
 
-            var sum = _calculator.AssignFromDouble(0);
-            for (var i = 0; i < _epsilonCurrent.Count(); ++i)
-            {
-                var xPotency = _calculator.Pow(x, i);
-                var summand = _calculator.Multiply(_powerSeries[i], xPotency);
-                sum = _calculator.Add(sum, summand);
-                _epsilonCurrent[i] = sum;
-            }
-
+        private T ExecuteEpsilonAlgorithm()
+        {
             for (var i = 1; i <= _powerSeries.Degree; ++i)
             {
                 for (var j = 0; j <= _powerSeries.Degree - i; ++j)
@@ -49,7 +44,28 @@ namespace AnalyticContinuation
                 _epsilonNext = temp;
             }
 
-            return _epsilonCurrent[0];
+            return _powerSeries.Degree%2 == 0
+                ? _epsilonCurrent[0]
+                : _calculator.Divide(_calculator.Add(_epsilonPrevious[0], _epsilonPrevious[1]),
+                    _calculator.AssignFromDouble(2));
+        }
+
+        private void InitializeCurrentEpsilon(T x)
+        {
+            var sum = _calculator.AssignFromDouble(0);
+            for (var i = 0; i < _epsilonCurrent.Count(); ++i)
+            {
+                var xPotency = _calculator.Pow(x, i);
+                var summand = _calculator.Multiply(_powerSeries[i], xPotency);
+                sum = _calculator.Add(sum, summand);
+                _epsilonCurrent[i] = sum;
+            }
+        }
+
+        private void InitializePreviousEpsilon()
+        {
+            for (var i = 0; i < _epsilonPrevious.Count(); ++i)
+                _epsilonPrevious[i] = _calculator.AssignFromDouble(0);
         }
 
         public T EvaluateAt1()
