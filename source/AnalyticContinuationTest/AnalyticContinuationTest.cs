@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -55,6 +56,33 @@ namespace AnalyticContinuationTest
         public void EvaluateAt1_Empty_SameAsEvaluateCalledWith1()
         {
             Assert.AreEqual(_continuationExponential.Evaluate(1), _continuationExponential.EvaluateAt1());
+        }
+
+        [TestMethod]
+        public void Evaluate_ZeroOfLaguerrePolynom_CorrectResult()
+        {
+            var series = CreateLaguerreSeries(8);
+            var continuation = CreateAnalyticContinuation(series);
+
+            var result = continuation.Evaluate(1);
+
+            Assert.AreEqual(0.5857864375, result, 0.0001);
+        }
+
+        public static PowerSeriesDouble CreateLaguerreSeries(int n)
+        {
+            var sums = new double[n];
+            sums[0] = 0;
+
+            for (var i = 1; i < n; ++i)
+                sums[i] = (sums[i - 1]*sums[i - 1] + 2)/4;
+
+            var powerSeries = new PowerSeriesDouble(n);
+
+            for (var i = 1; i < n; ++i)
+                powerSeries[i] = sums[i] - sums[i - 1];
+
+            return powerSeries;
         }
     }
 }

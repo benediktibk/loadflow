@@ -25,10 +25,13 @@ namespace AnalyticContinuation
             for (var i = 0; i < _epsilonPrevious.Count(); ++i)
                 _epsilonPrevious[i] = _calculator.AssignFromDouble(0);
 
+            var sum = _calculator.AssignFromDouble(0);
             for (var i = 0; i < _epsilonCurrent.Count(); ++i)
             {
                 var xPotency = _calculator.Pow(x, i);
-                _epsilonCurrent[i] = _calculator.Multiply(_powerSeries[i], xPotency);
+                var summand = _calculator.Multiply(_powerSeries[i], xPotency);
+                sum = _calculator.Add(sum, summand);
+                _epsilonCurrent[i] = sum;
             }
 
             for (var i = 1; i <= _powerSeries.Degree; ++i)
