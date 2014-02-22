@@ -51,7 +51,7 @@ namespace LoadFlowCalculation
 
                 coefficientNorm = newCoefficient.SumMagnitudes().Magnitude;
                 ++n;
-            } while (n <= _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
+            } while (n < _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
 
             var voltagePowerSeries = CreateVoltagePowerSeriesFromCoefficients(coefficients);
             return voltagePowerSeries;
