@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using AnalyticContinuation;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Factorization;
 using MathNet.Numerics.LinearAlgebra.Generic;
@@ -43,12 +45,52 @@ namespace LoadFlowCalculation
                 ++n;
             } while (n <= _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
 
-            // TODO use an analytic continuation here
-            var nodeCount = admittances.RowCount;
-            Vector<Complex> voltages = new DenseVector(nodeCount);
-            foreach (var ci in coefficients)
-                voltages = voltages.Add(ci);
+            var voltagePowerSeries = CreateVoltagePowerSeries(coefficients);
+            var voltagePadeApproximants = CreateVoltagePadeApproximants(voltagePowerSeries);
+            return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
+        }
 
+        private PadeApproximant<Complex>[] CreateVoltagePadeApproximants(PowerSeriesComplex[] powerSeries)
+        {
+            var nodeCount = powerSeries.Count();
+            var padeApproximants = new PadeApproximant<Complex>[nodeCount];
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var coefficientCount = powerSeries[i].GetNumberOfCoefficients();
+                var M = coefficientCount/2;
+                var L = coefficientCount - M - 1;
+                padeApproximants[i] = new PadeApproximant<Complex>(L, M, powerSeries[i]);
+            }
+
+            return padeApproximants;
+        }
+
+        private Vector<Complex> CalculateVoltagesWithPadeApproximants(PadeApproximant<Complex>[] padeApproximants)
+        {
+            var nodeCount = padeApproximants.Count();
+            var voltages = new Complex[nodeCount];
+
+            for (var i = 0; i < nodeCount; ++i)
+                voltages[i] = padeApproximants[i].EvaluateAt1();
+
+            return new DenseVector(voltages);
+        }
+
+        private static PowerSeriesComplex[] CreateVoltagePowerSeries(List<Vector<Complex>> coefficients)
+        {
+            if (coefficients.Count < 1)
+                throw new ArgumentOutOfRangeException("coefficients", "there must be at least one coefficient");
+
+            var nodeCount = coefficients[0].Count;
+            var voltages = new PowerSeriesComplex[nodeCount];
+            for (var i = 0; i < coefficients.Count; ++i)
+            {
+                var coefficient = coefficients[i];
+
+                for (var j = 0; j < nodeCount; ++j)
+                    voltages[j][i] = coefficient[j];
+            }
             return voltages;
         }
 
