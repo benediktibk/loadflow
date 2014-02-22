@@ -85,14 +85,18 @@ namespace LoadFlowCalculation
 
             var nodeCount = coefficients[0].Count;
             var voltages = new PowerSeriesComplex[nodeCount];
+
+            for (var i = 0; i < nodeCount; ++i)
+                voltages[i] = new PowerSeriesComplex(coefficientCount); 
+
             for (var i = 0; i < coefficientCount; ++i)
             {
                 var coefficient = coefficients[i];
-                voltages[i] = new PowerSeriesComplex(coefficientCount);
 
                 for (var j = 0; j < nodeCount; ++j)
                     voltages[j][i] = coefficient[j];
             }
+
             return voltages;
         }
 
