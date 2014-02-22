@@ -26,10 +26,18 @@ namespace LoadFlowCalculation
             double nominalVoltage, Vector<Complex> constantCurrents,
             Vector<Complex> knownPowers)
         {
+            var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
+            var voltagePadeApproximants = CreateVoltagePadeApproximants(voltagePowerSeries);
+            return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
+        }
+
+        public PowerSeriesComplex[] CalculateVoltagePowerSeries(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
+        {
             var factorization = admittances.QR();
             List<Vector<Complex>> coefficients;
             List<Vector<Complex>> inverseCoefficients;
-            CalculateInitialCoefficients(admittances, constantCurrents, knownPowers, factorization, out coefficients, out inverseCoefficients);
+            CalculateInitialCoefficients(admittances, constantCurrents, knownPowers, factorization, out coefficients,
+                out inverseCoefficients);
             var n = 2;
             double coefficientNorm;
 
@@ -45,9 +53,8 @@ namespace LoadFlowCalculation
                 ++n;
             } while (n <= _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
 
-            var voltagePowerSeries = CreateVoltagePowerSeries(coefficients);
-            var voltagePadeApproximants = CreateVoltagePadeApproximants(voltagePowerSeries);
-            return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
+            var voltagePowerSeries = CreateVoltagePowerSeriesFromCoefficients(coefficients);
+            return voltagePowerSeries;
         }
 
         private static PadeApproximant<Complex>[] CreateVoltagePadeApproximants(PowerSeriesComplex[] powerSeries)
@@ -77,7 +84,7 @@ namespace LoadFlowCalculation
             return new DenseVector(voltages);
         }
 
-        private static PowerSeriesComplex[] CreateVoltagePowerSeries(List<Vector<Complex>> coefficients)
+        private static PowerSeriesComplex[] CreateVoltagePowerSeriesFromCoefficients(List<Vector<Complex>> coefficients)
         {
             var coefficientCount = coefficients.Count;
             if (coefficientCount < 1)
