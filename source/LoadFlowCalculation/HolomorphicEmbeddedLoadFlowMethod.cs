@@ -79,14 +79,16 @@ namespace LoadFlowCalculation
 
         private static PowerSeriesComplex[] CreateVoltagePowerSeries(List<Vector<Complex>> coefficients)
         {
-            if (coefficients.Count < 1)
+            var coefficientCount = coefficients.Count;
+            if (coefficientCount < 1)
                 throw new ArgumentOutOfRangeException("coefficients", "there must be at least one coefficient");
 
             var nodeCount = coefficients[0].Count;
             var voltages = new PowerSeriesComplex[nodeCount];
-            for (var i = 0; i < coefficients.Count; ++i)
+            for (var i = 0; i < coefficientCount; ++i)
             {
                 var coefficient = coefficients[i];
+                voltages[i] = new PowerSeriesComplex(coefficientCount);
 
                 for (var j = 0; j < nodeCount; ++j)
                     voltages[j][i] = coefficient[j];
