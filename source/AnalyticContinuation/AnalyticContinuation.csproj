@@ -56,6 +56,7 @@
     <Compile Include="PowerSeriesComplex.cs" />
     <Compile Include="PowerSeriesDouble.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EpsilonAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
