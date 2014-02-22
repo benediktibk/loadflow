@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 
-namespace LoadFlowCalculationTest
+namespace UnitTestHelper
 {
     public static class ComplexAssert
     {

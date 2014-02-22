@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Moq;
 using LoadFlowCalculation;
-using Complex = System.Numerics.Complex;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest
 {

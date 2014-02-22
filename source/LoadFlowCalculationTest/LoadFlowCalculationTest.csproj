@@ -60,7 +60,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ComplexAssert.cs" />
     <Compile Include="LoadFlowCalculatorTest.cs" />
     <Compile Include="NodeAssert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,9 +71,17 @@
     <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
+      <Project>{3726D19C-8B14-4BA4-B193-54973A802278}</Project>
+      <Name>AnalyticContinuation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">
       <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
       <Name>LoadFlowCalculation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTestHelper\UnitTestHelper.csproj">
+      <Project>{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}</Project>
+      <Name>UnitTestHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

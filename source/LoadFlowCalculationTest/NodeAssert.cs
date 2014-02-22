@@ -3,7 +3,7 @@ using System.Numerics;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Complex = System.Numerics.Complex;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest
 {
