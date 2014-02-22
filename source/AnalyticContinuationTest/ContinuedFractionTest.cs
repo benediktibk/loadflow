@@ -1,14 +1,22 @@
-﻿using AnalyticContinuation;
+﻿using System;
+using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnalyticContinuationTest
 {
     [TestClass]
-    public class ContinuedFractionTest : AnalyticContinuationTest
+    public class ContinuedFractionTest
     {
-        protected override IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries)
+        [TestMethod]
+        public void Evaluate_ExponentialSeriesAt01_correctResult()
         {
-            return new ContinuedFraction<double>(powerSeries);
+            var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
+            var continuedFraction = new ContinuedFraction<double>(powerSeries);
+            const double x = 0.1;
+            var correctValue = Math.Exp(x);
+
+            Assert.AreEqual(correctValue, powerSeries.Evaluate(x), 0.0001);
+            Assert.AreEqual(powerSeries.Evaluate(x), continuedFraction.Evaluate(x), 0.0001);
         }
     }
 }

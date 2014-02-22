@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Numerics;
-using MathNet.Numerics.Distributions;
 
 namespace AnalyticContinuation
 {
-    public class ContinuedFraction<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
+    public class ContinuedFraction<T> where T : struct, IEquatable<T>, IFormattable
     {
         private readonly PowerSeries<T> _powerSeries;
         private readonly ICalculatorGeneric<T> _calculator; 
@@ -49,11 +47,6 @@ namespace AnalyticContinuation
             result = _calculator.Add(coefficients[0], result);
 
             return result;
-        }
-
-        public T EvaluateAt1()
-        {
-            throw new NotImplementedException();
         }
     }
 }

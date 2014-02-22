@@ -33,7 +33,7 @@ namespace AnalyticContinuationTest
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
             Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
-            Assert.AreEqual(directValue, analyticContinuatedValue, 0.001);
+            Assert.AreEqual(directValue, analyticContinuatedValue, 0.01);
             Assert.IsTrue(directError > analyticContinuatedError);
         }
 
