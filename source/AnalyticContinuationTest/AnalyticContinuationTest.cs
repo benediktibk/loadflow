@@ -9,8 +9,8 @@ namespace AnalyticContinuationTest
     {
         protected PowerSeries<double> _powerSeriesExponential;
         protected PowerSeries<double> _powerSeriesSine;
-        protected IAnalyticContinuation<double> _padeApproximantExponential;
-        protected IAnalyticContinuation<double> _padeApproximantSine;
+        protected IAnalyticContinuation<double> _continuationExponential;
+        protected IAnalyticContinuation<double> _continuationSine;
 
         protected abstract IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries);
 
@@ -18,9 +18,9 @@ namespace AnalyticContinuationTest
         public void SetUp()
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(8, new CalculatorDouble());
-            _padeApproximantExponential = new PadeApproximant<double>(3, 4, _powerSeriesExponential);
+            _continuationExponential = new PadeApproximant<double>(3, 4, _powerSeriesExponential);
             _powerSeriesSine = PowerSeriesDouble.CreateSine(8, new CalculatorDouble());
-            _padeApproximantSine = new PadeApproximant<double>(3, 4, _powerSeriesSine);
+            _continuationSine = new PadeApproximant<double>(3, 4, _powerSeriesSine);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace AnalyticContinuationTest
         {
             var correctValue = Math.Exp(2);
             var directValue = _powerSeriesExponential.Evaluate(2);
-            var analyticContinuatedValue = _padeApproximantExponential.Evaluate(2);
+            var analyticContinuatedValue = _continuationExponential.Evaluate(2);
             var directError = Math.Abs(directValue - correctValue);
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
@@ -41,7 +41,7 @@ namespace AnalyticContinuationTest
         {
             var correctValue = Math.Sin(1);
             var directValue = _powerSeriesSine.Evaluate(2);
-            var analyticContinuatedValue = _padeApproximantSine.Evaluate(2);
+            var analyticContinuatedValue = _continuationSine.Evaluate(2);
             var directError = Math.Abs(directValue - correctValue);
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
@@ -52,7 +52,7 @@ namespace AnalyticContinuationTest
         [TestMethod]
         public void EvaluateAt1_Empty_SameAsEvaluateCalledWith1()
         {
-            Assert.AreEqual(_padeApproximantExponential.Evaluate(1), _padeApproximantExponential.EvaluateAt1());
+            Assert.AreEqual(_continuationExponential.Evaluate(1), _continuationExponential.EvaluateAt1());
         }
     }
 }
