@@ -31,7 +31,7 @@ namespace LoadFlowCalculationTest
             ComplexAssert.AreEqual(new Complex(-1, 0), powerSeries[0], 0.0001);
             ComplexAssert.AreEqual(new Complex(2.001, 0), powerSeries[1], 0.0001);
             ComplexAssert.AreEqual(new Complex(2.001E-3, 0), powerSeries[2], 0.0000001);
-            ComplexAssert.AreEqual(new Complex(-4.006002E-3, 0), powerSeries[3], 0.0000001);
+            ComplexAssert.AreEqual(new Complex(4.006002E-3, 0), powerSeries[3], 0.0000001);
         }
     }
 }

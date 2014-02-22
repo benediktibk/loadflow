@@ -44,7 +44,7 @@ namespace LoadFlowCalculation
             do
             {
                 var newCoefficient = CalculateNextCoefficient(inverseCoefficients[inverseCoefficients.Count - 1], factorization,
-                    knownPowers, constantCurrents);
+                    knownPowers);
                 coefficients.Add(newCoefficient);
                 var newInverseCoefficient = CalculateNextInverseCoefficient(coefficients, inverseCoefficients);
                 inverseCoefficients.Add(newInverseCoefficient);
@@ -151,11 +151,10 @@ namespace LoadFlowCalculation
             return factorization.Solve(totalCurrents.Add(admittanceRowSum));
         }
 
-        private static Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, ISolver<Complex> factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
+        private static Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, ISolver<Complex> factorization, Vector<Complex> powers)
         {
-            var ownCurrents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
-            var totalCurrents = constantCurrents.Add(ownCurrents);
-            return factorization.Solve(totalCurrents);
+            var currents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
+            return factorization.Solve(currents);
         }
 
         private static Vector<Complex> CalculateNextInverseCoefficient(List<Vector<Complex>> coefficients,
