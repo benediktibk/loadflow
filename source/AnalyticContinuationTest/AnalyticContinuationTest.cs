@@ -18,9 +18,9 @@ namespace AnalyticContinuationTest
         public void SetUp()
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(8, new CalculatorDouble());
-            _continuationExponential = new PadeApproximant<double>(3, 4, _powerSeriesExponential);
             _powerSeriesSine = PowerSeriesDouble.CreateSine(8, new CalculatorDouble());
-            _continuationSine = new PadeApproximant<double>(3, 4, _powerSeriesSine);
+            _continuationExponential = CreateAnalyticContinuation(_powerSeriesExponential);
+            _continuationSine = CreateAnalyticContinuation(_powerSeriesSine);
         }
 
         [TestMethod]
@@ -33,6 +33,7 @@ namespace AnalyticContinuationTest
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
             Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
+            Assert.AreEqual(directValue, analyticContinuatedValue, 0.001);
             Assert.IsTrue(directError > analyticContinuatedError);
         }
 
@@ -46,6 +47,7 @@ namespace AnalyticContinuationTest
             var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
             Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
+            Assert.AreEqual(directValue, analyticContinuatedValue, 0.001);
             Assert.IsTrue(directError > analyticContinuatedError);
         }
 

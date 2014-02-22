@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CalculatorComplex.cs" />
     <Compile Include="CalculatorDouble.cs" />
+    <Compile Include="ContinuedFraction.cs" />
     <Compile Include="IAnalyticContinuation.cs" />
     <Compile Include="ICalculatorGeneric.cs" />
     <Compile Include="PadeApproximant.cs" />

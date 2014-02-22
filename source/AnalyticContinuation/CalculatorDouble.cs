@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using System;
+using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
@@ -23,6 +24,11 @@ namespace AnalyticContinuation
         public double Divide(double a, double b)
         {
             return a / b;
+        }
+
+        public double Pow(double a, int exponent)
+        {
+            return Math.Pow(a, exponent);
         }
 
         public double AssignFromDouble(double x)

@@ -3,6 +3,7 @@ using System.Numerics;
 using AnalyticContinuation;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitTestHelper;
 
 namespace AnalyticContinuationTest
 {
@@ -73,6 +74,12 @@ namespace AnalyticContinuationTest
             Assert.AreEqual(x.At(0).Imaginary, solution.At(0).Imaginary, 0.0001);
             Assert.AreEqual(x.At(1).Real, solution.At(1).Real, 0.0001);
             Assert.AreEqual(x.At(1).Imaginary, solution.At(1).Imaginary, 0.0001);
+        }
+
+        [TestMethod]
+        public void Pow_4And2_16()
+        {
+            ComplexAssert.AreEqual(new Complex(16, 0), _calculator.Pow(new Complex(4, 0), 2), 0.0001);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -24,6 +25,11 @@ namespace AnalyticContinuation
         public Complex Divide(Complex a, Complex b)
         {
             return a / b;
+        }
+
+        public Complex Pow(Complex a, int exponent)
+        {
+            return a.Power(exponent);
         }
 
         public Complex AssignFromDouble(double x)

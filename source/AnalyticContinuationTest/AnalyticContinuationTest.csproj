@@ -63,11 +63,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatorComplexTest.cs" />
     <Compile Include="AnalyticContinuationTest.cs" />
+    <Compile Include="ContinuedFractionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
       <Project>{3726d19c-8b14-4ba4-b193-54973a802278}</Project>
       <Name>AnalyticContinuation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTestHelper\UnitTestHelper.csproj">
+      <Project>{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}</Project>
+      <Name>UnitTestHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

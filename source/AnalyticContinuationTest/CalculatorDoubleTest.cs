@@ -76,5 +76,11 @@ namespace AnalyticContinuationTest
             Assert.AreEqual(x.At(0), solution.At(0), 0.0001);
             Assert.AreEqual(x.At(1), solution.At(1), 0.0001);
         }
+
+        [TestMethod]
+        public void Pow_4And2_16()
+        {
+            Assert.AreEqual(16, _calculator.Pow(4, 2), 0.0001);
+        }
     }
 }
