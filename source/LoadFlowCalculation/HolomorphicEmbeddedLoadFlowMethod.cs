@@ -29,7 +29,8 @@ namespace LoadFlowCalculation
             var coefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
             var inverseCoefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
 
-            Vector<Complex> firstCoefficient = factorization.Solve(new SparseVector(nodeCount));
+            var admittanceRowSum = CalculateAdmittanceRowSum(admittances);
+            var firstCoefficient = CalculateFirstCoefficient(factorization, admittances, admittanceRowSum);
             Vector<Complex> firstInverseCoefficient = new DenseVector(nodeCount);
             firstCoefficient.DivideByThis(new Complex(1, 0), firstInverseCoefficient);
             coefficients.Add(firstCoefficient);
@@ -57,10 +58,25 @@ namespace LoadFlowCalculation
             return voltages;
         }
 
-        private Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, QR factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
+        private Vector<Complex> CalculateAdmittanceRowSum(Matrix<Complex> admittances)
         {
-            Vector<Complex> ownCurrents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
-            Vector<Complex> totalCurrents = constantCurrents.Add(ownCurrents);
+            Vector<Complex> rowSum = new DenseVector(admittances.RowCount);
+
+            foreach (var column in admittances.ColumnEnumerator())
+                rowSum = rowSum.Add(column.Item2);
+
+            return rowSum;
+        }
+
+        private Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, Matrix<Complex> admittances, Vector<Complex> admittanceRowSum)
+        {
+            return factorization.Solve(admittanceRowSum.Multiply(new Complex(-1, 0)));
+        }
+
+        private Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, ISolver<Complex> factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
+        {
+            var ownCurrents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
+            var totalCurrents = constantCurrents.Add(ownCurrents);
             return factorization.Solve(totalCurrents);
         }
 
