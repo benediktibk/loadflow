@@ -50,7 +50,7 @@ namespace LoadFlowCalculation
             return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
         }
 
-        private PadeApproximant<Complex>[] CreateVoltagePadeApproximants(PowerSeriesComplex[] powerSeries)
+        private static PadeApproximant<Complex>[] CreateVoltagePadeApproximants(PowerSeriesComplex[] powerSeries)
         {
             var nodeCount = powerSeries.Count();
             var padeApproximants = new PadeApproximant<Complex>[nodeCount];
@@ -66,7 +66,7 @@ namespace LoadFlowCalculation
             return padeApproximants;
         }
 
-        private Vector<Complex> CalculateVoltagesWithPadeApproximants(PadeApproximant<Complex>[] padeApproximants)
+        private static Vector<Complex> CalculateVoltagesWithPadeApproximants(PadeApproximant<Complex>[] padeApproximants)
         {
             var nodeCount = padeApproximants.Count();
             var voltages = new Complex[nodeCount];
@@ -120,7 +120,7 @@ namespace LoadFlowCalculation
             inverseCoefficients.Add(secondInverseCoefficient);
         }
 
-        private Vector<Complex> CalculateAdmittanceRowSum(Matrix<Complex> admittances)
+        private static Vector<Complex> CalculateAdmittanceRowSum(Matrix<Complex> admittances)
         {
             Vector<Complex> rowSum = new DenseVector(admittances.RowCount);
 
@@ -130,12 +130,12 @@ namespace LoadFlowCalculation
             return rowSum;
         }
 
-        private Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, Matrix<Complex> admittances, Vector<Complex> admittanceRowSum)
+        private static Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, Matrix<Complex> admittances, Vector<Complex> admittanceRowSum)
         {
             return factorization.Solve(admittanceRowSum.Multiply(new Complex(-1, 0)));
         }
 
-        private Vector<Complex> CalculateSecondCoefficient(Vector<Complex> previousInverseCoefficient,
+        private static Vector<Complex> CalculateSecondCoefficient(Vector<Complex> previousInverseCoefficient,
             ISolver<Complex> factorization, Vector<Complex> powers, Vector<Complex> constantCurrents,
             Vector<Complex> admittanceRowSum)
         {
@@ -144,14 +144,14 @@ namespace LoadFlowCalculation
             return factorization.Solve(totalCurrents.Add(admittanceRowSum));
         }
 
-        private Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, ISolver<Complex> factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
+        private static Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, ISolver<Complex> factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
         {
             var ownCurrents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
             var totalCurrents = constantCurrents.Add(ownCurrents);
             return factorization.Solve(totalCurrents);
         }
 
-        private Vector<Complex> CalculateNextInverseCoefficient(List<Vector<Complex>> coefficients,
+        private static Vector<Complex> CalculateNextInverseCoefficient(List<Vector<Complex>> coefficients,
             List<Vector<Complex>> inverseCoefficients)
         {
             var coefficientCount = coefficients.Count;
