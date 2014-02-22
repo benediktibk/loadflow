@@ -3,7 +3,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
-    public class PadeApproximant<T> where T : struct, IEquatable<T>, IFormattable
+    public class PadeApproximant<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
     {
         private PowerSeries<T> _p;
         private PowerSeries<T> _q;

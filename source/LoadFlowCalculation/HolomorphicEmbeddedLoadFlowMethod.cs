@@ -27,7 +27,7 @@ namespace LoadFlowCalculation
             Vector<Complex> knownPowers)
         {
             var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
-            var voltagePadeApproximants = CreateVoltagePadeApproximants(voltagePowerSeries);
+            var voltagePadeApproximants = CreateVoltageAnalyticContinuation(voltagePowerSeries);
             return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
         }
 
@@ -57,10 +57,10 @@ namespace LoadFlowCalculation
             return voltagePowerSeries;
         }
 
-        private static PadeApproximant<Complex>[] CreateVoltagePadeApproximants(PowerSeriesComplex[] powerSeries)
+        private static IAnalyticContinuation<Complex>[] CreateVoltageAnalyticContinuation(PowerSeriesComplex[] powerSeries)
         {
             var nodeCount = powerSeries.Count();
-            var padeApproximants = new PadeApproximant<Complex>[nodeCount];
+            var padeApproximants = new IAnalyticContinuation<Complex>[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
             {
@@ -73,7 +73,7 @@ namespace LoadFlowCalculation
             return padeApproximants;
         }
 
-        private static Vector<Complex> CalculateVoltagesWithPadeApproximants(PadeApproximant<Complex>[] padeApproximants)
+        private static Vector<Complex> CalculateVoltagesWithPadeApproximants(IAnalyticContinuation<Complex>[] padeApproximants)
         {
             var nodeCount = padeApproximants.Count();
             var voltages = new Complex[nodeCount];
