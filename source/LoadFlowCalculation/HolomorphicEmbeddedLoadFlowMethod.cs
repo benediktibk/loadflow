@@ -64,7 +64,7 @@ namespace LoadFlowCalculation
 
             for (var i = 0; i < nodeCount; ++i)
             {
-                var coefficientCount = powerSeries[i].GetNumberOfCoefficients();
+                var coefficientCount = powerSeries[i].NumberOfCoefficients;
                 var M = coefficientCount/2;
                 var L = coefficientCount - M - 1;
                 padeApproximants[i] = new PadeApproximant<Complex>(L, M, powerSeries[i]);

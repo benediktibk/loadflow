@@ -69,13 +69,13 @@ namespace AnalyticContinuationTest
         [TestMethod]
         public void GetNumberOfCoefficients_PowerSeriesWith10Coefficients_10()
         {
-            Assert.AreEqual(10, _exponential.GetNumberOfCoefficients());
+            Assert.AreEqual(10, _exponential.NumberOfCoefficients);
         }
 
         [TestMethod]
         public void GetDegree_PowerSeriesWith10Coefficients_9()
         {
-            Assert.AreEqual(9, _exponential.GetDegree());
+            Assert.AreEqual(9, _exponential.Degree);
         }
     }
 }

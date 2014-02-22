@@ -12,13 +12,13 @@ namespace AnalyticContinuation
 
         public PadeApproximant(int L, int M, PowerSeries<T> powerSeries)
         {
-            _calculator = powerSeries.GetCalculator();
+            _calculator = powerSeries.Calculator;
             if (L < 1)
                 throw new ArgumentOutOfRangeException("L", "the degree for the power series in the nominator must be at least 1");
             if (M < 1)
                 throw new ArgumentOutOfRangeException("M", "the degree for the power series in the denominator must be at least 1");
 
-            if (L + M + 2 > powerSeries.GetNumberOfCoefficients() + 1)
+            if (L + M + 2 > powerSeries.NumberOfCoefficients + 1)
                 throw new ArgumentOutOfRangeException("L", "there are not enough source coefficients for this setup");
 
             _p = new PowerSeries<T>(L + 1, _calculator);
@@ -94,12 +94,12 @@ namespace AnalyticContinuation
 
         public int L
         {
-            get { return _p.GetDegree(); }
+            get { return _p.Degree; }
         }
 
         public int M
         {
-            get { return _q.GetDegree(); }
+            get { return _q.Degree; }
         }
     }
 }

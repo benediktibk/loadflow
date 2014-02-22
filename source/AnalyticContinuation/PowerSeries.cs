@@ -56,19 +56,19 @@ namespace AnalyticContinuation
             return result;
         }
 
-        public ICalculatorGeneric<T> GetCalculator()
+        public ICalculatorGeneric<T> Calculator
         {
-            return _calculator;
+            get { return _calculator; }
         }
 
-        public int GetNumberOfCoefficients()
+        public int NumberOfCoefficients
         {
-            return _coefficients.Count();
+            get { return _coefficients.Count(); }
         }
 
-        public int GetDegree()
+        public int Degree
         {
-            return _coefficients.Count() - 1;
+            get { return _coefficients.Count() - 1; }
         }
 
         public static PowerSeries<T> CreateExponential(int numberOfCoefficients, ICalculatorGeneric<T> calculator)
