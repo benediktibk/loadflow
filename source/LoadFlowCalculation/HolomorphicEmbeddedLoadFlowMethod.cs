@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Factorization;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
@@ -17,46 +19,77 @@ namespace LoadFlowCalculation
             _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
         }
 
-        public override Vector<System.Numerics.Complex> CalculateUnknownVoltages(Matrix<System.Numerics.Complex> admittances,
-            double nominalVoltage, Vector<System.Numerics.Complex> constantCurrents, Vector<System.Numerics.Complex> knownPowers)
+        public override Vector<Complex> CalculateUnknownVoltages(
+            Matrix<Complex> admittances,
+            double nominalVoltage, Vector<Complex> constantCurrents,
+            Vector<Complex> knownPowers)
         {
             var nodeCount = admittances.RowCount;
             var factorization = admittances.QR();
-            var c = new List<Vector<System.Numerics.Complex>>(_maximumNumberOfCoefficients);
-            var d = new List<Vector<System.Numerics.Complex>>(_maximumNumberOfCoefficients);
+            var coefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
+            var inverseCoefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
 
-            var c0 = factorization.Solve(new SparseVector(nodeCount));
-            Vector<System.Numerics.Complex> d0 = new DenseVector(nodeCount);
-            c0.DivideByThis(new System.Numerics.Complex(1, 0), d0);
-            c.Add(c0);
-            d.Add(d0);
+            Vector<Complex> firstCoefficient = factorization.Solve(new SparseVector(nodeCount));
+            Vector<Complex> firstInverseCoefficient = new DenseVector(nodeCount);
+            firstCoefficient.DivideByThis(new Complex(1, 0), firstInverseCoefficient);
+            coefficients.Add(firstCoefficient);
+            inverseCoefficients.Add(firstInverseCoefficient);
             var n = 0;
             double coefficientNorm;
 
             do
             {
                 ++n;
-                var previousD = d[n - 1];
-                var ownCurrents = (knownPowers.PointwiseMultiply(previousD)).Conjugate();
-                var rightHandSide = constantCurrents.Add(ownCurrents);
-                var newC = factorization.Solve(rightHandSide);
-                c.Add(newC);
-                Vector<System.Numerics.Complex> newD = new DenseVector(nodeCount);
+                var newCoefficient = CalculateNextCoefficient(inverseCoefficients[n - 2], factorization,
+                    knownPowers, constantCurrents);
+                coefficients.Add(newCoefficient);
+                var newInverseCoefficient = CalculateNextInverseCoefficient(coefficients, inverseCoefficients);
+                inverseCoefficients.Add(newInverseCoefficient);
 
-                for (var m = 0; m <= n - 1; ++m)
-                    newD = newD.Subtract(c[n - m].PointwiseMultiply(d[m]));
-                newD = newD.PointwiseDivide(c[0]);
-
-                d.Add(newD);
-                coefficientNorm = newC.SumMagnitudes().Magnitude;
+                coefficientNorm = newCoefficient.SumMagnitudes().Magnitude;
             } while (n <= _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
 
             // TODO use an analytic continuation here
-            Vector<System.Numerics.Complex> voltages = new DenseVector(nodeCount);
-            foreach (var ci in c)
+            Vector<Complex> voltages = new DenseVector(nodeCount);
+            foreach (var ci in coefficients)
                 voltages = voltages.Add(ci);
 
             return voltages;
+        }
+
+        private Vector<Complex> CalculateNextCoefficient(Vector<Complex> previousInverseCoefficient, QR factorization, Vector<Complex> powers, Vector<Complex> constantCurrents)
+        {
+            Vector<Complex> ownCurrents = (powers.PointwiseMultiply(previousInverseCoefficient)).Conjugate();
+            Vector<Complex> totalCurrents = constantCurrents.Add(ownCurrents);
+            return factorization.Solve(totalCurrents);
+        }
+
+        private Vector<Complex> CalculateNextInverseCoefficient(List<Vector<Complex>> coefficients,
+            List<Vector<Complex>> inverseCoefficients)
+        {
+            var coefficientCount = coefficients.Count;
+
+            if (coefficientCount < 2)
+                throw new ArgumentOutOfRangeException("coefficients",
+                    "there must be at least two coefficients already set");
+
+            if (inverseCoefficients.Count != coefficientCount - 1)
+                throw new ArgumentOutOfRangeException("inverseCoefficients",
+                    "the count of inverse coefficients is invalid");
+
+            var n = coefficientCount - 1;
+            var nodeCount = coefficients[0].Count;
+            Vector<Complex> newInverseCoefficient = new DenseVector(nodeCount);
+
+            for (var i = 0; i < n; ++i)
+            {
+                var inverseCoefficient = inverseCoefficients[i];
+                var coefficient = coefficients[n - i];
+                var summand = inverseCoefficient.PointwiseMultiply(coefficient);
+                newInverseCoefficient = newInverseCoefficient.Add(summand);
+            }
+
+            return newInverseCoefficient.Multiply(new Complex(-1, 0));
         }
     }
 }
