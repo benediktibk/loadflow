@@ -100,7 +100,7 @@ namespace LoadFlowCalculation
             return voltages;
         }
 
-        private void CalculateInitialCoefficients(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, QR factorization,
+        private void CalculateInitialCoefficients(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization,
             out List<Vector<Complex>> coefficients, out List<Vector<Complex>> inverseCoefficients)
         {
             var nodeCount = admittances.RowCount;
