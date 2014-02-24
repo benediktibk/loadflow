@@ -77,8 +77,7 @@ namespace AnalyticContinuation
 
             return n % 2 == 1
                 ? _epsilonCurrent[0]
-                : _calculator.Divide(_calculator.Add(_epsilonPrevious[0], _epsilonPrevious[1]),
-                    _calculator.AssignFromDouble(2));
+                : _epsilonPrevious[1];
         }
 
         private void InitializeCurrentEpsilon(T x)
