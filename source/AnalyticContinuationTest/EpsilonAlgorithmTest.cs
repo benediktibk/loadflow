@@ -28,5 +28,16 @@ namespace AnalyticContinuationTest
             Assert.IsFalse(Double.IsInfinity(continuatedValue));
             Assert.IsTrue(directError > continuatedError);
         }
+
+        [TestMethod]
+        public void Evaluate_ZeroOfLaguerrePolynom_ResultIsCorrectForEpsilonAlgorithm()
+        {
+            var series = CreateLaguerreSeries(6);
+            var continuation = CreateAnalyticContinuation(series);
+
+            var result = continuation.Evaluate(1);
+
+            Assert.AreEqual(0.58578573, result, 0.00000001);
+        }
     }
 }
