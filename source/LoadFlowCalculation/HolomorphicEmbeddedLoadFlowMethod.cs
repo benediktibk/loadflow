@@ -27,7 +27,7 @@ namespace LoadFlowCalculation
         {
             var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
             var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation(voltagePowerSeries);
-            return CalculateVoltagesWithPadeApproximants(voltageAnalyticContinuation);
+            return CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
         }
 
         public PowerSeriesComplex[] CalculateVoltagePowerSeries(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
@@ -67,7 +67,7 @@ namespace LoadFlowCalculation
             return analyticContinuations;
         }
 
-        private static Vector<Complex> CalculateVoltagesWithPadeApproximants(IAnalyticContinuation<Complex>[] padeApproximants)
+        private static Vector<Complex> CalculateVoltagesWithAnalyticContinuations(IAnalyticContinuation<Complex>[] padeApproximants)
         {
             var nodeCount = padeApproximants.Count();
             var voltages = new Complex[nodeCount];
