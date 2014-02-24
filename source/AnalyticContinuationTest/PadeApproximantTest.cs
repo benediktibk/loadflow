@@ -57,5 +57,22 @@ namespace AnalyticContinuationTest
             var powerSeries = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             var padeApproximant = new PadeApproximant<double>(4, 5, powerSeries);
         }
+
+        [TestMethod]
+        public void Evaluate_SinAt20_ResultIsMoreAccurateThanDirectPowerSeries()
+        {
+            const double x = 20;
+            var correctValue = Math.Sin(x);
+            var directValue = _powerSeriesSine.Evaluate(x);
+            var continuatedValue = _continuationSine.Evaluate(x);
+            var directError = Math.Abs(directValue - correctValue);
+            var continuatedError = Math.Abs(continuatedValue - correctValue);
+
+            Assert.IsFalse(Double.IsNaN(directValue));
+            Assert.IsFalse(Double.IsInfinity(directValue));
+            Assert.IsFalse(Double.IsNaN(continuatedValue));
+            Assert.IsFalse(Double.IsInfinity(continuatedValue));
+            Assert.IsTrue(directError > continuatedError);
+        }
     }
 }
