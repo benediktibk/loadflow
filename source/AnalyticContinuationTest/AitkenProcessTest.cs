@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

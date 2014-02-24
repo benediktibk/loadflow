@@ -52,7 +52,7 @@ namespace AnalyticContinuationTest
         {
             const double x = 1;
 
-            Assert.AreEqual(Math.Sin(x), _continuationSine.Evaluate(x), 0.0001);
+            Assert.AreEqual(Math.Sin(x), _continuationSine.Evaluate(x), 0.001);
         }
 
         [TestMethod]
