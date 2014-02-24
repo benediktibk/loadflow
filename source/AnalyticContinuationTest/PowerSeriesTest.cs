@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -76,6 +77,35 @@ namespace AnalyticContinuationTest
         public void GetDegree_PowerSeriesWith10Coefficients_9()
         {
             Assert.AreEqual(9, _exponential.Degree);
+        }
+
+        [TestMethod]
+        public void EvaluatePartialSums_SeveralCoefficientsSet_CorrectResult()
+        {
+            var series = new PowerSeriesDouble(4);
+            series[0] = 2;
+            series[1] = 3;
+            series[2] = -1;
+            series[3] = 0.5;
+
+            var result = series.EvaluatePartialSums(0.7);
+
+            Assert.AreEqual(4, result.Count());
+            Assert.AreEqual(2, result[0], 0.00001);
+            Assert.AreEqual(4.1, result[1], 0.00001);
+            Assert.AreEqual(3.61, result[2], 0.00001);
+            Assert.AreEqual(3.7815, result[3], 0.00001);
+        }
+
+        [TestMethod]
+        public void EvaluatePartialSumsAt1_Exponential_SameResultAsEvaluateParitalSums()
+        {
+            var result = _exponential.EvaluatePartialSumsAt1();
+
+            var resultShouldBe = _exponential.EvaluatePartialSums(1);
+            Assert.AreEqual(resultShouldBe.Count(), result.Count());
+            for (var i = 0; i < result.Count(); ++i)
+                Assert.AreEqual(resultShouldBe[i], result[i], 0.00001);
         }
     }
 }

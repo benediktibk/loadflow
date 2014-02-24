@@ -56,6 +56,37 @@ namespace AnalyticContinuation
             return result;
         }
 
+        public T[] EvaluatePartialSums(T x)
+        {
+            var n = _coefficients.Count();
+            var partialSums = new T[n];
+            var sum = _calculator.AssignFromDouble(0);
+
+            for (var i = 0; i < n; ++i)
+            {
+                var summand = _calculator.Multiply(_coefficients[i], _calculator.Pow(x, i));
+                sum = _calculator.Add(sum, summand);
+                partialSums[i] = sum;
+            }
+
+            return partialSums;
+        }
+
+        public T[] EvaluatePartialSumsAt1()
+        {
+            var n = _coefficients.Count();
+            var partialSums = new T[n];
+            var sum = _calculator.AssignFromDouble(0);
+
+            for (var i = 0; i < n; ++i)
+            {
+                sum = _calculator.Add(sum, _coefficients[i]);
+                partialSums[i] = sum;
+            }
+
+            return partialSums;
+        }
+
         public ICalculatorGeneric<T> Calculator
         {
             get { return _calculator; }
