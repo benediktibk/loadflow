@@ -8,9 +8,9 @@ namespace AnalyticContinuation
     {
         private readonly PowerSeries<T> _powerSeries;
         private readonly ICalculatorGeneric<T> _calculator;
-        private T[] _epsilonPrevious;
-        private T[] _epsilonCurrent;
-        private T[] _epsilonNext;
+        private List<T> _epsilonPrevious;
+        private List<T> _epsilonCurrent;
+        private List<T> _epsilonNext;
  
         public EpsilonAlgorithm(PowerSeries<T> powerSeries)
         {
@@ -41,74 +41,78 @@ namespace AnalyticContinuation
 
         private void ReduceRedundancyInCurrentEpsilons()
         {
-            var reduced = new List<T>(_epsilonCurrent.Count());
-            reduced.Add(_epsilonCurrent[0]);
+            var n = _epsilonCurrent.Count();
+            var reduced = new List<T>(n) {_epsilonCurrent[0]};
 
-            for (var i = 1; i < _epsilonCurrent.Count(); ++i)
+            for (var i = 1; i < n; ++i)
                 if (!_epsilonCurrent[i].Equals(reduced[reduced.Count - 1]))
                     reduced.Add(_epsilonCurrent[i]);
 
-            _epsilonCurrent = reduced.ToArray();
+            _epsilonCurrent = reduced;
         }
 
         private void InitializeNextEpsilon()
         {
-            _epsilonNext = new T[_epsilonCurrent.Count()];
+            _epsilonNext = new List<T>(_epsilonCurrent.Count() - 1);
         }
 
         private T ExecuteEpsilonAlgorithm()
         {
             var n = _epsilonCurrent.Count();
 
-            for (var i = 1; i <= n - 1; ++i)
+            do
             {
-                for (var j = 0; j <= n - 2; ++j)
+                for (var j = 0; j <= _epsilonCurrent.Count - 2; ++j)
                 {
                     var previousDifference = _calculator.Subtract(_epsilonCurrent[j + 1], _epsilonCurrent[j]);
                     var invers = _calculator.Divide(_calculator.AssignFromDouble(1), previousDifference);
-                    _epsilonNext[j] = _calculator.Add(_epsilonPrevious[j + 1], invers);
+                    _epsilonNext.Add(_calculator.Add(_epsilonPrevious[j + 1], invers));
                 }
 
-                var temp = _epsilonPrevious;
                 _epsilonPrevious = _epsilonCurrent;
                 _epsilonCurrent = _epsilonNext;
-                _epsilonNext = temp;
-            }
+                _epsilonNext = new List<T>(_epsilonCurrent.Count - 1);
+            } while (_epsilonCurrent.Count > 2);
 
-            return n % 2 == 1
-                ? _epsilonCurrent[0]
-                : _epsilonPrevious[1];
+            return n % 2 == 0
+                ? _epsilonCurrent[_epsilonCurrent.Count - 1]
+                : _epsilonPrevious[_epsilonPrevious.Count - 1];
         }
 
         private void InitializeCurrentEpsilon(T x)
         {
-            _epsilonCurrent = new T[_powerSeries.NumberOfCoefficients];
+            var n = _powerSeries.NumberOfCoefficients;
+            _epsilonCurrent = new List<T>(n);
+
             var sum = _calculator.AssignFromDouble(0);
-            for (var i = 0; i < _epsilonCurrent.Count(); ++i)
+            for (var i = 0; i < n; ++i)
             {
                 var xPotency = _calculator.Pow(x, i);
                 var summand = _calculator.Multiply(_powerSeries[i], xPotency);
                 sum = _calculator.Add(sum, summand);
-                _epsilonCurrent[i] = sum;
+                _epsilonCurrent.Add(sum);
             }
         }
 
         private void InitializeCurrentEpsilon()
         {
-            _epsilonCurrent = new T[_powerSeries.NumberOfCoefficients];
+            var n = _powerSeries.NumberOfCoefficients;
+            _epsilonCurrent = new List<T>(n);
+
             var sum = _calculator.AssignFromDouble(0);
-            for (var i = 0; i < _epsilonCurrent.Count(); ++i)
+            for (var i = 0; i < n; ++i)
             {
                 sum = _calculator.Add(sum, _powerSeries[i]);
-                _epsilonCurrent[i] = sum;
+                _epsilonCurrent.Add(sum);
             }
         }
 
         private void InitializePreviousEpsilon()
         {
-            _epsilonPrevious = new T[_epsilonCurrent.Count() + 1];
-            for (var i = 0; i < _epsilonPrevious.Count(); ++i)
-                _epsilonPrevious[i] = _calculator.AssignFromDouble(0);
+            var n = _epsilonCurrent.Count() + 1;
+            _epsilonPrevious = new List<T>(n);
+            for (var i = 0; i < n; ++i)
+                _epsilonPrevious.Add(_calculator.AssignFromDouble(0));
         }
     }
 }

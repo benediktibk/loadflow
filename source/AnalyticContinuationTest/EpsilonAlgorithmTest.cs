@@ -13,9 +13,9 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void Evaluate_ExponentialAt10_ResultIsMoreAccurateThanDirectPowerSeries()
+        public void Evaluate_ExponentialAt2_ResultIsMoreAccurateThanDirectPowerSeries()
         {
-            const double x = 10;
+            const double x = 2;
             var correctValue = Math.Exp(x);
             var directValue = _powerSeriesExponential.Evaluate(x);
             var continuatedValue = _continuationExponential.Evaluate(x);
