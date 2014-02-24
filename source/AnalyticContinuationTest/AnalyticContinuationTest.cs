@@ -9,7 +9,9 @@ namespace AnalyticContinuationTest
     public abstract class AnalyticContinuationTest
     {
         protected PowerSeries<double> _powerSeriesExponential;
+        protected PowerSeries<double> _powerSeriesSine; 
         protected IAnalyticContinuation<double> _continuationExponential;
+        protected IAnalyticContinuation<double> _continuationSine; 
 
         protected abstract IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries);
 
@@ -17,41 +19,33 @@ namespace AnalyticContinuationTest
         public void SetUp()
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
+            _powerSeriesSine = PowerSeriesDouble.CreateSine(10, new CalculatorDouble());
             _continuationExponential = CreateAnalyticContinuation(_powerSeriesExponential);
+            _continuationSine = CreateAnalyticContinuation(_powerSeriesSine);
         }
 
         [TestMethod]
-        public void Evaluate_ExponentialAt2_ResultIsAsAccurateAsDirectPowerSeries()
+        public void Evaluate_ExponentialAt2_CorrectResult()
         {
             const double x = 2.0;
-            var correctValue = Math.Exp(x);
-            var directValue = _powerSeriesExponential.Evaluate(x);
-            var analyticContinuatedValue = _continuationExponential.Evaluate(x);
-            var directError = Math.Abs(directValue - correctValue);
-            var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
-            Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
-            Assert.AreEqual(directValue, analyticContinuatedValue, 0.01);
-            Assert.AreEqual(correctValue, analyticContinuatedValue, 0.01);
-            Assert.AreEqual(directValue, analyticContinuatedValue, 0.01);
-            Assert.IsTrue(directError > analyticContinuatedError*0.1);
+            Assert.AreEqual(Math.Exp(x), _continuationExponential.Evaluate(x), 0.01);
         }
 
         [TestMethod]
-        public void Evaluate_ExponentialAt15_ResultIsAsAccurateAsDirectPowerSeries()
+        public void Evaluate_ExponentialAt15_CorrectResult()
         {
             const double x = 1.5;
-            var correctValue = Math.Exp(x);
-            var directValue = _powerSeriesExponential.Evaluate(x);
-            var analyticContinuatedValue = _continuationExponential.Evaluate(x);
-            var directError = Math.Abs(directValue - correctValue);
-            var analyticContinuatedError = Math.Abs(analyticContinuatedValue - correctValue);
 
-            Assert.IsFalse(Double.IsNaN(analyticContinuatedValue));
-            Assert.AreEqual(correctValue, directValue, 0.01);
-            Assert.AreEqual(correctValue, analyticContinuatedValue, 0.01);
-            Assert.AreEqual(directValue, analyticContinuatedValue, 0.0001);
-            Assert.IsTrue(directError > analyticContinuatedError*0.1);
+            Assert.AreEqual(Math.Exp(x), _continuationExponential.Evaluate(x), 0.001);
+        }
+
+        [TestMethod]
+        public void Evaluate_SineAt1_CorrectResult()
+        {
+            const double x = 1;
+
+            Assert.AreEqual(Math.Sin(x), _continuationSine.Evaluate(x), 0.0001);
         }
 
         [TestMethod]
