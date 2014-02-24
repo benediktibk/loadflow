@@ -67,6 +67,7 @@
     <Compile Include="AnalyticContinuationTest.cs" />
     <Compile Include="ContinuedFractionTest.cs" />
     <Compile Include="EpsilonAlgorithmTest.cs" />
+    <Compile Include="AitkenProcessTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
