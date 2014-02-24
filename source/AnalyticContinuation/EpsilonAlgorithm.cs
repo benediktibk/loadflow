@@ -81,30 +81,12 @@ namespace AnalyticContinuation
 
         private void InitializeCurrentEpsilon(T x)
         {
-            var n = _powerSeries.NumberOfCoefficients;
-            _epsilonCurrent = new List<T>(n);
-
-            var sum = _calculator.AssignFromDouble(0);
-            for (var i = 0; i < n; ++i)
-            {
-                var xPotency = _calculator.Pow(x, i);
-                var summand = _calculator.Multiply(_powerSeries[i], xPotency);
-                sum = _calculator.Add(sum, summand);
-                _epsilonCurrent.Add(sum);
-            }
+            _epsilonCurrent = new List<T>(_powerSeries.EvaluatePartialSums(x));
         }
 
         private void InitializeCurrentEpsilon()
         {
-            var n = _powerSeries.NumberOfCoefficients;
-            _epsilonCurrent = new List<T>(n);
-
-            var sum = _calculator.AssignFromDouble(0);
-            for (var i = 0; i < n; ++i)
-            {
-                sum = _calculator.Add(sum, _powerSeries[i]);
-                _epsilonCurrent.Add(sum);
-            }
+            _epsilonCurrent = new List<T>(_powerSeries.EvaluatePartialSumsAt1());
         }
 
         private void InitializePreviousEpsilon()
