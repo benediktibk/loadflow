@@ -15,7 +15,7 @@ namespace LoadFlowCalculation
             get
             {
                 if (!_powerSet)
-                    throw new PowerNotSetException();
+                    throw new ArgumentOutOfRangeException();
                 else
                     return _power;
             }
@@ -31,7 +31,7 @@ namespace LoadFlowCalculation
             get
             {
                 if (!_voltageSet)
-                    throw new VoltageNotSetException();
+                    throw new ArgumentOutOfRangeException();
                 else
                     return _voltage;
             }

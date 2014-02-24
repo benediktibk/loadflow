@@ -19,25 +19,25 @@ namespace LoadFlowCalculation
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
             double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
-            int nodeCount = admittances.RowCount;
+            var nodeCount = admittances.RowCount;
             var initialVoltages = new Complex[nodeCount];
 
-            for (int i = 0; i < nodeCount; ++i)
+            for (var i = 0; i < nodeCount; ++i)
                 initialVoltages[i] = new Complex(nominalVoltage, 0);
 
             Vector<Complex> voltages = new DenseVector(initialVoltages);
-            int iterations = 0;
-            Vector<Complex> knownPowersConjugated = knownPowers.Conjugate();
-            QR factorization = admittances.QR();
+            var iterations = 0;
+            var knownPowersConjugated = knownPowers.Conjugate();
+            var factorization = admittances.QR();
             double voltageChange;
 
             do
             {
-                Vector<Complex> loadCurrents = knownPowersConjugated.PointwiseDivide(voltages.Conjugate());
-                Vector<Complex> currents = loadCurrents.Add(constantCurrents);
-                Vector<Complex> newVoltages = factorization.Solve(currents);
-                Vector<Complex> voltageDifference = newVoltages.Subtract(voltages);
-                Complex maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
+                var loadCurrents = knownPowersConjugated.PointwiseDivide(voltages.Conjugate());
+                var currents = loadCurrents.Add(constantCurrents);
+                var newVoltages = factorization.Solve(currents);
+                var voltageDifference = newVoltages.Subtract(voltages);
+                var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
                 voltageChange = maximumVoltageDifference.Magnitude/nominalVoltage;
                 voltages = newVoltages;
                 ++iterations;

@@ -15,20 +15,20 @@ namespace LoadFlowCalculation
         public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes)
         {
             CheckDimensions(admittances, nodes);
-            
+
             if (!IsAdmittanceMatrixValid(admittances))
-                throw new InvalidAdmittanceMatrixException();
+                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix is invalid");
 
             List<int> indexOfNodesWithKnownVoltage;
             List<int> indexOfNodesWithUnknownVoltage;
             SeperateNodesInKnownAndUnknownVoltages(nodes, out indexOfNodesWithKnownVoltage,
                 out indexOfNodesWithUnknownVoltage);
 
-            int countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            int countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
+            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
 
             if (countOfKnownVoltages == 0)
-                throw new NotFullRankException();
+                throw new ArgumentOutOfRangeException("nodes", "there must be at least one node with known voltage");
 
             Vector<Complex> allVoltages;
             if (countOfUnknownVoltages == 0)
@@ -172,9 +172,9 @@ namespace LoadFlowCalculation
             indexOfNodesWithKnownVoltage = new List<int>();
             indexOfNodesWithUnknownVoltage = new List<int>();
 
-            for (int i = 0; i < nodes.Count(); ++i)
+            for (var i = 0; i < nodes.Count(); ++i)
             {
-                Node node = nodes[i];
+                var node = nodes[i];
 
                 if (node.VoltageIsKnown)
                     indexOfNodesWithKnownVoltage.Add(i);
@@ -182,35 +182,38 @@ namespace LoadFlowCalculation
                     indexOfNodesWithUnknownVoltage.Add(i);
 
                 if (!node.VoltageIsKnown && !node.PowerIsKnown)
-                    throw new UnderDeterminedProblemException();
+                    throw new ArgumentOutOfRangeException("nodes",
+                        "for every node at least two parameter must be specified");
 
                 if (node.VoltageIsKnown && node.PowerIsKnown)
-                    throw new OverDeterminedProblemException();
+                    throw new ArgumentOutOfRangeException("nodes",
+                        "for every node not more than two parameter can be specified");
             }
         }
 
         private static void CheckDimensions(Matrix<Complex> admittances, IEnumerable<Node> nodes)
         {
-            int rows = admittances.RowCount;
-            int columns = admittances.ColumnCount;
-            int nodeCount = nodes.Count();
+            var rows = admittances.RowCount;
+            var columns = admittances.ColumnCount;
+            var nodeCount = nodes.Count();
 
             if (rows != columns)
-                throw new NotQuadraticException();
+                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix must be quadratic");
 
             if (rows != nodeCount)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("nodes",
+                    "the count of nodes does not match the dimensions of the admittance matrix");
 
             if (!admittances.IsSymmetric)
-                throw new NotSymmetricException();
+                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix must be symmetric");
         }
 
         private static bool IsAdmittanceMatrixValid(Matrix<Complex> admittances)
         {
-            for (var i = 0; i < admittances.RowCount; ++i)
+            for (var i = 0; i < admittances.ColumnCount; ++i)
             {
-                var row = admittances.Row(i);
-                if (row.Sum().Magnitude > 0.00001)
+                var column = admittances.Column(i);
+                if (column.Sum().Magnitude > 0.00001)
                     return false;
             }
 

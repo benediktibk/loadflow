@@ -53,7 +53,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(OverDeterminedProblemException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
@@ -68,7 +68,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UnderDeterminedProblemException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
@@ -81,7 +81,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSymmetricException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_NotSymmetricAdmittanceMatrix_ExceptionThrown()
         {
             var admittances = DenseMatrix.OfArray(
@@ -94,7 +94,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFullRankException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OnlyPowersKnown_ThrowsException()
         {
             Matrix<Complex> admittances;
@@ -110,7 +110,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof (InvalidAdmittanceMatrixException))]
+        [ExpectedException(typeof (ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_InvalidAdmittanceMatrix_ThrowsException()
         {
             Matrix<Complex> admittances;

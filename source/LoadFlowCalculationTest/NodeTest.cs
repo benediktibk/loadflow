@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoadFlowCalculation;
 using Complex = System.Numerics.Complex;
@@ -17,14 +18,14 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(VoltageNotSetException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void getVoltage_NotYetSet_ThrowsException()
         {
             Complex voltage = _node.Voltage;
         }
 
         [TestMethod]
-        [ExpectedException(typeof(PowerNotSetException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void getPower_NotYetSet_ThrowsException()
         {
             Complex power = _node.Power;
