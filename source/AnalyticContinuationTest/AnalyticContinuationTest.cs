@@ -65,6 +65,22 @@ namespace AnalyticContinuationTest
             Assert.AreEqual(0.5857864375, result, 0.0001);
         }
 
+        [TestMethod]
+        public void Evaluate_EulerSeries_MoreAccurateThanDirectPowerSeries()
+        {
+            var series = CreateEulerSeries(8);
+            var continuation = CreateAnalyticContinuation(series);
+            var directValue = series.Evaluate(1);
+            var continuatedValue = continuation.Evaluate(1);
+            const double correctValue = Math.PI*Math.PI/6;
+            var directError = Math.Abs(directValue - correctValue);
+            var continuatedError = Math.Abs(continuatedValue - correctValue);
+
+            Assert.AreEqual(correctValue, directValue, 0.2);
+            Assert.AreEqual(correctValue, continuatedValue, 0.2);
+            Assert.IsTrue(directError > continuatedError);
+        }
+
         public static PowerSeriesDouble CreateLaguerreSeries(int n)
         {
             var sums = new double[n];
@@ -77,6 +93,16 @@ namespace AnalyticContinuationTest
 
             for (var i = 1; i < n; ++i)
                 powerSeries[i] = sums[i] - sums[i - 1];
+
+            return powerSeries;
+        }
+
+        public static PowerSeriesDouble CreateEulerSeries(int n)
+        {
+            var powerSeries = new PowerSeriesDouble(n);
+
+            for (var i = 1; i < n; ++i)
+                powerSeries[i] = 1.0/(i*i);
 
             return powerSeries;
         }
