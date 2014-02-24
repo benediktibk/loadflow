@@ -84,7 +84,7 @@ namespace LoadFlowCalculationTest
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 10);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -102,10 +102,9 @@ namespace LoadFlowCalculationTest
             nodes[3].Power = powers.At(3);
             nodes[4].Voltage = voltages.At(4);
 
-            // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
             nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.02, 3);
+            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.01);
         }
     }
 }
