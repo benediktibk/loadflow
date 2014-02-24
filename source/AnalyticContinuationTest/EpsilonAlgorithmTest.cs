@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Numerics;
 using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitTestHelper;
 
 namespace AnalyticContinuationTest
 {
@@ -10,6 +12,11 @@ namespace AnalyticContinuationTest
         protected override IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries)
         {
             return new EpsilonAlgorithm<double>(powerSeries);
+        }
+
+        protected override IAnalyticContinuation<Complex> CreateAnalyticContinuation(PowerSeries<Complex> powerSeries)
+        {
+            return new EpsilonAlgorithm<Complex>(powerSeries);
         }
 
         [TestMethod]
@@ -55,6 +62,12 @@ namespace AnalyticContinuationTest
             var result = continuation.Evaluate(1);
 
             Assert.AreEqual(0.58578573, result, 0.00000001);
+        }
+
+        [TestMethod]
+        public void Evaluate_VoltageSeriesFromHELM_CorrectResultWithLowAccuracy()
+        {
+            ComplexAssert.AreEqual(1, -0.1, _continuationVoltage.EvaluateAt1(), 0.1);
         }
     }
 }

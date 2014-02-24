@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,6 +11,10 @@ namespace AnalyticContinuationTest
         protected override IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries)
         {
             return new PadeApproximant<double>(3, 4, powerSeries);
+        }
+        protected override IAnalyticContinuation<Complex> CreateAnalyticContinuation(PowerSeries<Complex> powerSeries)
+        {
+            return new PadeApproximant<Complex>(24, 25, powerSeries);
         }
 
         [TestMethod]
