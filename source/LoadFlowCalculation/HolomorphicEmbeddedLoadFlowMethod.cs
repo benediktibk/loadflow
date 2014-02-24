@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 using AnalyticContinuation;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Complex.Factorization;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
@@ -27,8 +26,8 @@ namespace LoadFlowCalculation
             Vector<Complex> knownPowers)
         {
             var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
-            var voltagePadeApproximants = CreateVoltageAnalyticContinuation(voltagePowerSeries);
-            return CalculateVoltagesWithPadeApproximants(voltagePadeApproximants);
+            var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation(voltagePowerSeries);
+            return CalculateVoltagesWithPadeApproximants(voltageAnalyticContinuation);
         }
 
         public PowerSeriesComplex[] CalculateVoltagePowerSeries(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
@@ -60,17 +59,12 @@ namespace LoadFlowCalculation
         private static IAnalyticContinuation<Complex>[] CreateVoltageAnalyticContinuation(PowerSeriesComplex[] powerSeries)
         {
             var nodeCount = powerSeries.Count();
-            var padeApproximants = new IAnalyticContinuation<Complex>[nodeCount];
+            var analyticContinuations = new IAnalyticContinuation<Complex>[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
-            {
-                var coefficientCount = powerSeries[i].NumberOfCoefficients;
-                var M = coefficientCount/2;
-                var L = coefficientCount - M - 1;
-                padeApproximants[i] = new PadeApproximant<Complex>(L, M, powerSeries[i]);
-            }
+                analyticContinuations[i] = new EpsilonAlgorithm<Complex>(powerSeries[i]);
 
-            return padeApproximants;
+            return analyticContinuations;
         }
 
         private static Vector<Complex> CalculateVoltagesWithPadeApproximants(IAnalyticContinuation<Complex>[] padeApproximants)
