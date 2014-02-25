@@ -2,6 +2,7 @@
 using System.Net.Security;
 using System.Numerics;
 using AnalyticContinuation;
+using MathNet.Numerics.Distributions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
@@ -106,6 +107,19 @@ namespace AnalyticContinuationTest
             Assert.IsTrue(directError > continuatedError);
         }
 
+        [TestMethod]
+        public void Evaluate_Ln2Series_CorrectResult()
+        {
+            var series = CreateLn2Series(8);
+            var continuation = CreateAnalyticContinuation(series);
+
+            var result = continuation.Evaluate(1);
+
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
+            Assert.AreEqual(Math.Log(2), result, 0.0001);
+        }
+
         public static PowerSeriesDouble CreateLaguerreSeries(int n)
         {
             var sums = new double[n];
@@ -192,6 +206,21 @@ namespace AnalyticContinuationTest
 
             for (var i = 0; i < 50; ++i)
                 series[i] = coefficients[i];
+
+            return series;
+        }
+
+        public static PowerSeriesDouble CreateLn2Series(int n)
+        {
+            var series = new PowerSeriesDouble(n);
+
+            for (var i = 0; i < n; ++i)
+            {
+                if (i%2 == 0)
+                    series[i] = 1.0/(i + 1);
+                else
+                    series[i] = -1.0/(i + 1);
+            }
 
             return series;
         }
