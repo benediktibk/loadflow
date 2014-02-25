@@ -55,13 +55,12 @@ namespace AnalyticContinuation
         private T Evaluate(IList<T> summands)
         {
             var c = InitializeCoefficients(summands);
-            CalculateCoefficients(ref c);
-            return CalculateContinuedFraction(c);
+            var n = CalculateCoefficients(ref c);
+            return CalculateContinuedFraction(c, n);
         }
 
-        private T CalculateContinuedFraction(IReadOnlyList<T[]> c)
+        private T CalculateContinuedFraction(IReadOnlyList<T[]> c, int n)
         {
-            var n = c.Count;
             var result = _calculator.AssignFromDouble(0);
             for (var i = n - 1; i >= 1; --i)
             {
@@ -72,7 +71,7 @@ namespace AnalyticContinuation
             return result;
         }
 
-        private void CalculateCoefficients(ref List<T[]> c)
+        private int CalculateCoefficients(ref List<T[]> c)
         {
             var n = c.Count;
 
@@ -83,6 +82,8 @@ namespace AnalyticContinuation
                     var secondProduct = _calculator.Multiply(c[k - 2][0], c[k - 1][j + 1]);
                     c[k][j] = _calculator.Subtract(firstProduct, secondProduct);
                 }
+
+            return n;
         }
 
         private List<T[]> InitializeCoefficients(IList<T> summands)
