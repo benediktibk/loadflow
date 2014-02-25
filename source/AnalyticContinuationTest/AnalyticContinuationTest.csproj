@@ -69,6 +69,7 @@
     <Compile Include="EpsilonAlgorithmTest.cs" />
     <Compile Include="AitkenProcessTest.cs" />
     <Compile Include="DecimalComplexTest.cs" />
+    <Compile Include="CalculatorDecimalComplexTest.cs" />
     <Compile Include="ViskovatovAlgorithmTest.cs" />
   </ItemGroup>
   <ItemGroup>

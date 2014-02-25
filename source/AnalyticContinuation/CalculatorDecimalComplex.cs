@@ -1,5 +1,4 @@
 ﻿using System;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
@@ -7,22 +6,25 @@ namespace AnalyticContinuation
     {
         public DecimalComplex Add(DecimalComplex a, DecimalComplex b)
         {
-            throw new NotImplementedException();
+            return new DecimalComplex(a.Real + b.Real, a.Imaginary + b.Imaginary);
         }
 
         public DecimalComplex Subtract(DecimalComplex a, DecimalComplex b)
         {
-            throw new NotImplementedException();
+            return new DecimalComplex(a.Real - b.Real, a.Imaginary - b.Imaginary);
         }
 
         public DecimalComplex Multiply(DecimalComplex a, DecimalComplex b)
         {
-            throw new NotImplementedException();
+            return new DecimalComplex(a.Real*b.Real - a.Imaginary*b.Imaginary, a.Real*b.Imaginary + a.Imaginary*b.Real);
         }
 
         public DecimalComplex Divide(DecimalComplex a, DecimalComplex b)
         {
-            throw new NotImplementedException();
+            var real = a.Real*b.Real + a.Imaginary*b.Imaginary;
+            var imaginary = a.Imaginary*b.Real - a.Real*b.Imaginary;
+            var divisor = b.Real*b.Real - b.Imaginary*b.Imaginary;
+            return new DecimalComplex(real/divisor, imaginary/divisor);
         }
 
         public DecimalComplex Pow(DecimalComplex a, int exponent)
@@ -32,22 +34,7 @@ namespace AnalyticContinuation
 
         public DecimalComplex AssignFromDouble(double x)
         {
-            throw new NotImplementedException();
-        }
-
-        public Matrix<DecimalComplex> CreateDenseMatrix(int rows, int columns)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Vector<DecimalComplex> CreateDenseVector(int n)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Vector<DecimalComplex> SolveEquationSystem(Matrix<DecimalComplex> matrix, Vector<DecimalComplex> vector)
-        {
-            throw new NotImplementedException();
+            return new DecimalComplex(new decimal(x), 0);
         }
 
         public bool IsValidNumber(DecimalComplex x)
