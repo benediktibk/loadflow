@@ -36,7 +36,11 @@ namespace AnalyticContinuationTest
         {
             const double x = 2.0;
 
-            Assert.AreEqual(Math.Exp(x), _continuationExponential.Evaluate(x), 0.01);
+            var result = _continuationExponential.Evaluate(x);
+
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
+            Assert.AreEqual(Math.Exp(x), result, 0.01);
         }
 
         [TestMethod]
@@ -44,7 +48,11 @@ namespace AnalyticContinuationTest
         {
             const double x = 1.5;
 
-            Assert.AreEqual(Math.Exp(x), _continuationExponential.Evaluate(x), 0.001);
+            var result = _continuationExponential.Evaluate(x);
+
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
+            Assert.AreEqual(Math.Exp(x), result, 0.001);
         }
 
         [TestMethod]
@@ -52,7 +60,11 @@ namespace AnalyticContinuationTest
         {
             const double x = 1;
 
-            Assert.AreEqual(Math.Sin(x), _continuationSine.Evaluate(x), 0.001);
+            var result = _continuationSine.Evaluate(x);
+
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
+            Assert.AreEqual(Math.Sin(x), result, 0.001);
         }
 
         [TestMethod]
@@ -69,6 +81,8 @@ namespace AnalyticContinuationTest
 
             var result = continuation.Evaluate(1);
 
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
             Assert.AreEqual(0.5857864375, result, 0.0001);
         }
 
@@ -83,6 +97,10 @@ namespace AnalyticContinuationTest
             var directError = Math.Abs(directValue - correctValue);
             var continuatedError = Math.Abs(continuatedValue - correctValue);
 
+            Assert.IsFalse(Double.IsNaN(continuatedValue));
+            Assert.IsFalse(Double.IsNaN(directValue));
+            Assert.IsFalse(Double.IsInfinity(continuatedValue));
+            Assert.IsFalse(Double.IsInfinity(directValue));
             Assert.AreEqual(correctValue, directValue, 0.2);
             Assert.AreEqual(correctValue, continuatedValue, 0.2);
             Assert.IsTrue(directError > continuatedError);

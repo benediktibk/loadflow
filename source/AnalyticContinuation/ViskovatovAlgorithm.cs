@@ -1,17 +1,72 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AnalyticContinuation
 {
     public class ViskovatovAlgorithm<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
     {
+        private PowerSeries<T> _powerSeries;
+        private ICalculatorGeneric<T> _calculator; 
+
+        public ViskovatovAlgorithm(PowerSeries<T> powerSeries)
+        {
+            _powerSeries = powerSeries;
+            _calculator = powerSeries.Calculator;
+        }
+
         public T Evaluate(T x)
         {
-            throw new NotImplementedException();
+            var summands = new List<T>(_powerSeries.NumberOfCoefficients);
+
+            for (var i = 0; i < _powerSeries.NumberOfCoefficients; ++i)
+            {
+                var xPotency = _calculator.Pow(x, i);
+                var coefficient = _powerSeries[i];
+                summands.Add(_calculator.Multiply(coefficient, xPotency));
+            }
+
+            return Evaluate(summands);
         }
 
         public T EvaluateAt1()
         {
-            throw new NotImplementedException();
+            var summands = new List<T>(_powerSeries.NumberOfCoefficients);
+
+            for (var i = 0; i < _powerSeries.NumberOfCoefficients; ++i)
+                summands.Add(_powerSeries[i]);
+
+            return Evaluate(summands);
+        }
+
+        private T Evaluate(IList<T> summands)
+        {
+            var n = summands.Count + 1;
+            var c = new List<T[]>(n);
+
+            for (var i = 0; i < n; ++i)
+                c.Add(new T[n - i]);
+
+            for (var i = 0; i < summands.Count; ++i)
+                c[1][i] = summands[i];
+
+            for (var k = 2; k < n; ++k)
+                for (var j = 0; j < n - k; ++j)
+                {
+                    var firstProduct = _calculator.Multiply(c[k - 1][0], c[k - 2][j + 1]);
+                    var secondProduct = _calculator.Multiply(c[k - 2][0], c[k - 1][j + 1]);
+                    c[k][j] = _calculator.Subtract(firstProduct, secondProduct);
+                }
+
+            var result = _calculator.AssignFromDouble(0);
+            for (var i = n - 1; i >= 1; --i)
+            {
+                var denominator = _calculator.Add(c[i - 1][0], result);
+                var nominator = c[i][0];
+                var partialResult = _calculator.Divide(nominator, denominator);
+                result = _calculator.Add(result, partialResult);
+            }
+
+            return result;
         }
     }
 }

@@ -10,12 +10,12 @@ namespace AnalyticContinuationTest
     {
         protected override IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries)
         {
-            throw new NotImplementedException();
+            return new ViskovatovAlgorithm<double>(powerSeries);
         }
 
         protected override IAnalyticContinuation<Complex> CreateAnalyticContinuation(PowerSeries<Complex> powerSeries)
         {
-            throw new NotImplementedException();
+            return new ViskovatovAlgorithm<Complex>(powerSeries);
         }
     }
 }
