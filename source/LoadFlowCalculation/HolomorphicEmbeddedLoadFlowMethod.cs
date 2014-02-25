@@ -72,7 +72,7 @@ namespace LoadFlowCalculation
 
                 var lastCoefficient = _coefficients[_coefficients.Count - 1];
                 var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
-                voltageCollapse = Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 15;
+                voltageCollapse = Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 25;
             }
         }
 
