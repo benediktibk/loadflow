@@ -16,6 +16,7 @@ namespace LoadFlowCalculation
         private List<Vector<Complex>> _coefficients;
         private List<Vector<Complex>> _inverseCoefficients;
         private PowerSeriesComplex[] _voltagePowerSeries;
+        private bool[] _voltageConverged;
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients)
         {
@@ -75,6 +76,13 @@ namespace LoadFlowCalculation
                 var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
                 voltageCollapse = Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 20;
             }
+
+            for (var i = 0; i < _voltageConverged.Count(); ++i)
+                if (!_voltageConverged[i])
+                {
+                    if (voltageChange[i].Magnitude < targetPrecisionScaled/100)
+                        _voltageConverged[i] = true;
+                }
         }
 
         public void CalculateNextCoefficientForVoltagePowerSeries(Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization)
@@ -87,7 +95,8 @@ namespace LoadFlowCalculation
 
             var coefficientIndex = _coefficients.Count - 1;
             for (var i = 0; i < _voltagePowerSeries.Length; ++i)
-                _voltagePowerSeries[i][coefficientIndex] = _coefficients[coefficientIndex][i];
+                if (!_voltageConverged[i])
+                    _voltagePowerSeries[i][coefficientIndex] = _coefficients[coefficientIndex][i];
         }
 
         private IAnalyticContinuation<Complex>[] CreateVoltageAnalyticContinuation()
@@ -132,9 +141,13 @@ namespace LoadFlowCalculation
             _coefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
             _inverseCoefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
             _voltagePowerSeries = new PowerSeriesComplex[nodeCount];
+            _voltageConverged = new bool[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
                 _voltagePowerSeries[i] = new PowerSeriesComplex(_maximumNumberOfCoefficients);
+
+            for (var i = 0; i < nodeCount; ++i)
+                _voltageConverged[i] = false;
 
             var admittanceRowSum = CalculateAdmittanceRowSum(admittances);
             var firstCoefficient = CalculateFirstCoefficient(factorization, admittances, admittanceRowSum);
