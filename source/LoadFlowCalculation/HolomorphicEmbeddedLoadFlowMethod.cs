@@ -62,19 +62,18 @@ namespace LoadFlowCalculation
         {
             var voltageChange = currentVoltage.Subtract(lastVoltage);
             var maximumVoltageChange = voltageChange.AbsoluteMaximum();
+            voltageCollapse = false;
 
             if (maximumVoltageChange.Magnitude < targetPrecisionScaled)
-            {
                 precisionReached = true;
-                voltageCollapse = false;
-            }
             else
             {
                 precisionReached = false;
 
                 var lastCoefficient = _coefficients[_coefficients.Count - 1];
                 var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
-                voltageCollapse = Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 20;
+                if (Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 20)
+                    voltageCollapse = true;
             }
 
             for (var i = 0; i < _voltageConverged.Count(); ++i)
