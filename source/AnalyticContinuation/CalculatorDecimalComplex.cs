@@ -39,7 +39,7 @@ namespace AnalyticContinuation
 
         public bool IsValidNumber(DecimalComplex x)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

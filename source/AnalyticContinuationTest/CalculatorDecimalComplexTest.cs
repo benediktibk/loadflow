@@ -60,29 +60,5 @@ namespace AnalyticContinuationTest
         {
             Assert.IsTrue(_calculator.IsValidNumber(new DecimalComplex(4, 5)));
         }
-
-        [TestMethod]
-        public void IsValidNumber_4AndInf_False()
-        {
-            Assert.IsFalse(_calculator.IsValidNumber(new DecimalComplex(4, new decimal(Double.PositiveInfinity))));
-        }
-
-        [TestMethod]
-        public void IsValidNumber_InfAnd5_False()
-        {
-            Assert.IsFalse(_calculator.IsValidNumber(new DecimalComplex(new decimal(Double.PositiveInfinity), 5)));
-        }
-
-        [TestMethod]
-        public void IsValidNumber_4AndNaN_False()
-        {
-            Assert.IsFalse(_calculator.IsValidNumber(new DecimalComplex(4, new decimal(Double.NaN))));
-        }
-
-        [TestMethod]
-        public void IsValidNumber_NaNAnd5_False()
-        {
-            Assert.IsFalse(_calculator.IsValidNumber(new DecimalComplex(new decimal(Double.NaN), 5)));
-        }
     }
 }
