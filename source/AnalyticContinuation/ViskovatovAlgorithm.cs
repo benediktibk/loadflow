@@ -67,8 +67,7 @@ namespace AnalyticContinuation
             {
                 var denominator = _calculator.Add(c[i - 1][0], result);
                 var nominator = c[i][0];
-                var partialResult = _calculator.Divide(nominator, denominator);
-                result = _calculator.Add(result, partialResult);
+                result = _calculator.Divide(nominator, denominator);
             }
 
             return result;

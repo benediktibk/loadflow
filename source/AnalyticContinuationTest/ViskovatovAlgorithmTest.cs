@@ -17,5 +17,18 @@ namespace AnalyticContinuationTest
         {
             return new ViskovatovAlgorithm<Complex>(powerSeries);
         }
+
+        [TestMethod]
+        public void Evaluate_Ln2SeriesWithOnly4Coefficients_CorrectResult()
+        {
+            var series = CreateLn2Series(4);
+            var continuation = CreateAnalyticContinuation(series);
+
+            var result = continuation.Evaluate(1);
+
+            Assert.IsFalse(Double.IsNaN(result));
+            Assert.IsFalse(Double.IsInfinity(result));
+            Assert.AreEqual(Math.Log(2), result, 0.01);
+        }
     }
 }
