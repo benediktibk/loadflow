@@ -23,7 +23,7 @@ namespace AnalyticContinuationTest
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             _powerSeriesSine = PowerSeriesDouble.CreateSine(10, new CalculatorDouble());
-            _powerSeriesVoltage = CreateHelmVoltageSeriesComplex();
+            _powerSeriesVoltage = CreateHelmVoltageSeriesComplex(50);
             _continuationExponential = CreateAnalyticContinuation(_powerSeriesExponential);
             _continuationSine = CreateAnalyticContinuation(_powerSeriesSine);
             _continuationVoltage = CreateAnalyticContinuation(_powerSeriesVoltage);
@@ -144,25 +144,25 @@ namespace AnalyticContinuationTest
             return powerSeries;
         }
 
-        public static PowerSeriesComplex CreateHelmVoltageSeriesComplex()
+        public static PowerSeriesComplex CreateHelmVoltageSeriesComplex(int n)
         {
             var coefficients = CreateHelmVoltageSeriesCoefficients();
 
-            var series = new PowerSeriesComplex(50);
+            var series = new PowerSeriesComplex(n);
 
-            for (var i = 0; i < 50; ++i)
+            for (var i = 0; i < n; ++i)
                 series[i] = coefficients[i];
 
             return series;
         }
 
-        public static PowerSeriesDecimalComplex CreateHelmVoltageSeriesDecimalComplex()
+        public static PowerSeriesDecimalComplex CreateHelmVoltageSeriesDecimalComplex(int n)
         {
             var coefficients = CreateHelmVoltageSeriesCoefficients();
 
-            var series = new PowerSeriesDecimalComplex(50);
+            var series = new PowerSeriesDecimalComplex(n);
 
-            for (var i = 0; i < 50; ++i)
+            for (var i = 0; i < n; ++i)
                 series[i] = new DecimalComplex(coefficients[i]);
 
             return series;
