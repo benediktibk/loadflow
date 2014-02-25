@@ -53,6 +53,9 @@ namespace LoadFlowCalculation
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !precisionReached);
 
+            if (!precisionReached)
+                voltageCollapse = true;
+
             return currentVoltage;
         }
 
