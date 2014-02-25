@@ -41,8 +41,7 @@ namespace LoadFlowCalculation
             var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
             var lastVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
             Vector<Complex> currentVoltage;
-            voltageCollapse = false;
-            var precisionReached = false;
+            bool precisionReached;
             var targetPrecisionScaled = _targetPrecision*nominalVoltage;
 
             do
@@ -50,9 +49,7 @@ namespace LoadFlowCalculation
                 CalculateNextCoefficientForVoltagePowerSeries(constantCurrents, knownPowers, factorization);
                 voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
                 currentVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
-
                 CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled, out precisionReached, out voltageCollapse);
-
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !precisionReached);
 
