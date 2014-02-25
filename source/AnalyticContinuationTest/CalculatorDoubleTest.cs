@@ -82,5 +82,23 @@ namespace AnalyticContinuationTest
         {
             Assert.AreEqual(16, _calculator.Pow(4, 2), 0.0001);
         }
+
+        [TestMethod]
+        public void IsValidNumber_5_true()
+        {
+            Assert.IsTrue(_calculator.IsValidNumber(5));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_Inf_false()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(Double.NegativeInfinity));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_NaN_false()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(Double.NaN));
+        }
     }
 }

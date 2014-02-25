@@ -81,5 +81,35 @@ namespace AnalyticContinuationTest
         {
             ComplexAssert.AreEqual(new Complex(16, 0), _calculator.Pow(new Complex(4, 0), 2), 0.0001);
         }
+
+        [TestMethod]
+        public void IsValidNumber_4And1_true()
+        {
+            Assert.IsTrue(_calculator.IsValidNumber(new Complex(4, 1)));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_4AndInf_true()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(new Complex(4, Double.PositiveInfinity)));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_InfAnd2_true()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(new Complex(Double.PositiveInfinity, 2)));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_4AndNaN_true()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(new Complex(4, Double.NaN)));
+        }
+
+        [TestMethod]
+        public void IsValidNumber_NaNAnd2_true()
+        {
+            Assert.IsFalse(_calculator.IsValidNumber(new Complex(Double.NaN, 2)));
+        }
     }
 }

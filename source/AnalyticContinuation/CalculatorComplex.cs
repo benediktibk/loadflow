@@ -53,5 +53,10 @@ namespace AnalyticContinuation
             var factorization = matrixCasted.QR();
             return factorization.Solve(vector);
         }
+
+        public bool IsValidNumber(Complex x)
+        {
+            return !x.IsInfinity() && !x.IsNaN();
+        }
     }
 }

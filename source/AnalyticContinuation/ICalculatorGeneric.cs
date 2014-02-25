@@ -14,5 +14,6 @@ namespace AnalyticContinuation
         Matrix<T> CreateDenseMatrix(int rows, int columns);
         Vector<T> CreateDenseVector(int n);
         Vector<T> SolveEquationSystem(Matrix<T> matrix, Vector<T> vector);
+        bool IsValidNumber(T x);
     }
 }

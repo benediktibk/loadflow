@@ -80,7 +80,8 @@ namespace AnalyticContinuation
                 {
                     var firstProduct = _calculator.Multiply(c[k - 1][0], c[k - 2][j + 1]);
                     var secondProduct = _calculator.Multiply(c[k - 2][0], c[k - 1][j + 1]);
-                    c[k][j] = _calculator.Subtract(firstProduct, secondProduct);
+                    var coefficient = _calculator.Subtract(firstProduct, secondProduct);
+                    c[k][j] = coefficient;
                 }
 
             return n;
