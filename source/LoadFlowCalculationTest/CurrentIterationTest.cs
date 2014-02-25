@@ -15,20 +15,17 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotConvergingException))]
-        public void CalculateNodeVoltagesAndPowers_OnlyTwoIterationsAllowed_ThrowsException()
+        public void CalculateNodeVoltagesAndPowers_OnlyTwoIterationsAllowed_VoltageCollapse()
         {
             var calculator = new CurrentIteration(0.00000001, 2);
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
 
-            calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsTrue(_voltageCollapse);
         }
     }
 }

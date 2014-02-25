@@ -5,11 +5,9 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class NodePotentialMethod :
-        LoadFlowCalculator
+    public class NodePotentialMethod : LoadFlowCalculator
     {
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
-            double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, out bool voltageCollapse)
         {
             var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
             var totalCurrents = ownCurrents.Add(constantCurrents);
@@ -20,6 +18,7 @@ namespace LoadFlowCalculation
                 throw new ArgumentOutOfRangeException("admittances",
                     "the resulting admittance matrix is nearly singular");
 
+            voltageCollapse = false;
             return factorization.Solve(totalCurrents);
         }
     }

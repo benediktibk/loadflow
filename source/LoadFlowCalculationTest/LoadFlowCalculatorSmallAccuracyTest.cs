@@ -13,150 +13,126 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] {new Node(), new Node()};
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.1, 0.2);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 0.2);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithSmallResistance_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.01);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionAndOnlyVoltagesKnown_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Voltage = voltages.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Voltage = _voltages.At(1);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.0001);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.0001);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedAndInverseInformationGiven_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Power = powers.At(0);
-            nodes[1].Voltage = voltages.At(1);
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.0001);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.0001);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyVoltagesGiven_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
+            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Voltage = voltages.At(1);
-            nodes[2].Voltage = voltages.At(2);
-            nodes[3].Voltage = voltages.At(3);
-            nodes[4].Voltage = voltages.At(4);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Voltage = _voltages.At(3);
+            nodes[4].Voltage = _voltages.At(4);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.0001, 0.0001);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.0001);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGiven_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateFiveNodeProblem(out admittances, out voltages, out powers, out nominalVoltage);
+            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = powers.At(0);
-            nodes[1].Voltage = voltages.At(1);
-            nodes[2].Voltage = voltages.At(2);
-            nodes[3].Power = powers.At(3);
-            nodes[4].Voltage = voltages.At(4);
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
-            
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
             // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 400);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.3, 400);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGiven_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateThreeNodeProblemWithGroundNode(out admittances, out voltages, out powers, out nominalVoltage);
+            CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
-            nodes[2].Voltage = voltages.At(2);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 30);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.3, 30);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNode_CorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateFiveNodeProblemWithGroundNode(out admittances, out voltages, out powers, out nominalVoltage);
+            CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
-            nodes[2].Power = powers.At(2);
-            nodes[3].Power = powers.At(3);
-            nodes[4].Voltage = voltages.At(4);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Power = _powers.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             // very small differences in the voltages cause already very big errors in the load flow, therefore the load flow is not very accurate with the node potential method
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
-
-            NodeAssert.AreEqual(nodes, voltages, powers, 0.3, 100);
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.3, 100);
         }
     }
 }

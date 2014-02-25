@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Complex.Factorization;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
@@ -16,8 +15,7 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances,
-            double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, out bool voltageCollapse)
         {
             var nodeCount = admittances.RowCount;
             var initialVoltages = new Complex[nodeCount];
@@ -43,9 +41,7 @@ namespace LoadFlowCalculation
                 ++iterations;
             } while (iterations <= _maximumIterations && voltageChange > _terminationCriteria);
 
-            if (iterations > _maximumIterations)
-                throw new NotConvergingException();
-
+            voltageCollapse = iterations > _maximumIterations;
             return voltages;
         }
     }

@@ -23,8 +23,9 @@ namespace LoadFlowCalculation
         public override Vector<Complex> CalculateUnknownVoltages(
             Matrix<Complex> admittances,
             double nominalVoltage, Vector<Complex> constantCurrents,
-            Vector<Complex> knownPowers)
+            Vector<Complex> knownPowers, out bool voltageCollapse)
         {
+            voltageCollapse = false;
             var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
             var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation(voltagePowerSeries);
             return CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);

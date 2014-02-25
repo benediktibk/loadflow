@@ -13,6 +13,11 @@ namespace LoadFlowCalculationTest
     abstract public class LoadFlowCalculatorTest
     {
         protected LoadFlowCalculator _calculator;
+        protected Matrix<Complex> _admittances;
+        protected Vector<Complex> _voltages;
+        protected Vector<Complex> _powers;
+        protected double _nominalVoltage;
+        protected bool _voltageCollapse;
 
         abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
 
@@ -25,26 +30,24 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnection_CalculatorReceivesCorrectProblemAndCorrectResults()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.1, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
             var admittancesToKnownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(-10, 0)}});
             var admittancesToUnknownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(10, 0)}});
             var knownVoltages = new DenseVector(new[] {new Complex(1, 0)});
             var knownPowers = new DenseVector(new[]{new Complex(-1, 0)});
             var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages).Multiply(new Complex(-1, 0));
+            bool voltageCollapse;
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
-                .Setup(o => o.CalculateUnknownVoltages(admittancesToUnknownVoltages, nominalVoltage, constantCurrents, knownPowers))
+                .Setup(o => o.CalculateUnknownVoltages(admittancesToUnknownVoltages, _nominalVoltage, constantCurrents, knownPowers, out voltageCollapse))
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             _calculator = calculatorInternalMock.Object;
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes,
+                out _voltageCollapse);
 
             ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
             ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
@@ -64,7 +67,7 @@ namespace LoadFlowCalculationTest
             nodes[0].Voltage = new Complex(1, 2);
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
         }
 
         [TestMethod]
@@ -77,7 +80,7 @@ namespace LoadFlowCalculationTest
             var nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
         }
 
         [TestMethod]
@@ -90,50 +93,42 @@ namespace LoadFlowCalculationTest
             var nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OnlyPowersKnown_ThrowsException()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Power = powers.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Power = _powers.At(1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
         }
 
         [TestMethod]
         [ExpectedException(typeof (ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_InvalidAdmittanceMatrix_ThrowsException()
         {
-            Matrix<Complex> admittances;
-            Vector<Complex> voltages;
-            Vector<Complex> powers;
-            double nominalVoltage;
-            CreateOneSideSuppliedConnection(0.001, out admittances, out voltages, out powers, out nominalVoltage);
-            var diagonal = admittances.Diagonal();
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var diagonal = _admittances.Diagonal();
             var diagonalArray = diagonal.ToArray();
             diagonalArray[0] += new Complex(1, 0);
             diagonal.SetValues(diagonalArray);
-            admittances.SetDiagonal(diagonal);
+            _admittances.SetDiagonal(diagonal);
             var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = voltages.At(0);
-            nodes[1].Power = powers.At(1);
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, nominalVoltage, nodes);
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
         }
 
         protected static void CreateOneSideSuppliedConnection(double R, out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
-            double Y = 1.0 / R;
-            Complex[,] admittancesArray = { { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
+            var Y = 1.0 / R;
+            var admittancesArray = new[,]{ { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
 
             var inputVoltage = new Complex(1, 0);
