@@ -50,8 +50,10 @@
   <ItemGroup>
     <Compile Include="AitkenProcess.cs" />
     <Compile Include="CalculatorComplex.cs" />
+    <Compile Include="CalculatorDecimalComplex.cs" />
     <Compile Include="CalculatorDouble.cs" />
     <Compile Include="ContinuedFraction.cs" />
+    <Compile Include="DecimalComplex.cs" />
     <Compile Include="IAnalyticContinuation.cs" />
     <Compile Include="ICalculatorGeneric.cs" />
     <Compile Include="PadeApproximant.cs" />
