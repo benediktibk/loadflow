@@ -51,23 +51,32 @@ namespace LoadFlowCalculation
                 voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
                 currentVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
 
-                var voltageChange = currentVoltage.Subtract(lastVoltage);
-                var maximumVoltageChange = voltageChange.AbsoluteMaximum();
-
-                if (maximumVoltageChange.Magnitude < targetPrecisionScaled)
-                    precisionReached = true;
-                else
-                {
-                    var lastCoefficient = _coefficients[_coefficients.Count - 1];
-                    var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
-                    if (Math.Log10(maximumLastCoefficient.Magnitude / targetPrecisionScaled) > 15)
-                        voltageCollapse = true;
-                }
+                CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled, out precisionReached, out voltageCollapse);
 
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !precisionReached);
 
             return currentVoltage;
+        }
+
+        private void CheckConvergence(Vector<Complex> currentVoltage, Vector<Complex> lastVoltage, double targetPrecisionScaled, out bool precisionReached, out bool voltageCollapse)
+        {
+            var voltageChange = currentVoltage.Subtract(lastVoltage);
+            var maximumVoltageChange = voltageChange.AbsoluteMaximum();
+
+            if (maximumVoltageChange.Magnitude < targetPrecisionScaled)
+            {
+                precisionReached = true;
+                voltageCollapse = false;
+            }
+            else
+            {
+                precisionReached = false;
+
+                var lastCoefficient = _coefficients[_coefficients.Count - 1];
+                var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
+                voltageCollapse = Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 15;
+            }
         }
 
         public void CalculateNextCoefficientForVoltagePowerSeries(Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization)
