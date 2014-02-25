@@ -11,12 +11,23 @@ namespace LoadFlowCalculation
     public class HolomorphicEmbeddedLoadFlowMethod :
         LoadFlowCalculator
     {
-        private readonly double _coefficientTerminationCriteria;
+        private readonly double _targetPrecision;
         private readonly int _maximumNumberOfCoefficients;
+        private List<Vector<Complex>> _coefficients;
+        private List<Vector<Complex>> _inverseCoefficients;
+        private PowerSeriesComplex[] _voltagePowerSeries;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double coefficientTerminationCriteria, int maximumNumberOfCoefficients)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients)
         {
-            _coefficientTerminationCriteria = coefficientTerminationCriteria;
+            if (maximumNumberOfCoefficients < 4)
+                throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",
+                    "there must be at least 4 coefficients");
+
+            if (maximumNumberOfCoefficients%2 == 1)
+                throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",
+                    "the maximum number of coefficients must be even");
+
+            _targetPrecision = targetPrecision;
             _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
         }
 
@@ -25,50 +36,65 @@ namespace LoadFlowCalculation
             double nominalVoltage, Vector<Complex> constantCurrents,
             Vector<Complex> knownPowers, out bool voltageCollapse)
         {
-            voltageCollapse = false;
-            var voltagePowerSeries = CalculateVoltagePowerSeries(admittances, constantCurrents, knownPowers);
-            var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation(voltagePowerSeries);
-            return CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
-        }
-
-        public PowerSeriesComplex[] CalculateVoltagePowerSeries(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
-        {
             var factorization = admittances.QR();
-            List<Vector<Complex>> coefficients;
-            List<Vector<Complex>> inverseCoefficients;
-            CalculateInitialCoefficients(admittances, constantCurrents, knownPowers, factorization, out coefficients,
-                out inverseCoefficients);
-            var n = 2;
-            double coefficientNorm;
+            InitializeAlgorithm(admittances, constantCurrents, knownPowers, factorization);
+            var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
+            var lastVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
+            Vector<Complex> currentVoltage;
+            voltageCollapse = false;
+            var precisionReached = false;
+            var targetPrecisionScaled = _targetPrecision*nominalVoltage;
 
             do
             {
-                var newCoefficient = CalculateNextCoefficient(inverseCoefficients[inverseCoefficients.Count - 1], factorization,
-                    knownPowers);
-                coefficients.Add(newCoefficient);
-                var newInverseCoefficient = CalculateNextInverseCoefficient(coefficients, inverseCoefficients);
-                inverseCoefficients.Add(newInverseCoefficient);
+                CalculateNextCoefficientForVoltagePowerSeries(constantCurrents, knownPowers, factorization);
+                voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
+                currentVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
 
-                coefficientNorm = newCoefficient.SumMagnitudes().Magnitude;
-                ++n;
-            } while (n < _maximumNumberOfCoefficients && coefficientNorm > _coefficientTerminationCriteria);
+                var voltageChange = currentVoltage.Subtract(lastVoltage);
+                var maximumVoltageChange = voltageChange.AbsoluteMaximum();
 
-            var voltagePowerSeries = CreateVoltagePowerSeriesFromCoefficients(coefficients);
-            return voltagePowerSeries;
+                if (maximumVoltageChange.Magnitude < targetPrecisionScaled)
+                    precisionReached = true;
+                else
+                {
+                    var lastCoefficient = _coefficients[_coefficients.Count - 1];
+                    var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
+                    if (Math.Log10(maximumLastCoefficient.Magnitude / targetPrecisionScaled) > 15)
+                        voltageCollapse = true;
+                }
+
+                lastVoltage = currentVoltage;
+            } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !precisionReached);
+
+            return currentVoltage;
         }
 
-        private static IAnalyticContinuation<Complex>[] CreateVoltageAnalyticContinuation(PowerSeriesComplex[] powerSeries)
+        public void CalculateNextCoefficientForVoltagePowerSeries(Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization)
         {
-            var nodeCount = powerSeries.Count();
+            var newCoefficient = CalculateNextCoefficient(_inverseCoefficients[_inverseCoefficients.Count - 1], factorization,
+                knownPowers);
+            _coefficients.Add(newCoefficient);
+            var newInverseCoefficient = CalculateNextInverseCoefficient(_coefficients, _inverseCoefficients);
+            _inverseCoefficients.Add(newInverseCoefficient);
+
+            var coefficientIndex = _coefficients.Count - 1;
+            for (var i = 0; i < _voltagePowerSeries.Length; ++i)
+                _voltagePowerSeries[i][coefficientIndex] = _coefficients[coefficientIndex][i];
+        }
+
+        private IAnalyticContinuation<Complex>[] CreateVoltageAnalyticContinuation()
+        {
+            var nodeCount = _voltagePowerSeries.Count();
             var analyticContinuations = new IAnalyticContinuation<Complex>[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
-                analyticContinuations[i] = new EpsilonAlgorithm<Complex>(powerSeries[i]);
+                analyticContinuations[i] = new EpsilonAlgorithm<Complex>(_voltagePowerSeries[i]);
 
             return analyticContinuations;
         }
 
-        private static Vector<Complex> CalculateVoltagesWithAnalyticContinuations(IAnalyticContinuation<Complex>[] padeApproximants)
+        private static Vector<Complex> CalculateVoltagesWithAnalyticContinuations(IList<IAnalyticContinuation<Complex>> padeApproximants)
         {
             var nodeCount = padeApproximants.Count();
             var voltages = new Complex[nodeCount];
@@ -79,47 +105,42 @@ namespace LoadFlowCalculation
             return new DenseVector(voltages);
         }
 
-        private static PowerSeriesComplex[] CreateVoltagePowerSeriesFromCoefficients(List<Vector<Complex>> coefficients)
+        private void CreateVoltagePowerSeriesFromCoefficients()
         {
-            var coefficientCount = coefficients.Count;
-            if (coefficientCount < 1)
-                throw new ArgumentOutOfRangeException("coefficients", "there must be at least one coefficient");
-
-            var nodeCount = coefficients[0].Count;
-            var voltages = new PowerSeriesComplex[nodeCount];
-
-            for (var i = 0; i < nodeCount; ++i)
-                voltages[i] = new PowerSeriesComplex(coefficientCount); 
-
+            var coefficientCount = _coefficients.Count;
+            var nodeCount = _coefficients[0].Count;
+            
             for (var i = 0; i < coefficientCount; ++i)
             {
-                var coefficient = coefficients[i];
+                var coefficient = _coefficients[i];
 
                 for (var j = 0; j < nodeCount; ++j)
-                    voltages[j][i] = coefficient[j];
+                    _voltagePowerSeries[j][i] = coefficient[j];
             }
-
-            return voltages;
         }
 
-        private void CalculateInitialCoefficients(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization,
-            out List<Vector<Complex>> coefficients, out List<Vector<Complex>> inverseCoefficients)
+        private void InitializeAlgorithm(Matrix<Complex> admittances, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization)
         {
             var nodeCount = admittances.RowCount;
-            coefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
-            inverseCoefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
+            _coefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
+            _inverseCoefficients = new List<Vector<Complex>>(_maximumNumberOfCoefficients);
+            _voltagePowerSeries = new PowerSeriesComplex[nodeCount];
+
+            for (var i = 0; i < nodeCount; ++i)
+                _voltagePowerSeries[i] = new PowerSeriesComplex(_maximumNumberOfCoefficients);
 
             var admittanceRowSum = CalculateAdmittanceRowSum(admittances);
             var firstCoefficient = CalculateFirstCoefficient(factorization, admittances, admittanceRowSum);
             Vector<Complex> firstInverseCoefficient = new DenseVector(nodeCount);
             firstCoefficient.DivideByThis(new Complex(1, 0), firstInverseCoefficient);
-            coefficients.Add(firstCoefficient);
-            inverseCoefficients.Add(firstInverseCoefficient);
+            _coefficients.Add(firstCoefficient);
+            _inverseCoefficients.Add(firstInverseCoefficient);
             var secondCoefficient = CalculateSecondCoefficient(firstInverseCoefficient, factorization, knownPowers,
                 constantCurrents, admittanceRowSum);
-            coefficients.Add(secondCoefficient);
-            var secondInverseCoefficient = CalculateNextInverseCoefficient(coefficients, inverseCoefficients);
-            inverseCoefficients.Add(secondInverseCoefficient);
+            _coefficients.Add(secondCoefficient);
+            var secondInverseCoefficient = CalculateNextInverseCoefficient(_coefficients, _inverseCoefficients);
+            _inverseCoefficients.Add(secondInverseCoefficient);
+            CreateVoltagePowerSeriesFromCoefficients();
         }
 
         private static Vector<Complex> CalculateAdmittanceRowSum(Matrix<Complex> admittances)
@@ -179,6 +200,11 @@ namespace LoadFlowCalculation
 
             newInverseCoefficient = newInverseCoefficient.PointwiseDivide(coefficients[0]);
             return newInverseCoefficient.Multiply(new Complex(-1, 0));
+        }
+
+        public PowerSeriesComplex[] VoltagePowerSeries
+        {
+            get { return _voltagePowerSeries; }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Numerics;
+using AnalyticContinuation;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,8 +24,9 @@ namespace LoadFlowCalculationTest
             var powers = new DenseVector(new[] {new Complex(-1, 0)});
             var calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0001, 4);
 
-            var allPowerSeries = calculatorHelm.CalculateVoltagePowerSeries(admittances, currents, powers);
+            calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, powers, out _voltageCollapse);
 
+            var allPowerSeries = calculatorHelm.VoltagePowerSeries;
             Assert.AreEqual(1, allPowerSeries.Count());
             var powerSeries = allPowerSeries[0];
             Assert.AreEqual(3, powerSeries.Degree);
