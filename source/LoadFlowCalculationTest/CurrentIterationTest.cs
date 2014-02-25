@@ -1,13 +1,10 @@
-﻿using System.Numerics;
-using LoadFlowCalculation;
-using MathNet.Numerics.LinearAlgebra.Generic;
+﻿using LoadFlowCalculation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class CurrentIterationTest :
-        LoadFlowCalculatorHighAccuracyTest
+    public class CurrentIterationTest : LoadFlowCalculatorHighAccuracyTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {

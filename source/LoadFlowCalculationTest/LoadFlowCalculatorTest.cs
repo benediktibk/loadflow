@@ -141,6 +141,20 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
+        protected static void CreateCollapsingOneSideSuppliedConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        {
+            var admittancesArray = new[,] { { new Complex(1, 0), new Complex(-1, 0) }, { new Complex(-1, 0), new Complex(1, 0) } };
+            admittances = DenseMatrix.OfArray(admittancesArray);
+
+            var inputVoltage = new Complex(1, 0);
+            var outputVoltage = new Complex();
+            var inputPower = new Complex();
+            var outputPower = new Complex(-0.5, 0);
+            voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
+            powers = new DenseVector(new[] { inputPower, outputPower });
+            nominalVoltage = 1;
+        }
+
         protected static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {

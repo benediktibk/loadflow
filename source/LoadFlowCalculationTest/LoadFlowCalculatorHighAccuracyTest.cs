@@ -90,5 +90,18 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_CollapsingSystem_VoltageCollapse()
+        {
+            CreateCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsTrue(_voltageCollapse);
+        }
     }
 }
