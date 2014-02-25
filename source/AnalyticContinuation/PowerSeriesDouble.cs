@@ -2,8 +2,7 @@
 {
     public class PowerSeriesDouble : PowerSeries<double>
     {
-        public PowerSeriesDouble(int numberOfCoefficients) :
-            base(numberOfCoefficients, new CalculatorDouble())
+        public PowerSeriesDouble(int numberOfCoefficients) : base(numberOfCoefficients, new CalculatorDouble())
         { }
     }
 }

@@ -60,6 +60,7 @@
     <Compile Include="PadeApproximant.cs" />
     <Compile Include="PowerSeries.cs" />
     <Compile Include="PowerSeriesComplex.cs" />
+    <Compile Include="PowerSeriesDecimalComplex.cs" />
     <Compile Include="PowerSeriesDouble.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EpsilonAlgorithm.cs" />
