@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
-    public class CalculatorComplex : ICalculatorGeneric<Complex>
+    public class CalculatorComplex : ICalculatorMatrixOperationsGeneric<Complex>
     {
         public Complex Add(Complex a, Complex b)
         {

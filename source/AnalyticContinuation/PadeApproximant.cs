@@ -7,11 +7,11 @@ namespace AnalyticContinuation
     {
         private PowerSeries<T> _p;
         private PowerSeries<T> _q;
-        private readonly ICalculatorGeneric<T> _calculator; 
+        private readonly ICalculatorMatrixOperationsGeneric<T> _calculator; 
 
-        public PadeApproximant(int L, int M, PowerSeries<T> powerSeries)
+        public PadeApproximant(int L, int M, PowerSeries<T> powerSeries, ICalculatorMatrixOperationsGeneric<T> calculator)
         {
-            _calculator = powerSeries.Calculator;
+            _calculator = calculator;
             if (L < 1)
                 throw new ArgumentOutOfRangeException("L", "the degree for the power series in the nominator must be at least 1");
             if (M < 1)

@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
-    public class CalculatorDouble : ICalculatorGeneric<double>
+    public class CalculatorDouble : ICalculatorMatrixOperationsGeneric<double>
     {
         public double Add(double a, double b)
         {

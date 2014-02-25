@@ -1,5 +1,4 @@
 ﻿using System;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation
 {
@@ -11,9 +10,6 @@ namespace AnalyticContinuation
         T Divide(T a, T b);
         T Pow(T a, int exponent);
         T AssignFromDouble(double x);
-        Matrix<T> CreateDenseMatrix(int rows, int columns);
-        Vector<T> CreateDenseVector(int n);
-        Vector<T> SolveEquationSystem(Matrix<T> matrix, Vector<T> vector);
         bool IsValidNumber(T x);
     }
 }
