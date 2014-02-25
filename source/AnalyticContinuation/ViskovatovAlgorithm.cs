@@ -22,7 +22,10 @@ namespace AnalyticContinuation
             {
                 var xPotency = _calculator.Pow(x, i);
                 var coefficient = _powerSeries[i];
-                summands.Add(_calculator.Multiply(coefficient, xPotency));
+                var summand = _calculator.Multiply(coefficient, xPotency);
+
+                if (!summand.Equals(_calculator.AssignFromDouble(0)))
+                    summands.Add(summand);
             }
 
             return Evaluate(summands);
@@ -33,7 +36,8 @@ namespace AnalyticContinuation
             var summands = new List<T>(_powerSeries.NumberOfCoefficients);
 
             for (var i = 0; i < _powerSeries.NumberOfCoefficients; ++i)
-                summands.Add(_powerSeries[i]);
+                if (!_powerSeries[i].Equals(_calculator.AssignFromDouble(0)))
+                    summands.Add(_powerSeries[i]);
 
             return Evaluate(summands);
         }
@@ -46,6 +50,7 @@ namespace AnalyticContinuation
             for (var i = 0; i < n; ++i)
                 c.Add(new T[n - i]);
 
+            c[0][0] = _calculator.AssignFromDouble(1);
             for (var i = 0; i < summands.Count; ++i)
                 c[1][i] = summands[i];
 
