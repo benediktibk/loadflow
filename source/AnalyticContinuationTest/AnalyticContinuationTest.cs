@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Net.Security;
 using System.Numerics;
 using AnalyticContinuation;
-using MathNet.Numerics.Distributions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestHelper;
 
 namespace AnalyticContinuationTest
 {
@@ -13,7 +10,7 @@ namespace AnalyticContinuationTest
     {
         protected PowerSeries<double> _powerSeriesExponential;
         protected PowerSeries<double> _powerSeriesSine;
-        protected PowerSeries<Complex> _powerSeriesVoltage; 
+        protected PowerSeries<Complex> _powerSeriesVoltage;
         protected IAnalyticContinuation<double> _continuationExponential;
         protected IAnalyticContinuation<double> _continuationSine;
         protected IAnalyticContinuation<Complex> _continuationVoltage;
@@ -26,10 +23,11 @@ namespace AnalyticContinuationTest
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             _powerSeriesSine = PowerSeriesDouble.CreateSine(10, new CalculatorDouble());
-            _powerSeriesVoltage = CreateHELMVoltageSeries();
+            _powerSeriesVoltage = CreateHelmVoltageSeriesComplex();
             _continuationExponential = CreateAnalyticContinuation(_powerSeriesExponential);
             _continuationSine = CreateAnalyticContinuation(_powerSeriesSine);
             _continuationVoltage = CreateAnalyticContinuation(_powerSeriesVoltage);
+
         }
 
         [TestMethod]
@@ -146,7 +144,31 @@ namespace AnalyticContinuationTest
             return powerSeries;
         }
 
-        public static PowerSeriesComplex CreateHELMVoltageSeries()
+        public static PowerSeriesComplex CreateHelmVoltageSeriesComplex()
+        {
+            var coefficients = CreateHelmVoltageSeriesCoefficients();
+
+            var series = new PowerSeriesComplex(50);
+
+            for (var i = 0; i < 50; ++i)
+                series[i] = coefficients[i];
+
+            return series;
+        }
+
+        public static PowerSeriesDecimalComplex CreateHelmVoltageSeriesDecimalComplex()
+        {
+            var coefficients = CreateHelmVoltageSeriesCoefficients();
+
+            var series = new PowerSeriesDecimalComplex(50);
+
+            for (var i = 0; i < 50; ++i)
+                series[i] = new DecimalComplex(coefficients[i]);
+
+            return series;
+        }
+
+        private static Complex[] CreateHelmVoltageSeriesCoefficients()
         {
             var coefficients = new[]
             {
@@ -201,13 +223,7 @@ namespace AnalyticContinuationTest
                 new Complex(4.37382701455794E+23, -9.08448369839981E+21),
                 new Complex(1.55051048068301E+24, -3.13652011053964E+22),
             };
-
-            var series = new PowerSeriesComplex(50);
-
-            for (var i = 0; i < 50; ++i)
-                series[i] = coefficients[i];
-
-            return series;
+            return coefficients;
         }
 
         public static PowerSeriesDouble CreateLn2Series(int n)
