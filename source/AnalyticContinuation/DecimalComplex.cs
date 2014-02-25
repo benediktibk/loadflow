@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace AnalyticContinuation
 {
@@ -11,6 +12,12 @@ namespace AnalyticContinuation
         {
             Real = real;
             Imaginary = imaginary;
+        }
+
+        public DecimalComplex(Complex value) : this()
+        {
+            Real = (decimal) value.Real;
+            Imaginary = (decimal) value.Imaginary;
         }
 
         public bool Equals(DecimalComplex other)

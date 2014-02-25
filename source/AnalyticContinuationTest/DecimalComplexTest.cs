@@ -1,4 +1,5 @@
-﻿using AnalyticContinuation;
+﻿using System.Numerics;
+using AnalyticContinuation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnalyticContinuationTest
@@ -36,6 +37,22 @@ namespace AnalyticContinuationTest
             var value = new DecimalComplex();
 
             Assert.AreEqual(0, value.Imaginary);
+        }
+
+        [TestMethod]
+        public void Constructor_validComplexValue_RealIsCorrect()
+        {
+            var value = new DecimalComplex(new Complex(-4, 2));
+
+            Assert.AreEqual(-4, value.Real);
+        }
+
+        [TestMethod]
+        public void Constructor_validComplexValue_ImaginaryIsCorrect()
+        {
+            var value = new DecimalComplex(new Complex(-4, 2));
+
+            Assert.AreEqual(2, value.Imaginary);
         }
 
         [TestMethod]
