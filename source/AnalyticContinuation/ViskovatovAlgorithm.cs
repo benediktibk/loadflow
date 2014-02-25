@@ -54,6 +54,39 @@ namespace AnalyticContinuation
 
         private T Evaluate(IList<T> summands)
         {
+            var c = InitializeCoefficients(summands);
+            CalculateCoefficients(ref c);
+            return CalculateContinuedFraction(c);
+        }
+
+        private T CalculateContinuedFraction(IReadOnlyList<T[]> c)
+        {
+            var n = c.Count;
+            var result = _calculator.AssignFromDouble(0);
+            for (var i = n - 1; i >= 1; --i)
+            {
+                var denominator = _calculator.Add(c[i - 1][0], result);
+                var nominator = c[i][0];
+                result = _calculator.Divide(nominator, denominator);
+            }
+            return result;
+        }
+
+        private void CalculateCoefficients(ref List<T[]> c)
+        {
+            var n = c.Count;
+
+            for (var k = 2; k < n; ++k)
+                for (var j = 0; j < n - k; ++j)
+                {
+                    var firstProduct = _calculator.Multiply(c[k - 1][0], c[k - 2][j + 1]);
+                    var secondProduct = _calculator.Multiply(c[k - 2][0], c[k - 1][j + 1]);
+                    c[k][j] = _calculator.Subtract(firstProduct, secondProduct);
+                }
+        }
+
+        private List<T[]> InitializeCoefficients(IList<T> summands)
+        {
             var n = summands.Count + 1;
             var c = new List<T[]>(n);
 
@@ -63,24 +96,7 @@ namespace AnalyticContinuation
             c[0][0] = _calculator.AssignFromDouble(1);
             for (var i = 0; i < summands.Count; ++i)
                 c[1][i] = summands[i];
-
-            for (var k = 2; k < n; ++k)
-                for (var j = 0; j < n - k; ++j)
-                {
-                    var firstProduct = _calculator.Multiply(c[k - 1][0], c[k - 2][j + 1]);
-                    var secondProduct = _calculator.Multiply(c[k - 2][0], c[k - 1][j + 1]);
-                    c[k][j] = _calculator.Subtract(firstProduct, secondProduct);
-                }
-
-            var result = _calculator.AssignFromDouble(0);
-            for (var i = n - 1; i >= 1; --i)
-            {
-                var denominator = _calculator.Add(c[i - 1][0], result);
-                var nominator = c[i][0];
-                result = _calculator.Divide(nominator, denominator);
-            }
-
-            return result;
+            return c;
         }
     }
 }
