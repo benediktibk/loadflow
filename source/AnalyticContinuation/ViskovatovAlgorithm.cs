@@ -16,6 +16,12 @@ namespace AnalyticContinuation
 
         public T Evaluate(T x)
         {
+            var summands = CalculateSummands(x);
+            return Evaluate(summands);
+        }
+
+        private List<T> CalculateSummands(T x)
+        {
             var summands = new List<T>(_powerSeries.NumberOfCoefficients);
 
             for (var i = 0; i < _powerSeries.NumberOfCoefficients; ++i)
@@ -27,19 +33,23 @@ namespace AnalyticContinuation
                 if (!summand.Equals(_calculator.AssignFromDouble(0)))
                     summands.Add(summand);
             }
-
-            return Evaluate(summands);
+            return summands;
         }
 
         public T EvaluateAt1()
+        {
+            var summands = CalculateSummands();
+            return Evaluate(summands);
+        }
+
+        private List<T> CalculateSummands()
         {
             var summands = new List<T>(_powerSeries.NumberOfCoefficients);
 
             for (var i = 0; i < _powerSeries.NumberOfCoefficients; ++i)
                 if (!_powerSeries[i].Equals(_calculator.AssignFromDouble(0)))
                     summands.Add(_powerSeries[i]);
-
-            return Evaluate(summands);
+            return summands;
         }
 
         private T Evaluate(IList<T> summands)
