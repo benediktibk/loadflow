@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Numerics;
-using AnalyticContinuation;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,11 +8,11 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class HolomorphicEmbeddedLoadflowMethodTest : LoadFlowCalculatorHighAccuracyTest
+    public class HolomorphicEmbeddedLoadflowMethodWithoutAccuracyImprovementTest : LoadFlowCalculatorSmallAccuracyTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.0001, 50);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.0001, 50, false);
         }
 
         [TestMethod]
@@ -22,7 +21,7 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(new [,]{{new Complex(1000, 0)}});
             var currents = new DenseVector(new[] {new Complex(1000, 0)});
             var powers = new DenseVector(new[] {new Complex(-1, 0)});
-            var calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0001, 4);
+            var calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0001, 4, false);
 
             calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, powers, out _voltageCollapse);
 

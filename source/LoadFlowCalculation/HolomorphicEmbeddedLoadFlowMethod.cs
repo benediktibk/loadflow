@@ -9,16 +9,16 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class HolomorphicEmbeddedLoadFlowMethod :
-        LoadFlowCalculator
+    public class HolomorphicEmbeddedLoadFlowMethod : LoadFlowCalculator
     {
         private readonly double _targetPrecision;
         private readonly int _maximumNumberOfCoefficients;
         private List<Vector<Complex>> _coefficients;
         private List<Vector<Complex>> _inverseCoefficients;
         private PowerSeriesComplex[] _voltagePowerSeries;
+        private bool _finalAccuarcyImprovement;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement)
         {
             if (maximumNumberOfCoefficients < 4)
                 throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",
@@ -26,6 +26,7 @@ namespace LoadFlowCalculation
             
             _targetPrecision = targetPrecision;
             _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
+            _finalAccuarcyImprovement = finalAccuracyImprovement;
         }
 
         public override Vector<Complex> CalculateUnknownVoltages(
@@ -40,7 +41,7 @@ namespace LoadFlowCalculation
             Vector<Complex> currentVoltage;
             bool precisionReached = false;
             bool precisionReachedPrevious;
-            var targetPrecisionScaled = _targetPrecision*nominalVoltage;
+            var targetPrecisionScaled = _targetPrecision*nominalVoltage/10;
 
             do
             {
@@ -51,8 +52,31 @@ namespace LoadFlowCalculation
                 CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled, out precisionReached, out voltageCollapse);
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !(precisionReached && precisionReachedPrevious));
-            
-            return currentVoltage;
+
+            if (!_finalAccuarcyImprovement) 
+                return currentVoltage;
+
+            var iterations = 0;
+            double voltageChange;
+            var knownPowersConjugated = knownPowers.Conjugate();
+            var improvedVoltage = currentVoltage;
+
+            do
+            {
+                var loadCurrents = knownPowersConjugated.PointwiseDivide(improvedVoltage.Conjugate());
+                var currents = loadCurrents.Add(constantCurrents);
+                var newVoltages = factorization.Solve(currents);
+                var voltageDifference = newVoltages.Subtract(improvedVoltage);
+                var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
+                voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
+                improvedVoltage = newVoltages;
+                ++iterations;
+            } while (iterations <= 1000 && voltageChange > targetPrecisionScaled);
+
+            var voltageImprovement = improvedVoltage - currentVoltage;
+            var maximumVoltageImprovement = voltageImprovement.AbsoluteMaximum().Magnitude;
+
+            return maximumVoltageImprovement < 0.1*nominalVoltage ? improvedVoltage : currentVoltage;
         }
 
         private void CheckConvergence(Vector<Complex> currentVoltage, Vector<Complex> lastVoltage, double targetPrecisionScaled, out bool precisionReached, out bool voltageCollapse)

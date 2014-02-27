@@ -70,7 +70,8 @@
     <Compile Include="LoadFlowCalculatorSmallAccuracyTest.cs" />
     <Compile Include="LoadFlowCalculatorHighAccuracyTest.cs" />
     <Compile Include="CurrentIterationTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadflowMethodWithoutAccuracyImprovementTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadflowMethodWithAccuracyImprovementTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
