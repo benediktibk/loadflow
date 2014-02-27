@@ -16,7 +16,7 @@ namespace LoadFlowCalculation
         private List<Vector<Complex>> _coefficients;
         private List<Vector<Complex>> _inverseCoefficients;
         private PowerSeriesComplex[] _voltagePowerSeries;
-        private bool _finalAccuarcyImprovement;
+        private readonly bool _finalAccuarcyImprovement;
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement)
         {
