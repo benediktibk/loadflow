@@ -51,10 +51,7 @@ namespace LoadFlowCalculation
                 CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled, out precisionReached, out voltageCollapse);
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !(precisionReached && precisionReachedPrevious));
-
-            if (!precisionReached)
-                voltageCollapse = true;
-
+            
             return currentVoltage;
         }
 
@@ -72,7 +69,7 @@ namespace LoadFlowCalculation
 
                 var lastCoefficient = _coefficients[_coefficients.Count - 1];
                 var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
-                if (Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 20)
+                if (Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 30)
                     voltageCollapse = true;
             }
 
