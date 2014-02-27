@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MathExtensions;
 
 namespace AnalyticContinuation
@@ -8,9 +9,12 @@ namespace AnalyticContinuation
         public LevinUTransform(PowerSeries<T> powerSeries, int b, int n) : base(powerSeries, b, n)
         { }
 
-        protected override T EvaluateG(int i)
+        protected override T EvaluateG(int i, IList<T> coefficients)
         {
-            throw new NotImplementedException();
+            var modifier = i + B;
+            var modifierConverted = Calculator.AssignFromDouble(modifier);
+            var coefficient = coefficients[i];
+            return Calculator.Multiply(modifierConverted, coefficient);
         }
     }
 }
