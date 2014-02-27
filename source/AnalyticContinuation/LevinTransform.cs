@@ -4,19 +4,19 @@ using MathExtensions;
 
 namespace AnalyticContinuation
 {
-    public abstract class LevinTransform<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
+    /// <summary>
+    /// Levin t-Transformation with n = 0 and b = 1
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class LevinTransform<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
     {
         private readonly PowerSeries<T> _powerSeries;
-        protected readonly ICalculatorGeneric<T> Calculator;
-        protected readonly int B;
-        protected readonly int N;
+        private readonly ICalculatorGeneric<T> _calculator;
 
-        protected LevinTransform(PowerSeries<T> powerSeries, int b, int n)
+        public LevinTransform(PowerSeries<T> powerSeries)
         {
             _powerSeries = powerSeries;
-            Calculator = powerSeries.Calculator;
-            B = b;
-            N = n;
+            _calculator = powerSeries.Calculator;
         }
 
         public T Evaluate(T x)
@@ -33,39 +33,50 @@ namespace AnalyticContinuation
 
         private T EvaluateInternal(IList<T> summands)
         {
+            var summandsReduced = ReduceSummands(summands);
+            var partialSums = CalculatePartialSums(summandsReduced);
+
+            var nominator = new T();
+            var denominator = new T();
+            var k = summandsReduced.Count - 2;
+
+            for (var j = 0; j <= k; ++j)
+            {
+                var sign = j%2 == 0 ? 1 : -1;
+                var binomialCoefficient = MathExtended.BinomialCoefficient(k, j);
+                var power = Math.Pow(j + 1, k - 1)/Math.Pow(k + 1, k - 1);
+                var modifier = sign*binomialCoefficient*power;
+                var modifierConverted = _calculator.AssignFromDouble(modifier);
+                var partialSum = partialSums[j];
+                var summand = summandsReduced[j + 1];
+                var nominatorPart = _calculator.Multiply(modifierConverted, _calculator.Divide(partialSum, summand));
+                var denominatorPart = _calculator.Divide(modifierConverted, summand);
+                nominator = _calculator.Add(nominator, nominatorPart);
+                denominator = _calculator.Add(denominator, denominatorPart);
+            }
+
+            return _calculator.Divide(nominator, denominator);
+        }
+
+        private T[] CalculatePartialSums(IReadOnlyList<T> summandsReduced)
+        {
+            var partialSums = new T[summandsReduced.Count];
+            partialSums[0] = summandsReduced[0];
+
+            for (var i = 1; i < summandsReduced.Count; ++i)
+                partialSums[i] = _calculator.Add(partialSums[i - 1], summandsReduced[i]);
+            return partialSums;
+        }
+
+        private static List<T> ReduceSummands(ICollection<T> summands)
+        {
             var summandsReduced = new List<T>(summands.Count);
 
             foreach (var summand in summands)
                 if (!summand.Equals(new T()))
                     summandsReduced.Add(summand);
 
-            var partialSums = new T[summandsReduced.Count];
-            partialSums[0] = summandsReduced[0];
-
-            for (var i = 1; i < summandsReduced.Count; ++i)
-                partialSums[i] = Calculator.Add(partialSums[i - 1], summandsReduced[i]);
-
-            var nominator = new T();
-            var denominator = new T();
-            var k = summandsReduced.Count - N;
-
-            for (var j = 0; j <= k; ++j)
-            {
-                var sign = j%2 == 0 ? 1 : -1;
-                var binomialCoefficient = MathExtended.BinomialCoefficient(k, j);
-                var power = Math.Pow(N + j + B, k - 1);
-                var modifier = sign*binomialCoefficient*power;
-                var modifierConverted = Calculator.AssignFromDouble(modifier);
-                var g = EvaluateG(N + j, summandsReduced);
-                var coefficientNominator = Calculator.Divide(summandsReduced[N + j], g);
-                var coefficientDenominator = Calculator.Divide(Calculator.AssignFromDouble(1), g);
-                nominator = Calculator.Add(nominator, Calculator.Multiply(modifierConverted, coefficientNominator));
-                denominator = Calculator.Add(denominator, Calculator.Multiply(modifierConverted, coefficientDenominator));
-            }
-
-            return Calculator.Divide(nominator, denominator);
+            return summandsReduced;
         }
-
-        protected abstract T EvaluateG(int i, IList<T> coefficients);
     }
 }

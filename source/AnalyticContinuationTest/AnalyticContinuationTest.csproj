@@ -64,7 +64,7 @@
     <Compile Include="AnalyticContinuationTest.cs" />
     <Compile Include="EpsilonAlgorithmTest.cs" />
     <Compile Include="AitkenProcessTest.cs" />
-    <Compile Include="LevinUTransformTest.cs" />
+    <Compile Include="LevinTransformTest.cs" />
     <Compile Include="ViskovatovAlgorithmTest.cs" />
   </ItemGroup>
   <ItemGroup>

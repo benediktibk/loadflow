@@ -51,7 +51,6 @@
     <Compile Include="AitkenProcess.cs" />
     <Compile Include="IAnalyticContinuation.cs" />
     <Compile Include="LevinTransform.cs" />
-    <Compile Include="LevinUTransform.cs" />
     <Compile Include="PadeApproximant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EpsilonAlgorithm.cs" />
