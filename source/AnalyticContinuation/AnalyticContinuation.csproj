@@ -57,6 +57,8 @@
     <Compile Include="IAnalyticContinuation.cs" />
     <Compile Include="ICalculatorGeneric.cs" />
     <Compile Include="ICalculatorMatrixOperationsGeneric.cs" />
+    <Compile Include="LevinTransform.cs" />
+    <Compile Include="LevinUTransform.cs" />
     <Compile Include="PadeApproximant.cs" />
     <Compile Include="PowerSeries.cs" />
     <Compile Include="PowerSeriesComplex.cs" />

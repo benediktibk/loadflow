@@ -70,6 +70,7 @@
     <Compile Include="AitkenProcessTest.cs" />
     <Compile Include="DecimalComplexTest.cs" />
     <Compile Include="CalculatorDecimalComplexTest.cs" />
+    <Compile Include="LevinUTransformTest.cs" />
     <Compile Include="ViskovatovAlgorithmTest.cs" />
   </ItemGroup>
   <ItemGroup>
