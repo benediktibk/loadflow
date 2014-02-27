@@ -107,13 +107,13 @@ namespace LoadFlowCalculation
             return analyticContinuations;
         }
 
-        private static Vector<Complex> CalculateVoltagesWithAnalyticContinuations(IList<IAnalyticContinuation<Complex>> padeApproximants)
+        private static Vector<Complex> CalculateVoltagesWithAnalyticContinuations(IList<IAnalyticContinuation<Complex>> analyticContinuations)
         {
-            var nodeCount = padeApproximants.Count();
+            var nodeCount = analyticContinuations.Count();
             var voltages = new Complex[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
-                voltages[i] = padeApproximants[i].EvaluateAt1();
+                voltages[i] = analyticContinuations[i].EvaluateAt1();
 
             return new DenseVector(voltages);
         }
