@@ -148,23 +148,11 @@ namespace MathExtensions
                     else
                         sign = -1;
 
-                    function[i] = calculator.AssignFromDouble(sign/Factorial(i));
+                    function[i] = calculator.AssignFromDouble(sign/MathExtended.Factorial((uint)i));
                 }
             }
 
             return function;
-        }
-
-        public static int Factorial(int x)
-        {
-            if (x == 0)
-                return 1;
-
-            var result = 1;
-            for (var i = 2; i <= x; ++i)
-                result *= i;
-
-            return result;
         }
     }
 }
