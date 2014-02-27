@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public interface ICalculatorGeneric<T> where T : struct, IEquatable<T>, IFormattable
     {

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using MathExtensions;
 
 namespace AnalyticContinuation
 {
     public class ViskovatovAlgorithm<T> : IAnalyticContinuation<T> where T : struct, IEquatable<T>, IFormattable
     {
-        private PowerSeries<T> _powerSeries;
-        private ICalculatorGeneric<T> _calculator; 
+        private readonly PowerSeries<T> _powerSeries;
+        private readonly ICalculatorGeneric<T> _calculator; 
 
         public ViskovatovAlgorithm(PowerSeries<T> powerSeries)
         {

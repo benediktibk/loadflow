@@ -2,7 +2,7 @@
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public class CalculatorDouble : ICalculatorMatrixOperationsGeneric<double>
     {

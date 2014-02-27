@@ -1,9 +1,9 @@
 ﻿using System;
-using AnalyticContinuation;
+using MathExtensions;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AnalyticContinuationTest
+namespace MathExtensionsTest
 {
     [TestClass]
     public class CalculatorDoubleTest

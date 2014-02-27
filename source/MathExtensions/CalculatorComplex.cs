@@ -3,7 +3,7 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public class CalculatorComplex : ICalculatorMatrixOperationsGeneric<Complex>
     {

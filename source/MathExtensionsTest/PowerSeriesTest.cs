@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using AnalyticContinuation;
+using MathExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AnalyticContinuationTest
+namespace MathExtensionsTest
 {
     [TestClass]
     public class PowerSeriesTest

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public class CalculatorDecimalComplex : ICalculatorGeneric<DecimalComplex>
     {

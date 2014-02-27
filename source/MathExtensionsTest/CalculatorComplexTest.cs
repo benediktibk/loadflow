@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Numerics;
-using AnalyticContinuation;
+using MathExtensions;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace AnalyticContinuationTest
+namespace MathExtensionsTest
 {
     [TestClass]
     public class CalculatorComplexTest

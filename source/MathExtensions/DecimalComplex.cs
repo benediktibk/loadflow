@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public struct DecimalComplex : IEquatable<DecimalComplex>, IFormattable
     {

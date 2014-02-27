@@ -1,4 +1,5 @@
 ﻿using System;
+using MathExtensions;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace AnalyticContinuation

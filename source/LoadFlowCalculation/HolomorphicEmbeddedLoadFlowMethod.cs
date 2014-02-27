@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using AnalyticContinuation;
+using MathExtensions;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public class PowerSeries<T> where T : struct, IEquatable<T>, IFormattable
     {

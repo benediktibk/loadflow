@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{51E01E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathExtensions", "MathExtensions\MathExtensions.csproj", "{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathExtensionsTest", "MathExtensionsTest\MathExtensionsTest.csproj", "{5501042F-A420-4D9F-AFE2-9B94E72468C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

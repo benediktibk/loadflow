@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using AnalyticContinuation;
+using MathExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnalyticContinuationTest

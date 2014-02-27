@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}</ProjectGuid>
+    <ProjectGuid>{5501042F-A420-4D9F-AFE2-9B94E72468C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoadFlowCalculationTest</RootNamespace>
-    <AssemblyName>LoadFlowCalculationTest</AssemblyName>
+    <RootNamespace>MathExtensionsTest</RootNamespace>
+    <AssemblyName>MathExtensionsTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,8 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,9 +41,6 @@
     <Reference Include="MathNet.Numerics.IO">
       <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.IO.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
@@ -62,27 +57,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="LoadFlowCalculatorTest.cs" />
-    <Compile Include="NodeAssert.cs" />
+    <Compile Include="CalculatorComplexTest.cs" />
+    <Compile Include="CalculatorDecimalComplexTest.cs" />
+    <Compile Include="CalculatorDoubleTest.cs" />
+    <Compile Include="ContinuedFractionTest.cs" />
+    <Compile Include="DecimalComplexTest.cs" />
+    <Compile Include="MathExtendedTest.cs" />
+    <Compile Include="PowerSeriesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NodeTest.cs" />
-    <Compile Include="NodePotentialMethodTest.cs" />
-    <Compile Include="LoadFlowCalculatorSmallAccuracyTest.cs" />
-    <Compile Include="LoadFlowCalculatorHighAccuracyTest.cs" />
-    <Compile Include="CurrentIterationTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadflowMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
-      <Project>{3726D19C-8B14-4BA4-B193-54973A802278}</Project>
-      <Name>AnalyticContinuation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">
-      <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
-      <Name>LoadFlowCalculation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MathExtensions\MathExtensions.csproj">
-      <Project>{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}</Project>
+      <Project>{d6bd0d66-5370-49b6-ae0b-ac6b80be9afb}</Project>
       <Name>MathExtensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTestHelper\UnitTestHelper.csproj">
@@ -113,7 +99,6 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

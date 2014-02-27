@@ -1,8 +1,7 @@
-﻿using System;
-using AnalyticContinuation;
+﻿using MathExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AnalyticContinuationTest
+namespace MathExtensionsTest
 {
     [TestClass]
     public class CalculatorDecimalComplexTest

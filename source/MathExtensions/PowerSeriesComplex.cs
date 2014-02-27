@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public class PowerSeriesComplex : PowerSeries<Complex>
     {

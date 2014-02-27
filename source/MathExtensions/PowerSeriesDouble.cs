@@ -1,4 +1,4 @@
-﻿namespace AnalyticContinuation
+﻿namespace MathExtensions
 {
     public class PowerSeriesDouble : PowerSeries<double>
     {

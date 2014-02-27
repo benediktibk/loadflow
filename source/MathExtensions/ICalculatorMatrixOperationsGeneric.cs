@@ -1,7 +1,7 @@
 ﻿using System;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace AnalyticContinuation
+namespace MathExtensions
 {
     public interface ICalculatorMatrixOperationsGeneric<T> : ICalculatorGeneric<T> where T : struct, IEquatable<T>, IFormattable
     {

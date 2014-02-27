@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MathNet.Numerics.Signals;
+using MathExtensions;
 
 namespace AnalyticContinuation
 {

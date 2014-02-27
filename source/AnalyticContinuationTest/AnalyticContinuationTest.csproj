@@ -59,17 +59,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CalculatorDoubleTest.cs" />
     <Compile Include="PadeApproximantTest.cs" />
-    <Compile Include="PowerSeriesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CalculatorComplexTest.cs" />
     <Compile Include="AnalyticContinuationTest.cs" />
-    <Compile Include="ContinuedFractionTest.cs" />
     <Compile Include="EpsilonAlgorithmTest.cs" />
     <Compile Include="AitkenProcessTest.cs" />
-    <Compile Include="DecimalComplexTest.cs" />
-    <Compile Include="CalculatorDecimalComplexTest.cs" />
     <Compile Include="LevinUTransformTest.cs" />
     <Compile Include="ViskovatovAlgorithmTest.cs" />
   </ItemGroup>
@@ -77,6 +71,10 @@
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
       <Project>{3726d19c-8b14-4ba4-b193-54973a802278}</Project>
       <Name>AnalyticContinuation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathExtensions\MathExtensions.csproj">
+      <Project>{d6bd0d66-5370-49b6-ae0b-ac6b80be9afb}</Project>
+      <Name>MathExtensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTestHelper\UnitTestHelper.csproj">
       <Project>{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}</Project>
