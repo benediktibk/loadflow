@@ -24,7 +24,7 @@ namespace LoadFlowCalculation
             if (maximumNumberOfCoefficients < 4)
                 throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",
                     "there must be at least 4 coefficients");
-
+            
             _targetPrecision = targetPrecision;
             _maximumNumberOfCoefficients = maximumNumberOfCoefficients;
         }
