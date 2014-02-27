@@ -39,7 +39,7 @@ namespace LoadFlowCalculation
             var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
             var lastVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
             Vector<Complex> currentVoltage;
-            bool precisionReached = false;
+            var precisionReached = false;
             bool precisionReachedPrevious;
             var targetPrecisionScaled = _targetPrecision*nominalVoltage/10;
 
@@ -49,53 +49,51 @@ namespace LoadFlowCalculation
                 voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
                 currentVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
                 precisionReachedPrevious = precisionReached;
-                CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled, out precisionReached, out voltageCollapse);
+                precisionReached = CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled);
                 lastVoltage = currentVoltage;
-            } while (_coefficients.Count < _maximumNumberOfCoefficients && !voltageCollapse && !(precisionReached && precisionReachedPrevious));
+            } while (_coefficients.Count < _maximumNumberOfCoefficients && !(precisionReached && precisionReachedPrevious));
 
-            if (!_finalAccuarcyImprovement) 
-                return currentVoltage;
-
-            var iterations = 0;
-            double voltageChange;
-            var knownPowersConjugated = knownPowers.Conjugate();
-            var improvedVoltage = currentVoltage;
-
-            do
+            if (_finalAccuarcyImprovement)
             {
-                var loadCurrents = knownPowersConjugated.PointwiseDivide(improvedVoltage.Conjugate());
-                var currents = loadCurrents.Add(constantCurrents);
-                var newVoltages = factorization.Solve(currents);
-                var voltageDifference = newVoltages.Subtract(improvedVoltage);
-                var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
-                voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
-                improvedVoltage = newVoltages;
-                ++iterations;
-            } while (iterations <= 1000 && voltageChange > targetPrecisionScaled);
+                var iterations = 0;
+                double voltageChange;
+                var knownPowersConjugated = knownPowers.Conjugate();
+                var improvedVoltage = currentVoltage;
 
-            var voltageImprovement = improvedVoltage - currentVoltage;
-            var maximumVoltageImprovement = voltageImprovement.AbsoluteMaximum().Magnitude;
+                do
+                {
+                    var loadCurrents = knownPowersConjugated.PointwiseDivide(improvedVoltage.Conjugate());
+                    var currents = loadCurrents.Add(constantCurrents);
+                    var newVoltages = factorization.Solve(currents);
+                    var voltageDifference = newVoltages.Subtract(improvedVoltage);
+                    var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
+                    voltageChange = maximumVoltageDifference.Magnitude/nominalVoltage;
+                    improvedVoltage = newVoltages;
+                    ++iterations;
+                } while (iterations <= 1000 && voltageChange > targetPrecisionScaled);
 
-            return maximumVoltageImprovement < 0.1*nominalVoltage ? improvedVoltage : currentVoltage;
+                var voltageImprovement = improvedVoltage - currentVoltage;
+                var maximumVoltageImprovement = voltageImprovement.AbsoluteMaximum().Magnitude;
+
+                if (maximumVoltageImprovement < 0.1*nominalVoltage)
+                    currentVoltage = improvedVoltage;
+            }
+
+            var voltageDifferenceDrivenCurrents = admittances.Multiply(currentVoltage);
+            var allCurrents = voltageDifferenceDrivenCurrents.Subtract(constantCurrents);
+            var resultingPowers = currentVoltage.PointwiseMultiply(allCurrents.Conjugate());
+            var powerDifference = resultingPowers - knownPowers;
+            var maximumPower = knownPowers.AbsoluteMaximum().Magnitude;
+            var maximumPowerDifference = powerDifference.AbsoluteMaximum().Magnitude;
+            voltageCollapse = maximumPowerDifference > maximumPower*0.01;
+            return currentVoltage;
         }
 
-        private void CheckConvergence(Vector<Complex> currentVoltage, Vector<Complex> lastVoltage, double targetPrecisionScaled, out bool precisionReached, out bool voltageCollapse)
+        private bool CheckConvergence(Vector<Complex> currentVoltage, Vector<Complex> lastVoltage, double targetPrecisionScaled)
         {
             var voltageChange = currentVoltage.Subtract(lastVoltage);
             var maximumVoltageChange = voltageChange.AbsoluteMaximum();
-            voltageCollapse = false;
-
-            if (maximumVoltageChange.Magnitude < targetPrecisionScaled)
-                precisionReached = true;
-            else
-            {
-                precisionReached = false;
-
-                var lastCoefficient = _coefficients[_coefficients.Count - 1];
-                var maximumLastCoefficient = lastCoefficient.AbsoluteMaximum();
-                if (Math.Log10(maximumLastCoefficient.Magnitude/targetPrecisionScaled) > 30)
-                    voltageCollapse = true;
-            }
+            return maximumVoltageChange.Magnitude < targetPrecisionScaled;
         }
 
         public void CalculateNextCoefficientForVoltagePowerSeries(Vector<Complex> constantCurrents, Vector<Complex> knownPowers, ISolver<Complex> factorization)
