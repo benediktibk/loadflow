@@ -148,7 +148,7 @@ namespace MathExtensions
                     else
                         sign = -1;
 
-                    function[i] = calculator.AssignFromDouble(sign/MathExtended.Factorial((uint)i));
+                    function[i] = calculator.AssignFromDouble(sign/MathExtended.Factorial(i));
                 }
             }
 

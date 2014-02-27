@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using MathExtensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MathExtensionsTest
 {
@@ -6,8 +8,28 @@ namespace MathExtensionsTest
     public class MathExtendedTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Factorial_0_1()
         {
+            Assert.AreEqual(1, MathExtended.Factorial(0));
+        }
+
+        [TestMethod]
+        public void Factorial_5_125()
+        {
+            Assert.AreEqual(120, MathExtended.Factorial(5));
+        }
+
+        [TestMethod]
+        public void Factorial_1_1()
+        {
+            Assert.AreEqual(1, MathExtended.Factorial(1));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Factorial_Minus1_ExceptionThrown()
+        {
+            MathExtended.Factorial(-1);
         }
     }
 }
