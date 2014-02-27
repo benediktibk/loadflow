@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AnalyticContinuation
@@ -58,33 +59,45 @@ namespace AnalyticContinuation
 
         public T[] EvaluatePartialSums(T x)
         {
+            var summands = EvaluateSummands(x);
+            return EvaluatePartialSumsInternal(summands);
+        }
+
+        public T[] EvaluateSummands(T x)
+        {
             var n = _coefficients.Count();
+            var summands = new T[n];
+
+            for (var i = 0; i < n; ++i)
+                summands[i] = _calculator.Multiply(_coefficients[i], _calculator.Pow(x, i));
+
+            return summands;
+        }
+
+        public T[] EvaluatePartialSumsAt1()
+        {
+            var summands = EvaluateSummandsAt1();
+            return EvaluatePartialSumsInternal(summands);
+        }
+
+        private T[] EvaluatePartialSumsInternal(IList<T> summands)
+        {
+            var n = summands.Count();
             var partialSums = new T[n];
             var sum = _calculator.AssignFromDouble(0);
 
             for (var i = 0; i < n; ++i)
             {
-                var summand = _calculator.Multiply(_coefficients[i], _calculator.Pow(x, i));
-                sum = _calculator.Add(sum, summand);
+                sum = _calculator.Add(sum, summands[i]);
                 partialSums[i] = sum;
             }
 
             return partialSums;
         }
 
-        public T[] EvaluatePartialSumsAt1()
+        public T[] EvaluateSummandsAt1()
         {
-            var n = _coefficients.Count();
-            var partialSums = new T[n];
-            var sum = _calculator.AssignFromDouble(0);
-
-            for (var i = 0; i < n; ++i)
-            {
-                sum = _calculator.Add(sum, _coefficients[i]);
-                partialSums[i] = sum;
-            }
-
-            return partialSums;
+            return _coefficients;
         }
 
         public ICalculatorGeneric<T> Calculator
