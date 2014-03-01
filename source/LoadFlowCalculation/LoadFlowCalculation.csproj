@@ -51,6 +51,7 @@
     <Compile Include="CurrentIteration.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethod.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
+    <Compile Include="NewtonRaphsonMethod.cs" />
     <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NotConvergingException.cs" />
