@@ -99,7 +99,7 @@ namespace LoadFlowCalculation
                 lowerParts[i] = complete[i + count/2];
         }
 
-        private Matrix<double> CalculateChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
+        protected virtual Matrix<double> CalculateChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
             IList<double> voltagesImaginary, Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary)
         {
             Vector<double> currentsReal;
@@ -117,7 +117,7 @@ namespace LoadFlowCalculation
             return changeMatrix;
         }
 
-        private static void InitializeChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary,
+        protected static void InitializeChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary,
             Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary,
             out DenseMatrix changeMatrix)
         {
@@ -129,7 +129,7 @@ namespace LoadFlowCalculation
             changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount*2, nodeCount*2);
         }
 
-        private static void CalculateLeftUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal)
+        protected static void CalculateLeftUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal)
         {
             var nodeCount = admittances.RowCount;
 
@@ -151,7 +151,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static void CalculateRightUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary)
+        protected static void CalculateRightUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary)
         {
             var nodeCount = admittances.RowCount;
 
@@ -173,7 +173,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static void CalculateLeftLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary)
+        protected static void CalculateLeftLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary)
         {
             var nodeCount = admittances.RowCount;
 
@@ -195,7 +195,7 @@ namespace LoadFlowCalculation
             }
         }
 
-        private static void CalculateRightLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal)
+        protected static void CalculateRightLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal)
         {
             var nodeCount = admittances.RowCount;
 
