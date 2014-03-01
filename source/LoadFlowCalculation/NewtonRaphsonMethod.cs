@@ -39,11 +39,7 @@ namespace LoadFlowCalculation
             do
             {
                 ++iterations;
-                var changeMatrix = CalculateChangeMatrix(admittances, voltagesReal, voltagesImaginary,
-                    constantCurrentsReal, constantCurrentsImaginary);
-                var rightSide = CombineParts(powersReal - lastPowersReal, powersImaginary - lastPowersImaginary);
-                var factorization = changeMatrix.QR();
-                var voltageChanges = factorization.Solve(rightSide);
+                var voltageChanges = CalculateVoltageChanges(admittances, voltagesReal, voltagesImaginary, constantCurrentsReal, constantCurrentsImaginary, powersReal, lastPowersReal, powersImaginary, lastPowersImaginary);
                 voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum());
                 Vector<double> voltageChangesReal;
                 Vector<double> voltageChangesImaginary;
@@ -59,6 +55,18 @@ namespace LoadFlowCalculation
 
             voltageCollapse = voltageChange > nominalVoltage*_targetPrecision;
             return CombineRealAndImaginaryParts(voltagesReal, voltagesImaginary);
+        }
+
+        protected virtual Vector<double> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<double> voltagesReal, Vector<double> voltagesImaginary,
+            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, Vector<double> powersReal, Vector<double> lastPowersReal,
+            Vector<double> powersImaginary, Vector<double> lastPowersImaginary)
+        {
+            var changeMatrix = CalculateChangeMatrix(admittances, voltagesReal, voltagesImaginary,
+                constantCurrentsReal, constantCurrentsImaginary);
+            var rightSide = CombineParts(powersReal - lastPowersReal, powersImaginary - lastPowersImaginary);
+            var factorization = changeMatrix.QR();
+            var voltageChanges = factorization.Solve(rightSide);
+            return voltageChanges;
         }
 
         private static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,
