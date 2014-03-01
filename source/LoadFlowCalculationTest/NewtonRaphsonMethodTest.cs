@@ -8,7 +8,7 @@ namespace LoadFlowCalculationTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            return new NewtonRaphsonMethod();
+            return new NewtonRaphsonMethod(0.0001, 1000);
         }
     }
 }
