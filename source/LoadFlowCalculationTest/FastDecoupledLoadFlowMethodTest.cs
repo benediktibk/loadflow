@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class FastDecoupledLoadFlowMethodTest : LoadFlowCalculatorSmallAccuracyTest
+    public class FastDecoupledLoadFlowMethodTest : LoadFlowCalculatorHighAccuracyTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {

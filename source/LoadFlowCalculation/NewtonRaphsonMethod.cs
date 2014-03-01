@@ -22,7 +22,7 @@ namespace LoadFlowCalculation
             return voltageChanges;
         }
 
-        protected virtual Matrix<double> CalculateChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
+        private Matrix<double> CalculateChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
             IList<double> voltagesImaginary, Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary)
         {
             Vector<double> currentsReal;
