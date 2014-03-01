@@ -30,12 +30,13 @@ namespace LoadFlowCalculation
             DenseMatrix changeMatrix;
             InitializeChangeMatrix(admittances, voltagesReal, voltagesImaginary, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary, out changeMatrix);
 
-            CalculateLeftUpperChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsReal);
-            CalculateRightUpperChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsImaginary);
+            var nodeCount = admittances.RowCount;
+            CalculateLeftUpperChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsReal, 0, 0);
+            CalculateRightUpperChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsImaginary, 0, nodeCount);
             CalculateLeftLowerChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix,
-                currentsImaginary);
+                currentsImaginary, nodeCount, 0);
             CalculateRightLowerChangeMatrix(admittances, voltagesReal, voltagesImaginary, changeMatrix,
-                currentsReal);
+                currentsReal, nodeCount, nodeCount);
 
             return changeMatrix;
         }
