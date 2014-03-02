@@ -88,7 +88,7 @@ namespace LoadFlowCalculation
             return result;
         }
 
-        private static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)
+        public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)
         {
             var currents = admittances.Multiply(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());

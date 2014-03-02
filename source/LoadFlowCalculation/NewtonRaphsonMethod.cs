@@ -7,7 +7,7 @@ namespace LoadFlowCalculation
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {
-        public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
+        public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0)
         { }
 
         protected override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,

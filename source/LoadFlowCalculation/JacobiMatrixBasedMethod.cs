@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
@@ -13,10 +12,10 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage)
         {
-            _initialRealVoltage = 1;
-            _initialImaginaryVoltage = 0;
+            _initialRealVoltage = initialRealVoltage;
+            _initialImaginaryVoltage = initialImaginaryVoltage;
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
         }
@@ -32,22 +31,19 @@ namespace LoadFlowCalculation
             var powersImaginary = ExtractImaginaryParts(knownPowers);
             double voltageChange;
             var iterations = 0;
-            Vector<double> lastPowersReal = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
-            Vector<double> lastPowersImaginary = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
-            var currentVoltages = 
-                CombineRealAndImaginaryParts(CreateInitialRealVoltages(nominalVoltage, nodeCount), 
+            var currentVoltages =
+                CombineRealAndImaginaryParts(CreateInitialRealVoltages(nominalVoltage, nodeCount),
                 CreateInitialImaginaryVoltages(nominalVoltage, nodeCount));
 
             do
             {
                 ++iterations;
+                Vector<double> lastPowersReal;
+                Vector<double> lastPowersImaginary;
+                CalculateRealAndImaginaryPowers(admittances, currentVoltages, constantCurrents, out lastPowersReal, out lastPowersImaginary);
                 var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersReal - lastPowersReal, powersImaginary - lastPowersImaginary);
                 voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
                 currentVoltages = currentVoltages + voltageChanges;
-                var currents = admittances.Multiply(currentVoltages) - constantCurrents;
-                var currentPowers = currentVoltages.PointwiseMultiply(currents.Conjugate());
-                lastPowersReal = ExtractRealParts(currentPowers);
-                lastPowersImaginary = ExtractImaginaryParts(currentPowers);
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
 
             voltageCollapse = voltageChange > nominalVoltage*_targetPrecision;
@@ -178,6 +174,15 @@ namespace LoadFlowCalculation
             }
 
             return currents;
+        }
+
+        public static void CalculateRealAndImaginaryPowers(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, 
+            out Vector<double> powersReal, out Vector<double> powersImaginary)
+        {
+            var currents = admittances.Multiply(voltages) - constantCurrents;
+            var powers = voltages.PointwiseMultiply(currents.Conjugate());
+            powersReal = ExtractRealParts(powers);
+            powersImaginary = ExtractImaginaryParts(powers);
         }
     }
 }
