@@ -7,8 +7,7 @@ using Complex = System.Numerics.Complex;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    abstract public class LoadFlowCalculatorSmallAccuracyTest :
-        LoadFlowCalculatorTest
+    abstract public class LoadFlowCalculatorSmallAccuracyTest : LoadFlowCalculatorTest
     {
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()

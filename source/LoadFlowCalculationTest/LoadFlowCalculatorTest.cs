@@ -199,6 +199,21 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
+        protected static void CreateFiveNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+            out double nominalVoltage)
+        {
+            admittances = CreateFiveNodeProblemAdmittanceMatrix(
+                new Complex(0, 500), new Complex(0, 0), new Complex(20, -100), new Complex(5, -200),
+                new Complex(1, 300), new Complex(0, -100), new Complex(0, 0),
+                new Complex(2, -500), new Complex(0, 0),
+                new Complex(1, 1000));
+
+            voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.1), new Complex(0.97, -0.15), new Complex(1.01, -0.02) });
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
+
         protected static Matrix<Complex> CreateFiveNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
             Complex oneFour, Complex oneFive,
             Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive)
@@ -229,6 +244,17 @@ namespace LoadFlowCalculationTest
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
 
             voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
+
+        protected static void CreateThreeNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+            out double nominalVoltage)
+        {
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(5, 500), new Complex(20, -300), new Complex(10, 1000));
+
+            voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
             var currents = admittances.Multiply(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;

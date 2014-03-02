@@ -8,11 +8,11 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class FastDecoupledLoadFlowMethodTest : LoadFlowCalculatorHighAccuracyTest
+    public class FastDecoupledLoadFlowMethodTest : LoadFlowCalculatorTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            return new FastDecoupledLoadFlowMethod(0.001, 10000);
+            return new FastDecoupledLoadFlowMethod(0.01, 10000);
         }
 
         [TestMethod]
@@ -73,6 +73,38 @@ namespace LoadFlowCalculationTest
                     powerRealDifference[0]/derivationRealPowerByAngle);
             Assert.AreEqual(1, voltageChange.Count);
             ComplexAssert.AreEqual(voltageChangeShouldBe, voltageChange[0], 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithMostlyImaginaryConnections_CorrectResults()
+        {
+            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.01, 2);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithMostlyImaginaryConnections_CorrectResults()
+        {
+            CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 20);
         }
     }
 }

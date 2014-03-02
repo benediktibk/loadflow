@@ -18,8 +18,13 @@ namespace LoadFlowCalculationTest
             {
                 var node = nodes[i];
                 var voltage = voltages.At(i);
-                var power = powers.At(i);
                 ComplexAssert.AreEqual(voltage, node.Voltage, voltageDelta);
+            }
+
+            for (var i = 0; i < nodes.Count(); ++i)
+            {
+                var node = nodes[i];
+                var power = powers.At(i);
                 ComplexAssert.AreEqual(power, node.Power, powerDelta);
             }
         }
