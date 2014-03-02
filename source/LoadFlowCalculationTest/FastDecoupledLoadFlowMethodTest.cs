@@ -16,7 +16,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateChangeMatrixRealPowerByAngle_oneConnection_correctResults()
+        public void CalculateChangeMatrixRealPowerByAngle_OneConnection_CorrectResults()
         {
             var admittances = DenseMatrix.OfArray(new[,] {{new Complex(10, 0)}});
             var constantCurrents = new DenseVector(new[] {new Complex(10, 0)});
@@ -31,7 +31,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateChangeMatrixImaginaryPowerByAmplitude_oneConnection_correctResults()
+        public void CalculateChangeMatrixImaginaryPowerByAmplitude_OneConnection_CorrectResults()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } });
             var constantCurrents = new DenseVector(new[] { new Complex(10, 0) });
@@ -43,6 +43,42 @@ namespace LoadFlowCalculationTest
             Assert.AreEqual(1, changeMatrix.RowCount);
             Assert.AreEqual(1, changeMatrix.ColumnCount);
             Assert.AreEqual(-0.99503719, changeMatrix[0, 0], 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateChangeMatrixRealPowerByAngle_twoConnections_CorrectResults()
+        {
+            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 700), new Complex(0, 100) }, { new Complex(0, 100), new Complex(23, 300) } });
+            var constantCurrents = new DenseVector(new[] { new Complex(20.95, 785.1), new Complex(82.91, 433.18) });
+            var voltages = new DenseVector(new[] { new Complex(1, 0.1), new Complex(1, 0.1) });
+
+            var changeMatrix = FastDecoupledLoadFlowMethod.CalculateChangeMatrixRealPowerByAngle(admittances, voltages,
+                constantCurrents);
+
+            Assert.AreEqual(2, changeMatrix.RowCount);
+            Assert.AreEqual(2, changeMatrix.ColumnCount);
+            Assert.AreEqual(-782.9750745, changeMatrix[0, 0], 0.001);
+            Assert.AreEqual(0, changeMatrix[0, 1], 0.001);
+            Assert.AreEqual(0, changeMatrix[1, 0], 0.001);
+            Assert.AreEqual(-443.0066766, changeMatrix[1, 1], 0.001);
+        }
+
+        [TestMethod]
+        public void CalculateChangeMatrixImaginaryPowerByAmplitude_twoConnections_CorrectResults()
+        {
+            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 700), new Complex(0, 100) }, { new Complex(0, 100), new Complex(23, 300) } });
+            var constantCurrents = new DenseVector(new[] { new Complex(20.95, 785.1), new Complex(82.91, 433.18) });
+            var voltages = new DenseVector(new[] { new Complex(1, 0.1), new Complex(1, 0.1) });
+
+            var changeMatrix = FastDecoupledLoadFlowMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(admittances, voltages,
+                constantCurrents);
+
+            Assert.AreEqual(2, changeMatrix.RowCount);
+            Assert.AreEqual(2, changeMatrix.ColumnCount);
+            Assert.AreEqual(-728.3622642, changeMatrix[0, 0], 0.001);
+            Assert.AreEqual(-100.4987562, changeMatrix[0, 1], 0.001);
+            Assert.AreEqual(-100.4987562, changeMatrix[1, 0], 0.001);
+            Assert.AreEqual(280.7108958, changeMatrix[1, 1], 0.001);
         }
 
         [TestMethod]

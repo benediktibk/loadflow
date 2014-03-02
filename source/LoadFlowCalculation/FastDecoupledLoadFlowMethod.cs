@@ -41,18 +41,17 @@ namespace LoadFlowCalculation
 
                 for (var j = 0; j < nodeCount; ++j)
                 {
-                    var admittance = admittances[i, j];
-                    var admittanceAmplitude = admittance.Magnitude;
-                    var admittanceAngle = admittance.Phase;
-
                     if (i != j)
                     {
                         var voltageTwo = voltages[j];
                         var voltageTwoAmplitude = voltageTwo.Magnitude;
                         var voltageTwoAngle = voltageTwo.Phase;
+                        var admittance = admittances[i, j];
+                        var admittanceAmplitude = admittance.Magnitude;
+                        var admittanceAngle = admittance.Phase;
+                        var sine = Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
 
-                        changeMatrix[i, j] = (1)*admittanceAmplitude*voltageOneAmplitude*voltageTwoAmplitude*
-                                             Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
+                        changeMatrix[i, j] = (1)*admittanceAmplitude*voltageOneAmplitude*voltageTwoAmplitude*sine;
                     }
                     else
                     {
@@ -75,7 +74,7 @@ namespace LoadFlowCalculation
                     if (i != j)
                         sum += changeMatrix[i, j];
 
-                changeMatrix[i, i] += sum;
+                changeMatrix[i, i] = changeMatrix[i, i] + sum;
             }
 
             return changeMatrix;
@@ -126,7 +125,7 @@ namespace LoadFlowCalculation
                     if (i != j)
                         sum += changeMatrix[i, j];
 
-                changeMatrix[i, i] += sum;
+                changeMatrix[i, i] = changeMatrix[i, i] + sum;
             }
 
             return changeMatrix;
