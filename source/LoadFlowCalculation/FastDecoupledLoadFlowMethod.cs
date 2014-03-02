@@ -102,7 +102,7 @@ namespace LoadFlowCalculation
                         var voltageTwo = voltages[j];
                         var voltageTwoAngle = voltageTwo.Phase;
 
-                        changeMatrix[i, j] = (1) * admittanceAmplitude * voltageOneAmplitude *
+                        changeMatrix[i, j] = (-1) * admittanceAmplitude * voltageOneAmplitude *
                                              Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
                     }
                     else
