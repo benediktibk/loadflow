@@ -120,7 +120,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateVoltageChanges_oneConnection_correctResults()
+        public void CalculateVoltageChanges_OneConnection_correctResults()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } });
             var constantCurrents = new DenseVector(new[] { new Complex(10, 0) });
@@ -147,6 +147,24 @@ namespace LoadFlowCalculationTest
                     powerRealDifference[0]/derivationRealPowerByAngle);
             Assert.AreEqual(1, voltageChange.Count);
             ComplexAssert.AreEqual(voltageChangeShouldBe, voltageChange[0], 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateVoltageChanges_TwoConnectionsAndCorrectVoltage_Zero()
+        {
+            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
+            var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
+            var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -1) });
+            var powersRealDifference = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 0, 0 });
+            var powersImaginaryDifference = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 0, 0 });
+            var calculator = new FastDecoupledLoadFlowMethod(0.0001, 10000);
+
+            var voltageChange = calculator.CalculateVoltageChanges(admittances, voltages, constantCurrents,
+                powersRealDifference, powersImaginaryDifference);
+
+            Assert.AreEqual(2, voltageChange.Count);
+            Assert.AreEqual(0, voltageChange[0].Magnitude, 0.0001);
+            Assert.AreEqual(0, voltageChange[1].Magnitude, 0.0001);
         }
 
         [TestMethod]
