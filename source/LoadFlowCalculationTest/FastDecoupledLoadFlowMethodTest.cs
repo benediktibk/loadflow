@@ -48,19 +48,23 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateChangeMatrixRealPowerByAngle_twoConnections_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 700), new Complex(0, 100) }, { new Complex(0, 100), new Complex(23, 300) } });
-            var constantCurrents = new DenseVector(new[] { new Complex(20.95, 785.1), new Complex(82.91, 433.18) });
-            var voltages = new DenseVector(new[] { new Complex(1, 0.1), new Complex(1, 0.1) });
+            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
+            var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
+            var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -1) });
 
             var changeMatrix = FastDecoupledLoadFlowMethod.CalculateChangeMatrixRealPowerByAngle(admittances, voltages,
                 constantCurrents);
 
+            double v1 = 1;
+            double d1 = 0;
+            double v2 = 1;
+            double d2 = (-1)*Math.PI/2;
             Assert.AreEqual(2, changeMatrix.RowCount);
             Assert.AreEqual(2, changeMatrix.ColumnCount);
-            Assert.AreEqual(-782.9750745, changeMatrix[0, 0], 0.001);
-            Assert.AreEqual(0, changeMatrix[0, 1], 0.001);
-            Assert.AreEqual(0, changeMatrix[1, 0], 0.001);
-            Assert.AreEqual(-443.0066766, changeMatrix[1, 1], 0.001);
+            Assert.AreEqual((-10)*v1*v2*Math.Cos(d2 - d1) + v1*Math.Sin(d1), changeMatrix[0, 0], 0.001);
+            Assert.AreEqual(10 * v1 * v2 * Math.Cos(d2 - d1), changeMatrix[0, 1], 0.001);
+            Assert.AreEqual(10 * v1 * v2 * Math.Cos(d1 - d2), changeMatrix[1, 0], 0.001);
+            Assert.AreEqual((-10) * v1 * v2 * Math.Cos(d1 - d2) + 2*v2*Math.Cos(d2), changeMatrix[1, 1], 0.001);
         }
 
         [TestMethod]
