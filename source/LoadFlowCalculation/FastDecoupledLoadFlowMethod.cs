@@ -7,10 +7,10 @@ namespace LoadFlowCalculation
 {
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {
-        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, -0.1)
+        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0.1)
         { }
 
-        protected override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, Vector<double> powersRealError,
+        public override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, Vector<double> powersRealError,
             Vector<double> powersImaginaryError)
         {
             var changeMatrixRealPower = CalculateChangeMatrixRealPowerByAngle(admittances, voltages, constantCurrents);

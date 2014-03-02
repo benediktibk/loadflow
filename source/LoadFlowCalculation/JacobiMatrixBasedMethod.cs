@@ -20,7 +20,7 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        protected abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
+        public abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError);
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers,
@@ -41,7 +41,9 @@ namespace LoadFlowCalculation
                 Vector<double> lastPowersReal;
                 Vector<double> lastPowersImaginary;
                 CalculateRealAndImaginaryPowers(admittances, currentVoltages, constantCurrents, out lastPowersReal, out lastPowersImaginary);
-                var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersReal - lastPowersReal, powersImaginary - lastPowersImaginary);
+                var powersRealDifference = powersReal - lastPowersReal;
+                var powersImaginaryDifference = powersImaginary - lastPowersImaginary;
+                var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference);
                 voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
                 currentVoltages = currentVoltages + voltageChanges;
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);

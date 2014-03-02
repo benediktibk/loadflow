@@ -10,7 +10,7 @@ namespace LoadFlowCalculation
         public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0)
         { }
 
-        protected override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
+        public override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError)
         {
             var voltagesReal = ExtractRealParts(voltages);
