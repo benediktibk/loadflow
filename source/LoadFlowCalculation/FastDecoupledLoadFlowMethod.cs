@@ -12,9 +12,8 @@ namespace LoadFlowCalculation
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
         { }
 
-        protected override Vector<double> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<double> voltagesReal, Vector<double> voltagesImaginary,
-            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, Vector<double> powersReal, Vector<double> lastPowersReal,
-            Vector<double> powersImaginary, Vector<double> lastPowersImaginary)
+        protected override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, Vector<double> powersRealError,
+            Vector<double> powersImaginaryError)
         {
             throw new NotImplementedException();
         }

@@ -13,7 +13,7 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
 
-        public JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
         {
             _initialRealVoltage = 1;
             _initialImaginaryVoltage = 0;
@@ -21,38 +21,29 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        protected abstract Vector<double> CalculateVoltageChanges(Matrix<Complex> admittances,
-            Vector<double> voltagesReal, Vector<double> voltagesImaginary,
-            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, Vector<double> powersReal,
-            Vector<double> lastPowersReal,
-            Vector<double> powersImaginary, Vector<double> lastPowersImaginary);
+        protected abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
+            Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError);
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers,
             out bool voltageCollapse)
         {
             var nodeCount = admittances.RowCount;
-            var constantCurrentsReal = ExtractRealParts(constantCurrents);
-            var constantCurrentsImaginary = ExtractImaginaryParts(constantCurrents);
             var powersReal = ExtractRealParts(knownPowers);
             var powersImaginary = ExtractImaginaryParts(knownPowers);
-            var voltagesReal = CreateInitialRealVoltages(nominalVoltage, nodeCount);
-            var voltagesImaginary = CreateInitialImaginaryVoltages(nominalVoltage, nodeCount);
             double voltageChange;
             var iterations = 0;
             Vector<double> lastPowersReal = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
             Vector<double> lastPowersImaginary = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
+            var currentVoltages = 
+                CombineRealAndImaginaryParts(CreateInitialRealVoltages(nominalVoltage, nodeCount), 
+                CreateInitialImaginaryVoltages(nominalVoltage, nodeCount));
 
             do
             {
                 ++iterations;
-                var voltageChanges = CalculateVoltageChanges(admittances, voltagesReal, voltagesImaginary, constantCurrentsReal, constantCurrentsImaginary, powersReal, lastPowersReal, powersImaginary, lastPowersImaginary);
-                voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum());
-                Vector<double> voltageChangesReal;
-                Vector<double> voltageChangesImaginary;
-                DivideParts(voltageChanges, out voltageChangesReal, out voltageChangesImaginary);
-                voltagesReal += voltageChangesReal;
-                voltagesImaginary += voltageChangesImaginary;
-                var currentVoltages = CombineRealAndImaginaryParts(voltagesReal, voltagesImaginary);
+                var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersReal - lastPowersReal, powersImaginary - lastPowersImaginary);
+                voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
+                currentVoltages = currentVoltages + voltageChanges;
                 var currents = admittances.Multiply(currentVoltages) - constantCurrents;
                 var currentPowers = currentVoltages.PointwiseMultiply(currents.Conjugate());
                 lastPowersReal = ExtractRealParts(currentPowers);
@@ -60,7 +51,7 @@ namespace LoadFlowCalculation
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
 
             voltageCollapse = voltageChange > nominalVoltage*_targetPrecision;
-            return CombineRealAndImaginaryParts(voltagesReal, voltagesImaginary);
+            return currentVoltages;
         }
 
         public static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,
@@ -99,100 +90,6 @@ namespace LoadFlowCalculation
 
             for (var i = 0; i < count / 2; ++i)
                 lowerParts[i] = complete[i + count / 2];
-        }
-
-        public static void CalculateLeftUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal, 
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn)
-        {
-            var nodeCount = admittances.RowCount;
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var voltageReal = voltagesReal[i];
-                var voltageImaginary = voltagesImaginary[i];
-
-                for (var j = 0; j < nodeCount; ++j)
-                {
-                    var admittanceReal = admittances[i, j].Real;
-                    var admittanceImaginary = admittances[i, j].Imaginary;
-
-                    changeMatrix[i + startRow, j + startColumn] = voltageReal * admittanceReal + voltageImaginary * admittanceImaginary;
-
-                    if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
-                }
-            }
-        }
-
-        public static void CalculateRightUpperChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn)
-        {
-            var nodeCount = admittances.RowCount;
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var voltageReal = voltagesReal[i];
-                var voltageImaginary = voltagesImaginary[i];
-
-                for (var j = 0; j < nodeCount; ++j)
-                {
-                    var admittanceReal = admittances[i, j].Real;
-                    var admittanceImaginary = admittances[i, j].Imaginary;
-
-                    changeMatrix[i + startRow, j + startColumn] = voltageImaginary * admittanceReal - voltageReal * admittanceImaginary;
-
-                    if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsImaginary[i];
-                }
-            }
-        }
-
-        public static void CalculateLeftLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn)
-        {
-            var nodeCount = admittances.RowCount;
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var voltageReal = voltagesReal[i];
-                var voltageImaginary = voltagesImaginary[i];
-
-                for (var j = 0; j < nodeCount; ++j)
-                {
-                    var admittanceReal = admittances[i, j].Real;
-                    var admittanceImaginary = admittances[i, j].Imaginary;
-
-                    changeMatrix[i + startRow, j + startColumn] = voltageImaginary * admittanceReal - voltageReal * admittanceImaginary;
-
-                    if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] -= currentsImaginary[i];
-                }
-            }
-        }
-
-        public static void CalculateRightLowerChangeMatrix(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn)
-        {
-            var nodeCount = admittances.RowCount;
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var voltageReal = voltagesReal[i];
-                var voltageImaginary = voltagesImaginary[i];
-
-                for (var j = 0; j < nodeCount; ++j)
-                {
-                    var admittanceReal = admittances[i, j].Real;
-                    var admittanceImaginary = admittances[i, j].Imaginary;
-
-                    changeMatrix[i + startRow, j + startColumn] = (-1) *
-                                                                 (voltageReal * admittanceReal +
-                                                                  voltageImaginary * admittanceImaginary);
-
-                    if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
-                }
-            }
         }
 
         private Vector<double> CreateInitialRealVoltages(double nominalVoltage, int nodeCount)
