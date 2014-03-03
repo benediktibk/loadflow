@@ -156,7 +156,7 @@ namespace LoadFlowCalculation
                 _voltagePowerSeries[i] = new PowerSeriesComplex(_maximumNumberOfCoefficients);
 
             var admittanceRowSum = CalculateAdmittanceRowSum(admittances);
-            var firstCoefficient = CalculateFirstCoefficient(factorization, admittances, admittanceRowSum);
+            var firstCoefficient = CalculateFirstCoefficient(factorization, admittanceRowSum);
             Vector<Complex> firstInverseCoefficient = new DenseVector(nodeCount);
             firstCoefficient.DivideByThis(new Complex(1, 0), firstInverseCoefficient);
             _coefficients.Add(firstCoefficient);
@@ -179,7 +179,7 @@ namespace LoadFlowCalculation
             return rowSum;
         }
 
-        private static Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, Matrix<Complex> admittances, Vector<Complex> admittanceRowSum)
+        private static Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, Vector<Complex> admittanceRowSum)
         {
             return factorization.Solve(admittanceRowSum.Multiply(new Complex(-1, 0)));
         }
