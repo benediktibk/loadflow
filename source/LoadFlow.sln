@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlow", "LoadFlow\LoadFlow.csproj", "{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculation", "LoadFlowCalculation\LoadFlowCalculation.csproj", "{D019F54A-FB70-4BBC-AB53-102C78E54880}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculationTest", "LoadFlowCalculationTest\LoadFlowCalculationTest.csproj", "{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}"
@@ -24,16 +22,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathExtensions", "MathExten
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathExtensionsTest", "MathExtensionsTest\MathExtensionsTest.csproj", "{5501042F-A420-4D9F-AFE2-9B94E72468C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculationComparison", "LoadFlowCalculationComparison\LoadFlowCalculationComparison.csproj", "{113F2CBC-7153-49F0-929A-0E3989318DA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A87372E-5F2B-4434-854C-20AF1B2CBE6A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D019F54A-FB70-4BBC-AB53-102C78E54880}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,6 +58,10 @@ Global
 		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5501042F-A420-4D9F-AFE2-9B94E72468C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{113F2CBC-7153-49F0-929A-0E3989318DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{113F2CBC-7153-49F0-929A-0E3989318DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{113F2CBC-7153-49F0-929A-0E3989318DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{113F2CBC-7153-49F0-929A-0E3989318DA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

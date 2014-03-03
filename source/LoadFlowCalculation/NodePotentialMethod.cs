@@ -7,6 +7,12 @@ namespace LoadFlowCalculation
 {
     public class NodePotentialMethod : LoadFlowCalculator
     {
+        private readonly double _singularityDetection;
+
+        public NodePotentialMethod(double singualrityDetection)
+        {
+            _singularityDetection = singualrityDetection;
+        }
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, out bool voltageCollapse)
         {
             var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
@@ -14,7 +20,7 @@ namespace LoadFlowCalculation
             var factorization = admittances.QR();
             var determinant = factorization.Determinant;
 
-            if (determinant.Magnitude < 0.0001)
+            if (determinant.Magnitude < _singularityDetection)
                 throw new ArgumentOutOfRangeException("admittances",
                     "the resulting admittance matrix is nearly singular");
 

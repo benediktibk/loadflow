@@ -1,0 +1,48 @@
+﻿<Window x:Class="LoadFlowCalculationComparison.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="460" Width="1000">
+    <Grid>
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="400">
+            <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
+            <ComboBox HorizontalAlignment="Stretch" Margin="120,14,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+            <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBlock Text="Node Potential" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                <TextBlock Text="singularity detection" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,95,15,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBlock Text="Current Iteration" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                <TextBlock Text="termination criteria" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,168,15,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBlock Text="Newton Raphson" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,241,15,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBlock Text="Fast Decoupled Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" Height="73" Margin="10,314,15               ,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBlock Text="Holomorphic Embedding Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                <TextBlock Text="maximum number of coefficients" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="50" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+            </Grid>
+            <Button Content="calculate" HorizontalAlignment="Left" Margin="310,392,0,0" VerticalAlignment="Top" Width="75"/>
+        </Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="400,10,10,10">
+            <DataGrid ItemsSource="{Binding}"></DataGrid>
+        </Grid>
+    </Grid>
+</Window>

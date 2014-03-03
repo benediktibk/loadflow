@@ -8,7 +8,7 @@ namespace LoadFlowCalculationTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            return new NodePotentialMethod();
+            return new NodePotentialMethod(0.0001);
         }
     }
 }
