@@ -81,7 +81,7 @@ namespace LoadFlowCalculationTest
             var d1 = voltages[0].Phase;
             var v2 = voltages[1].Magnitude;
             var d2 = voltages[1].Phase;
-            var leftUpper = (-200)*v1 + 10*v2*Math.Cos(d2 - d1) - Math.Sin(d2);
+            var leftUpper = (-200)*v1 + 10*v2*Math.Cos(d2 - d1) - Math.Sin(d1);
             var rightUpper = 10*v1*Math.Cos(d2 - d1);
             var leftLower = 10*v2*Math.Cos(d1 - d2);
             var rightLower = 10*v1*Math.Cos(d1 - d2) - 400*v2 - 2*Math.Cos(d2);
@@ -107,7 +107,7 @@ namespace LoadFlowCalculationTest
             var d1 = voltages[0].Phase;
             var v2 = voltages[1].Magnitude;
             var d2 = voltages[1].Phase;
-            var leftUpper = (-200) * v1 + 10 * v2 * Math.Cos(d2 - d1) - Math.Sin(d2);
+            var leftUpper = (-200) * v1 + 10 * v2 * Math.Cos(d2 - d1) - Math.Sin(d1);
             var rightUpper = 10 * v1 * Math.Cos(d2 - d1);
             var leftLower = 10 * v2 * Math.Cos(d1 - d2);
             var rightLower = 10 * v1 * Math.Cos(d1 - d2) - 400 * v2 - 2 * Math.Cos(d2);
