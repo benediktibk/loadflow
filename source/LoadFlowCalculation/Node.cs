@@ -5,19 +5,19 @@ namespace LoadFlowCalculation
 {
     public class Node
     {
-        private System.Numerics.Complex _power;
+        private Complex _power;
         private bool _powerSet;
-        private System.Numerics.Complex _voltage;
+        private Complex _voltage;
         private bool _voltageSet;
 
-        public System.Numerics.Complex Power
+        public Complex Power
         {
             get
             {
                 if (!_powerSet)
                     throw new ArgumentOutOfRangeException();
-                else
-                    return _power;
+                
+                return _power;
             }
             set
             {
@@ -26,14 +26,14 @@ namespace LoadFlowCalculation
             }
         }
 
-        public System.Numerics.Complex Voltage
+        public Complex Voltage
         {
             get
             {
                 if (!_voltageSet)
                     throw new ArgumentOutOfRangeException();
-                else
-                    return _voltage;
+                
+                return _voltage;
             }
             set
             {
