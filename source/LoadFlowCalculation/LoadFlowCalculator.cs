@@ -9,7 +9,7 @@ namespace LoadFlowCalculation
 {
     public abstract class LoadFlowCalculator
     {
-        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, out bool voltageCollapse);
+        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse);
 
         /// <summary>
         /// calculates the missing node voltages and powers
@@ -56,8 +56,15 @@ namespace LoadFlowCalculation
 
                 var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
                 var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
+
+                var pqBuses = new List<PQBus>(countOfUnknownVoltages);
+                var pvBuses = new List<PVBus>();
+
+                for (var i = 0; i < countOfUnknownVoltages; ++i)
+                    pqBuses.Add(new PQBus(i, knownPowers[i]));
+
                 var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
-                    nominalVoltage, constantCurrentRightHandSide, knownPowers, out voltageCollapse);
+                    nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses, out voltageCollapse);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);

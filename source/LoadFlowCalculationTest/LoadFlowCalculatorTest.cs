@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -34,15 +35,10 @@ namespace LoadFlowCalculationTest
             var nodes = new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].Power = _powers.At(1);
-            var admittancesToKnownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(-10, 0)}});
-            var admittancesToUnknownVoltages = DenseMatrix.OfArray(new[,]{{new Complex(10, 0)}});
-            var knownVoltages = new DenseVector(new[] {new Complex(1, 0)});
-            var knownPowers = new DenseVector(new[]{new Complex(-1, 0)});
-            var constantCurrents = admittancesToKnownVoltages.Multiply(knownVoltages).Multiply(new Complex(-1, 0));
             bool voltageCollapse;
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
-                .Setup(o => o.CalculateUnknownVoltages(admittancesToUnknownVoltages, _nominalVoltage, constantCurrents, knownPowers, out voltageCollapse))
+                .Setup(o => o.CalculateUnknownVoltages(It.IsAny<Matrix<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>(), out voltageCollapse))
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             _calculator = calculatorInternalMock.Object;
 

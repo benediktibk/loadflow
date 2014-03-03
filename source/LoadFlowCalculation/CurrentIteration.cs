@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -15,8 +16,13 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers, out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
         {
+            var knownPowers = new DenseVector(pqBuses.Count);
+
+            foreach (var bus in pqBuses)
+                knownPowers[bus.ID] = bus.Power;
+
             var nodeCount = admittances.RowCount;
             var initialVoltages = new Complex[nodeCount];
 

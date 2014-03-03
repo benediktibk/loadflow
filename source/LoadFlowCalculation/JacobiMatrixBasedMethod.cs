@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
@@ -23,9 +24,13 @@ namespace LoadFlowCalculation
         public abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError);
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, Vector<Complex> knownPowers,
-            out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
         {
+            var knownPowers = new DenseVector(pqBuses.Count);
+
+            foreach (var bus in pqBuses)
+                knownPowers[bus.ID] = bus.Power;
+
             var nodeCount = admittances.RowCount;
             var powersReal = ExtractRealParts(knownPowers);
             var powersImaginary = ExtractImaginaryParts(knownPowers);

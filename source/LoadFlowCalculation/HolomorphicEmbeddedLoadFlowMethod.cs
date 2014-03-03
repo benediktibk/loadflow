@@ -29,11 +29,13 @@ namespace LoadFlowCalculation
             _finalAccuarcyImprovement = finalAccuracyImprovement;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(
-            Matrix<Complex> admittances,
-            double nominalVoltage, Vector<Complex> constantCurrents,
-            Vector<Complex> knownPowers, out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
         {
+            var knownPowers = new DenseVector(pqBuses.Count);
+
+            foreach (var bus in pqBuses)
+                knownPowers[bus.ID] = bus.Power;
+
             var factorization = admittances.QR();
             InitializeAlgorithm(admittances, constantCurrents, knownPowers, factorization);
             var voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();

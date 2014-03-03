@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -20,10 +21,11 @@ namespace LoadFlowCalculationTest
         {
             var admittances = DenseMatrix.OfArray(new [,]{{new Complex(1000, 0)}});
             var currents = new DenseVector(new[] {new Complex(1000, 0)});
-            var powers = new DenseVector(new[] {new Complex(-1, 0)});
+            var pqBuses = new List<PQBus> { new PQBus(0, new Complex(-1, 0)) };
+            var pvBuses = new List<PVBus>();
             var calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0001, 4, false);
 
-            calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, powers, out _voltageCollapse);
+            calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, pqBuses, pvBuses, out _voltageCollapse);
 
             var allPowerSeries = calculatorHelm.VoltagePowerSeries;
             Assert.AreEqual(1, allPowerSeries.Count());
