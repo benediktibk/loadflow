@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class UnitTest1
+    public class PQBusTest
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]

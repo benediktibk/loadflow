@@ -74,8 +74,8 @@
     <Compile Include="HolomorphicEmbeddedLoadflowMethodWithoutAccuracyImprovementTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadflowMethodWithAccuracyImprovementTest.cs" />
     <Compile Include="FastDecoupledLoadFlowMethodTest.cs" />
-    <Compile Include="UnitTest1.cs" />
-    <Compile Include="UnitTest2.cs" />
+    <Compile Include="PQBusTest.cs" />
+    <Compile Include="PVBusTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
