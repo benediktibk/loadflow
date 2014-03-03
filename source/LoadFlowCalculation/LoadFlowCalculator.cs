@@ -26,47 +26,47 @@ namespace LoadFlowCalculation
             if (!IsAdmittanceMatrixValid(admittances))
                 throw new ArgumentOutOfRangeException("admittances", "the admittance matrix is invalid");
 
-            List<int> indexOfNodesWithKnownVoltage;
-            List<int> indexOfNodesWithUnknownVoltage;
-            SeperateNodesInKnownAndUnknownVoltages(nodes, out indexOfNodesWithKnownVoltage,
-                out indexOfNodesWithUnknownVoltage);
+            List<int> indexOfSlackBuses;
+            List<int> indexOfPQBuses;
+            List<int> indexOfPVBuses;
+            SeperateNodesInBusTypes(nodes, out indexOfSlackBuses,
+                out indexOfPQBuses, out indexOfPVBuses);
 
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
+            var countOfKnownVoltages = indexOfSlackBuses.Count;
+            var countOfUnknownVoltages = indexOfPQBuses.Count + indexOfPVBuses.Count;
+
+            var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
+            indexOfNodesWithUnknownVoltage.AddRange(indexOfPQBuses);
+            indexOfNodesWithUnknownVoltage.AddRange(indexOfPVBuses);
 
             if (countOfKnownVoltages == 0)
-                throw new ArgumentOutOfRangeException("nodes", "there must be at least one node with known voltage");
+                throw new ArgumentOutOfRangeException("nodes", "there must be at least one slack bus");
 
             Vector<Complex> allVoltages;
             if (countOfUnknownVoltages == 0)
             {
                 voltageCollapse = false;
-                allVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
+                allVoltages = ExtractKnownVoltages(nodes, indexOfSlackBuses);
             }
             else
             {
-                var knownVoltages = ExtractKnownVoltages(nodes, indexOfNodesWithKnownVoltage);
-                var knownPowers = ExtractKnownPowers(nodes, indexOfNodesWithUnknownVoltage);
+                var knownVoltages = ExtractKnownVoltages(nodes, indexOfSlackBuses);
+                var pqBuses = ExtractPQBuses(nodes, indexOfPQBuses);
+                var pvBuses = ExtractPVBuses(nodes, indexOfPVBuses, pqBuses.Count);
                 var admittancesReduced = ExtractRowsOfUnknownVoltages(admittances,
                     indexOfNodesWithUnknownVoltage);
                 var admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced,
-                    indexOfNodesWithKnownVoltage);
+                    indexOfSlackBuses);
                 var admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
                     indexOfNodesWithUnknownVoltage);
 
                 var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
                 var constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
 
-                var pqBuses = new List<PQBus>(countOfUnknownVoltages);
-                var pvBuses = new List<PVBus>();
-
-                for (var i = 0; i < countOfUnknownVoltages; ++i)
-                    pqBuses.Add(new PQBus(i, knownPowers[i]));
-
                 var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses, out voltageCollapse);
 
-                allVoltages = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
+                allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);
             }
 
@@ -121,17 +121,40 @@ namespace LoadFlowCalculation
             return allVoltages;
         }
 
-        private static Vector<Complex> ExtractKnownPowers(IList<Node> nodes,
-            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static List<PQBus> ExtractPQBuses(IList<Node> nodes,
+            IEnumerable<int> indexes)
         {
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var knownPowersArray = new Complex[countOfUnknownVoltages];
+            var result = new List<PQBus>(nodes.Count);
+            var newIndex = 0;
 
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
-                knownPowersArray[i] = nodes[indexOfNodesWithUnknownVoltage[i]].Power;
+            foreach (var index in indexes)
+            {
+                if (!nodes[index].IsPQBus)
+                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PQ-bus");
 
-            var knownPowers = new DenseVector(knownPowersArray);
-            return knownPowers;
+                result.Add(new PQBus(newIndex, nodes[index].Power));
+                ++newIndex;
+            }
+
+            return result;
+        }
+
+        private static List<PVBus> ExtractPVBuses(IList<Node> nodes,
+            IEnumerable<int> indexes, int countOfPQBuses)
+        {
+            var result = new List<PVBus>(nodes.Count);
+            var newIndex = countOfPQBuses;
+
+            foreach (var index in indexes)
+            {
+                if (!nodes[index].IsPQBus)
+                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PQ-bus");
+
+                result.Add(new PVBus(newIndex, nodes[index].RealPower, nodes[index].VoltageMagnitude));
+                ++newIndex;
+            }
+
+            return result;
         }
 
         private static Matrix<Complex> ExtractAdmittancesToUnknownVoltages(Matrix<Complex> admittancesReduced,
@@ -159,15 +182,14 @@ namespace LoadFlowCalculation
         }
 
         private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes,
-            IReadOnlyList<int> indexOfNodesWithKnownVoltage)
+            IReadOnlyList<int> indexes)
         {
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var knownVoltagesArray = new Complex[countOfKnownVoltages];
+            var countOfKnownVoltages = indexes.Count;
+            var knownVoltages = new DenseVector(countOfKnownVoltages);
 
-            for (int i = 0; i < countOfKnownVoltages; ++i)
-                knownVoltagesArray[i] = nodes[indexOfNodesWithKnownVoltage[i]].Voltage;
+            for (var i = 0; i < countOfKnownVoltages; ++i)
+                knownVoltages[i] = nodes[indexes[i]].Voltage;
 
-            var knownVoltages = new DenseVector(knownVoltagesArray);
             return knownVoltages;
         }
 
@@ -183,28 +205,26 @@ namespace LoadFlowCalculation
             return admittancesReduced;
         }
 
-        private static void SeperateNodesInKnownAndUnknownVoltages(IList<Node> nodes,
-            out List<int> indexOfNodesWithKnownVoltage, out List<int> indexOfNodesWithUnknownVoltage)
+        private static void SeperateNodesInBusTypes(IList<Node> nodes,
+            out List<int> indexOfSlackBuses, out List<int> indexOfPQBuses, out List<int> indexOfPVBuses)
         {
-            indexOfNodesWithKnownVoltage = new List<int>();
-            indexOfNodesWithUnknownVoltage = new List<int>();
+            indexOfSlackBuses = new List<int>();
+            indexOfPQBuses = new List<int>();
+            indexOfPVBuses = new List<int>();
 
             for (var i = 0; i < nodes.Count(); ++i)
             {
                 var node = nodes[i];
 
-                if (node.VoltageIsKnown)
-                    indexOfNodesWithKnownVoltage.Add(i);
+                if (node.IsSlackBus)
+                    indexOfSlackBuses.Add(i);
+                else if (node.IsPQBus)
+                    indexOfPQBuses.Add(i);
+                else if (node.IsPVBus)
+                    indexOfPVBuses.Add(i);
                 else
-                    indexOfNodesWithUnknownVoltage.Add(i);
-
-                if (!node.VoltageIsKnown && !node.PowerIsKnown)
                     throw new ArgumentOutOfRangeException("nodes",
-                        "for every node at least two parameter must be specified");
-
-                if (node.VoltageIsKnown && node.PowerIsKnown)
-                    throw new ArgumentOutOfRangeException("nodes",
-                        "for every node not more than two parameter can be specified");
+                        "invalid bus type (neither PV, PQ or slack bus)");
             }
         }
 
