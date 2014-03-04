@@ -74,6 +74,7 @@
     <Compile Include="FastDecoupledLoadFlowMethodTest.cs" />
     <Compile Include="PQBusTest.cs" />
     <Compile Include="PVBusTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
