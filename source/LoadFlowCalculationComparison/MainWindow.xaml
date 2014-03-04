@@ -8,9 +8,16 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Grid VerticalAlignment="Stretch">
-                <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
-                <ComboBox HorizontalAlignment="Stretch" Margin="120,14,10,0" VerticalAlignment="Top"/>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid>
+                    <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ComboBox_SelectionChanged" Width="220">
+                        <ComboBoxItem Content="collapsing two node system" IsSelected="true"/>
+                        <ComboBoxItem Content="stable two node system"/>
+                        <ComboBoxItem Content="five node system with four PQ-buses"/>
+                        <ComboBoxItem Content="five node system with three PQ-buses and one PV-bus"/>
+                    </ComboBox>
+                </Grid>
                 <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top">
                     <TextBlock Text="Node Potential" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="singularity detection" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
@@ -47,6 +54,6 @@
                 <Button Content="calculate" HorizontalAlignment="Right" Margin="0,398,10,0" VerticalAlignment="Top" Width="75"/>
             </Grid>
         </ScrollViewer>
-        <DataGrid ItemsSource="{Binding}" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10"/>
+        <DataGrid ItemsSource="{Binding}" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch"/>
     </Grid>
 </Window>
