@@ -12,10 +12,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
         {
-            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] {new Node(), new Node()};
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
+            var nodes = CreateTestFromOneSideSuppliedConnectionWithBigResistance();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -26,10 +23,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithSmallResistance_CorrectResults()
         {
-            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
+            var nodes = CreateTestFromOneSideSuppliedConnectionWithSmallResistance();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -40,10 +34,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionAndOnlyVoltagesKnown_CorrectResults()
         {
-            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Voltage = _voltages.At(1);
+            var nodes = CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -54,10 +45,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedAndInverseInformationGiven_CorrectResults()
         {
-            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
+            var nodes = CreateTestFromOneSideSuppliedAndInverseInformationGiven();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -68,13 +56,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyVoltagesGiven_CorrectResults()
         {
-            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Voltage = _voltages.At(3);
-            nodes[4].Voltage = _voltages.At(4);
+            var nodes = CreateTestFiveNodeProblemAndOnlyVoltagesGiven();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -85,13 +67,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGiven_CorrectResults()
         {
-            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
+            var nodes = CreateTestFiveNodeProblemAndVoltagesAndPowersGiven();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -103,11 +79,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGiven_CorrectResults()
         {
-            CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
+            var nodes = CreateTestThreeNodeProblemAndTwoVoltagesGiven();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -119,13 +91,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNode_CorrectResults()
         {
-            CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Voltage = _voltages.At(3);
-            nodes[4].Voltage = _voltages.At(4);
+            var nodes = CreateTestFiveNodeProblemWithGroundNode();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -137,11 +103,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
-            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
+            var nodes = CreateTestThreeNodeProblemWithMostlyImaginaryConnections();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -152,13 +114,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
-            CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
+            var nodes = CreateTestFiveNodeProblemWithMostlyImaginaryConnections();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -169,11 +125,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
         {
-            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
+            var nodes = CreateTestTwoNodeProblemWithOnePVBus();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -184,12 +136,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
-            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].Power = _powers.At(2);
+            var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -200,13 +147,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
-            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
+            var nodes = CreateTestThreeNodeProblemWithTwoPVBuses();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 

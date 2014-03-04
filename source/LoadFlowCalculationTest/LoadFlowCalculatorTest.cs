@@ -128,6 +128,7 @@ namespace LoadFlowCalculationTest
         #endregion
 
         #region test creation
+        #region five nodes
         protected Node[] CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
@@ -164,16 +165,6 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-        protected Node[] CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
-        {
-            CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            return nodes;
-        }
-
         protected Node[] CreateTestFiveNodeProblemWithGroundNodeVersionTwo()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
@@ -186,6 +177,127 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
+        protected Node[] CreateTestFiveNodeProblemWithGroundNodeVersionThree()
+        {
+            CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Power = _powers.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFiveNodeProblemAndOnlyVoltagesGiven()
+        {
+            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Voltage = _voltages.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFiveNodeProblemAndVoltagesAndPowersGiven()
+        {
+            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFiveNodeProblemWithGroundNode()
+        {
+            CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Voltage = _voltages.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFiveNodeProblemWithMostlyImaginaryConnections()
+        {
+            CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+        #endregion
+
+        #region three nodes
+        protected Node[] CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
+        {
+            CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            return nodes;
+        }
+
+        protected Node[] CreateTestThreeNodeProblemAndTwoVoltagesGiven()
+        {
+            CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            return nodes;
+        }
+
+        protected Node[] CreateTestThreeNodeProblemWithMostlyImaginaryConnections()
+        {
+            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Voltage = _voltages.At(2);
+            return nodes;
+        }
+
+        protected Node[] CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus()
+        {
+            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            nodes[2].Power = _powers.At(2);
+            return nodes;
+        }
+
+        protected Node[] CreateTestThreeNodeProblemWithTwoPVBuses()
+        {
+            CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
+            nodes[2].RealPower = _powers.At(2).Real;
+            return nodes;
+        }
+        #endregion
+
+        #region collapse
         protected Node[] CreateTestCollapsingSystem()
         {
             CreateCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
@@ -203,18 +315,55 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = _powers.At(1);
             return nodes;
         }
+        #endregion
 
-        protected Node[] CreateTestFiveNodeProblemWithGroundNodeVersionThree()
+        #region from one side supplied connection
+        protected Node[] CreateTestFromOneSideSuppliedConnectionWithBigResistance()
         {
-            CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].Power = _powers.At(1);
-            nodes[2].Power = _powers.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
             return nodes;
         }
+
+        protected Node[] CreateTestFromOneSideSuppliedConnectionWithSmallResistance()
+        {
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown()
+        {
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            return nodes;
+        }
+
+        protected Node[] CreateTestFromOneSideSuppliedAndInverseInformationGiven()
+        {
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            return nodes;
+        }
+
+        protected Node[] CreateTestTwoNodeProblemWithOnePVBus()
+        {
+            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            var nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            return nodes;
+        }
+        #endregion
         #endregion
 
         #region system creation
