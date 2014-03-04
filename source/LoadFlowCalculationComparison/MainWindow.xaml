@@ -18,33 +18,33 @@
                         <ComboBoxItem Content="five node system with three PQ-buses and one PV-bus"/>
                     </ComboBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top" Name="NodePotentialGrid" DataContext="_nodePotential">
+                <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top" Name="NodePotentialGrid">
                     <TextBlock Text="Node Potential" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="singularity detection" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="{Binding SingularityDetection}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,95,15,0" VerticalAlignment="Top">
+                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,95,15,0" VerticalAlignment="Top" Name="CurrentIterationGrid">
                     <TextBlock Text="Current Iteration" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="termination criteria" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="{Binding TerminationCriteria}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="{Binding MaximumIterations}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,168,15,0" VerticalAlignment="Top">
+                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,168,15,0" VerticalAlignment="Top" Name="NewtonRaphsonGrid">
                     <TextBlock Text="Newton Raphson" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,241,15,0" VerticalAlignment="Top">
+                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,241,15,0" VerticalAlignment="Top" Name="FastDecoupledLoadFlowGrid">
                     <TextBlock Text="Fast Decoupled Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="10,314,15,0" VerticalAlignment="Top">
+                <Grid HorizontalAlignment="Stretch" Height="73" Margin="10,314,15,0" VerticalAlignment="Top" Name="HolomorphicEmbeddedLoadFlowGrid">
                     <TextBlock Text="Holomorphic Embedding Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>

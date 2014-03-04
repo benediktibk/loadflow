@@ -24,6 +24,10 @@ namespace LoadFlowCalculationComparison
             
             InitializeComponent();
             NodePotentialGrid.DataContext = _nodePotential;
+            HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
+            FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
+            CurrentIterationGrid.DataContext = _currentIteration;
+            NewtonRaphsonGrid.DataContext = _newtonRaphson;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
