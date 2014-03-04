@@ -12,14 +12,14 @@ namespace LoadFlowCalculation
         private readonly int _maximumIterations;
         private readonly double _terminationCriteria;
 
-        public CurrentIteration(double terminationCriteria, int maximumIterations)
+        public CurrentIteration(double terminationCriteria, int maximumIterations) : base(terminationCriteria*10000)
         {
             _terminationCriteria = terminationCriteria;
             _maximumIterations = maximumIterations;
         }
 
         public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage,
-            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse,
+            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
             Vector<Complex> initialVoltages)
         {
             var powers = new DenseVector(admittances.RowCount);
@@ -66,11 +66,10 @@ namespace LoadFlowCalculation
                 ++iterations;
             } while (iterations <= _maximumIterations && (voltageChange/nominalVoltage > _terminationCriteria/10 || powerErrorTooBig));
 
-            voltageCollapse = iterations > _maximumIterations || Double.IsNaN(voltageChange);
             return voltages;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var nodeCount = admittances.RowCount;
             var initialVoltages = new DenseVector(nodeCount);
@@ -79,7 +78,7 @@ namespace LoadFlowCalculation
                 initialVoltages[i] = new Complex(nominalVoltage, 0);
 
             return CalculateUnknownVoltages(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses,
-                out voltageCollapse, initialVoltages);
+                initialVoltages);
         }
 
         private Complex CalculateVoltage(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents, IList<Complex> powers,

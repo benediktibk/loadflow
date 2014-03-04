@@ -13,7 +13,7 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage) : base(targetPrecision*100)
         {
             _initialRealVoltage = initialRealVoltage;
             _initialImaginaryVoltage = initialImaginaryVoltage;
@@ -24,7 +24,7 @@ namespace LoadFlowCalculation
         public abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError);
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var knownPowers = new DenseVector(pqBuses.Count);
 
@@ -52,10 +52,7 @@ namespace LoadFlowCalculation
                 voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
                 currentVoltages = currentVoltages + voltageChanges;
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
-
-            var maximumVoltage = currentVoltages.AbsoluteMaximum().Magnitude;
-
-            voltageCollapse = voltageChange > nominalVoltage*_targetPrecision || maximumVoltage > 1000*nominalVoltage;
+            
             return currentVoltages;
         }
 

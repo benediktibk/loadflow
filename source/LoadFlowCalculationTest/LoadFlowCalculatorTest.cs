@@ -43,7 +43,7 @@ namespace LoadFlowCalculationTest
             bool voltageCollapse;
             var calculatorInternalMock = new Mock<LoadFlowCalculator>();
             calculatorInternalMock
-                .Setup(o => o.CalculateUnknownVoltages(It.IsAny<Matrix<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>(), out voltageCollapse))
+                .Setup(o => o.CalculateUnknownVoltages(It.IsAny<Matrix<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>()))
                 .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
             _calculator = calculatorInternalMock.Object;
 

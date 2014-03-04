@@ -18,7 +18,7 @@ namespace LoadFlowCalculation
         private PowerSeriesComplex[] _voltagePowerSeries;
         private readonly bool _finalAccuarcyImprovement;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement) : base(targetPrecision*100)
         {
             if (maximumNumberOfCoefficients < 4)
                 throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",
@@ -29,7 +29,7 @@ namespace LoadFlowCalculation
             _finalAccuarcyImprovement = finalAccuracyImprovement;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var knownPowers = new DenseVector(pqBuses.Count);
 
@@ -58,25 +58,17 @@ namespace LoadFlowCalculation
             if (_finalAccuarcyImprovement)
             {
                 var currentIteration = new CurrentIteration(_targetPrecision/100, 1000);
-                bool currentIterationVoltageCollapse;
 
                 var improvedVoltage = currentIteration.CalculateUnknownVoltages(admittances, nominalVoltage,
-                    constantCurrents, pqBuses, pvBuses, out currentIterationVoltageCollapse, currentVoltage);
+                    constantCurrents, pqBuses, pvBuses, currentVoltage);
 
                 var voltageImprovement = improvedVoltage - currentVoltage;
                 var maximumVoltageImprovement = voltageImprovement.AbsoluteMaximum().Magnitude;
 
-                if (maximumVoltageImprovement < 0.1*nominalVoltage && !currentIterationVoltageCollapse)
+                if (maximumVoltageImprovement < 0.1*nominalVoltage)
                     currentVoltage = improvedVoltage;
             }
 
-            var voltageDifferenceDrivenCurrents = admittances.Multiply(currentVoltage);
-            var allCurrents = voltageDifferenceDrivenCurrents.Subtract(constantCurrents);
-            var resultingPowers = currentVoltage.PointwiseMultiply(allCurrents.Conjugate());
-            var powerDifference = resultingPowers - knownPowers;
-            var maximumPower = knownPowers.AbsoluteMaximum().Magnitude;
-            var maximumPowerDifference = powerDifference.AbsoluteMaximum().Magnitude;
-            voltageCollapse = maximumPowerDifference > maximumPower*0.01;
             return currentVoltage;
         }
 

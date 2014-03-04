@@ -20,7 +20,7 @@ namespace LoadFlowCalculationTest
             var pvBuses = new List<PVBus>();
             var calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0001, 4, false);
 
-            calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, pqBuses, pvBuses, out _voltageCollapse);
+            calculatorHelm.CalculateUnknownVoltages(admittances, 1, currents, pqBuses, pvBuses);
 
             var allPowerSeries = calculatorHelm.VoltagePowerSeries;
             Assert.AreEqual(1, allPowerSeries.Count());

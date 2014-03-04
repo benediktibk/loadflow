@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -9,7 +10,14 @@ namespace LoadFlowCalculation
 {
     public abstract class LoadFlowCalculator
     {
-        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse);
+        private readonly double _maximumPowerError;
+
+        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
+
+        protected LoadFlowCalculator(double maximumPowerError)
+        {
+            _maximumPowerError = maximumPowerError;
+        }
 
         /// <summary>
         /// calculates the missing node voltages and powers
@@ -44,10 +52,7 @@ namespace LoadFlowCalculation
 
             Vector<Complex> allVoltages;
             if (countOfUnknownVoltages == 0)
-            {
-                voltageCollapse = false;
                 allVoltages = ExtractKnownVoltages(nodes, indexOfSlackBuses);
-            }
             else
             {
                 var knownVoltages = ExtractKnownVoltages(nodes, indexOfSlackBuses);
@@ -58,14 +63,51 @@ namespace LoadFlowCalculation
                 ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
 
                 var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
-                    nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses, out voltageCollapse);
+                    nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);
             }
 
             var allPowers = CalculateAllPowers(admittances, allVoltages);
+            voltageCollapse = false;
+            var inputPowerSum = new Complex();
+            var powerAbsoluteSum = new Complex();
+
+            foreach (var power in allPowers)
+            {
+                if (Double.IsNaN(power.Magnitude))
+                    voltageCollapse = true;
+
+                inputPowerSum += power;
+                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+            }
+
+            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
+
+            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude/powerAbsoluteSum.Magnitude;
+
+            if (relativePowerError > _maximumPowerError)
+                voltageCollapse = true;
+
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+        }
+
+        public static Complex CalculatePowerLoss(Matrix<Complex> admittances, Vector<Complex> allVoltages)
+        {
+            var powerLoss = new Complex();
+
+            for (var i = 0; i < admittances.RowCount; ++i)
+                for (var j = i; j < admittances.ColumnCount - 1; ++j)
+                {
+                    var admittance = admittances[i, j];
+                    var voltageDifference = allVoltages[j] - allVoltages[j + 1];
+                    var branchCurrent = admittance*voltageDifference;
+                    var branchPowerLoss = voltageDifference*branchCurrent.Conjugate();
+                    powerLoss += branchPowerLoss;
+                }
+
+            return powerLoss;
         }
 
         public static void ReduceAdmittancesByKnownVoltages(Matrix<Complex> admittances, List<int> indexOfNodesWithUnknownVoltage,
