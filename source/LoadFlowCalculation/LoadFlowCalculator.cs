@@ -147,8 +147,8 @@ namespace LoadFlowCalculation
 
             foreach (var index in indexes)
             {
-                if (!nodes[index].IsPQBus)
-                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PQ-bus");
+                if (!nodes[index].IsPVBus)
+                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PV-bus");
 
                 result.Add(new PVBus(newIndex, nodes[index].RealPower, nodes[index].VoltageMagnitude));
                 ++newIndex;
