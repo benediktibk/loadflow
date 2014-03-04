@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -20,30 +22,51 @@ namespace LoadFlowCalculation
             Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse,
             Vector<Complex> initialVoltages)
         {
-            var knownPowers = new DenseVector(pqBuses.Count);
+            var powers = new DenseVector(admittances.RowCount);
+            var voltages = initialVoltages;
 
             foreach (var bus in pqBuses)
-                knownPowers[bus.ID] = bus.Power;
+                powers[bus.ID] = bus.Power;
 
-            var voltages = initialVoltages;
+            foreach (var bus in pvBuses)
+                powers[bus.ID] = new Complex(bus.RealPower, 0);
+
             var iterations = 0;
-            var knownPowersConjugated = knownPowers.Conjugate();
-            var factorization = admittances.QR();
             double voltageChange;
+            bool powerErrorTooBig;
 
             do
             {
-                var loadCurrents = knownPowersConjugated.PointwiseDivide(voltages.Conjugate());
-                var currents = loadCurrents.Add(constantCurrents);
-                var newVoltages = factorization.Solve(currents);
+                powerErrorTooBig = false;
+                var newVoltages = DenseVector.OfVector(voltages);
+
+                foreach (var bus in pqBuses)
+                {
+                    var newVoltage = CalculateVoltage(bus.ID, admittances, constantCurrents, powers, newVoltages);
+                    newVoltages[bus.ID] = newVoltage;
+                }
+
+                foreach (var bus in pvBuses)
+                {
+                    var newVoltage = CalculateVoltage(bus.ID, admittances, constantCurrents, powers, newVoltages);
+                    newVoltage = Complex.FromPolarCoordinates(bus.VoltageMagnitude, newVoltage.Phase);
+                    newVoltages[bus.ID] = newVoltage;
+                    var newPower = CalculatePower(bus.ID, admittances, constantCurrents, newVoltages);
+
+                    if (Math.Abs((newPower.Real - bus.RealPower)/bus.RealPower) > _terminationCriteria)
+                        powerErrorTooBig = true;
+
+                    powers[bus.ID] = new Complex(bus.RealPower, newPower.Imaginary);
+                }
+
                 var voltageDifference = newVoltages.Subtract(voltages);
                 var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
                 voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
                 voltages = newVoltages;
                 ++iterations;
-            } while (iterations <= _maximumIterations && voltageChange > _terminationCriteria);
+            } while (iterations <= _maximumIterations && voltageChange > _terminationCriteria && !powerErrorTooBig);
 
-            voltageCollapse = iterations > _maximumIterations;
+            voltageCollapse = iterations > _maximumIterations || Double.IsNaN(voltageChange);
             return voltages;
         }
 
@@ -57,6 +80,40 @@ namespace LoadFlowCalculation
 
             return CalculateUnknownVoltages(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses,
                 out voltageCollapse, initialVoltages);
+        }
+
+        private Complex CalculateVoltage(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents, IList<Complex> powers,
+            IList<Complex> previousVoltages)
+        {
+            var constantCurrent = constantCurrents[i];
+            var admittance = admittances[i, i];
+            var previousVoltage = previousVoltages[i];
+            var power = powers[i];
+
+            var branchCurrentSum = new Complex();
+            
+            for (var k = 0; k < admittances.RowCount; ++k)
+                if (k != i)
+                {
+                    var branchAdmittance = admittances[i, k];
+                    var branchVoltage = previousVoltages[k];
+                    var branchCurrent = branchAdmittance*branchVoltage;
+                    branchCurrentSum += branchCurrent;
+                }
+
+            var totalCurrents = constantCurrent + (power/previousVoltage).Conjugate() - branchCurrentSum;
+            return totalCurrents/admittance;
+        }
+
+        private Complex CalculatePower(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents,
+            Vector<Complex> voltages)
+        {
+            var voltage = voltages[i];
+            var constantCurrent = constantCurrents[i];
+            var branchAdmittances = admittances.Row(i);
+            var branchCurrent = (branchAdmittances.PointwiseMultiply(voltages)).Sum();
+            var totalCurrents = branchCurrent - constantCurrent;
+            return voltage*totalCurrents.Conjugate();
         }
     }
 }
