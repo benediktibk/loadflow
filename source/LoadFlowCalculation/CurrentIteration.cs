@@ -12,7 +12,7 @@ namespace LoadFlowCalculation
         private readonly int _maximumIterations;
         private readonly double _terminationCriteria;
 
-        public CurrentIteration(double terminationCriteria, int maximumIterations) : base(terminationCriteria*10000)
+        public CurrentIteration(double terminationCriteria, int maximumIterations) : base(terminationCriteria*100)
         {
             _terminationCriteria = terminationCriteria;
             _maximumIterations = maximumIterations;

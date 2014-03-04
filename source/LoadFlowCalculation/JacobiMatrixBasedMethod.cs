@@ -13,7 +13,7 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage) : base(targetPrecision*100)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage, double maximumPowerError) : base(maximumPowerError)
         {
             _initialRealVoltage = initialRealVoltage;
             _initialImaginaryVoltage = initialImaginaryVoltage;

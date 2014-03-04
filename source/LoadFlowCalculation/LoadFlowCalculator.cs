@@ -74,8 +74,32 @@ namespace LoadFlowCalculation
             var inputPowerSum = new Complex();
             var powerAbsoluteSum = new Complex();
 
-            foreach (var power in allPowers)
+            foreach (var index in indexOfPQBuses)
             {
+                var power = nodes[index].Power;
+
+                if (Double.IsNaN(power.Magnitude))
+                    voltageCollapse = true;
+
+                inputPowerSum += power;
+                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+            }
+
+            foreach (var index in indexOfPVBuses)
+            {
+                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
+
+                if (Double.IsNaN(power.Magnitude))
+                    voltageCollapse = true;
+
+                inputPowerSum += power;
+                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+            }
+
+            foreach (var index in indexOfSlackBuses)
+            {
+                var power = allPowers[index];
+
                 if (Double.IsNaN(power.Magnitude))
                     voltageCollapse = true;
 
@@ -84,7 +108,6 @@ namespace LoadFlowCalculation
             }
 
             var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
-
             var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude/powerAbsoluteSum.Magnitude;
 
             if (relativePowerError > _maximumPowerError)
@@ -98,16 +121,16 @@ namespace LoadFlowCalculation
             var powerLoss = new Complex();
 
             for (var i = 0; i < admittances.RowCount; ++i)
-                for (var j = i; j < admittances.ColumnCount - 1; ++j)
+                for (var j = i + 1; j < admittances.ColumnCount; ++j)
                 {
                     var admittance = admittances[i, j];
-                    var voltageDifference = allVoltages[j] - allVoltages[j + 1];
+                    var voltageDifference = allVoltages[i] - allVoltages[j];
                     var branchCurrent = admittance*voltageDifference;
                     var branchPowerLoss = voltageDifference*branchCurrent.Conjugate();
                     powerLoss += branchPowerLoss;
                 }
 
-            return powerLoss;
+            return powerLoss*(-1);
         }
 
         public static void ReduceAdmittancesByKnownVoltages(Matrix<Complex> admittances, List<int> indexOfNodesWithUnknownVoltage,

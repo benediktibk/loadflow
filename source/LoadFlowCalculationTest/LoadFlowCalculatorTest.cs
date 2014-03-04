@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using Moq;
 using LoadFlowCalculation;
 using UnitTestHelper;
 
@@ -33,29 +31,6 @@ namespace LoadFlowCalculationTest
         #endregion
 
         #region basic tests
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnection_CalculatorReceivesCorrectProblemAndCorrectResults()
-        {
-            CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            bool voltageCollapse;
-            var calculatorInternalMock = new Mock<LoadFlowCalculator>();
-            calculatorInternalMock
-                .Setup(o => o.CalculateUnknownVoltages(It.IsAny<Matrix<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>()))
-                .Returns(new DenseVector(new[]{new Complex(0.9, 0)}));
-            _calculator = calculatorInternalMock.Object;
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes,
-                out _voltageCollapse);
-
-            ComplexAssert.AreEqual(1, 0, nodes[0].Voltage, 0.0001);
-            ComplexAssert.AreEqual(0.9, 0, nodes[1].Voltage, 0.0001);
-            ComplexAssert.AreEqual(1, 0, nodes[0].Power, 0.0001);
-            ComplexAssert.AreEqual(-0.9, 0, nodes[1].Power, 0.0001);
-        }
-
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
@@ -124,6 +99,39 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = _powers.At(1);
 
             _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+        }
+
+        [TestMethod]
+        public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
+        {
+            var admittances =
+                DenseMatrix.OfArray(new[,]
+                {{new Complex(1, 0), new Complex(-1, 0)}, {new Complex(-1, 0), new Complex(1, 0)}});
+            var voltages = new DenseVector(new[] {new Complex(1, 0), new Complex(0.5, 0)});
+
+            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(admittances, voltages);
+
+            ComplexAssert.AreEqual(0.25, 0, powerLoss, 0.0001);
+        }
+
+        [TestMethod]
+        public void CalculatePowerLoss_ThreeNodeSystem_CorrectResult()
+        {
+            var admittances = new DenseMatrix(3, 3);
+            var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0.5, 0), new Complex(0.25, 0) });
+            admittances[0, 0] = new Complex(1 + 1.0/3, 0);
+            admittances[0, 1] = new Complex(-1, 0);
+            admittances[0, 2] = new Complex(-1.0 / 3, 0);
+            admittances[1, 0] = new Complex(-1, 0);
+            admittances[1, 1] = new Complex(1.5, 0);
+            admittances[1, 2] = new Complex(-0.5, 0);
+            admittances[2, 0] = new Complex(-1.0 / 3, 0);
+            admittances[2, 1] = new Complex(-0.5, 0);
+            admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
+
+            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(admittances, voltages);
+
+            ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }
         #endregion
 
