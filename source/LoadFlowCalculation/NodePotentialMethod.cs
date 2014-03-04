@@ -14,6 +14,7 @@ namespace LoadFlowCalculation
         {
             _singularityDetection = singualrityDetection;
         }
+
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, out bool voltageCollapse)
         {
             var knownPowers = new DenseVector(pqBuses.Count);
