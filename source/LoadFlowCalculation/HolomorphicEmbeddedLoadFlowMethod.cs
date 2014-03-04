@@ -57,27 +57,16 @@ namespace LoadFlowCalculation
 
             if (_finalAccuarcyImprovement)
             {
-                var iterations = 0;
-                double voltageChange;
-                var knownPowersConjugated = knownPowers.Conjugate();
-                var improvedVoltage = currentVoltage;
+                var currentIteration = new CurrentIteration(_targetPrecision/100, 1000);
+                bool currentIterationVoltageCollapse;
 
-                do
-                {
-                    var loadCurrents = knownPowersConjugated.PointwiseDivide(improvedVoltage.Conjugate());
-                    var currents = loadCurrents.Add(constantCurrents);
-                    var newVoltages = factorization.Solve(currents);
-                    var voltageDifference = newVoltages.Subtract(improvedVoltage);
-                    var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
-                    voltageChange = maximumVoltageDifference.Magnitude/nominalVoltage;
-                    improvedVoltage = newVoltages;
-                    ++iterations;
-                } while (iterations <= 1000 && voltageChange > targetPrecisionScaled);
+                var improvedVoltage = currentIteration.CalculateUnknownVoltages(admittances, nominalVoltage,
+                    constantCurrents, pqBuses, pvBuses, out currentIterationVoltageCollapse, currentVoltage);
 
                 var voltageImprovement = improvedVoltage - currentVoltage;
                 var maximumVoltageImprovement = voltageImprovement.AbsoluteMaximum().Magnitude;
 
-                if (maximumVoltageImprovement < 0.1*nominalVoltage)
+                if (maximumVoltageImprovement < 0.1*nominalVoltage && !currentIterationVoltageCollapse)
                     currentVoltage = improvedVoltage;
             }
 
