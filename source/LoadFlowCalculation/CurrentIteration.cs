@@ -64,7 +64,7 @@ namespace LoadFlowCalculation
                 voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
                 voltages = newVoltages;
                 ++iterations;
-            } while (iterations <= _maximumIterations && voltageChange > _terminationCriteria && !powerErrorTooBig);
+            } while (iterations <= _maximumIterations && (voltageChange/nominalVoltage > _terminationCriteria/10 || powerErrorTooBig));
 
             voltageCollapse = iterations > _maximumIterations || Double.IsNaN(voltageChange);
             return voltages;
