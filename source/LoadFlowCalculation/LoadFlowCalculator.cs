@@ -111,7 +111,7 @@ namespace LoadFlowCalculation
             return allPowers;
         }
 
-        private static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage,
+        public static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage,
             Vector<Complex> knownVoltages,
             IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)
         {
