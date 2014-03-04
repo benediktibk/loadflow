@@ -53,7 +53,9 @@ namespace LoadFlowCalculation
                 currentVoltages = currentVoltages + voltageChanges;
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
 
-            voltageCollapse = voltageChange > nominalVoltage*_targetPrecision;
+            var maximumVoltage = currentVoltages.AbsoluteMaximum().Magnitude;
+
+            voltageCollapse = voltageChange > nominalVoltage*_targetPrecision || maximumVoltage > 1000*nominalVoltage;
             return currentVoltages;
         }
 
