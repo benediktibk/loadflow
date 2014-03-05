@@ -8,8 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="Load Flow Calculation Methods - Comparison" Height="550" Width="1000">
     <Window.Resources>
-        <ObjectDataProvider x:Key="DataFromEnum"
-       MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+        <ObjectDataProvider x:Key="DataFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="localSettings:ProblemSelectionEnum"/>
             </ObjectDataProvider.MethodParameters>
@@ -154,6 +153,18 @@
                 <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=(Validation.Errors).NodePotentialGrid, Mode=OneWay}"  Grid.Row="6"/>
             </Grid>
         </ScrollViewer>
-        <DataGrid ItemsSource="{Binding}" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch"/>
+        <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <TransformGroup>
+                                <RotateTransform Angle="-90"/>
+                            </TransformGroup>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
     </Grid>
 </Window>

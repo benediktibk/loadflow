@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using LoadFlowCalculationComparison.AlgorithmSettings;
@@ -13,6 +15,7 @@ namespace LoadFlowCalculationComparison
         private readonly NewtonRaphsonMethodSettings _newtonRaphson;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly GeneralSettings _generalSettings;
+        private readonly ObservableCollection<CalculationResult> _calculationResults;
 
         public MainWindow()
         {
@@ -22,6 +25,7 @@ namespace LoadFlowCalculationComparison
             _newtonRaphson = new NewtonRaphsonMethodSettings();
             _nodePotential = new NodePotentialMethodSettings();
             _generalSettings = new GeneralSettings();
+            _calculationResults = new ObservableCollection<CalculationResult>(new List<CalculationResult>(10));
             
             InitializeComponent();
             NodePotentialGrid.DataContext = _nodePotential;
@@ -31,6 +35,7 @@ namespace LoadFlowCalculationComparison
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
             GeneralSettingsGrid.DataContext = _generalSettings;
             CalculateButton.DataContext = _generalSettings;
+            ResultDataGrid.ItemsSource = _calculationResults;
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,6 +87,7 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
+            _calculationResults.Add(new CalculationResult());
         }
     }
 }
