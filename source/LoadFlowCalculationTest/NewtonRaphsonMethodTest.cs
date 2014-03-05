@@ -1,4 +1,5 @@
-﻿using LoadFlowCalculation;
+﻿using System.Collections.Generic;
+using LoadFlowCalculation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest

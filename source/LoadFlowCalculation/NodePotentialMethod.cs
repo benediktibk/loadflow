@@ -10,9 +10,9 @@ namespace LoadFlowCalculation
     {
         private readonly double _singularityDetection;
 
-        public NodePotentialMethod(double singualrityDetection) : base(1000)
+        public NodePotentialMethod(double singularityDetection) : base(1E15)
         {
-            _singularityDetection = singualrityDetection;
+            _singularityDetection = singularityDetection;
         }
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)

@@ -1,4 +1,5 @@
-﻿using LoadFlowCalculation;
+﻿using System.Collections.Generic;
+using LoadFlowCalculation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest
@@ -16,7 +17,7 @@ namespace LoadFlowCalculationTest
         {
             var calculator = new CurrentIteration(0.00000001, 1);
             CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var nodes = new[] { new Node(), new Node() };
+            IList<Node> nodes =new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].Power = _powers.At(1);
 

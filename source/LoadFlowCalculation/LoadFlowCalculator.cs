@@ -27,7 +27,7 @@ namespace LoadFlowCalculation
         /// <param name="nodes"></param>
         /// <param name="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution does not converge</param>
         /// <returns></returns>
-        public Node[] CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, Node[] nodes, out bool voltageCollapse)
+        public IList<Node> CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
         {
             CheckDimensions(admittances, nodes);
 
@@ -72,45 +72,34 @@ namespace LoadFlowCalculation
             var allPowers = CalculateAllPowers(admittances, allVoltages);
             voltageCollapse = false;
             var inputPowerSum = new Complex();
-            var powerAbsoluteSum = new Complex();
 
             foreach (var index in indexOfPQBuses)
             {
                 var power = nodes[index].Power;
-
-                if (Double.IsNaN(power.Magnitude))
-                    voltageCollapse = true;
-
                 inputPowerSum += power;
-                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+                allPowers[index] = power;
             }
 
             foreach (var index in indexOfPVBuses)
             {
                 var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
-
-                if (Double.IsNaN(power.Magnitude))
-                    voltageCollapse = true;
-
                 inputPowerSum += power;
-                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+                allPowers[index] = power;
+                allVoltages[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
+                    allVoltages[index].Phase);
             }
 
             foreach (var index in indexOfSlackBuses)
             {
                 var power = allPowers[index];
-
-                if (Double.IsNaN(power.Magnitude))
-                    voltageCollapse = true;
-
                 inputPowerSum += power;
-                powerAbsoluteSum += new Complex(Math.Abs(power.Real), Math.Abs(power.Imaginary));
+                allVoltages[index] = nodes[index].Voltage;
             }
 
             var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
-            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude/powerAbsoluteSum.Magnitude;
+            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / inputPowerSum.Magnitude;
 
-            if (relativePowerError > _maximumPowerError)
+            if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
                 voltageCollapse = true;
 
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
