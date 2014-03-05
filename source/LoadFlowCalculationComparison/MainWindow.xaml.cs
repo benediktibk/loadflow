@@ -29,7 +29,7 @@ namespace LoadFlowCalculationComparison
             FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
-            ProblemSelectionComboBox.DataContext = _generalSettings;
+            GeneralSettingsGrid.DataContext = _generalSettings;
             CalculateButton.DataContext = _generalSettings;
         }
 

@@ -6,7 +6,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        Title="Load Flow Calculation Methods - Comparison" Height="470" Width="1000">
+        Title="Load Flow Calculation Methods - Comparison" Height="550" Width="1000">
     <Window.Resources>
         <ObjectDataProvider x:Key="DataFromEnum"
        MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -22,31 +22,51 @@
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Grid>
-                    <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="220" ItemsSource="{Binding Source={StaticResource DataFromEnum}}" SelectedItem="{Binding ProblemSelection}"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="90"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Grid.Row="0" Name="GeneralSettingsGrid">
+                    <TextBlock Text="General Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                    <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="0,29,0,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="180" ItemsSource="{Binding Source={StaticResource DataFromEnum}}" SelectedItem="{Binding ProblemSelection}"/>
+                    <TextBlock Text="number of executions" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,51,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
+                        <TextBox.Text>
+                            <Binding Path="NumberOfExecutions" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top" Name="NodePotentialGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="NodePotentialGrid" Grid.Row="1">
                     <TextBlock Text="Node Potential" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Name="NodePotentialSingularityDetectionTextBlock" Text="singularity detection" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="SingularityDetection" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,95,15,0" VerticalAlignment="Top" Name="CurrentIterationGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="CurrentIterationGrid" Grid.Row="2">
                     <TextBlock Text="Current Iteration" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="termination criteria" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="TerminationCriteria" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -56,20 +76,20 @@
                         <TextBox.Text>
                             <Binding Path="MaximumIterations" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,168,15,0" VerticalAlignment="Top" Name="NewtonRaphsonGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="NewtonRaphsonGrid" Grid.Row="3">
                     <TextBlock Text="Newton Raphson" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="TargetPrecision" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -79,20 +99,20 @@
                         <TextBox.Text>
                             <Binding Path="MaximumIterations" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,241,15,0" VerticalAlignment="Top" Name="FastDecoupledLoadFlowGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="FastDecoupledLoadFlowGrid" Grid.Row="4">
                     <TextBlock Text="Fast Decoupled Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="TargetPrecision" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -102,20 +122,20 @@
                         <TextBox.Text>
                             <Binding Path="MaximumIterations" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="73" Margin="10,314,15,0" VerticalAlignment="Top" Name="HolomorphicEmbeddedLoadFlowGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="HolomorphicEmbeddedLoadFlowGrid" Grid.Row="5">
                     <TextBlock Text="Holomorphic Embedding Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="TargetPrecision" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -125,13 +145,13 @@
                         <TextBox.Text>
                             <Binding Path="MaximumNumberOfCoefficients" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
                 </Grid>
-                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,398,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=(Validation.Errors).NodePotentialGrid, Mode=OneWay}"/>
+                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=(Validation.Errors).NodePotentialGrid, Mode=OneWay}"  Grid.Row="6"/>
             </Grid>
         </ScrollViewer>
         <DataGrid ItemsSource="{Binding}" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch"/>
