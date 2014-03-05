@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
     class NodePotentialMethodSettings : NotifyPropertyChanged
@@ -10,8 +11,11 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
             get { return _singularityDetection; }
             set
             {
-                if (value == _singularityDetection) 
+                if (value == _singularityDetection)
                     return;
+
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value", "mustn't be negative");
 
                 _singularityDetection = value;
                 OnPropertyChanged();

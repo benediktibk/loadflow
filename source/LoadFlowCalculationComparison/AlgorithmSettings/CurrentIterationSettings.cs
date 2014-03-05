@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
@@ -15,6 +15,9 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
                 if (value == _terminationCriteria)
                     return;
 
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value", "mustn't be negative");
+
                 _terminationCriteria = value;
                 OnPropertyChanged();
             }
@@ -27,6 +30,9 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
             {
                 if (value == _maximumIterations)
                     return;
+
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value", "mustn't be negative");
 
                 _maximumIterations = value;
                 OnPropertyChanged();

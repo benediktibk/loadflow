@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
     class HolomorphicEmbeddedLoadFlowMethodSettings : NotifyPropertyChanged
@@ -14,6 +15,9 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
                 if (value == _targetPrecision)
                     return;
 
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value", "mustn't be negative");
+
                 _targetPrecision = value;
                 OnPropertyChanged();
             }
@@ -26,6 +30,9 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
             {
                 if (value == _maximumNumberOfCoefficients)
                     return;
+
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value", "mustn't be negative");
 
                 _maximumNumberOfCoefficients = value;
                 OnPropertyChanged();
