@@ -2,10 +2,13 @@
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class NewtonRaphsonMethodSettings : NotifyPropertyChanged
+    class NewtonRaphsonMethodSettings : ChangeAllowable
     {
         private double _targetPrecision = 0.00001;
         private int _maximumIterations = 1000;
+
+        public NewtonRaphsonMethodSettings(GeneralSettings generalSettings) : base(generalSettings)
+        { }
 
         public double TargetPrecision
         {

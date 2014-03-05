@@ -17,6 +17,7 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
     {
         private ProblemSelectionEnum _problemSelection = ProblemSelectionEnum.CollapsingTwoNodeSystem;
         private int _numberOfExecutions = 10;
+        private bool _calculationRunning = false;
 
         public ProblemSelectionEnum ProblemSelection
         {
@@ -42,6 +43,25 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
                 _numberOfExecutions = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool CalculationRunning
+        {
+            get { return _calculationRunning; }
+            set
+            {
+                if (value == _calculationRunning)
+                    return;
+
+                _calculationRunning = value;
+                OnPropertyChanged();
+                OnPropertyChanged("ChangesAllowed");
+            }
+        }
+
+        public bool ChangesAllowed
+        {
+            get { return !_calculationRunning; }
         }
     }
 }

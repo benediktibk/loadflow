@@ -43,6 +43,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="NodePotentialGrid" Grid.Row="1">
@@ -56,6 +59,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="CurrentIterationGrid" Grid.Row="2">
@@ -69,6 +75,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
@@ -79,6 +88,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="NewtonRaphsonGrid" Grid.Row="3">
@@ -92,6 +104,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
@@ -102,6 +117,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="FastDecoupledLoadFlowGrid" Grid.Row="4">
@@ -115,6 +133,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
@@ -125,6 +146,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="HolomorphicEmbeddedLoadFlowGrid" Grid.Row="5">
@@ -138,6 +162,9 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
@@ -148,9 +175,12 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
-                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=(Validation.Errors).NodePotentialGrid, Mode=OneWay}"  Grid.Row="6"/>
+                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=ChangesAllowed, Mode=OneWay}"  Grid.Row="6"/>
             </Grid>
         </ScrollViewer>
         <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False">

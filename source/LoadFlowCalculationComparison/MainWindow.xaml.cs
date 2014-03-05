@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using LoadFlowCalculationComparison.AlgorithmSettings;
@@ -22,15 +24,16 @@ namespace LoadFlowCalculationComparison
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly GeneralSettings _generalSettings;
         private readonly ObservableCollection<CalculationResult> _calculationResults;
+        private List<CalculationResult> _newCalculationResults; 
 
         public MainWindow()
         {
-            _currentIteration = new CurrentIterationSettings();
-            _fastDecoupledLoadFlow = new FastDecoupledLoadFlowMethodSettings();
-            _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings();
-            _newtonRaphson = new NewtonRaphsonMethodSettings();
-            _nodePotential = new NodePotentialMethodSettings();
             _generalSettings = new GeneralSettings();
+            _currentIteration = new CurrentIterationSettings(_generalSettings);
+            _fastDecoupledLoadFlow = new FastDecoupledLoadFlowMethodSettings(_generalSettings);
+            _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
+            _newtonRaphson = new NewtonRaphsonMethodSettings(_generalSettings);
+            _nodePotential = new NodePotentialMethodSettings(_generalSettings);
             _calculationResults = new ObservableCollection<CalculationResult>(new List<CalculationResult>(10));
             
             InitializeComponent();
@@ -128,13 +131,30 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
+            _generalSettings.CalculationRunning = true;
             _calculationResults.Clear();
-            _calculationResults.Add(CalculateNodePotentialResult());
-            _calculationResults.Add(CalculateCurrentIterationResult());
-            _calculationResults.Add(CalculateNewtonRaphsonResult());
-            _calculationResults.Add(CalculateFastDecoupledLoadFlowResult());
-            _calculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowResult());
-            
+            _newCalculationResults = new List<CalculationResult>(10);
+            var calculationTask = Task.Factory.StartNew(() =>
+            {
+                _newCalculationResults.Add(CalculateNodePotentialResult());
+                _newCalculationResults.Add(CalculateCurrentIterationResult());
+                _newCalculationResults.Add(CalculateNewtonRaphsonResult());
+                _newCalculationResults.Add(CalculateFastDecoupledLoadFlowResult());
+                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowResult());
+            });
+
+            calculationTask.ContinueWith(t => CopyCalculationResults(), CancellationToken.None,
+                TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void CopyCalculationResults()
+        {
+            _calculationResults.Clear();
+
+            foreach (var calculationResult in _newCalculationResults)
+                _calculationResults.Add(calculationResult);
+
+            _generalSettings.CalculationRunning = false;
         }
 
         private CalculationResult CalculateNodePotentialResult()

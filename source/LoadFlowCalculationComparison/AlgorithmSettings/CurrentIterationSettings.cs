@@ -2,11 +2,14 @@
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class CurrentIterationSettings : NotifyPropertyChanged
+    class CurrentIterationSettings : ChangeAllowable
     {
         private double _terminationCriteria = 0.00001;
         private int _maximumIterations = 1000;
-        
+
+        public CurrentIterationSettings(GeneralSettings generalSettings) : base(generalSettings)
+        { }
+
         public double TerminationCriteria
         {
             get { return _terminationCriteria; }

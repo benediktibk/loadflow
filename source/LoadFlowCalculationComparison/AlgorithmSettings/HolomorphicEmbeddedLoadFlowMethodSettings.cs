@@ -2,10 +2,13 @@
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class HolomorphicEmbeddedLoadFlowMethodSettings : NotifyPropertyChanged
+    class HolomorphicEmbeddedLoadFlowMethodSettings : ChangeAllowable
     {
         private double _targetPrecision = 0.00001;
         private int _maximumNumberOfCoefficients = 50;
+
+        public HolomorphicEmbeddedLoadFlowMethodSettings(GeneralSettings generalSettings) : base(generalSettings)
+        { }
 
         public double TargetPrecision
         {
