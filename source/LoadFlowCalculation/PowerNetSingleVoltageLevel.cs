@@ -103,6 +103,11 @@ namespace LoadFlowCalculation
             }
         }
 
+        public Matrix<Complex> Admittances
+        {
+           get { return _admittances.Clone(); }
+        }
+
         public int NodeCount
         {
             get { return _nodeCount; }
