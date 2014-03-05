@@ -153,18 +153,16 @@
                 <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=(Validation.Errors).NodePotentialGrid, Mode=OneWay}"  Grid.Row="6"/>
             </Grid>
         </ScrollViewer>
-        <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True">
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="LayoutTransform">
-                        <Setter.Value>
-                            <TransformGroup>
-                                <RotateTransform Angle="-90"/>
-                            </TransformGroup>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
+        <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
+                <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
+                <DataGridCheckBoxColumn Binding="{Binding VoltageCollapseDetected}" Header="reported collapse"/>
+                <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
+                <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
+                <DataGridTextColumn Binding="{Binding AverageExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
+                <DataGridTextColumn Binding="{Binding StandardDeviationExecutionTime, StringFormat={}{0:e3}}" Header="sigma t"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </Window>

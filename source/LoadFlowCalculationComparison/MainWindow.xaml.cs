@@ -47,20 +47,19 @@ namespace LoadFlowCalculationComparison
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            double nodePotentialSingularityDetection = 0;
-            double currentIterationTerminationCriteria = 0;
-            int currentIterationMaximumIterations = 0;
-            double newtonRaphsonTargetPrecision = 0;
-            int newtonRaphsonMaximumIterations = 0;
-            double fdlfTargetPrecision = 0;
-            int fdlfMaximumIterations = 0;
-            double helmTargetPrecision = 0;
-            int helmMaximumNumberOfCoefficients = 0;
+            var nodePotentialSingularityDetection = 0.0;
+            var currentIterationTerminationCriteria = 0.0;
+            var currentIterationMaximumIterations = 0;
+            var newtonRaphsonTargetPrecision = 0.0;
+            var newtonRaphsonMaximumIterations = 0;
+            var fdlfTargetPrecision = 0.0;
+            var fdlfMaximumIterations = 0;
+            var helmTargetPrecision = 0.0;
+            var helmMaximumNumberOfCoefficients = 0;
 
             switch (_generalSettings.ProblemSelection)
             {
                 case ProblemSelectionEnum.CollapsingTwoNodeSystem:
-                case ProblemSelectionEnum.StableTwoNodeSystem:
                     nodePotentialSingularityDetection = 0.00001;
                     currentIterationTerminationCriteria = 0.00001;
                     currentIterationMaximumIterations = 1000;
@@ -68,6 +67,17 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 1000;
                     fdlfTargetPrecision = 0.00001;
                     fdlfMaximumIterations = 1000;
+                    helmTargetPrecision = 0.00001;
+                    helmMaximumNumberOfCoefficients = 50;
+                    break;
+                case ProblemSelectionEnum.StableTwoNodeSystem:
+                    nodePotentialSingularityDetection = 0.00001;
+                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.001;
+                    newtonRaphsonMaximumIterations = 2;
+                    fdlfTargetPrecision = 0.000001;
+                    fdlfMaximumIterations = 10000;
                     helmTargetPrecision = 0.00001;
                     helmMaximumNumberOfCoefficients = 50;
                     break;
@@ -103,7 +113,7 @@ namespace LoadFlowCalculationComparison
         {
             var calculator = new NodePotentialMethod(_nodePotential.SingularityDetection);
             var result = CalculateResult(calculator);
-            result.Algorithm = "Node Potential Method";
+            result.Algorithm = "Node Potential";
             return result;
         }
 
@@ -121,7 +131,7 @@ namespace LoadFlowCalculationComparison
             var calculator = new NewtonRaphsonMethod(_newtonRaphson.TargetPrecision,
                 _newtonRaphson.MaximumIterations);
             var result = CalculateResult(calculator);
-            result.Algorithm = "Newton Raphson Method";
+            result.Algorithm = "Newton Raphson";
             return result;
         }
 
@@ -130,7 +140,7 @@ namespace LoadFlowCalculationComparison
             var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
                 _fastDecoupledLoadFlow.MaximumIterations);
             var result = CalculateResult(calculator);
-            result.Algorithm = "Fast Decoupled Load Flow Method";
+            result.Algorithm = "FDLF";
             return result;
         }
 
@@ -139,7 +149,7 @@ namespace LoadFlowCalculationComparison
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, false);
             var result = CalculateResult(calculator);
-            result.Algorithm = "Holomorphic Embedding Load Flow Method";
+            result.Algorithm = "HELM";
             return result;
         }
 

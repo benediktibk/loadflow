@@ -15,7 +15,7 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
     class GeneralSettings : NotifyPropertyChanged
     {
         private ProblemSelectionEnum _problemSelection = ProblemSelectionEnum.CollapsingTwoNodeSystem;
-        private int _numberOfExecutions = 5;
+        private int _numberOfExecutions = 10;
 
         public ProblemSelectionEnum ProblemSelection
         {
