@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AlgorithmSettings\AlgorithmSettingsBase.cs" />
     <Compile Include="AlgorithmSettings\CurrentIterationSettings.cs" />
     <Compile Include="AlgorithmSettings\FastDecoupledLoadFlowMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettings.cs" />

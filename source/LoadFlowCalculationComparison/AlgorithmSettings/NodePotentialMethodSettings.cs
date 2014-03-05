@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
+﻿
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class NodePotentialMethodSettings : INotifyPropertyChanged
+    class NodePotentialMethodSettings : AlgorithmSettingsBase
     {
         private double _singularityDetection = 0.00001;
 
@@ -18,14 +16,6 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
                 _singularityDetection = value;
                 OnPropertyChanged();
             } 
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

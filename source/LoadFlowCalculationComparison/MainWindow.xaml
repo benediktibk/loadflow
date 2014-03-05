@@ -11,7 +11,7 @@
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid>
                     <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ComboBox_SelectionChanged" Width="220">
+                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="220">
                         <ComboBoxItem Content="collapsing two node system" IsSelected="true"/>
                         <ComboBoxItem Content="stable two node system"/>
                         <ComboBoxItem Content="five node system with four PQ-buses"/>
@@ -33,23 +33,23 @@
                 <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,168,15,0" VerticalAlignment="Top" Name="NewtonRaphsonGrid">
                     <TextBlock Text="Newton Raphson" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="{Binding TargetPrecision}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="{Binding MaximumIterations}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Height="73" Margin="15,241,15,0" VerticalAlignment="Top" Name="FastDecoupledLoadFlowGrid">
                     <TextBlock Text="Fast Decoupled Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="{Binding TargetPrecision}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="1000" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="{Binding MaximumIterations}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Height="73" Margin="10,314,15,0" VerticalAlignment="Top" Name="HolomorphicEmbeddedLoadFlowGrid">
                     <TextBlock Text="Holomorphic Embedding Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="0.00001" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" Text="{Binding TargetPrecision}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                     <TextBlock Text="maximum number of coefficients" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="50" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="{Binding MaximumNumberOfCoefficients}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
                 <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,398,10,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
             </Grid>

@@ -1,13 +1,12 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class CurrentIterationSettings : INotifyPropertyChanged
+    class CurrentIterationSettings : AlgorithmSettingsBase
     {
         private double _terminationCriteria = 0.00001;
         private int _maximumIterations = 1000;
-
+        
         public double TerminationCriteria
         {
             get { return _terminationCriteria; }
@@ -32,14 +31,6 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
                 _maximumIterations = value;
                 OnPropertyChanged();
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

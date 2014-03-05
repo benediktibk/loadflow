@@ -1,9 +1,35 @@
 ﻿
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class FastDecoupledLoadFlowMethodSettings
+    class FastDecoupledLoadFlowMethodSettings : AlgorithmSettingsBase
     {
-        public double TargetPrecision { get; set; }
-        public int MaximumIterations { get; set; }
+        private double _targetPrecision = 0.00001;
+        private int _maximumIterations = 1000;
+
+        public double TargetPrecision
+        {
+            get { return _targetPrecision; }
+            set
+            {
+                if (value == _targetPrecision)
+                    return;
+
+                _targetPrecision = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MaximumIterations
+        {
+            get { return _maximumIterations; }
+            set
+            {
+                if (value == _maximumIterations)
+                    return;
+
+                _maximumIterations = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

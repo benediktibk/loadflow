@@ -30,7 +30,7 @@ namespace LoadFlowCalculationComparison
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
