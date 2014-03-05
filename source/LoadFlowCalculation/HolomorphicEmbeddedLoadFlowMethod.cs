@@ -18,7 +18,7 @@ namespace LoadFlowCalculation
         private PowerSeriesComplex[] _voltagePowerSeries;
         private readonly bool _finalAccuarcyImprovement;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement) : base(targetPrecision*100)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int maximumNumberOfCoefficients, bool finalAccuracyImprovement) : base(targetPrecision*1000000)
         {
             if (maximumNumberOfCoefficients < 4)
                 throw new ArgumentOutOfRangeException("maximumNumberOfCoefficients",

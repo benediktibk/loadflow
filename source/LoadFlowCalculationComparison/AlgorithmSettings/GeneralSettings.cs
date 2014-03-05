@@ -9,6 +9,7 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
         CollapsingTwoNodeSystem,
         StableTwoNodeSystem,
         FiveNodeSystemWithFourPQBuses,
+        FiveNodeSystemWithOneGroundNode,
         FiveNodeSystemWithThreePQBusesAndOnePVBus
     }
 
