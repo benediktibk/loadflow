@@ -66,10 +66,10 @@
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="CurrentIterationGrid" Grid.Row="2">
                     <TextBlock Text="Current Iteration" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
-                    <TextBlock Text="termination criteria" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
-                            <Binding Path="TerminationCriteria" UpdateSourceTrigger="PropertyChanged">
+                            <Binding Path="TargetPrecision" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>

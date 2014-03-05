@@ -17,10 +17,10 @@ namespace LoadFlowCalculationComparison
 {
     public partial class MainWindow
     {
-        private readonly CurrentIterationSettings _currentIteration;
-        private readonly FastDecoupledLoadFlowMethodSettings _fastDecoupledLoadFlow;
+        private readonly IterativeMethodSettings _currentIteration;
+        private readonly IterativeMethodSettings _iterative;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
-        private readonly NewtonRaphsonMethodSettings _newtonRaphson;
+        private readonly IterativeMethodSettings _newtonRaphson;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly GeneralSettings _generalSettings;
         private readonly ObservableCollection<CalculationResult> _calculationResults;
@@ -29,17 +29,17 @@ namespace LoadFlowCalculationComparison
         public MainWindow()
         {
             _generalSettings = new GeneralSettings();
-            _currentIteration = new CurrentIterationSettings(_generalSettings);
-            _fastDecoupledLoadFlow = new FastDecoupledLoadFlowMethodSettings(_generalSettings);
+            _currentIteration = new IterativeMethodSettings(_generalSettings);
+            _iterative = new IterativeMethodSettings(_generalSettings);
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
-            _newtonRaphson = new NewtonRaphsonMethodSettings(_generalSettings);
+            _newtonRaphson = new IterativeMethodSettings(_generalSettings);
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
             _calculationResults = new ObservableCollection<CalculationResult>(new List<CalculationResult>(10));
             
             InitializeComponent();
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
-            FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
+            FastDecoupledLoadFlowGrid.DataContext = _iterative;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
             GeneralSettingsGrid.DataContext = _generalSettings;
@@ -50,7 +50,7 @@ namespace LoadFlowCalculationComparison
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var nodePotentialSingularityDetection = 0.0;
-            var currentIterationTerminationCriteria = 0.0;
+            var currentIterationTargetPrecision = 0.0;
             var currentIterationMaximumIterations = 0;
             var newtonRaphsonTargetPrecision = 0.0;
             var newtonRaphsonMaximumIterations = 0;
@@ -63,7 +63,7 @@ namespace LoadFlowCalculationComparison
             {
                 case ProblemSelectionEnum.CollapsingTwoNodeSystem:
                     nodePotentialSingularityDetection = 0.00001;
-                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
                     newtonRaphsonMaximumIterations = 1000;
@@ -74,7 +74,7 @@ namespace LoadFlowCalculationComparison
                     break;
                 case ProblemSelectionEnum.StableTwoNodeSystem:
                     nodePotentialSingularityDetection = 0.00001;
-                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.001;
                     newtonRaphsonMaximumIterations = 2;
@@ -85,7 +85,7 @@ namespace LoadFlowCalculationComparison
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
                     nodePotentialSingularityDetection = 0.00001;
-                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
                     newtonRaphsonMaximumIterations = 1000;
@@ -96,7 +96,7 @@ namespace LoadFlowCalculationComparison
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithOneGroundNode:
                     nodePotentialSingularityDetection = 0.00001;
-                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.001;
                     newtonRaphsonMaximumIterations = 2;
@@ -107,7 +107,7 @@ namespace LoadFlowCalculationComparison
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
                     nodePotentialSingularityDetection = 0.00001;
-                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
                     newtonRaphsonMaximumIterations = 1000;
@@ -119,12 +119,12 @@ namespace LoadFlowCalculationComparison
             }
 
             _nodePotential.SingularityDetection = nodePotentialSingularityDetection;
-            _currentIteration.TerminationCriteria = currentIterationTerminationCriteria;
+            _currentIteration.TargetPrecision = currentIterationTargetPrecision;
             _currentIteration.MaximumIterations = currentIterationMaximumIterations;
             _newtonRaphson.TargetPrecision = newtonRaphsonTargetPrecision;
             _newtonRaphson.MaximumIterations = newtonRaphsonMaximumIterations;
-            _fastDecoupledLoadFlow.TargetPrecision = fdlfTargetPrecision;
-            _fastDecoupledLoadFlow.MaximumIterations = fdlfMaximumIterations;
+            _iterative.TargetPrecision = fdlfTargetPrecision;
+            _iterative.MaximumIterations = fdlfMaximumIterations;
             _holomorphicEmbeddedLoadFlow.TargetPrecision = helmTargetPrecision;
             _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
         }
@@ -167,7 +167,7 @@ namespace LoadFlowCalculationComparison
 
         private CalculationResult CalculateCurrentIterationResult()
         {
-            var calculator = new CurrentIteration(_currentIteration.TerminationCriteria,
+            var calculator = new CurrentIteration(_currentIteration.TargetPrecision,
                 _currentIteration.MaximumIterations);
             var result = CalculateResult(calculator);
             result.Algorithm = "Current Iteration";
@@ -185,8 +185,8 @@ namespace LoadFlowCalculationComparison
 
         private CalculationResult CalculateFastDecoupledLoadFlowResult()
         {
-            var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
-                _fastDecoupledLoadFlow.MaximumIterations);
+            var calculator = new FastDecoupledLoadFlowMethod(_iterative.TargetPrecision,
+                _iterative.MaximumIterations);
             var result = CalculateResult(calculator);
             result.Algorithm = "FDLF";
             return result;

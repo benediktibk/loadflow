@@ -10,11 +10,11 @@ namespace LoadFlowCalculation
     public class CurrentIteration : LoadFlowCalculator
     {
         private readonly int _maximumIterations;
-        private readonly double _terminationCriteria;
+        private readonly double _targetPrecision;
 
-        public CurrentIteration(double terminationCriteria, int maximumIterations) : base(terminationCriteria*100)
+        public CurrentIteration(double targetPrecision, int maximumIterations) : base(targetPrecision*100)
         {
-            _terminationCriteria = terminationCriteria;
+            _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
         }
 
@@ -53,7 +53,7 @@ namespace LoadFlowCalculation
                     newVoltages[bus.ID] = newVoltage;
                     var newPower = CalculatePower(bus.ID, admittances, constantCurrents, newVoltages);
 
-                    if (Math.Abs((newPower.Real - bus.RealPower)/bus.RealPower) > _terminationCriteria)
+                    if (Math.Abs((newPower.Real - bus.RealPower)/bus.RealPower) > _targetPrecision)
                         powerErrorTooBig = true;
 
                     powers[bus.ID] = new Complex(bus.RealPower, newPower.Imaginary);
@@ -64,7 +64,7 @@ namespace LoadFlowCalculation
                 voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
                 voltages = newVoltages;
                 ++iterations;
-            } while (iterations <= _maximumIterations && (voltageChange/nominalVoltage > _terminationCriteria/10 || powerErrorTooBig));
+            } while (iterations <= _maximumIterations && (voltageChange/nominalVoltage > _targetPrecision/10 || powerErrorTooBig));
 
             return voltages;
         }

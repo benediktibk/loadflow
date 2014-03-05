@@ -68,10 +68,8 @@
     </Page>
     <Compile Include="AlgorithmSettings\ChangeAllowable.cs" />
     <Compile Include="AlgorithmSettings\NotifyPropertyChanged.cs" />
-    <Compile Include="AlgorithmSettings\CurrentIterationSettings.cs" />
-    <Compile Include="AlgorithmSettings\FastDecoupledLoadFlowMethodSettings.cs" />
+    <Compile Include="AlgorithmSettings\IterativeMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettings.cs" />
-    <Compile Include="AlgorithmSettings\NewtonRaphsonMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\NodePotentialMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\GeneralSettings.cs" />
     <Compile Include="App.xaml.cs">
