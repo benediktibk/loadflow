@@ -75,7 +75,7 @@
     <Compile Include="PQBusTest.cs" />
     <Compile Include="PVBusTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
-    <Compile Include="PowerNetTest.cs" />
+    <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">

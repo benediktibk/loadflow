@@ -6,7 +6,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class PowerNet
+    public class PowerNetSingleVoltageLevel
     {
         #region variables
         private readonly int _nodeCount;
@@ -16,7 +16,7 @@ namespace LoadFlowCalculation
         #endregion
 
         #region public functions
-        public PowerNet(int nodeCount, double nominalVoltage)
+        public PowerNetSingleVoltageLevel(int nodeCount, double nominalVoltage)
         {
             if (nodeCount <= 0)
                 throw new ArgumentOutOfRangeException("nodeCount", "there must be at least one node");

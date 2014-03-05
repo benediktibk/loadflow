@@ -57,7 +57,7 @@
     <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NotConvergingException.cs" />
-    <Compile Include="PowerNet.cs" />
+    <Compile Include="PowerNetSingleVoltageLevel.cs" />
     <Compile Include="PQBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PVBus.cs" />
