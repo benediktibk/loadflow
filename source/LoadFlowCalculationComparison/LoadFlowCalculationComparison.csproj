@@ -63,7 +63,7 @@
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\NewtonRaphsonMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\NodePotentialMethodSettings.cs" />
-    <Compile Include="AlgorithmSettings\ProblemSelection.cs" />
+    <Compile Include="AlgorithmSettings\GeneralSettings.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -74,6 +74,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PositiveValidationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

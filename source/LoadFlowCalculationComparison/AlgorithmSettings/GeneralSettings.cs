@@ -1,4 +1,7 @@
 ﻿
+using System.Collections.Generic;
+using System.Data;
+
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
     enum ProblemSelectionEnum
@@ -9,19 +12,19 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
         FiveNodeSystemWithThreePQBusesAndOnePVBus
     }
 
-    class ProblemSelection : NotifyPropertyChanged
+    class GeneralSettings : NotifyPropertyChanged
     {
-        private ProblemSelectionEnum _value = ProblemSelectionEnum.CollapsingTwoNodeSystem;
+        private ProblemSelectionEnum _problemSelection = ProblemSelectionEnum.CollapsingTwoNodeSystem;
 
-        public ProblemSelectionEnum Value
+        public ProblemSelectionEnum ProblemSelection
         {
-            get { return _value; }
+            get { return _problemSelection; }
             set
             {
-                if (value == _value)
+                if (value == _problemSelection)
                     return;
 
-                _value = value;
+                _problemSelection = value;
                 OnPropertyChanged();
             }
         }

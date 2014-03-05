@@ -12,7 +12,7 @@ namespace LoadFlowCalculationComparison
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
         private readonly NewtonRaphsonMethodSettings _newtonRaphson;
         private readonly NodePotentialMethodSettings _nodePotential;
-        private readonly ProblemSelection _problemSelection;
+        private readonly GeneralSettings _generalSettings;
 
         public MainWindow()
         {
@@ -21,7 +21,7 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings();
             _newtonRaphson = new NewtonRaphsonMethodSettings();
             _nodePotential = new NodePotentialMethodSettings();
-            _problemSelection = new ProblemSelection();
+            _generalSettings = new GeneralSettings();
             
             InitializeComponent();
             NodePotentialGrid.DataContext = _nodePotential;
@@ -29,7 +29,8 @@ namespace LoadFlowCalculationComparison
             FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
-            ProblemSelectionComboBox.DataContext = _problemSelection;
+            ProblemSelectionComboBox.DataContext = _generalSettings;
+            CalculateButton.DataContext = _generalSettings;
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -44,7 +45,7 @@ namespace LoadFlowCalculationComparison
             double helmTargetPrecision;
             int helmMaximumNumberOfCoefficients;
 
-            switch (_problemSelection.Value)
+            switch (_generalSettings.ProblemSelection)
             {
                 case ProblemSelectionEnum.CollapsingTwoNodeSystem:
                 case ProblemSelectionEnum.StableTwoNodeSystem:
@@ -81,8 +82,6 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
-            _nodePotential.SingularityDetection = 1;
-            _problemSelection.Value = ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses;
         }
     }
 }
