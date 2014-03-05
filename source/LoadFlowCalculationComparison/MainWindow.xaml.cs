@@ -103,7 +103,16 @@ namespace LoadFlowCalculationComparison
                     helmMaximumNumberOfCoefficients = 46;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
-                    throw new NotImplementedException();
+                    nodePotentialSingularityDetection = 0.00001;
+                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.00001;
+                    newtonRaphsonMaximumIterations = 1000;
+                    fdlfTargetPrecision = 0.00001;
+                    fdlfMaximumIterations = 1000;
+                    helmTargetPrecision = 0.00001;
+                    helmMaximumNumberOfCoefficients = 50;
+                    break;
             }
 
             _nodePotential.SingularityDetection = nodePotentialSingularityDetection;
@@ -217,17 +226,18 @@ namespace LoadFlowCalculationComparison
                 case ProblemSelectionEnum.StableTwoNodeSystem:
                     return CreatePowerNetForStableTwoNodeSystem(out correctVoltages, out voltageCollapse);
                 case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
-                    return CreatePowerNetForFirveNodeSystemWithFourPQBuses(out correctVoltages, out voltageCollapse);
+                    return CreatePowerNetForFiveNodeSystemWithFourPQBuses(out correctVoltages, out voltageCollapse);
                 case ProblemSelectionEnum.FiveNodeSystemWithOneGroundNode:
-                    return CreatePowerNetForFirveNodeSystemWithOneGroundNode(out correctVoltages, out voltageCollapse);
+                    return CreatePowerNetForFiveNodeSystemWithOneGroundNode(out correctVoltages, out voltageCollapse);
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
-                    throw new ArgumentOutOfRangeException();
+                    return CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out correctVoltages,
+                        out voltageCollapse);
             }
 
             throw new ArgumentOutOfRangeException();
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForFirveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
@@ -263,7 +273,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForFirveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
@@ -284,6 +294,36 @@ namespace LoadFlowCalculationComparison
             nodes[2].Voltage = correctVoltages.At(2);
             nodes[3].Power = powers.At(3);
             nodes[4].Voltage = correctVoltages.At(4);
+
+            for (var i = 0; i < 5; ++i)
+                powerNet.SetNode(i, nodes[i]);
+
+            voltageCollapse = false;
+            return powerNet;
+        }
+
+        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        {
+            var powerNet = new PowerNetSingleVoltageLevel(5, 1);
+            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.SetAdmittance(0, 2, new Complex(0, 0));
+            powerNet.SetAdmittance(0, 3, new Complex(200, -100));
+            powerNet.SetAdmittance(0, 4, new Complex(0, -200));
+            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
+            powerNet.SetAdmittance(1, 3, new Complex(0, 0));
+            powerNet.SetAdmittance(1, 4, new Complex(0, 0));
+            powerNet.SetAdmittance(2, 3, new Complex(200, -500));
+            powerNet.SetAdmittance(2, 4, new Complex(0, 0));
+            powerNet.SetAdmittance(3, 4, new Complex(700, 500));
+            correctVoltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
+            var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = correctVoltages.At(0);
+            nodes[1].Power = powers.At(1);
+            nodes[2].VoltageMagnitude = correctVoltages.At(2).Magnitude;
+            nodes[2].RealPower = powers.At(2).Real;
+            nodes[3].Power = powers.At(3);
+            nodes[4].Power = powers.At(4);
 
             for (var i = 0; i < 5; ++i)
                 powerNet.SetNode(i, nodes[i]);
