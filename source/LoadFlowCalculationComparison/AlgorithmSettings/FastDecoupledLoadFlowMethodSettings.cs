@@ -1,7 +1,7 @@
 ﻿
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class FastDecoupledLoadFlowMethodSettings : AlgorithmSettingsBase
+    class FastDecoupledLoadFlowMethodSettings : NotifyPropertyChanged
     {
         private double _targetPrecision = 0.00001;
         private int _maximumIterations = 1000;

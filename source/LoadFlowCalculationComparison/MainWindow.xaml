@@ -1,7 +1,17 @@
 ﻿<Window x:Class="LoadFlowCalculationComparison.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:LoadFlowCalculationComparison.AlgorithmSettings"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         Title="Load Flow Calculation Methods - Comparison" Height="470" Width="1000">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum"
+       MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:ProblemSelectionEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350"/>
@@ -11,12 +21,7 @@
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid>
                     <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="220">
-                        <ComboBoxItem Content="collapsing two node system" IsSelected="true"/>
-                        <ComboBoxItem Content="stable two node system"/>
-                        <ComboBoxItem Content="five node system with four PQ-buses"/>
-                        <ComboBoxItem Content="five node system with three PQ-buses and one PV-bus"/>
-                    </ComboBox>
+                    <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="120,14,10,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="220" ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedItem="{Binding Value}"/>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Height="54" Margin="15,41,15,0" VerticalAlignment="Top" Name="NodePotentialGrid">
                     <TextBlock Text="Node Potential" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
@@ -51,7 +56,7 @@
                     <TextBlock Text="maximum number of coefficients" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" Text="{Binding MaximumNumberOfCoefficients}" VerticalAlignment="Top" Width="100" TextAlignment="Right"/>
                 </Grid>
-                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,398,10,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,398,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked"/>
             </Grid>
         </ScrollViewer>
         <DataGrid ItemsSource="{Binding}" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch"/>

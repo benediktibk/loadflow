@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class AlgorithmSettingsBase : INotifyPropertyChanged
+    class NotifyPropertyChanged : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

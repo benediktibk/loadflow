@@ -1,11 +1,10 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using LoadFlowCalculationComparison.AlgorithmSettings;
 
 namespace LoadFlowCalculationComparison
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow
     {
         private readonly CurrentIterationSettings _currentIteration;
@@ -13,6 +12,7 @@ namespace LoadFlowCalculationComparison
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
         private readonly NewtonRaphsonMethodSettings _newtonRaphson;
         private readonly NodePotentialMethodSettings _nodePotential;
+        private readonly ProblemSelection _problemSelection;
 
         public MainWindow()
         {
@@ -21,6 +21,7 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings();
             _newtonRaphson = new NewtonRaphsonMethodSettings();
             _nodePotential = new NodePotentialMethodSettings();
+            _problemSelection = new ProblemSelection();
             
             InitializeComponent();
             NodePotentialGrid.DataContext = _nodePotential;
@@ -28,16 +29,60 @@ namespace LoadFlowCalculationComparison
             FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
+            ProblemSelectionComboBox.DataContext = _problemSelection;
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            double nodePotentialSingularityDetection;
+            double currentIterationTerminationCriteria;
+            int currentIterationMaximumIterations;
+            double newtonRaphsonTargetPrecision;
+            int newtonRaphsonMaximumIterations;
+            double fdlfTargetPrecision;
+            int fdlfMaximumIterations;
+            double helmTargetPrecision;
+            int helmMaximumNumberOfCoefficients;
 
+            switch (_problemSelection.Value)
+            {
+                case ProblemSelectionEnum.CollapsingTwoNodeSystem:
+                case ProblemSelectionEnum.StableTwoNodeSystem:
+                    nodePotentialSingularityDetection = 0.00001;
+                    currentIterationTerminationCriteria = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.00001;
+                    newtonRaphsonMaximumIterations = 1000;
+                    fdlfTargetPrecision = 0.00001;
+                    fdlfMaximumIterations = 1000;
+                    helmTargetPrecision = 0.00001;
+                    helmMaximumNumberOfCoefficients = 50;
+                    break;
+                case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
+                    throw new NotImplementedException();
+                    break;
+                case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
+                    throw new NotImplementedException();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _nodePotential.SingularityDetection = nodePotentialSingularityDetection;
+            _currentIteration.TerminationCriteria = currentIterationTerminationCriteria;
+            _currentIteration.MaximumIterations = currentIterationMaximumIterations;
+            _newtonRaphson.TargetPrecision = newtonRaphsonTargetPrecision;
+            _newtonRaphson.MaximumIterations = newtonRaphsonMaximumIterations;
+            _fastDecoupledLoadFlow.TargetPrecision = fdlfTargetPrecision;
+            _fastDecoupledLoadFlow.MaximumIterations = fdlfMaximumIterations;
+            _holomorphicEmbeddedLoadFlow.TargetPrecision = helmTargetPrecision;
+            _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void CalculateClicked(object sender, RoutedEventArgs e)
         {
             _nodePotential.SingularityDetection = 1;
+            _problemSelection.Value = ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses;
         }
     }
 }

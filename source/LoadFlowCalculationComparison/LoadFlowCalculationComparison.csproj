@@ -57,12 +57,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AlgorithmSettings\AlgorithmSettingsBase.cs" />
+    <Compile Include="AlgorithmSettings\NotifyPropertyChanged.cs" />
     <Compile Include="AlgorithmSettings\CurrentIterationSettings.cs" />
     <Compile Include="AlgorithmSettings\FastDecoupledLoadFlowMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\NewtonRaphsonMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\NodePotentialMethodSettings.cs" />
+    <Compile Include="AlgorithmSettings\ProblemSelection.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

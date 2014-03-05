@@ -1,7 +1,7 @@
 ﻿
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class NodePotentialMethodSettings : AlgorithmSettingsBase
+    class NodePotentialMethodSettings : NotifyPropertyChanged
     {
         private double _singularityDetection = 0.00001;
 
