@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -11,8 +12,11 @@ namespace LoadFlowCalculation
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0.1, targetPrecision*1E4)
         { }
 
-        public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses, IList<double> pvBusVoltages)
         {
+            Debug.Assert(pqBuses.Count + pvBuses.Count == admittances.RowCount);
+            Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
+
             var unknownAngles = pqBuses.Count + pvBuses.Count;
             var unknownMagnitudes = pqBuses.Count;
             var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);;
@@ -38,8 +42,8 @@ namespace LoadFlowCalculation
             foreach (var bus in pqBuses)
                 improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(voltages[bus.ID].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus.ID]], voltages[bus.ID].Phase + angleChange[bus.ID]);
 
-            foreach (var bus in pvBuses)
-                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(bus.VoltageMagnitude, voltages[bus.ID].Phase + angleChange[bus.ID]);
+            for(var i = 0; i < pvBuses.Count; ++i)
+                improvedVoltages[pvBuses[i].ID] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i].ID].Phase + angleChange[pvBuses[i].ID]);
 
             return improvedVoltages;
         }

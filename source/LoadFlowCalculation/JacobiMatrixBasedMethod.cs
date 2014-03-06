@@ -26,7 +26,7 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
+        public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses, IList<double> pvBusVoltages);
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
@@ -39,11 +39,17 @@ namespace LoadFlowCalculation
             IList<double> powersImaginaryDifference;
             CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
             double maximumPowerDifference;
+            var pvBusVoltages = new List<double>(pvBuses.Count);
+
+            foreach (var bus in pvBuses)
+            {
+                pvBusVoltages.Add(bus.VoltageMagnitude);
+            }
 
             do
             {
                 ++iterations;
-                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses);
+                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses, pvBusVoltages);
                 currentVoltages = improvedVoltages;
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
 
