@@ -362,22 +362,20 @@ namespace LoadFlowCalculation
         {
             var loadCurrents = admittances*voltages;
             var totalCurrents = loadCurrents - constantCurrents;
-            var currentsReal = ExtractRealParts(totalCurrents);
-            var currentsImaginary = ExtractImaginaryParts(totalCurrents);
             var changeMatrix = new DenseMatrix(voltages.Count * 2, voltages.Count * 2);
 
             var nodeCount = admittances.RowCount;
-            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, currentsReal, 0, 0, rows, columns);
-            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, currentsImaginary, 0, nodeCount, rows, columns);
+            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, rows, columns);
+            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, nodeCount, rows, columns);
             CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
-                admittances, voltages, currentsImaginary, nodeCount, 0, rows, columns);
+                admittances, voltages, totalCurrents, nodeCount, 0, rows, columns);
             CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
-                admittances, voltages, currentsReal, nodeCount, nodeCount, rows, columns);
+                admittances, voltages, totalCurrents, nodeCount, nodeCount, rows, columns);
 
             return changeMatrix;
         }
 
-        public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
             foreach (var i in rows)
             {
@@ -386,12 +384,12 @@ namespace LoadFlowCalculation
                     changeMatrix[i + startRow, j + startColumn] = voltages[i].Real * admittances[i, j].Real + voltages[i].Imaginary * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
+                        changeMatrix[i + startRow, i + startColumn] += currents[i].Real;
                 }
             }
         }
 
-        public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
             foreach (var i in rows)
             {
@@ -400,12 +398,12 @@ namespace LoadFlowCalculation
                     changeMatrix[i + startRow, j + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsImaginary[i];
+                        changeMatrix[i + startRow, i + startColumn] += currents[i].Imaginary;
                 }
             }
         }
 
-        public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
             foreach (var i in rows)
             {
@@ -414,12 +412,12 @@ namespace LoadFlowCalculation
                     changeMatrix[i + startRow, j + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] -= currentsImaginary[i];
+                        changeMatrix[i + startRow, i + startColumn] -= currents[i].Imaginary;
                 }
             }
         }
 
-        public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
             foreach (var i in rows)
             {
@@ -430,7 +428,7 @@ namespace LoadFlowCalculation
                                                                   voltages[i].Imaginary * admittances[i, j].Imaginary);
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
+                        changeMatrix[i + startRow, i + startColumn] += currents[i].Real;
                 }
             }
         }
