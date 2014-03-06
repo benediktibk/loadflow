@@ -1,5 +1,12 @@
-﻿using LoadFlowCalculation;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.Remoting;
+using LoadFlowCalculation;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest
 {
@@ -238,6 +245,27 @@ namespace LoadFlowCalculationTest
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateVoltageChanges_OneConnection_CorrectResult()
+        {
+            var admittance = new Complex(15, 1500);
+            var current = new Complex(-95.5, 1451.1);
+            var voltage = new Complex(1, 0);
+            var admittances = DenseMatrix.OfArray(new[,] { { admittance } });
+            var constantCurrents = new DenseVector(new[] { current });
+            var voltages = new DenseVector(new[] { voltage });
+            var calculator = new NewtonRaphsonMethod(0.00001, 10000);
+            var power = voltage*(admittance*voltage).Conjugate();
+            var realPowerErrors = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new[]{ -46.86 - power.Real });
+            var imaginaryPowerErrors = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new []{ 85.54 - power.Imaginary });
+
+            var voltageChanges = calculator.CalculateVoltageChanges(admittances, voltages, constantCurrents, realPowerErrors,
+                imaginaryPowerErrors);
+
+            Assert.AreEqual(1, voltageChanges.Count);
+            ComplexAssert.AreEqual(-0.08054039549522, 0.101476245862038, voltageChanges[0], 0.000001);
         }
     }
 }
