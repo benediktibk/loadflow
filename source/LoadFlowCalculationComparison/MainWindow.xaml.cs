@@ -16,12 +16,12 @@ namespace LoadFlowCalculationComparison
 {
     public partial class MainWindow
     {
-        private readonly IterativeMethodSettings _currentIteration;
-        private readonly IterativeMethodSettings _iterative;
-        private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
-        private readonly IterativeMethodSettings _newtonRaphson;
-        private readonly NodePotentialMethodSettings _nodePotential;
         private readonly GeneralSettings _generalSettings;
+        private readonly IterativeMethodSettings _currentIteration;
+        private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
+        private readonly IterativeMethodSettings _newtonRaphson;
+        private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
+        private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CalculationResults _calculationResults;
         private List<CalculationResult> _newCalculationResults;
 
@@ -29,7 +29,7 @@ namespace LoadFlowCalculationComparison
         {
             _generalSettings = new GeneralSettings();
             _currentIteration = new IterativeMethodSettings(_generalSettings);
-            _iterative = new IterativeMethodSettings(_generalSettings);
+            _fastDecoupledLoadFlow = new IterativeMethodSettings(_generalSettings);
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
             _newtonRaphson = new IterativeMethodSettings(_generalSettings);
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
@@ -38,7 +38,7 @@ namespace LoadFlowCalculationComparison
             _calculationResults = FindResource("CalculationResults") as CalculationResults;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
-            FastDecoupledLoadFlowGrid.DataContext = _iterative;
+            FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
             GeneralSettingsGrid.DataContext = _generalSettings;
@@ -121,8 +121,8 @@ namespace LoadFlowCalculationComparison
             _currentIteration.MaximumIterations = currentIterationMaximumIterations;
             _newtonRaphson.TargetPrecision = newtonRaphsonTargetPrecision;
             _newtonRaphson.MaximumIterations = newtonRaphsonMaximumIterations;
-            _iterative.TargetPrecision = fdlfTargetPrecision;
-            _iterative.MaximumIterations = fdlfMaximumIterations;
+            _fastDecoupledLoadFlow.TargetPrecision = fdlfTargetPrecision;
+            _fastDecoupledLoadFlow.MaximumIterations = fdlfMaximumIterations;
             _holomorphicEmbeddedLoadFlow.TargetPrecision = helmTargetPrecision;
             _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
         }
@@ -183,8 +183,8 @@ namespace LoadFlowCalculationComparison
 
         private CalculationResult CalculateFastDecoupledLoadFlowResult()
         {
-            var calculator = new FastDecoupledLoadFlowMethod(_iterative.TargetPrecision,
-                _iterative.MaximumIterations);
+            var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
+                _fastDecoupledLoadFlow.MaximumIterations);
             var result = CalculateResult(calculator);
             result.Algorithm = "FDLF";
             return result;

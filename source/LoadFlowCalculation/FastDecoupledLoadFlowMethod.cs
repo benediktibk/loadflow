@@ -13,13 +13,15 @@ namespace LoadFlowCalculation
         public override Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, Vector<double> powersRealError,
             Vector<double> powersImaginaryError)
         {
-            var changeMatrixRealPower = CalculateChangeMatrixRealPowerByAngle(admittances, voltages, constantCurrents);
-            var changeMatrixImaginaryPower = CalculateChangeMatrixImaginaryPowerByAmplitude(admittances, voltages, constantCurrents);
+            var nodeCount = admittances.RowCount;
+            var changeMatrixRealPower = new DenseMatrix(nodeCount, nodeCount);
+            CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0, 0);
+            var changeMatrixImaginaryPower = new DenseMatrix(nodeCount, nodeCount);
+            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages, constantCurrents, 0, 0);
             var factorizationRealPower = changeMatrixRealPower.QR();
             var factorizationImaginaryPower = changeMatrixImaginaryPower.QR();
             var angleChange = factorizationRealPower.Solve(powersRealError);
             var amplitudeChange = factorizationImaginaryPower.Solve(powersImaginaryError);
-            var nodeCount = admittances.RowCount;
             var voltageChanges = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
@@ -28,10 +30,9 @@ namespace LoadFlowCalculation
             return voltageChanges;
         }
 
-        public static Matrix<double> CalculateChangeMatrixRealPowerByAngle(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
         {
             var nodeCount = admittances.RowCount;
-            var changeMatrix = new DenseMatrix(nodeCount, nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
             {
@@ -51,7 +52,7 @@ namespace LoadFlowCalculation
                         var admittanceAngle = admittance.Phase;
                         var sine = Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
 
-                        changeMatrix[i, j] = (1)*admittanceAmplitude*voltageOneAmplitude*voltageTwoAmplitude*sine;
+                        result[row + i, column + j] = (1) * admittanceAmplitude * voltageOneAmplitude * voltageTwoAmplitude * sine;
                     }
                     else
                     {
@@ -61,7 +62,7 @@ namespace LoadFlowCalculation
                         var constantCurrentPart = voltageOneAmplitude*currentMagnitude*
                                                   Math.Sin(currentAngle - voltageOneAngle);
 
-                        changeMatrix[i, j] = (-1)*constantCurrentPart;
+                        result[row + i, column + j] = (-1) * constantCurrentPart;
                     }
                 }
             }
@@ -72,18 +73,15 @@ namespace LoadFlowCalculation
 
                 for (var j = 0; j < nodeCount; ++j)
                     if (i != j)
-                        sum += changeMatrix[i, j];
+                        sum += result[row + i, column + j];
 
-                changeMatrix[i, i] = changeMatrix[i, i] + sum;
+                result[row + i, column + i] = result[row + i, column + i] + sum;
             }
-
-            return changeMatrix;
         }
 
-        public static Matrix<double> CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
         {
             var nodeCount = admittances.RowCount;
-            var changeMatrix = new DenseMatrix(nodeCount, nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
             {
@@ -102,7 +100,7 @@ namespace LoadFlowCalculation
                         var voltageTwo = voltages[j];
                         var voltageTwoAngle = voltageTwo.Phase;
 
-                        changeMatrix[i, j] = (-1) * admittanceAmplitude * voltageOneAmplitude *
+                        result[row + i, column + j] = (-1) * admittanceAmplitude * voltageOneAmplitude *
                                              Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
                     }
                     else
@@ -111,7 +109,7 @@ namespace LoadFlowCalculation
                         var currentMagnitude = current.Magnitude;
                         var currentAngle = current.Phase;
 
-                        changeMatrix[i, j] = currentMagnitude*Math.Sin(currentAngle - voltageOneAngle) -
+                        result[row + i, column + j] = currentMagnitude * Math.Sin(currentAngle - voltageOneAngle) -
                                              2*admittanceAmplitude*voltageOneAmplitude*Math.Sin(admittanceAngle);
                     }
                 }
@@ -123,12 +121,10 @@ namespace LoadFlowCalculation
 
                 for (var j = 0; j < nodeCount; ++j)
                     if (i != j)
-                        sum += changeMatrix[j, i];
+                        sum += result[row + j, column + i];
 
-                changeMatrix[i, i] = changeMatrix[i, i] + sum;
+                result[row + i, column + i] = result[row + i, column + i] + sum;
             }
-
-            return changeMatrix;
         }
     }
 }
