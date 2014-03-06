@@ -486,5 +486,19 @@ namespace LoadFlowCalculation
                 }
             }
         }
+
+        public static Dictionary<int, int> CreateMappingBusIdToIndex(IList<int> buses, int totalCount)
+        {
+            var busIDToAmplitudeIndex = new Dictionary<int, int>();
+            var busIndex = 0;
+
+            for (var i = 0; i < totalCount && busIndex < buses.Count; ++i)
+                if (i == buses[busIndex])
+                {
+                    busIDToAmplitudeIndex[buses[busIndex]] = i;
+                    ++busIndex;
+                }
+            return busIDToAmplitudeIndex;
+        }
     }
 }

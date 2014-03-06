@@ -30,7 +30,23 @@ namespace LoadFlowCalculation
             IList<double> voltageChangesImaginary;
             IList<double> voltageChangesAngle;
             DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary, out voltageChangesAngle);
-            return voltages + CombineRealAndImaginaryParts(new DenseVector(voltageChangesReal.ToArray()), new DenseVector(voltageChangesImaginary.ToArray()));
+            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(allNodes.Count);
+            var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
+            var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, allNodes.Count);
+
+            foreach (var bus in pqBuses)
+            {
+                var index = mappingPQBusToIndex[bus];
+                improvedVoltages[bus] = voltages[bus] + new Complex(voltageChangesReal[index], voltageChangesImaginary[index]);
+            }
+
+            foreach (var bus in pvBuses)
+            {
+                var index = mappingPVBusToIndex[bus];
+                improvedVoltages[bus] = new Complex(pvBusVoltages[index], voltages[bus].Phase + voltageChangesAngle[index]);
+            }
+
+            return improvedVoltages;
         }
     }
 }

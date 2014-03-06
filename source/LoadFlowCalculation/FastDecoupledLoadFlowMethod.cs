@@ -40,7 +40,7 @@ namespace LoadFlowCalculation
                 amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
             }
 
-            var pqBusIdToAmplitudeIndex = CreateMappingPQBusIdToAmplitudeIndex(pqBuses, pvBuses);
+            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
 
             foreach (var bus in pqBuses)
                 improvedVoltages[bus] = Complex.FromPolarCoordinates(voltages[bus].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus]], voltages[bus].Phase + angleChange[bus]);
@@ -49,20 +49,6 @@ namespace LoadFlowCalculation
                 improvedVoltages[pvBuses[i]] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i]].Phase + angleChange[pvBuses[i]]);
 
             return improvedVoltages;
-        }
-
-        public static Dictionary<int, int> CreateMappingPQBusIdToAmplitudeIndex(IList<int> pqBuses, IList<int> pvBuses)
-        {
-            var busIDToAmplitudeIndex = new Dictionary<int, int>();
-            var busIndex = 0;
-
-            for (var i = 0; i < pqBuses.Count + pvBuses.Count && busIndex < pqBuses.Count; ++i)
-                if (i == pqBuses[busIndex])
-                {
-                    busIDToAmplitudeIndex[pqBuses[busIndex]] = i;
-                    ++busIndex;
-                }
-            return busIDToAmplitudeIndex;
         }
     }
 }
