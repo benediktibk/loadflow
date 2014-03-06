@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
+using DenseVector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 
 namespace LoadFlowCalculation
 {
@@ -27,14 +29,8 @@ namespace LoadFlowCalculation
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            var knownPowers = new DenseVector(pqBuses.Count);
-
-            foreach (var bus in pqBuses)
-                knownPowers[bus.ID] = bus.Power;
 
             var nodeCount = admittances.RowCount;
-            var powersReal = ExtractRealParts(knownPowers);
-            var powersImaginary = ExtractImaginaryParts(knownPowers);
             double voltageChange;
             var iterations = 0;
             var currentVoltages =
@@ -44,17 +40,47 @@ namespace LoadFlowCalculation
             do
             {
                 ++iterations;
-                Vector<double> lastPowersReal;
-                Vector<double> lastPowersImaginary;
-                CalculateRealAndImaginaryPowers(admittances, currentVoltages, constantCurrents, out lastPowersReal, out lastPowersImaginary);
-                var powersRealDifference = powersReal - lastPowersReal;
-                var powersImaginaryDifference = powersImaginary - lastPowersImaginary;
+                Vector<double> powersRealDifference;
+                Vector<double> powersImaginaryDifference;
+                CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
                 var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference);
                 voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
                 currentVoltages = currentVoltages + voltageChanges;
             } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
             
             return currentVoltages;
+        }
+
+        private static void CalculatePowerDifferences(Matrix<Complex> admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
+            Vector<Complex> currentVoltages, out Vector<double> powersRealDifference, out Vector<double> powersImaginaryDifference)
+        {
+            Vector<double> lastPowersReal;
+            Vector<double> lastPowersImaginary;
+            CalculateRealAndImaginaryPowers(admittances, currentVoltages, constantCurrents, out lastPowersReal,
+                out lastPowersImaginary);
+            powersRealDifference = new DenseVector(pqBuses.Count + pvBuses.Count);
+            powersImaginaryDifference = new DenseVector(pqBuses.Count);
+
+            for (var i = 0; i < pqBuses.Count; ++i)
+            {
+                var powerIs = lastPowersReal[i];
+                var powerShouldBe = pqBuses[i].Power.Real;
+                powersRealDifference[i] = powerShouldBe - powerIs;
+            }
+
+            for (var i = 0; i < pvBuses.Count; ++i)
+            {
+                var powerIs = lastPowersReal[pqBuses.Count + i];
+                var powerShouldBe = pvBuses[i].RealPower;
+                powersRealDifference[i] = powerShouldBe - powerIs;
+            }
+
+            for (var i = 0; i < pqBuses.Count; ++i)
+            {
+                var powerIs = lastPowersImaginary[i];
+                var powerShouldBe = pqBuses[i].Power.Imaginary;
+                powersImaginaryDifference[i] = powerShouldBe - powerIs;
+            }
         }
 
         public static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,
