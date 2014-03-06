@@ -17,8 +17,21 @@ namespace LoadFlowCalculation
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
 
-            var changeMatrix = CalculateChangeMatrixByRealAndImaginaryPart(admittances, voltages,
-                constantCurrents, pqBuses, pqBuses);
+            var loadCurrents = admittances * voltages;
+            var totalCurrents = loadCurrents - constantCurrents;
+            var changeMatrix = new DenseMatrix(pqBuses.Count * 2 + pvBuses.Count, pqBuses.Count * 2 + pvBuses.Count);
+
+            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, allNodes, pqBuses);
+            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, pqBuses.Count, allNodes, pqBuses);
+            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
+                admittances, voltages, totalCurrents, allNodes.Count, 0, pqBuses, pqBuses);
+            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
+                admittances, voltages, totalCurrents, allNodes.Count, pqBuses.Count, pqBuses, pqBuses);
+            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0,
+                pqBuses.Count * 2, allNodes, pvBuses);
+            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, allNodes.Count,
+                pqBuses.Count * 2, pqBuses, pvBuses);
+
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
             var factorization = changeMatrix.QR();
             var voltageChanges = factorization.Solve(rightSide);

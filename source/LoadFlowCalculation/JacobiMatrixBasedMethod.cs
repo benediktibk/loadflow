@@ -208,12 +208,16 @@ namespace LoadFlowCalculation
         {
             var nodeCount = admittances.RowCount;
 
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var k in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
+                    var k = columns[column];
+
                     if (i != k)
-                        result[startRow + i, startColumn + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                        result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
                                                                 voltages[k].Magnitude*
                                                                 Math.Sin(admittances[i, k].Phase + voltages[k].Phase -
                                                                          voltages[i].Phase);
@@ -230,7 +234,7 @@ namespace LoadFlowCalculation
                                                                 Math.Sin(admittances[i, j].Phase + voltages[j].Phase -
                                                                          voltages[i].Phase);
 
-                        result[startRow + i, startColumn + k] = diagonalPart + offDiagonalPart;
+                        result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
                     }
                 }
             }
@@ -240,12 +244,16 @@ namespace LoadFlowCalculation
         {
             var nodeCount = admittances.RowCount;
 
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var k in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
+                    var k = columns[column];
+
                     if (i != k)
-                        result[startRow + i, startColumn + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                        result[startRow + row, startColumn + column] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
                                                                 voltages[k].Magnitude*
                                                                 Math.Cos(admittances[i, k].Phase + voltages[k].Phase -
                                                                          voltages[i].Phase);
@@ -262,7 +270,7 @@ namespace LoadFlowCalculation
                                                                     Math.Cos(admittances[i, j].Phase + voltages[j].Phase -
                                                                              voltages[i].Phase);
 
-                        result[startRow + i, startColumn + k] = diagonalPart + offDiagonalPart;
+                        result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
                     }
                 }
             }
@@ -271,12 +279,16 @@ namespace LoadFlowCalculation
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,
             Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var k in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
+                    var k = columns[column];
+
                     if (i != k)
-                        result[startRow + i, startColumn + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                        result[startRow + row, startColumn + column] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
                                                       Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
                     {
@@ -293,7 +305,7 @@ namespace LoadFlowCalculation
                                                             voltages[i].Phase);
                         }
 
-                        result[startRow + i, startColumn + k] = diagonalPart - offDiagonalPart;
+                        result[startRow + row, startColumn + column] = diagonalPart - offDiagonalPart;
                     }
                 }
             }
@@ -303,12 +315,16 @@ namespace LoadFlowCalculation
         {
             var nodeCount = admittances.RowCount;
 
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var k in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
+                    var k = columns[column];
+
                     if (i != k)
-                        result[startRow + i, startColumn + k] = admittances[i, k].Magnitude * voltages[i].Magnitude *
+                        result[startRow + row, startColumn + column] = admittances[i, k].Magnitude * voltages[i].Magnitude *
                                              Math.Cos(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
                     {
@@ -322,7 +338,7 @@ namespace LoadFlowCalculation
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
                                                    Math.Cos(admittances[i, j].Phase + voltages[j].Phase - voltages[i].Phase);
 
-                        result[startRow + i, startColumn + k] = diagonalPart + offDiagonalPart;
+                        result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
                     }
                 }
             }
@@ -377,58 +393,74 @@ namespace LoadFlowCalculation
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var j in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
-                    changeMatrix[i + startRow, j + startColumn] = voltages[i].Real * admittances[i, j].Real + voltages[i].Imaginary * admittances[i, j].Imaginary;
+                    var j = columns[column];
+
+                    changeMatrix[row + startRow, column + startColumn] = voltages[i].Real * admittances[i, j].Real + voltages[i].Imaginary * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currents[i].Real;
+                        changeMatrix[row + startRow, column + startColumn] += currents[i].Real;
                 }
             }
         }
 
         public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var j in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
-                    changeMatrix[i + startRow, j + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
+                    var j = columns[column];
+
+                    changeMatrix[row + startRow, column + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currents[i].Imaginary;
+                        changeMatrix[row + startRow, column + startColumn] += currents[i].Imaginary;
                 }
             }
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var j in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
-                    changeMatrix[i + startRow, j + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
+                    var j = columns[column];
+
+                    changeMatrix[row + startRow, column + startColumn] = voltages[i].Imaginary * admittances[i, j].Real - voltages[i].Real * admittances[i, j].Imaginary;
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] -= currents[i].Imaginary;
+                        changeMatrix[row + startRow, column + startColumn] -= currents[i].Imaginary;
                 }
             }
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            foreach (var i in rows)
+            for (var row = 0; row < rows.Count; ++row)
             {
-                foreach (var j in columns)
+                var i = rows[row];
+
+                for (var column = 0; column < columns.Count; ++column)
                 {
-                    changeMatrix[i + startRow, j + startColumn] = (-1) *
+                    var j = columns[column];
+
+                    changeMatrix[row + startRow, column + startColumn] = (-1) *
                                                                  (voltages[i].Real * admittances[i, j].Real +
                                                                   voltages[i].Imaginary * admittances[i, j].Imaginary);
 
                     if (i == j)
-                        changeMatrix[i + startRow, i + startColumn] += currents[i].Real;
+                        changeMatrix[row + startRow, column + startColumn] += currents[i].Real;
                 }
             }
         }
@@ -441,9 +473,10 @@ namespace LoadFlowCalculation
             for (var i = 0; i < totalCount && busIndex < buses.Count; ++i)
                 if (i == buses[busIndex])
                 {
-                    busIdToAmplitudeIndex[buses[busIndex]] = i;
+                    busIdToAmplitudeIndex[buses[busIndex]] = busIndex;
                     ++busIndex;
                 }
+
             return busIdToAmplitudeIndex;
         }
     }
