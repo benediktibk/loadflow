@@ -380,8 +380,8 @@ namespace LoadFlowCalculation
         {
             Vector<double> currentsReal;
             Vector<double> currentsImaginary;
-            DenseMatrix changeMatrix;
-            InitializeChangeMatrixByRealAndImaginaryPart(admittances, voltages, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary, out changeMatrix);
+            var changeMatrix = new DenseMatrix(voltages.Count * 2, voltages.Count * 2); ;
+            InitializeChangeMatrixByRealAndImaginaryPart(admittances, voltages, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary);
 
             var nodeCount = admittances.RowCount;
             CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, currentsReal, 0, 0, rows, columns);
@@ -395,15 +395,12 @@ namespace LoadFlowCalculation
         }
 
         public static void InitializeChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<Complex> voltages,
-            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary,
-            out DenseMatrix changeMatrix)
+            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary)
         {
-            var nodeCount = voltages.Count;
             var loadCurrentsReal = CalculateLoadCurrentRealParts(admittances, voltages);
             var loadCurrentsImaginary = CalculateLoadCurrentImaginaryParts(admittances, voltages);
             currentsReal = loadCurrentsReal - constantCurrentsReal;
             currentsImaginary = loadCurrentsImaginary - constantCurrentsImaginary;
-            changeMatrix = new DenseMatrix(nodeCount * 2, nodeCount * 2);
         }
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
