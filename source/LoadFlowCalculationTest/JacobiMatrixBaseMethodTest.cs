@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -28,9 +29,13 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } });
             var constantCurrents = new DenseVector(new[] { new Complex(10, 0) });
             var voltages = new DenseVector(new[] { new Complex(1, 0.1) });
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex())
+            };
 
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(1, 1);
-            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0);
+            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0, pqBuses);
 
             Assert.AreEqual(-0.99503719, changeMatrix[0, 0], 0.00001);
         }
@@ -61,9 +66,14 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
             var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
             var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -1) });
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex()),
+                new PQBus(1, new Complex())
+            };
 
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(2, 2);
-            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0);
+            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0, pqBuses);
 
             var v1 = voltages[0].Magnitude;
             var d1 = voltages[0].Phase;
@@ -85,9 +95,14 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
             var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
             var voltages = new DenseVector(new[] { new Complex(0.5, 0), new Complex(0.25, 0.1) });
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex()),
+                new PQBus(1, new Complex())
+            };
 
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(2, 2);
-            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0);
+            JacobiMatrixBasedMethod.CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, 0, pqBuses);
 
             var v1 = voltages[0].Magnitude;
             var d1 = voltages[0].Phase;
@@ -112,8 +127,12 @@ namespace LoadFlowCalculationTest
             var admittances = DenseMatrix.OfArray(new[,] { { admittance } });
             var constantCurrents = new DenseVector(new[] { current });
             var voltages = new DenseVector(new[] { voltage });
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex())
+            };
 
-            var changeMatrix = JacobiMatrixBasedMethod.CalculateChangeMatrixByAngleAndAmplitude(admittances, voltages, constantCurrents);
+            var changeMatrix = JacobiMatrixBasedMethod.CalculateChangeMatrixByAngleAndAmplitude(admittances, voltages, constantCurrents, pqBuses);
 
             var realByAngle = (-1) * voltage.Magnitude * current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
             var realByAmplitude = 2 * voltage.Magnitude * admittance.Magnitude * Math.Cos(admittance.Phase) -

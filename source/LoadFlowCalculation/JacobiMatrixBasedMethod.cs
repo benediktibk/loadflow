@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Reflection.Emit;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
@@ -24,58 +26,71 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public abstract Vector<Complex> CalculateVoltageChanges(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, Vector<double> powersRealError, Vector<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
+        public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-
             var nodeCount = admittances.RowCount;
-            double voltageChange;
             var iterations = 0;
             var currentVoltages =
                 CombineRealAndImaginaryParts(CreateInitialRealVoltages(nominalVoltage, nodeCount),
                 CreateInitialImaginaryVoltages(nominalVoltage, nodeCount));
+            IList<double> powersRealDifference;
+            IList<double> powersImaginaryDifference;
+            CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
+            double maximumPowerDifference;
 
             do
             {
                 ++iterations;
-                Vector<double> powersRealDifference;
-                Vector<double> powersImaginaryDifference;
+                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses);
+                currentVoltages = improvedVoltages;
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
-                var voltageChanges = CalculateVoltageChanges(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses);
-                voltageChange = Math.Abs(voltageChanges.AbsoluteMaximum().Magnitude);
-                currentVoltages = currentVoltages + voltageChanges;
-            } while (voltageChange > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
+
+                maximumPowerDifference = 0;
+
+                foreach (var powerDifference in powersRealDifference)
+                {
+                    if (Math.Abs(powerDifference) > maximumPowerDifference)
+                        maximumPowerDifference = Math.Abs(powerDifference);
+                }
+
+                foreach (var powerDifference in powersImaginaryDifference)
+                {
+                    if (Math.Abs(powerDifference) > maximumPowerDifference)
+                        maximumPowerDifference = Math.Abs(powerDifference);
+                }
+            } while (maximumPowerDifference > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
             
             return currentVoltages;
         }
 
         private static void CalculatePowerDifferences(Matrix<Complex> admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
-            Vector<Complex> currentVoltages, out Vector<double> powersRealDifference, out Vector<double> powersImaginaryDifference)
+            Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
         {
             var powersCurrent = CalculateAllPowers(admittances, currentVoltages, constantCurrents);
-            powersRealDifference = new DenseVector(pqBuses.Count + pvBuses.Count);
-            powersImaginaryDifference = new DenseVector(pqBuses.Count);
+            powersRealDifference = new List<double>(pqBuses.Count + pvBuses.Count);
+            powersImaginaryDifference = new List<double>(pqBuses.Count);
 
             for (var i = 0; i < pqBuses.Count; ++i)
             {
                 var powerIs = powersCurrent[i].Real;
                 var powerShouldBe = pqBuses[i].Power.Real;
-                powersRealDifference[i] = powerShouldBe - powerIs;
+                powersRealDifference.Add(powerShouldBe - powerIs);
             }
 
             for (var i = 0; i < pvBuses.Count; ++i)
             {
                 var powerIs = powersCurrent[pqBuses.Count + i].Real;
                 var powerShouldBe = pvBuses[i].RealPower;
-                powersRealDifference[i] = powerShouldBe - powerIs;
+                powersRealDifference.Add(powerShouldBe - powerIs);
             }
 
             for (var i = 0; i < pqBuses.Count; ++i)
             {
                 var powerIs = powersCurrent[i].Imaginary;
                 var powerShouldBe = pqBuses[i].Power.Imaginary;
-                powersImaginaryDifference[i] = powerShouldBe - powerIs;
+                powersImaginaryDifference.Add(powerShouldBe - powerIs);
             }
         }
 
@@ -225,14 +240,18 @@ namespace LoadFlowCalculation
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,
-            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column)
+            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column, IList<PQBus> pqBuses)
         {
-            var nodeCount = admittances.RowCount;
+            var busCount = pqBuses.Count;
 
-            for (var i = 0; i < nodeCount; ++i)
+            for (var iBus = 0; iBus < busCount; ++iBus)
             {
-                for (var k = 0; k < nodeCount; ++k)
+                var i = pqBuses[iBus].ID;
+
+                for (var kBus = 0; kBus < busCount; ++kBus)
                 {
+                    var k = pqBuses[kBus].ID;
+
                     if (i != k)
                         result[row + i, column + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
                                                       Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
@@ -243,10 +262,15 @@ namespace LoadFlowCalculation
 
                         var offDiagonalPart = 0.0;
 
-                        for (var j = 0; j < nodeCount; ++j)
+                        for (var jBus = 0; jBus < busCount; ++jBus)
+                        {
+                            var j = pqBuses[jBus].ID;
+
                             if (j != i)
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
-                                                   Math.Sin(admittances[i, j].Phase + voltages[j].Phase - voltages[i].Phase);
+                                                   Math.Sin(admittances[i, j].Phase + voltages[j].Phase -
+                                                            voltages[i].Phase);
+                        }
 
                         result[row + i, column + k] = diagonalPart - offDiagonalPart;
                     }
@@ -328,7 +352,7 @@ namespace LoadFlowCalculation
 
             return currents;
         }
-        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses)
         {
             var nodeCount = admittances.RowCount;
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount * 2, nodeCount * 2);
@@ -336,7 +360,7 @@ namespace LoadFlowCalculation
             CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0, 0);
             CalculateChangeMatrixRealPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, nodeCount);
             CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, nodeCount, 0);
-            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, nodeCount, nodeCount);
+            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, nodeCount, nodeCount, pqBuses);
 
             return changeMatrix;
         }
