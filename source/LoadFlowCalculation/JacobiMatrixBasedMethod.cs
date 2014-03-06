@@ -269,22 +269,27 @@ namespace LoadFlowCalculation
                         var current = constantCurrents[i];
                         var currentMagnitude = current.Magnitude;
                         var currentAngle = current.Phase;
-
-                        result[row + i, column + j] = currentMagnitude * Math.Sin(currentAngle - voltageOneAngle) -
+                        var diagonalPart = currentMagnitude * Math.Sin(currentAngle - voltageOneAngle) -
                                              2 * admittanceAmplitude * voltageOneAmplitude * Math.Sin(admittanceAngle);
+
+                        var offDiagonalPart = 0.0;
+
+                        for (var k = 0; k < nodeCount; ++k)
+                            if (k != i)
+                            {
+                                var voltageThree = voltages[k];
+                                var voltageThreeMagnitude = voltageThree.Magnitude;
+                                var voltageThreeAngle = voltageThree.Phase;
+                                var admittanceOff = admittances[i, k];
+                                var admittanceOffMagnitude = admittanceOff.Magnitude;
+                                var admittanceOffAngle = admittanceOff.Phase;
+                                offDiagonalPart += admittanceOffMagnitude*voltageThreeMagnitude*
+                                                   Math.Sin(admittanceOffAngle + voltageThreeAngle - voltageOneAngle);
+                            }
+
+                        result[row + i, column + j] = diagonalPart - offDiagonalPart;
                     }
                 }
-            }
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                double sum = 0;
-
-                for (var j = 0; j < nodeCount; ++j)
-                    if (i != j)
-                        sum += result[row + j, column + i];
-
-                result[row + i, column + i] = result[row + i, column + i] + sum;
             }
         }
     }
