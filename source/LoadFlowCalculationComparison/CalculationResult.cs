@@ -1,7 +1,7 @@
 ﻿
 namespace LoadFlowCalculationComparison
 {
-    class CalculationResult
+    public class CalculationResult
     {
         public string Algorithm { get; set; }
         public bool VoltageCollapse { get; set; }

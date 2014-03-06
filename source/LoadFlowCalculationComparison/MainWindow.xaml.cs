@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
@@ -23,8 +22,8 @@ namespace LoadFlowCalculationComparison
         private readonly IterativeMethodSettings _newtonRaphson;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly GeneralSettings _generalSettings;
-        private readonly ObservableCollection<CalculationResult> _calculationResults;
-        private List<CalculationResult> _newCalculationResults; 
+        private readonly CalculationResults _calculationResults;
+        private List<CalculationResult> _newCalculationResults;
 
         public MainWindow()
         {
@@ -34,9 +33,9 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
             _newtonRaphson = new IterativeMethodSettings(_generalSettings);
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
-            _calculationResults = new ObservableCollection<CalculationResult>(new List<CalculationResult>(10));
-            
+
             InitializeComponent();
+            _calculationResults = FindResource("CalculationResults") as CalculationResults;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
             FastDecoupledLoadFlowGrid.DataContext = _iterative;
@@ -44,7 +43,6 @@ namespace LoadFlowCalculationComparison
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
             GeneralSettingsGrid.DataContext = _generalSettings;
             CalculateButton.DataContext = _generalSettings;
-            ResultDataGrid.ItemsSource = _calculationResults;
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)

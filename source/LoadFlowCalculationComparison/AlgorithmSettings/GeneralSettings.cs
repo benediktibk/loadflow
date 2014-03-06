@@ -1,10 +1,7 @@
 ﻿
-using System.Collections.Generic;
-using System.Data;
-
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    enum ProblemSelectionEnum
+    public enum ProblemSelectionEnum
     {
         CollapsingTwoNodeSystem,
         StableTwoNodeSystem,
@@ -13,7 +10,7 @@ namespace LoadFlowCalculationComparison.AlgorithmSettings
         FiveNodeSystemWithThreePQBusesAndOnePVBus
     }
 
-    class GeneralSettings : NotifyPropertyChanged
+    public class GeneralSettings : NotifyPropertyChanged
     {
         private ProblemSelectionEnum _problemSelection = ProblemSelectionEnum.CollapsingTwoNodeSystem;
         private int _numberOfExecutions = 10;

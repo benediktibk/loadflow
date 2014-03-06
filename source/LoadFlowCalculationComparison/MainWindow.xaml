@@ -5,14 +5,18 @@
         xmlns:localSettings="clr-namespace:LoadFlowCalculationComparison.AlgorithmSettings"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        Title="Load Flow Calculation Methods - Comparison" Height="550" Width="1000">
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        mc:Ignorable="d"
+        Title="Load Flow Calculation Methods - Comparison" 
+        Height="550" 
+        Width="1000">
     <Window.Resources>
         <ObjectDataProvider x:Key="DataFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="localSettings:ProblemSelectionEnum"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <local:CalculationResults x:Key="CalculationResults"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -30,7 +34,7 @@
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Grid.Row="0" Name="GeneralSettingsGrid">
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Grid.Row="0" Name="GeneralSettingsGrid" DataContext="{Binding _ge}">
                     <TextBlock Text="General Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="problem selection" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="ProblemSelectionComboBox" HorizontalAlignment="Right" Margin="0,29,0,0" VerticalAlignment="Top" SelectionChanged="ProblemSelectionChanged" Width="180" ItemsSource="{Binding Source={StaticResource DataFromEnum}}" SelectedItem="{Binding ProblemSelection}"/>
@@ -183,16 +187,21 @@
                 <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=ChangesAllowed, Mode=OneWay}"  Grid.Row="6"/>
             </Grid>
         </ScrollViewer>
-        <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
-                <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
-                <DataGridCheckBoxColumn Binding="{Binding VoltageCollapseDetected}" Header="reported collapse"/>
-                <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
-                <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
-                <DataGridTextColumn Binding="{Binding AverageExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
-                <DataGridTextColumn Binding="{Binding StandardDeviationExecutionTime, StringFormat={}{0:e3}}" Header="sigma t"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CalculationResults}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
+                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
+                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapseDetected}" Header="reported collapse"/>
+                    <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
+                    <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
+                    <DataGridTextColumn Binding="{Binding AverageExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
+                    <DataGridTextColumn Binding="{Binding StandardDeviationExecutionTime, StringFormat={}{0:e3}}" Header="sigma t"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </Grid>
 </Window>
