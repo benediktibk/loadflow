@@ -247,52 +247,5 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
-
-        [TestMethod]
-        public void CalculateVoltageChanges_OneConnection_CorrectResult()
-        {
-            var admittance = new Complex(15, 1500);
-            var current = new Complex(-95.5, 1451.1);
-            var voltage = new Complex(1, 0);
-            var admittances = DenseMatrix.OfArray(new[,] { { admittance } });
-            var constantCurrents = new DenseVector(new[] { current });
-            var voltages = new DenseVector(new[] { voltage });
-            var calculator = new NewtonRaphsonMethod(0.00001, 10000);
-            var power = voltage*(admittance*voltage).Conjugate();
-            var realPowerErrors = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new[]{ -46.86 - power.Real });
-            var imaginaryPowerErrors = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new []{ 85.54 - power.Imaginary });
-
-            var voltageChanges = calculator.CalculateVoltageChanges(admittances, voltages, constantCurrents, realPowerErrors,
-                imaginaryPowerErrors);
-
-            Assert.AreEqual(1, voltageChanges.Count);
-            ComplexAssert.AreEqual(-0.08054039549522, 0.101476245862038, voltageChanges[0], 0.000001);
-        }
-
-        [TestMethod]
-        public void CalculateChangeMatrix_OneConnection_CorrectResults()
-        {
-            var admittance = new Complex(15, 1500);
-            var current = new Complex(-95.5, 1451.1);
-            var voltage = new Complex(0.95, 0.15);
-            var admittances = DenseMatrix.OfArray(new[,] { { admittance } });
-            var constantCurrents = new DenseVector(new[] { current });
-            var voltages = new DenseVector(new[] { voltage });
-
-            var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents);
-
-            var realByAngle = (-1) * voltage.Magnitude * current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
-            var realByAmplitude = 2 * voltage.Magnitude * admittance.Magnitude * Math.Cos(admittance.Phase) -
-                                  current.Magnitude * Math.Cos(current.Phase - voltage.Phase);
-            var imaginaryByAngle = (-1) * voltage.Magnitude * current.Magnitude * Math.Cos(current.Phase - voltage.Phase);
-            var imaginaryByAmplitude = (-2) * voltage.Magnitude * admittance.Magnitude * Math.Sin(admittance.Phase) +
-                                       current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
-            Assert.AreEqual(2, changeMatrix.RowCount);
-            Assert.AreEqual(2, changeMatrix.ColumnCount);
-            Assert.AreEqual(realByAngle, changeMatrix[0, 0], 0.0000001);
-            Assert.AreEqual(realByAmplitude, changeMatrix[0, 1], 0.0000001);
-            Assert.AreEqual(imaginaryByAngle, changeMatrix[1, 0], 0.0000001);
-            Assert.AreEqual(imaginaryByAmplitude, changeMatrix[1, 1], 0.0000001);
-        }
     }
 }

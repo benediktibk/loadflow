@@ -102,5 +102,31 @@ namespace LoadFlowCalculationTest
             Assert.AreEqual(leftLower, changeMatrix[1, 0], 0.001);
             Assert.AreEqual(rightLower, changeMatrix[1, 1], 0.001);
         }
+
+        [TestMethod]
+        public void CalculateChangeMatrixByAngleAndAmplitude_OneConnection_CorrectResults()
+        {
+            var admittance = new Complex(15, 1500);
+            var current = new Complex(-95.5, 1451.1);
+            var voltage = new Complex(0.95, 0.15);
+            var admittances = DenseMatrix.OfArray(new[,] { { admittance } });
+            var constantCurrents = new DenseVector(new[] { current });
+            var voltages = new DenseVector(new[] { voltage });
+
+            var changeMatrix = JacobiMatrixBasedMethod.CalculateChangeMatrixByAngleAndAmplitude(admittances, voltages, constantCurrents);
+
+            var realByAngle = (-1) * voltage.Magnitude * current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
+            var realByAmplitude = 2 * voltage.Magnitude * admittance.Magnitude * Math.Cos(admittance.Phase) -
+                                  current.Magnitude * Math.Cos(current.Phase - voltage.Phase);
+            var imaginaryByAngle = (-1) * voltage.Magnitude * current.Magnitude * Math.Cos(current.Phase - voltage.Phase);
+            var imaginaryByAmplitude = (-2) * voltage.Magnitude * admittance.Magnitude * Math.Sin(admittance.Phase) +
+                                       current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
+            Assert.AreEqual(2, changeMatrix.RowCount);
+            Assert.AreEqual(2, changeMatrix.ColumnCount);
+            Assert.AreEqual(realByAngle, changeMatrix[0, 0], 0.0000001);
+            Assert.AreEqual(realByAmplitude, changeMatrix[0, 1], 0.0000001);
+            Assert.AreEqual(imaginaryByAngle, changeMatrix[1, 0], 0.0000001);
+            Assert.AreEqual(imaginaryByAmplitude, changeMatrix[1, 1], 0.0000001);
+        }
     }
 }

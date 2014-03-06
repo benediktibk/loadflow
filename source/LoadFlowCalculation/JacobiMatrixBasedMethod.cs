@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
+using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 
 namespace LoadFlowCalculation
 {
@@ -265,6 +266,165 @@ namespace LoadFlowCalculation
 
                         result[row + i, column + k] = diagonalPart + offDiagonalPart;
                     }
+                }
+            }
+        }
+
+        public static Vector<double> CalculateLoadCurrentRealParts(Matrix<Complex> admittances, IList<double> voltageRealParts, IList<double> voltageImaginaryParts)
+        {
+            var nodeCount = admittances.RowCount;
+            var currents = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var sum = 0.0;
+
+                for (var k = 0; k < nodeCount; ++k)
+                {
+                    var admittance = admittances[i, k];
+                    var voltageReal = voltageRealParts[k];
+                    var voltageImaginary = voltageImaginaryParts[k];
+                    sum += admittance.Real * voltageReal - admittance.Imaginary * voltageImaginary;
+                }
+
+                currents[i] = sum;
+            }
+
+            return currents;
+        }
+
+        public static Vector<double> CalculateLoadCurrentImaginaryParts(Matrix<Complex> admittances, IList<double> voltageRealParts, IList<double> voltageImaginaryParts)
+        {
+            var nodeCount = admittances.RowCount;
+            var currents = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var sum = 0.0;
+
+                for (var k = 0; k < nodeCount; ++k)
+                {
+                    var admittance = admittances[i, k];
+                    var voltageReal = voltageRealParts[k];
+                    var voltageImaginary = voltageImaginaryParts[k];
+                    sum += admittance.Real * voltageImaginary + admittance.Imaginary * voltageReal;
+                }
+
+                currents[i] = sum;
+            }
+
+            return currents;
+        }
+        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        {
+            var nodeCount = admittances.RowCount;
+            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount * 2, nodeCount * 2);
+
+            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0, 0);
+            CalculateChangeMatrixRealPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, nodeCount);
+            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, nodeCount, 0);
+            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, nodeCount, nodeCount);
+
+            return changeMatrix;
+        }
+
+        public static Matrix<double> CalculateChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal,
+            IList<double> voltagesImaginary, Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary)
+        {
+            Vector<double> currentsReal;
+            Vector<double> currentsImaginary;
+            MathNet.Numerics.LinearAlgebra.Double.DenseMatrix changeMatrix;
+            InitializeChangeMatrixByRealAndImaginaryPart(admittances, voltagesReal, voltagesImaginary, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary, out changeMatrix);
+
+            var nodeCount = admittances.RowCount;
+            CalculateChangeMatrixRealPowerByRealPart(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsReal, 0, 0);
+            CalculateChangeMatrixRealPowerByImaginaryPart(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsImaginary, 0, nodeCount);
+            CalculateChangeMatrixImaginaryPowerByRealPart(admittances, voltagesReal, voltagesImaginary, changeMatrix,
+                currentsImaginary, nodeCount, 0);
+            CalculateChangeMatrixImaginaryPowerByImaginaryPart(admittances, voltagesReal, voltagesImaginary, changeMatrix,
+                currentsReal, nodeCount, nodeCount);
+
+            return changeMatrix;
+        }
+
+        public static void InitializeChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary,
+            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary,
+            out DenseMatrix changeMatrix)
+        {
+            var nodeCount = voltagesReal.Count;
+            var loadCurrentsReal = CalculateLoadCurrentRealParts(admittances, voltagesReal, voltagesImaginary);
+            var loadCurrentsImaginary = CalculateLoadCurrentImaginaryParts(admittances, voltagesReal, voltagesImaginary);
+            currentsReal = loadCurrentsReal - constantCurrentsReal;
+            currentsImaginary = loadCurrentsImaginary - constantCurrentsImaginary;
+            changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount * 2, nodeCount * 2);
+        }
+
+        public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<Complex> admittances, IList<double> voltagesReal,
+            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    changeMatrix[i + startRow, j + startColumn] = voltagesReal[i] * admittances[i, j].Real + voltagesImaginary[i] * admittances[i, j].Imaginary;
+
+                    if (i == j)
+                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
+                }
+            }
+        }
+
+        public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal,
+            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    changeMatrix[i + startRow, j + startColumn] = voltagesImaginary[i] * admittances[i, j].Real - voltagesReal[i] * admittances[i, j].Imaginary;
+
+                    if (i == j)
+                        changeMatrix[i + startRow, i + startColumn] += currentsImaginary[i];
+                }
+            }
+        }
+
+        public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<Complex> admittances, IList<double> voltagesReal,
+            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    changeMatrix[i + startRow, j + startColumn] = voltagesImaginary[i] * admittances[i, j].Real - voltagesReal[i] * admittances[i, j].Imaginary;
+
+                    if (i == j)
+                        changeMatrix[i + startRow, i + startColumn] -= currentsImaginary[i];
+                }
+            }
+        }
+
+        public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal,
+            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    changeMatrix[i + startRow, j + startColumn] = (-1) *
+                                                                 (voltagesReal[i] * admittances[i, j].Real +
+                                                                  voltagesImaginary[i] * admittances[i, j].Imaginary);
+
+                    if (i == j)
+                        changeMatrix[i + startRow, i + startColumn] += currentsReal[i];
                 }
             }
         }
