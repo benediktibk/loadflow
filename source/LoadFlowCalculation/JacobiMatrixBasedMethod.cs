@@ -358,12 +358,13 @@ namespace LoadFlowCalculation
             return changeMatrix;
         }
 
-        public static Matrix<double> CalculateChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<Complex> voltages, Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, IList<int> rows, IList<int> columns)
+        public static Matrix<double> CalculateChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<int> rows, IList<int> columns)
         {
-            Vector<double> currentsReal;
-            Vector<double> currentsImaginary;
-            var changeMatrix = new DenseMatrix(voltages.Count * 2, voltages.Count * 2); ;
-            InitializeChangeMatrixByRealAndImaginaryPart(admittances, voltages, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary);
+            var loadCurrents = admittances*voltages;
+            var totalCurrents = loadCurrents - constantCurrents;
+            var currentsReal = ExtractRealParts(totalCurrents);
+            var currentsImaginary = ExtractImaginaryParts(totalCurrents);
+            var changeMatrix = new DenseMatrix(voltages.Count * 2, voltages.Count * 2);
 
             var nodeCount = admittances.RowCount;
             CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, currentsReal, 0, 0, rows, columns);
@@ -374,26 +375,6 @@ namespace LoadFlowCalculation
                 admittances, voltages, currentsReal, nodeCount, nodeCount, rows, columns);
 
             return changeMatrix;
-        }
-
-        public static void InitializeChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<Complex> voltages,
-            Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary)
-        {
-            var nodeCount = admittances.RowCount;
-            var currents = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var sum = new Complex();
-
-                for (var k = 0; k < nodeCount; ++k)
-                    sum += admittances[i, k] * voltages[k];
-
-                currents[i] = sum;
-            }
-
-            currentsReal = ExtractRealParts(currents) - constantCurrentsReal;
-            currentsImaginary = ExtractImaginaryParts(currents) - constantCurrentsImaginary;
         }
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
