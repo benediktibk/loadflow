@@ -254,13 +254,11 @@ namespace LoadFlowCalculation
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,
             Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows)
         {
-            var busCount = rows.Count;
-
-            for (var iBus = 0; iBus < busCount; ++iBus)
+            for (var iBus = 0; iBus < rows.Count; ++iBus)
             {
                 var i = rows[iBus];
 
-                for (var kBus = 0; kBus < busCount; ++kBus)
+                for (var kBus = 0; kBus < rows.Count; ++kBus)
                 {
                     var k = rows[kBus];
 
@@ -274,10 +272,8 @@ namespace LoadFlowCalculation
 
                         var offDiagonalPart = 0.0;
 
-                        for (var jBus = 0; jBus < busCount; ++jBus)
+                        for (var j = 0; j < admittances.ColumnCount; ++j)
                         {
-                            var j = rows[jBus];
-
                             if (j != i)
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
                                                    Math.Sin(admittances[i, j].Phase + voltages[j].Phase -
