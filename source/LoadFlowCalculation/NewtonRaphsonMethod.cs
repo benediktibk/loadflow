@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
@@ -25,10 +26,11 @@ namespace LoadFlowCalculation
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
             var factorization = changeMatrix.QR();
             var voltageChanges = factorization.Solve(rightSide);
-            Vector<double> voltageChangesReal;
-            Vector<double> voltageChangesImaginary;
-            DivideParts(voltageChanges, out voltageChangesReal, out voltageChangesImaginary);
-            return voltages + CombineRealAndImaginaryParts(voltageChangesReal, voltageChangesImaginary);
+            IList<double> voltageChangesReal;
+            IList<double> voltageChangesImaginary;
+            IList<double> voltageChangesAngle;
+            DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary, out voltageChangesAngle);
+            return voltages + CombineRealAndImaginaryParts(new DenseVector(voltageChangesReal.ToArray()), new DenseVector(voltageChangesImaginary.ToArray()));
         }
     }
 }

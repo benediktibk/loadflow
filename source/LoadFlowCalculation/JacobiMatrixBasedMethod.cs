@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Emit;
@@ -141,18 +142,26 @@ namespace LoadFlowCalculation
             return result;
         }
 
-        public static void DivideParts(IList<double> complete, out Vector<double> upperParts,
-            out Vector<double> lowerParts)
+        public static void DivideParts(IList<double> complete, int firstPartCount, int secondPartCount, out IList<double> firstParts,
+            out IList<double> secondParts, out IList<double> thirdParts)
         {
-            var count = complete.Count;
-            upperParts = new DenseVector(count / 2);
-            lowerParts = new DenseVector(count / 2);
+            firstParts = new List<double>(firstPartCount);
+            secondParts = new List<double>(secondPartCount);
+            var thirdPartCount = complete.Count - firstPartCount - secondPartCount;
+            thirdParts = new List<double>(thirdPartCount);
 
-            for (var i = 0; i < count / 2; ++i)
-                upperParts[i] = complete[i];
+            for (var i = 0; i < firstPartCount; ++i)
+                firstParts.Add(complete[i]);
 
-            for (var i = 0; i < count / 2; ++i)
-                lowerParts[i] = complete[i + count / 2];
+            for (var i = firstPartCount; i < firstPartCount + secondPartCount; ++i)
+                secondParts.Add(complete[i]);
+
+            for (var i = firstPartCount + secondPartCount; i < complete.Count; ++i)
+                thirdParts.Add(complete[i]);
+
+            Debug.Assert(firstPartCount == firstParts.Count);
+            Debug.Assert(secondPartCount == secondParts.Count);
+            Debug.Assert(thirdPartCount == thirdParts.Count);
         }
 
         private Vector<double> CreateInitialRealVoltages(double nominalVoltage, int nodeCount)
