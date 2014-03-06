@@ -328,24 +328,6 @@ namespace LoadFlowCalculation
             }
         }
 
-        public static Vector<double> CalculateLoadCurrentRealParts(Matrix<Complex> admittances, IList<Complex> voltages)
-        {
-            var nodeCount = admittances.RowCount;
-            var currents = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var sum = 0.0;
-
-                for (var k = 0; k < nodeCount; ++k)
-                    sum += admittances[i, k].Real * voltages[k].Real - admittances[i, k].Imaginary * voltages[i].Imaginary;
-
-                currents[i] = sum;
-            }
-
-            return currents;
-        }
-
         public static Vector<double> CalculateLoadCurrentImaginaryParts(Matrix<Complex> admittances, IList<Complex> voltages)
         {
             var nodeCount = admittances.RowCount;
@@ -397,10 +379,21 @@ namespace LoadFlowCalculation
         public static void InitializeChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, IList<Complex> voltages,
             Vector<double> constantCurrentsReal, Vector<double> constantCurrentsImaginary, out Vector<double> currentsReal, out Vector<double> currentsImaginary)
         {
-            var loadCurrentsReal = CalculateLoadCurrentRealParts(admittances, voltages);
-            var loadCurrentsImaginary = CalculateLoadCurrentImaginaryParts(admittances, voltages);
-            currentsReal = loadCurrentsReal - constantCurrentsReal;
-            currentsImaginary = loadCurrentsImaginary - constantCurrentsImaginary;
+            var nodeCount = admittances.RowCount;
+            var currents = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var sum = new Complex();
+
+                for (var k = 0; k < nodeCount; ++k)
+                    sum += admittances[i, k] * voltages[k];
+
+                currents[i] = sum;
+            }
+
+            currentsReal = ExtractRealParts(currents) - constantCurrentsReal;
+            currentsImaginary = ExtractImaginaryParts(currents) - constantCurrentsImaginary;
         }
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
