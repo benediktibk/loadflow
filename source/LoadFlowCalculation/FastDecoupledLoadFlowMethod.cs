@@ -33,6 +33,19 @@ namespace LoadFlowCalculation
                 amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
             }
 
+            var pqBusIdToAmplitudeIndex = CreateMappingPQBusIdToAmplitudeIndex(pqBuses, pvBuses);
+
+            foreach (var bus in pqBuses)
+                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(voltages[bus.ID].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus.ID]], voltages[bus.ID].Phase + angleChange[bus.ID]);
+
+            foreach (var bus in pvBuses)
+                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(bus.VoltageMagnitude, voltages[bus.ID].Phase + angleChange[bus.ID]);
+
+            return improvedVoltages;
+        }
+
+        public static Dictionary<int, int> CreateMappingPQBusIdToAmplitudeIndex(IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        {
             var busIDToAmplitudeIndex = new Dictionary<int, int>();
             var busIndex = 0;
 
@@ -42,14 +55,7 @@ namespace LoadFlowCalculation
                     busIDToAmplitudeIndex[pqBuses[busIndex].ID] = i;
                     ++busIndex;
                 }
-
-            foreach (var bus in pqBuses)
-                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(voltages[bus.ID].Magnitude + amplitudeChange[busIDToAmplitudeIndex[bus.ID]], voltages[bus.ID].Phase + angleChange[bus.ID]);
-
-            foreach (var bus in pvBuses)
-                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(bus.VoltageMagnitude, voltages[bus.ID].Phase + angleChange[bus.ID]);
-
-            return improvedVoltages;
+            return busIDToAmplitudeIndex;
         }
     }
 }
