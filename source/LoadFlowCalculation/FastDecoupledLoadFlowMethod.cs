@@ -8,7 +8,7 @@ namespace LoadFlowCalculation
 {
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {
-        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0.1, targetPrecision*1E6)
+        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0.1, targetPrecision*1E4)
         { }
 
         public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
