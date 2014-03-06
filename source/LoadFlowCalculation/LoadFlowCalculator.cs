@@ -5,6 +5,7 @@ using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.Statistics;
 
 namespace LoadFlowCalculation
 {
@@ -163,6 +164,13 @@ namespace LoadFlowCalculation
             var currents = admittances.Multiply(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
+        }
+
+        public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        {
+            var currents = admittances.Multiply(voltages) - constantCurrents;
+            var powers = voltages.PointwiseMultiply(currents.Conjugate());
+            return powers;
         }
 
         public static Vector<Complex> CombineKnownAndUnknownVoltages(IReadOnlyList<int> indexOfNodesWithKnownVoltage,

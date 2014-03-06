@@ -54,30 +54,27 @@ namespace LoadFlowCalculation
         private static void CalculatePowerDifferences(Matrix<Complex> admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
             Vector<Complex> currentVoltages, out Vector<double> powersRealDifference, out Vector<double> powersImaginaryDifference)
         {
-            Vector<double> lastPowersReal;
-            Vector<double> lastPowersImaginary;
-            CalculateRealAndImaginaryPowers(admittances, currentVoltages, constantCurrents, out lastPowersReal,
-                out lastPowersImaginary);
+            var powersCurrent = CalculateAllPowers(admittances, currentVoltages, constantCurrents);
             powersRealDifference = new DenseVector(pqBuses.Count + pvBuses.Count);
             powersImaginaryDifference = new DenseVector(pqBuses.Count);
 
             for (var i = 0; i < pqBuses.Count; ++i)
             {
-                var powerIs = lastPowersReal[i];
+                var powerIs = powersCurrent[i].Real;
                 var powerShouldBe = pqBuses[i].Power.Real;
                 powersRealDifference[i] = powerShouldBe - powerIs;
             }
 
             for (var i = 0; i < pvBuses.Count; ++i)
             {
-                var powerIs = lastPowersReal[pqBuses.Count + i];
+                var powerIs = powersCurrent[pqBuses.Count + i].Real;
                 var powerShouldBe = pvBuses[i].RealPower;
                 powersRealDifference[i] = powerShouldBe - powerIs;
             }
 
             for (var i = 0; i < pqBuses.Count; ++i)
             {
-                var powerIs = lastPowersImaginary[i];
+                var powerIs = powersCurrent[i].Imaginary;
                 var powerShouldBe = pqBuses[i].Power.Imaginary;
                 powersImaginaryDifference[i] = powerShouldBe - powerIs;
             }
@@ -170,15 +167,6 @@ namespace LoadFlowCalculation
                 result[i] = constantCurrents[i].Imaginary;
 
             return result;
-        }
-
-        public static void CalculateRealAndImaginaryPowers(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, 
-            out Vector<double> powersReal, out Vector<double> powersImaginary)
-        {
-            var currents = admittances.Multiply(voltages) - constantCurrents;
-            var powers = voltages.PointwiseMultiply(currents.Conjugate());
-            powersReal = ExtractRealParts(powers);
-            powersImaginary = ExtractImaginaryParts(powers);
         }
 
         public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
