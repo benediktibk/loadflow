@@ -12,6 +12,10 @@ namespace LoadFlowCalculation
 
         public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
+            var allNodes = new List<int>();
+            allNodes.AddRange(pqBuses);
+            allNodes.AddRange(pvBuses);
+
             var voltagesReal = ExtractRealParts(voltages);
             var voltagesImaginary = ExtractImaginaryParts(voltages);
             var constantCurrentsReal = ExtractRealParts(constantCurrents);

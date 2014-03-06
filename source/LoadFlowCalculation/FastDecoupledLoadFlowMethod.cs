@@ -19,7 +19,7 @@ namespace LoadFlowCalculation
 
             var unknownAngles = pqBuses.Count + pvBuses.Count;
             var unknownMagnitudes = pqBuses.Count;
-            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);;
+            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);

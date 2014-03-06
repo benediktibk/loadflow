@@ -130,7 +130,7 @@ namespace LoadFlowCalculation
 
         public static Vector<double> CombineParts(IList<double> upperParts, IList<double> lowerParts)
         {
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(upperParts.Count + lowerParts.Count);
+            var result = new DenseVector(upperParts.Count + lowerParts.Count);
 
             for (var i = 0; i < upperParts.Count; ++i)
                 result[i] = upperParts[i];
@@ -145,8 +145,8 @@ namespace LoadFlowCalculation
             out Vector<double> lowerParts)
         {
             var count = complete.Count;
-            upperParts = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(count / 2);
-            lowerParts = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(count / 2);
+            upperParts = new DenseVector(count / 2);
+            lowerParts = new DenseVector(count / 2);
 
             for (var i = 0; i < count / 2; ++i)
                 upperParts[i] = complete[i];
@@ -157,7 +157,7 @@ namespace LoadFlowCalculation
 
         private Vector<double> CreateInitialRealVoltages(double nominalVoltage, int nodeCount)
         {
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
+            var result = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
                 result[i] = _initialRealVoltage * nominalVoltage;
@@ -167,7 +167,7 @@ namespace LoadFlowCalculation
 
         private Vector<double> CreateInitialImaginaryVoltages(double nominalVoltage, int nodeCount)
         {
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(nodeCount);
+            var result = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
                 result[i] = _initialImaginaryVoltage * nominalVoltage;
@@ -177,7 +177,7 @@ namespace LoadFlowCalculation
 
         public static Vector<double> ExtractRealParts(IList<Complex> constantCurrents)
         {
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(constantCurrents.Count);
+            var result = new DenseVector(constantCurrents.Count);
 
             for (var i = 0; i < constantCurrents.Count; ++i)
                 result[i] = constantCurrents[i].Real;
@@ -187,7 +187,7 @@ namespace LoadFlowCalculation
 
         public static Vector<double> ExtractImaginaryParts(IList<Complex> constantCurrents)
         {
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(constantCurrents.Count);
+            var result = new DenseVector(constantCurrents.Count);
 
             for (var i = 0; i < constantCurrents.Count; ++i)
                 result[i] = constantCurrents[i].Imaginary;
