@@ -195,7 +195,7 @@ namespace LoadFlowCalculation
             return result;
         }
 
-        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
+        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int startRow, int startColumn)
         {
             var nodeCount = admittances.RowCount;
 
@@ -204,9 +204,9 @@ namespace LoadFlowCalculation
                 for (var k = 0; k < nodeCount; ++k)
                 {
                     if (i != k)
-                        result[row + i, column + k] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude * voltages[k].Magnitude * Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
+                        result[startRow + i, startColumn + k] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude * voltages[k].Magnitude * Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
-                        result[row + i, column + k] = (-1) * voltages[i].Magnitude * constantCurrents[i].Magnitude *
+                        result[startRow + i, startColumn + k] = (-1) * voltages[i].Magnitude * constantCurrents[i].Magnitude *
                                                   Math.Sin(constantCurrents[i].Phase - voltages[i].Phase);
                 }
             }
@@ -217,13 +217,13 @@ namespace LoadFlowCalculation
 
                 for (var j = 0; j < nodeCount; ++j)
                     if (i != j)
-                        sum += result[row + i, column + j];
+                        sum += result[startRow + i, startColumn + j];
 
-                result[row + i, column + i] = result[row + i, column + i] - sum;
+                result[startRow + i, startColumn + i] = result[startRow + i, startColumn + i] - sum;
             }
         }
 
-        public static void CalculateChangeMatrixImaginaryPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
+        public static void CalculateChangeMatrixImaginaryPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int startRow, int startColumn)
         {
             var nodeCount = admittances.RowCount;
 
@@ -232,9 +232,9 @@ namespace LoadFlowCalculation
                 for (var k = 0; k < nodeCount; ++k)
                 {
                     if (i != k)
-                        result[row + i, column + k] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude * voltages[k].Magnitude * Math.Cos(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
+                        result[startRow + i, startColumn + k] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude * voltages[k].Magnitude * Math.Cos(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
-                        result[row + i, column + k] = (-1) * voltages[i].Magnitude * constantCurrents[i].Magnitude *
+                        result[startRow + i, startColumn + k] = (-1) * voltages[i].Magnitude * constantCurrents[i].Magnitude *
                                                   Math.Cos(constantCurrents[i].Phase - voltages[i].Phase);
                 }
             }
@@ -245,27 +245,27 @@ namespace LoadFlowCalculation
 
                 for (var j = 0; j < nodeCount; ++j)
                     if (i != j)
-                        sum += result[row + i, column + j];
+                        sum += result[startRow + i, startColumn + j];
 
-                result[row + i, column + i] = result[row + i, column + i] - sum;
+                result[startRow + i, startColumn + i] = result[startRow + i, startColumn + i] - sum;
             }
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,
-            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column, IList<int> pqBuses)
+            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows)
         {
-            var busCount = pqBuses.Count;
+            var busCount = rows.Count;
 
             for (var iBus = 0; iBus < busCount; ++iBus)
             {
-                var i = pqBuses[iBus];
+                var i = rows[iBus];
 
                 for (var kBus = 0; kBus < busCount; ++kBus)
                 {
-                    var k = pqBuses[kBus];
+                    var k = rows[kBus];
 
                     if (i != k)
-                        result[row + i, column + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                        result[startRow + i, startColumn + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
                                                       Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
                     {
@@ -276,7 +276,7 @@ namespace LoadFlowCalculation
 
                         for (var jBus = 0; jBus < busCount; ++jBus)
                         {
-                            var j = pqBuses[jBus];
+                            var j = rows[jBus];
 
                             if (j != i)
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
@@ -284,13 +284,13 @@ namespace LoadFlowCalculation
                                                             voltages[i].Phase);
                         }
 
-                        result[row + i, column + k] = diagonalPart - offDiagonalPart;
+                        result[startRow + i, startColumn + k] = diagonalPart - offDiagonalPart;
                     }
                 }
             }
         }
 
-        public static void CalculateChangeMatrixRealPowerByAmplitude(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column)
+        public static void CalculateChangeMatrixRealPowerByAmplitude(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn)
         {
             var nodeCount = admittances.RowCount;
 
@@ -299,7 +299,7 @@ namespace LoadFlowCalculation
                 for (var k = 0; k < nodeCount; ++k)
                 {
                     if (i != k)
-                        result[row + i, column + k] = admittances[i, k].Magnitude * voltages[i].Magnitude *
+                        result[startRow + i, startColumn + k] = admittances[i, k].Magnitude * voltages[i].Magnitude *
                                              Math.Cos(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
                     {
@@ -313,7 +313,7 @@ namespace LoadFlowCalculation
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
                                                    Math.Cos(admittances[i, j].Phase + voltages[j].Phase - voltages[i].Phase);
 
-                        result[row + i, column + k] = diagonalPart + offDiagonalPart;
+                        result[startRow + i, startColumn + k] = diagonalPart + offDiagonalPart;
                     }
                 }
             }
