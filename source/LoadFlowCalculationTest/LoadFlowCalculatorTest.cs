@@ -260,6 +260,21 @@ namespace LoadFlowCalculationTest
             nodes[4].Voltage = _voltages.At(4);
             return nodes;
         }
+
+        protected IList<Node> CreateTestFiveNodeProblemWithTwoPVBusses()
+        {
+            CreateFiveNodeProblem(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
+            nodes[2].RealPower = _powers.At(2).Real;
+            nodes[3].VoltageMagnitude = _voltages.At(3).Magnitude;
+            nodes[3].RealPower = _powers.At(3).Real;
+            nodes[4].Power = _powers.At(4);
+            return nodes;
+        }
         #endregion
 
         #region three nodes
