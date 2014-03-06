@@ -395,12 +395,12 @@ namespace LoadFlowCalculation
             InitializeChangeMatrixByRealAndImaginaryPart(admittances, voltagesReal, voltagesImaginary, constantCurrentsReal, constantCurrentsImaginary, out currentsReal, out currentsImaginary, out changeMatrix);
 
             var nodeCount = admittances.RowCount;
-            CalculateChangeMatrixRealPowerByRealPart(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsReal, 0, 0, rows, columns);
-            CalculateChangeMatrixRealPowerByImaginaryPart(admittances, voltagesReal, voltagesImaginary, changeMatrix, currentsImaginary, 0, nodeCount, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByRealPart(admittances, voltagesReal, voltagesImaginary, changeMatrix,
-                currentsImaginary, nodeCount, 0, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByImaginaryPart(admittances, voltagesReal, voltagesImaginary, changeMatrix,
-                currentsReal, nodeCount, nodeCount, rows, columns);
+            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltagesReal, voltagesImaginary, currentsReal, 0, 0, rows, columns);
+            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltagesReal, voltagesImaginary, currentsImaginary, 0, nodeCount, rows, columns);
+            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
+                admittances, voltagesReal, voltagesImaginary, currentsImaginary, nodeCount, 0, rows, columns);
+            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
+                admittances, voltagesReal, voltagesImaginary, currentsReal, nodeCount, nodeCount, rows, columns);
 
             return changeMatrix;
         }
@@ -414,14 +414,11 @@ namespace LoadFlowCalculation
             var loadCurrentsImaginary = CalculateLoadCurrentImaginaryParts(admittances, voltagesReal, voltagesImaginary);
             currentsReal = loadCurrentsReal - constantCurrentsReal;
             currentsImaginary = loadCurrentsImaginary - constantCurrentsImaginary;
-            changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount * 2, nodeCount * 2);
+            changeMatrix = new DenseMatrix(nodeCount * 2, nodeCount * 2);
         }
 
-        public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            var nodeCount = admittances.RowCount;
-
             foreach (var i in rows)
             {
                 foreach (var j in columns)
@@ -434,11 +431,8 @@ namespace LoadFlowCalculation
             }
         }
 
-        public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            var nodeCount = admittances.RowCount;
-
             foreach (var i in rows)
             {
                 foreach (var j in columns)
@@ -451,11 +445,8 @@ namespace LoadFlowCalculation
             }
         }
 
-        public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, IList<double> currentsImaginary, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            var nodeCount = admittances.RowCount;
-
             foreach (var i in rows)
             {
                 foreach (var j in columns)
@@ -468,11 +459,8 @@ namespace LoadFlowCalculation
             }
         }
 
-        public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<Complex> admittances, IList<double> voltagesReal,
-            IList<double> voltagesImaginary, Matrix<double> changeMatrix, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
+        public static void CalculateChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<double> voltagesReal, IList<double> voltagesImaginary, IList<double> currentsReal, int startRow, int startColumn, IList<int> rows, IList<int> columns)
         {
-            var nodeCount = admittances.RowCount;
-
             foreach (var i in rows)
             {
                 foreach (var j in columns)
@@ -489,16 +477,16 @@ namespace LoadFlowCalculation
 
         public static Dictionary<int, int> CreateMappingBusIdToIndex(IList<int> buses, int totalCount)
         {
-            var busIDToAmplitudeIndex = new Dictionary<int, int>();
+            var busIdToAmplitudeIndex = new Dictionary<int, int>();
             var busIndex = 0;
 
             for (var i = 0; i < totalCount && busIndex < buses.Count; ++i)
                 if (i == buses[busIndex])
                 {
-                    busIDToAmplitudeIndex[buses[busIndex]] = i;
+                    busIdToAmplitudeIndex[buses[busIndex]] = i;
                     ++busIndex;
                 }
-            return busIDToAmplitudeIndex;
+            return busIdToAmplitudeIndex;
         }
     }
 }
