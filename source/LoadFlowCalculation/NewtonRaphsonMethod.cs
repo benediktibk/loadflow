@@ -17,7 +17,7 @@ namespace LoadFlowCalculation
             var constantCurrentsReal = ExtractRealParts(constantCurrents);
             var constantCurrentsImaginary = ExtractImaginaryParts(constantCurrents);
             var changeMatrix = CalculateChangeMatrixByRealAndImaginaryPart(admittances, voltagesReal, voltagesImaginary,
-                constantCurrentsReal, constantCurrentsImaginary);
+                constantCurrentsReal, constantCurrentsImaginary, pqBuses, pqBuses);
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
             var factorization = changeMatrix.QR();
             var voltageChanges = factorization.Solve(rightSide);

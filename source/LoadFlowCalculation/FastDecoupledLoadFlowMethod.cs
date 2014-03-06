@@ -20,10 +20,13 @@ namespace LoadFlowCalculation
             var unknownAngles = pqBuses.Count + pvBuses.Count;
             var unknownMagnitudes = pqBuses.Count;
             var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);;
+            var allNodes = new List<int>();
+            allNodes.AddRange(pqBuses);
+            allNodes.AddRange(pvBuses);
 
             var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);
             CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0,
-                0);
+                0, allNodes, allNodes);
             var factorizationRealPower = changeMatrixRealPower.QR();
             var angleChange = factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
             Vector<double> amplitudeChange = null;
@@ -32,7 +35,7 @@ namespace LoadFlowCalculation
             {
                 var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
                 CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages,
-                    constantCurrents, 0, 0, pqBuses);
+                    constantCurrents, 0, 0, pqBuses, pqBuses);
                 var factorizationImaginaryPower = changeMatrixImaginaryPower.QR();
                 amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
             }
