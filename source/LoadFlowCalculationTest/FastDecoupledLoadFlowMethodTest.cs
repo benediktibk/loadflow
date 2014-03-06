@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -32,9 +33,14 @@ namespace LoadFlowCalculationTest
             var powerImaginaryDifference = powersImaginary -
                                       new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new[] { currentPowerImaginary });
             var calculator = new FastDecoupledLoadFlowMethod(0.0001, 10000);
+            var pvBuses = new List<PVBus>();
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex())
+            };
 
             var voltageChange = calculator.CalculateVoltageChanges(admittances, voltages, constantCurrents,
-                powerRealDifference, powerImaginaryDifference);
+                powerRealDifference, powerImaginaryDifference, pqBuses, pvBuses);
 
             var derivationRealPowerByAngle = 10*voltageAmplitude*Math.Sin(voltageAngle);
             var derivationImaginaryPowerByAmplitude = (-10)*Math.Sin(voltageAngle);
@@ -54,9 +60,15 @@ namespace LoadFlowCalculationTest
             var powersRealDifference = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 0, 0 });
             var powersImaginaryDifference = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 0, 0 });
             var calculator = new FastDecoupledLoadFlowMethod(0.0001, 10000);
+            var pvBuses = new List<PVBus>();
+            var pqBuses = new List<PQBus>()
+            {
+                new PQBus(0, new Complex()),
+                new PQBus(1, new Complex())
+            };
 
             var voltageChange = calculator.CalculateVoltageChanges(admittances, voltages, constantCurrents,
-                powersRealDifference, powersImaginaryDifference);
+                powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses);
 
             Assert.AreEqual(2, voltageChange.Count);
             Assert.AreEqual(0, voltageChange[0].Magnitude, 0.0001);
