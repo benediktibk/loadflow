@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Numerics;
 using MathExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitTestHelper;
 
 namespace MathExtensionsTest
 {
@@ -74,6 +76,24 @@ namespace MathExtensionsTest
         public void BinomialCoefficient_9AndMinus1_ExceptionThrown()
         {
             MathExtended.BinomialCoefficient(9, -1);
+        }
+
+        [TestMethod]
+        public void ComplexFromPolarCoordinates_Minus1And0_CorrectResult()
+        {
+            var result = Complex.FromPolarCoordinates(-1, 0);
+
+            ComplexAssert.AreEqual(-1, 0, result, 0.00001);
+        }
+
+        [TestMethod]
+        public void ComplexFromPolarCoordinates_NegativeMagnitude_CorrectResult()
+        {
+            var source = new Complex(0.25, -0.5);
+
+            var result = Complex.FromPolarCoordinates(source.Magnitude*(-1), source.Phase + Math.PI);
+
+            ComplexAssert.AreEqual(source, result, 0.00001);
         }
     }
 }
