@@ -76,6 +76,7 @@
     <Compile Include="PVBusTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
     <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
+    <Compile Include="JacobiMatrixBaseMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using LoadFlowCalculation;
+﻿using LoadFlowCalculation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class NewtonRaphsonMethodTest : LoadFlowCalculatorTest
+    public class NewtonRaphsonMethodTest : JacobiMatrixBaseMethodTest
     {
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
