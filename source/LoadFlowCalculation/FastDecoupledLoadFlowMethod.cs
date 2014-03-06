@@ -12,7 +12,7 @@ namespace LoadFlowCalculation
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations, 1, 0.1, targetPrecision*1E4)
         { }
 
-        public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses, IList<double> pvBusVoltages)
+        public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
             Debug.Assert(pqBuses.Count + pvBuses.Count == admittances.RowCount);
             Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
@@ -40,23 +40,23 @@ namespace LoadFlowCalculation
             var pqBusIdToAmplitudeIndex = CreateMappingPQBusIdToAmplitudeIndex(pqBuses, pvBuses);
 
             foreach (var bus in pqBuses)
-                improvedVoltages[bus.ID] = Complex.FromPolarCoordinates(voltages[bus.ID].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus.ID]], voltages[bus.ID].Phase + angleChange[bus.ID]);
+                improvedVoltages[bus] = Complex.FromPolarCoordinates(voltages[bus].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus]], voltages[bus].Phase + angleChange[bus]);
 
             for(var i = 0; i < pvBuses.Count; ++i)
-                improvedVoltages[pvBuses[i].ID] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i].ID].Phase + angleChange[pvBuses[i].ID]);
+                improvedVoltages[pvBuses[i]] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i]].Phase + angleChange[pvBuses[i]]);
 
             return improvedVoltages;
         }
 
-        public static Dictionary<int, int> CreateMappingPQBusIdToAmplitudeIndex(IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public static Dictionary<int, int> CreateMappingPQBusIdToAmplitudeIndex(IList<int> pqBuses, IList<int> pvBuses)
         {
             var busIDToAmplitudeIndex = new Dictionary<int, int>();
             var busIndex = 0;
 
             for (var i = 0; i < pqBuses.Count + pvBuses.Count && busIndex < pqBuses.Count; ++i)
-                if (i == pqBuses[busIndex].ID)
+                if (i == pqBuses[busIndex])
                 {
-                    busIDToAmplitudeIndex[pqBuses[busIndex].ID] = i;
+                    busIDToAmplitudeIndex[pqBuses[busIndex]] = i;
                     ++busIndex;
                 }
             return busIDToAmplitudeIndex;

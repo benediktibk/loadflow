@@ -26,7 +26,7 @@ namespace LoadFlowCalculation
             _maximumIterations = maximumIterations;
         }
 
-        public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<PQBus> pqBuses, IList<PVBus> pvBuses, IList<double> pvBusVoltages);
+        public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
@@ -40,16 +40,22 @@ namespace LoadFlowCalculation
             CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
             double maximumPowerDifference;
             var pvBusVoltages = new List<double>(pvBuses.Count);
+            var pvBusIds = new List<int>(pvBuses.Count);
+            var pqBusIds = new List<int>(pqBuses.Count);
 
             foreach (var bus in pvBuses)
             {
                 pvBusVoltages.Add(bus.VoltageMagnitude);
+                pvBusIds.Add(bus.ID);
             }
+
+            foreach (var bus in pqBuses)
+                pqBusIds.Add(bus.ID);
 
             do
             {
                 ++iterations;
-                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBuses, pvBuses, pvBusVoltages);
+                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBusIds, pvBusIds, pvBusVoltages);
                 currentVoltages = improvedVoltages;
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
 
@@ -246,17 +252,17 @@ namespace LoadFlowCalculation
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,
-            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column, IList<PQBus> pqBuses)
+            Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int row, int column, IList<int> pqBuses)
         {
             var busCount = pqBuses.Count;
 
             for (var iBus = 0; iBus < busCount; ++iBus)
             {
-                var i = pqBuses[iBus].ID;
+                var i = pqBuses[iBus];
 
                 for (var kBus = 0; kBus < busCount; ++kBus)
                 {
-                    var k = pqBuses[kBus].ID;
+                    var k = pqBuses[kBus];
 
                     if (i != k)
                         result[row + i, column + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
@@ -270,7 +276,7 @@ namespace LoadFlowCalculation
 
                         for (var jBus = 0; jBus < busCount; ++jBus)
                         {
-                            var j = pqBuses[jBus].ID;
+                            var j = pqBuses[jBus];
 
                             if (j != i)
                                 offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
@@ -358,7 +364,7 @@ namespace LoadFlowCalculation
 
             return currents;
         }
-        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses)
+        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<int> pqBuses)
         {
             var nodeCount = admittances.RowCount;
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(nodeCount * 2, nodeCount * 2);
