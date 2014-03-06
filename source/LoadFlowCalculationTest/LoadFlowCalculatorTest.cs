@@ -138,7 +138,7 @@ namespace LoadFlowCalculationTest
 
         #region test creation
         #region five nodes
-         protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo()
+        protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -150,7 +150,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne()
+        protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -162,7 +162,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo()
+        protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -174,7 +174,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionTwo()
+        protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionTwo()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -186,7 +186,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionThree()
+        protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionThree()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -198,7 +198,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemAndOnlyVoltagesGiven()
+        protected IList<Node> CreateTestFiveNodeProblemAndOnlyVoltagesGiven()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -210,7 +210,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGiven()
+        protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGiven()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -222,7 +222,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemWithGroundNode()
+        protected IList<Node> CreateTestFiveNodeProblemWithGroundNode()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -234,7 +234,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFiveNodeProblemWithMostlyImaginaryConnections()
+        protected IList<Node> CreateTestFiveNodeProblemWithMostlyImaginaryConnections()
         {
             CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
@@ -243,6 +243,20 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = _powers.At(1);
             nodes[2].Voltage = _voltages.At(2);
             nodes[3].Power = _powers.At(3);
+            nodes[4].Voltage = _voltages.At(4);
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus()
+        {
+            CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
+                out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
+            nodes[2].RealPower = _powers.At(2).Real;
+            nodes[3].Voltage = _voltages.At(3);
             nodes[4].Voltage = _voltages.At(4);
             return nodes;
         }
