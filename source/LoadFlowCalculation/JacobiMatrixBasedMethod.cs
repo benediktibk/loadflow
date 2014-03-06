@@ -195,7 +195,7 @@ namespace LoadFlowCalculation
             return result;
         }
 
-        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int startRow, int startColumn)
+        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn)
         {
             var nodeCount = admittances.RowCount;
 
@@ -204,22 +204,26 @@ namespace LoadFlowCalculation
                 for (var k = 0; k < nodeCount; ++k)
                 {
                     if (i != k)
-                        result[startRow + i, startColumn + k] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude * voltages[k].Magnitude * Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
+                        result[startRow + i, startColumn + k] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                                                                voltages[k].Magnitude*
+                                                                Math.Sin(admittances[i, k].Phase + voltages[k].Phase -
+                                                                         voltages[i].Phase);
                     else
-                        result[startRow + i, startColumn + k] = (-1) * voltages[i].Magnitude * constantCurrents[i].Magnitude *
-                                                  Math.Sin(constantCurrents[i].Phase - voltages[i].Phase);
+                    {
+                        var diagonalPart = (-1)*voltages[i].Magnitude*currents[i].Magnitude*
+                                                                Math.Sin(currents[i].Phase - voltages[i].Phase);
+                        var offDiagonalPart = 0.0;
+
+                        for (var j = 0; j < nodeCount; ++j)
+                            if (i != j)
+                                offDiagonalPart += admittances[i, j].Magnitude * voltages[i].Magnitude *
+                                                                voltages[j].Magnitude *
+                                                                Math.Sin(admittances[i, j].Phase + voltages[j].Phase -
+                                                                         voltages[i].Phase);
+
+                        result[startRow + i, startColumn + k] = diagonalPart + offDiagonalPart;
+                    }
                 }
-            }
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                double sum = 0;
-
-                for (var j = 0; j < nodeCount; ++j)
-                    if (i != j)
-                        sum += result[startRow + i, startColumn + j];
-
-                result[startRow + i, startColumn + i] = result[startRow + i, startColumn + i] - sum;
             }
         }
 
