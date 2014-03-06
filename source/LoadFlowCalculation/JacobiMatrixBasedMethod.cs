@@ -190,5 +190,102 @@ namespace LoadFlowCalculation
             powersReal = ExtractRealParts(powers);
             powersImaginary = ExtractImaginaryParts(powers);
         }
+
+        public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var voltageOne = voltages[i];
+                var voltageOneAmplitude = voltageOne.Magnitude;
+                var voltageOneAngle = voltageOne.Phase;
+
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    if (i != j)
+                    {
+                        var voltageTwo = voltages[j];
+                        var voltageTwoAmplitude = voltageTwo.Magnitude;
+                        var voltageTwoAngle = voltageTwo.Phase;
+                        var admittance = admittances[i, j];
+                        var admittanceAmplitude = admittance.Magnitude;
+                        var admittanceAngle = admittance.Phase;
+                        var sine = Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
+
+                        result[row + i, column + j] = (1) * admittanceAmplitude * voltageOneAmplitude * voltageTwoAmplitude * sine;
+                    }
+                    else
+                    {
+                        var current = constantCurrents[i];
+                        var currentMagnitude = current.Magnitude;
+                        var currentAngle = current.Phase;
+                        var constantCurrentPart = voltageOneAmplitude * currentMagnitude *
+                                                  Math.Sin(currentAngle - voltageOneAngle);
+
+                        result[row + i, column + j] = (-1) * constantCurrentPart;
+                    }
+                }
+            }
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                double sum = 0;
+
+                for (var j = 0; j < nodeCount; ++j)
+                    if (i != j)
+                        sum += result[row + i, column + j];
+
+                result[row + i, column + i] = result[row + i, column + i] + sum;
+            }
+        }
+
+        public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result, Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, int row, int column)
+        {
+            var nodeCount = admittances.RowCount;
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var voltageOne = voltages[i];
+                var voltageOneAmplitude = voltageOne.Magnitude;
+                var voltageOneAngle = voltageOne.Phase;
+
+                for (var j = 0; j < nodeCount; ++j)
+                {
+                    var admittance = admittances[i, j];
+                    var admittanceAmplitude = admittance.Magnitude;
+                    var admittanceAngle = admittance.Phase;
+
+                    if (i != j)
+                    {
+                        var voltageTwo = voltages[j];
+                        var voltageTwoAngle = voltageTwo.Phase;
+
+                        result[row + i, column + j] = (-1) * admittanceAmplitude * voltageOneAmplitude *
+                                             Math.Sin(admittanceAngle + voltageTwoAngle - voltageOneAngle);
+                    }
+                    else
+                    {
+                        var current = constantCurrents[i];
+                        var currentMagnitude = current.Magnitude;
+                        var currentAngle = current.Phase;
+
+                        result[row + i, column + j] = currentMagnitude * Math.Sin(currentAngle - voltageOneAngle) -
+                                             2 * admittanceAmplitude * voltageOneAmplitude * Math.Sin(admittanceAngle);
+                    }
+                }
+            }
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                double sum = 0;
+
+                for (var j = 0; j < nodeCount; ++j)
+                    if (i != j)
+                        sum += result[row + j, column + i];
+
+                result[row + i, column + i] = result[row + i, column + i] + sum;
+            }
+        }
     }
 }
