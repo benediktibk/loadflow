@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
+using DenseVector = MathNet.Numerics.LinearAlgebra.Complex.DenseVector;
 
 namespace LoadFlowCalculation
 {
@@ -15,39 +16,26 @@ namespace LoadFlowCalculation
         public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
             Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
+            var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBuses, pvBuses);
+            var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix);
+            return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBuses, pvBuses, pvBusVoltages, voltageChanges);
+        }
 
-            var allNodes = new List<int>();
-            allNodes.AddRange(pqBuses);
-            allNodes.AddRange(pvBuses);
-
-            var loadCurrents = admittances * voltages;
-            var totalCurrents = loadCurrents - constantCurrents;
-            var changeMatrix = new DenseMatrix(pqBuses.Count * 2 + pvBuses.Count, pqBuses.Count * 2 + pvBuses.Count);
-
-            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, allNodes, pqBuses);
-            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, pqBuses.Count, allNodes, pqBuses);
-            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
-                admittances, voltages, totalCurrents, allNodes.Count, 0, pqBuses, pqBuses);
-            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
-                admittances, voltages, totalCurrents, allNodes.Count, pqBuses.Count, pqBuses, pqBuses);
-            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0,
-                pqBuses.Count * 2, allNodes, pvBuses);
-            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, allNodes.Count,
-                pqBuses.Count * 2, pqBuses, pvBuses);
-
-            var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var factorization = changeMatrix.QR();
-            var voltageChanges = factorization.Solve(rightSide);
+        public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IList<int> pqBuses, IList<int> pvBuses,
+            IList<double> pvBusVoltages, IList<double> voltageChanges)
+        {
             IList<double> voltageChangesReal;
             IList<double> voltageChangesImaginary;
             IList<double> voltageChangesAngle;
-            DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary, out voltageChangesAngle);
+            DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary,
+                out voltageChangesAngle);
             Debug.Assert(pqBuses.Count == voltageChangesReal.Count);
             Debug.Assert(pqBuses.Count == voltageChangesImaginary.Count);
             Debug.Assert(pvBuses.Count == voltageChangesAngle.Count);
-            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(allNodes.Count);
-            var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
-            var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, allNodes.Count);
+            var nodeCount = pqBuses.Count + pvBuses.Count;
+            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(nodeCount);
+            var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, nodeCount);
+            var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, nodeCount);
 
             foreach (var bus in pqBuses)
             {
@@ -60,8 +48,39 @@ namespace LoadFlowCalculation
                 var index = mappingPVBusToIndex[bus];
                 improvedVoltages[bus] = new Complex(pvBusVoltages[index], voltages[bus].Phase + voltageChangesAngle[index]);
             }
-
             return improvedVoltages;
+        }
+
+        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError,
+            DenseMatrix changeMatrix)
+        {
+            var rightSide = CombineParts(powersRealError, powersImaginaryError);
+            var factorization = changeMatrix.QR();
+            var voltageChanges = factorization.Solve(rightSide);
+            return voltageChanges;
+        }
+
+        public static DenseMatrix CalculateChangeMatrix(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+            IList<int> pqBuses, IList<int> pvBuses)
+        {
+            var loadCurrents = admittances*voltages;
+            var totalCurrents = loadCurrents - constantCurrents;
+            var changeMatrix = new DenseMatrix(pqBuses.Count*2 + pvBuses.Count, pqBuses.Count*2 + pvBuses.Count);
+            var allNodes = new List<int>();
+            allNodes.AddRange(pqBuses);
+            allNodes.AddRange(pvBuses);
+            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, allNodes, pqBuses);
+            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, pqBuses.Count,
+                allNodes, pqBuses);
+            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
+                admittances, voltages, totalCurrents, allNodes.Count, 0, pqBuses, pqBuses);
+            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
+                admittances, voltages, totalCurrents, allNodes.Count, pqBuses.Count, pqBuses, pqBuses);
+            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0,
+                pqBuses.Count*2, allNodes, pvBuses);
+            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, allNodes.Count,
+                pqBuses.Count*2, pqBuses, pvBuses);
+            return changeMatrix;
         }
     }
 }
