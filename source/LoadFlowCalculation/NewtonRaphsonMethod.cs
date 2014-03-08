@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -13,6 +14,8 @@ namespace LoadFlowCalculation
 
         public override Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
+            Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
+
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
@@ -39,6 +42,9 @@ namespace LoadFlowCalculation
             IList<double> voltageChangesImaginary;
             IList<double> voltageChangesAngle;
             DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary, out voltageChangesAngle);
+            Debug.Assert(pqBuses.Count == voltageChangesReal.Count);
+            Debug.Assert(pqBuses.Count == voltageChangesImaginary.Count);
+            Debug.Assert(pvBuses.Count == voltageChangesAngle.Count);
             var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(allNodes.Count);
             var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
             var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, allNodes.Count);
