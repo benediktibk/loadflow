@@ -344,7 +344,8 @@ namespace LoadFlowCalculation
             }
         }
 
-        public static Vector<double> CalculateLoadCurrentImaginaryParts(Matrix<Complex> admittances, IList<Complex> voltages)
+        public static Vector<double> CalculateLoadCurrentImaginaryParts(Matrix<Complex> admittances,
+            IList<Complex> voltages)
         {
             var nodeCount = admittances.RowCount;
             var currents = new DenseVector(nodeCount);
@@ -354,41 +355,12 @@ namespace LoadFlowCalculation
                 var sum = 0.0;
 
                 for (var k = 0; k < nodeCount; ++k)
-                    sum += admittances[i, k].Real * voltages[k].Imaginary + admittances[i, k].Imaginary * voltages[k].Real;
+                    sum += admittances[i, k].Real*voltages[k].Imaginary + admittances[i, k].Imaginary*voltages[k].Real;
 
                 currents[i] = sum;
             }
 
             return currents;
-        }
-        public static Matrix<double> CalculateChangeMatrixByAngleAndAmplitude(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<int> rows, IList<int> columns)
-        {
-            var nodeCount = admittances.RowCount;
-            var changeMatrix = new DenseMatrix(nodeCount * 2, nodeCount * 2);
-
-            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0, 0, rows, columns);
-            CalculateChangeMatrixRealPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, 0, nodeCount, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, nodeCount, 0, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrix, admittances, voltages, constantCurrents, nodeCount, nodeCount, rows, columns);
-
-            return changeMatrix;
-        }
-
-        public static Matrix<double> CalculateChangeMatrixByRealAndImaginaryPart(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<int> rows, IList<int> columns)
-        {
-            var loadCurrents = admittances*voltages;
-            var totalCurrents = loadCurrents - constantCurrents;
-            var changeMatrix = new DenseMatrix(voltages.Count * 2, voltages.Count * 2);
-
-            var nodeCount = admittances.RowCount;
-            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, rows, columns);
-            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, nodeCount, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
-                admittances, voltages, totalCurrents, nodeCount, 0, rows, columns);
-            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
-                admittances, voltages, totalCurrents, nodeCount, nodeCount, rows, columns);
-
-            return changeMatrix;
         }
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, Matrix<Complex> admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
