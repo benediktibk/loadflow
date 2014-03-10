@@ -192,7 +192,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBus_CorrectResults()
         {
-            var nodes = CreateTestTwoNodesWithImaginaryConnectionAndPVBus();
+            var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBus();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -209,6 +209,17 @@ namespace LoadFlowCalculationTest
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 10);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.01, 0.1);
         }
     }
 }

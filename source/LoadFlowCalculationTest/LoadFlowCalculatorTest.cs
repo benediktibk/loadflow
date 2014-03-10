@@ -423,13 +423,32 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionAndPVBus()
+        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPVBus()
         {
             CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
             nodes[1].RealPower = _powers.At(1).Real;
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo()
+        {
+            CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo()
+        {
+            CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
             return nodes;
         }
         #endregion
@@ -463,6 +482,21 @@ namespace LoadFlowCalculationTest
             var voltageDifference = 1 - outputVoltage.Real;
             var inputPower = new Complex(0, 1 + voltageDifference * voltageDifference * Y);
             var outputPower = new Complex(0, -1);
+            voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
+            powers = new DenseVector(new[] { inputPower, outputPower });
+            nominalVoltage = 1;
+        }
+
+        protected static void CreateOneSideSuppliedImaginaryConnectionVersionTwo(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        {
+            var X = new Complex(0, 0.02);
+            var admittancesArray = new[,] { { 1/X, -1/X }, { -1/X, 1/X } };
+            admittances = DenseMatrix.OfArray(admittancesArray);
+
+            var inputVoltage = Complex.FromPolarCoordinates(1.05, 0);
+            var outputVoltage = Complex.FromPolarCoordinates(1.02, -1.07*Math.PI/180);
+            var inputPower = Complex.FromPolarCoordinates(1.873527316, 57.74103245*Math.PI/180);
+            var outputPower = Complex.FromPolarCoordinates(1.819997964, -123.3289676*Math.PI/180);
             voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
             powers = new DenseVector(new[] { inputPower, outputPower });
             nominalVoltage = 1;
