@@ -48,6 +48,7 @@ namespace LoadFlowCalculation
                 var index = mappingPVBusToIndex[bus];
                 improvedVoltages[bus] = new Complex(pvBusVoltages[index], voltages[bus].Phase + voltageChangesAngle[index]);
             }
+
             return improvedVoltages;
         }
 
