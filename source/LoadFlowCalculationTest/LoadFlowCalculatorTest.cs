@@ -356,7 +356,7 @@ namespace LoadFlowCalculationTest
         #endregion
 
         #region from one side supplied connection
-         protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithBigResistance()
+        protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithBigResistance()
         {
             CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
@@ -365,7 +365,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithSmallResistance()
+        protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithSmallResistance()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
@@ -374,7 +374,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown()
+        protected IList<Node> CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
@@ -383,7 +383,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestFromOneSideSuppliedAndInverseInformationGiven()
+        protected IList<Node> CreateTestFromOneSideSuppliedAndInverseInformationGiven()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
@@ -392,13 +392,22 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestTwoNodeProblemWithOnePVBus()
+        protected IList<Node> CreateTestTwoNodeProblemWithOnePVBus()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
             nodes[1].RealPower = _powers.At(1).Real;
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestTwoNodesWithImaginaryConnection()
+        {
+            CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
             return nodes;
         }
         #endregion
@@ -418,6 +427,22 @@ namespace LoadFlowCalculationTest
             var outputPower = new Complex(-1, 0);
             voltages = new DenseVector(new []{inputVoltage, outputVoltage});
             powers = new DenseVector(new []{inputPower, outputPower});
+            nominalVoltage = 1;
+        }
+        
+        protected static void CreateOneSideSuppliedImaginaryConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        {
+            const double Y = 1000;
+            var admittancesArray = new[,] { { new Complex(0, (-1) * Y), new Complex(0, Y) }, { new Complex(0, Y), new Complex(0, (-1) * Y) } };
+            admittances = DenseMatrix.OfArray(admittancesArray);
+
+            var inputVoltage = new Complex(1, 0);
+            var outputVoltage = new Complex((0.5 + Math.Sqrt(0.25 - 1/Y)), 0);
+            var voltageDifference = 1 - outputVoltage.Real;
+            var inputPower = new Complex(0, 1 + voltageDifference * voltageDifference * Y);
+            var outputPower = new Complex(0, -1);
+            voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
+            powers = new DenseVector(new[] { inputPower, outputPower });
             nominalVoltage = 1;
         }
 
