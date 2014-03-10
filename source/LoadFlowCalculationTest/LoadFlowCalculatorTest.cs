@@ -410,6 +410,16 @@ namespace LoadFlowCalculationTest
             nodes[1].Power = _powers.At(1);
             return nodes;
         }
+
+        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionAndPVBus()
+        {
+            CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            return nodes;
+        }
         #endregion
         #endregion
 
