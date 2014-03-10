@@ -278,7 +278,19 @@ namespace LoadFlowCalculationTest
         #endregion
 
         #region three nodes
-         protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
+
+        protected IList<Node> CreateTestThreeNodeSystemWithImaginaryConnectionsAndONePVBus()
+        {
+            CreateThreeNodeProblemWithImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Power = _powers.At(0);
+            nodes[1].Voltage = _voltages.At(1);
+            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
+            nodes[2].RealPower = _powers.At(2).Real;
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
@@ -288,7 +300,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGiven()
+        protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGiven()
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
@@ -298,7 +310,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestThreeNodeProblemWithMostlyImaginaryConnections()
+        protected IList<Node> CreateTestThreeNodeProblemWithMostlyImaginaryConnections()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
@@ -309,7 +321,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus()
+        protected IList<Node> CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
@@ -321,7 +333,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-         protected IList<Node> CreateTestThreeNodeProblemWithTwoPVBuses()
+        protected IList<Node> CreateTestThreeNodeProblemWithTwoPVBuses()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
@@ -552,6 +564,18 @@ namespace LoadFlowCalculationTest
                 }
             });
         }
+
+        protected static void CreateThreeNodeProblemWithImaginaryConnections(out Matrix<Complex> admittances,
+            out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        {
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(0, 500), new Complex(0, 0), new Complex(0, -600));
+
+            voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0) });
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
+
 
         protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
