@@ -279,7 +279,7 @@ namespace LoadFlowCalculationTest
 
         #region three nodes
 
-        protected IList<Node> CreateTestThreeNodeSystemWithImaginaryConnectionsAndONePVBus()
+        protected IList<Node> CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus()
         {
             CreateThreeNodeProblemWithImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };

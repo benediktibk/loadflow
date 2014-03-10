@@ -292,7 +292,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
         {
-            var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndONePVBus();
+            var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
