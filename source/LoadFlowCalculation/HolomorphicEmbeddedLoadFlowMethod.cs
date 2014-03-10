@@ -78,7 +78,7 @@ namespace LoadFlowCalculation
 
         public void CalculateNextCoefficientForVoltagePowerSeries(Vector<Complex> constantCurrents, ISolver<Complex> factorization, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
         {
-            var newCoefficient = CalculateNextCoefficient(_inverseCoefficients[_inverseCoefficients.Count - 1], factorization,
+            var newCoefficient = CalculateNextCoefficient(_inverseCoefficients[_inverseCoefficients.Count - 1], _coefficients[_coefficients.Count - 1], factorization,
                 pqBuses, pvBuses);
             _coefficients.Add(newCoefficient);
             var newInverseCoefficient = CalculateNextInverseCoefficient(_coefficients, _inverseCoefficients);
@@ -136,12 +136,12 @@ namespace LoadFlowCalculation
                 _voltagePowerSeries[i] = new PowerSeriesComplex(_maximumNumberOfCoefficients);
 
             var admittanceRowSum = CalculateAdmittanceRowSum(admittances);
-            var firstCoefficient = CalculateFirstCoefficient(factorization, admittanceRowSum, pqBuses, pvBuses);
+            var firstCoefficient = CalculateFirstCoefficient(factorization, admittanceRowSum, pqBuses, pvBuses, constantCurrents);
             Vector<Complex> firstInverseCoefficient = new DenseVector(nodeCount);
             firstCoefficient.DivideByThis(new Complex(1, 0), firstInverseCoefficient);
             _coefficients.Add(firstCoefficient);
             _inverseCoefficients.Add(firstInverseCoefficient);
-            var secondCoefficient = CalculateSecondCoefficient(firstInverseCoefficient, factorization,
+            var secondCoefficient = CalculateSecondCoefficient(firstInverseCoefficient, firstCoefficient, factorization,
                 constantCurrents, admittanceRowSum, pqBuses, pvBuses);
             _coefficients.Add(secondCoefficient);
             var secondInverseCoefficient = CalculateNextInverseCoefficient(_coefficients, _inverseCoefficients);
@@ -159,39 +159,62 @@ namespace LoadFlowCalculation
             return rowSum;
         }
 
-        private static Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, IList<Complex> admittanceRowSum, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
+        private static Vector<Complex> CalculateFirstCoefficient(ISolver<Complex> factorization, IList<Complex> admittanceRowSum, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses, IList<Complex> constantCurrents)
         {
             var rightHandSide = new DenseVector(pqBuses.Count + pvBuses.Count);
 
             foreach (var bus in pqBuses)
                 rightHandSide[bus.ID] = admittanceRowSum[bus.ID]*(-1);
 
+            foreach (var bus in pvBuses)
+                rightHandSide[bus.ID] = admittanceRowSum[bus.ID] + constantCurrents[bus.ID];
+
             return factorization.Solve(rightHandSide);
         }
 
-        private static Vector<Complex> CalculateSecondCoefficient(IList<Complex> previousInverseCoefficient,
+        private static Vector<Complex> CalculateSecondCoefficient(IList<Complex> previousInverseCoefficients, IList<Complex> previousCoefficients,
             ISolver<Complex> factorization, IList<Complex> constantCurrents,
-            IList<Complex> admittanceRowSum, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
+            IList<Complex> admittanceRowSums, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
         {
             var rightHandSide = new DenseVector(pqBuses.Count + pvBuses.Count);
 
             foreach (var bus in pqBuses)
             {
-                var ownCurrent = bus.Power*previousInverseCoefficient[bus.ID];
+                var ownCurrent = bus.Power*previousInverseCoefficients[bus.ID];
                 var constantCurrent = constantCurrents[bus.ID];
                 var totalCurrent = ownCurrent.Conjugate() + constantCurrent;
-                rightHandSide[bus.ID] = admittanceRowSum[bus.ID] + totalCurrent;
+                rightHandSide[bus.ID] = admittanceRowSums[bus.ID] + totalCurrent;
+            }
+
+            foreach (var bus in pvBuses)
+            {
+                var power = bus.RealPower;
+                var previousCoefficient = previousCoefficients[bus.ID];
+                var previousInverseCoefficient = previousInverseCoefficients[bus.ID];
+                var admittanceRowSum = admittanceRowSums[bus.ID];
+                var magnitudeSquare = bus.VoltageMagnitude*bus.VoltageMagnitude;
+                rightHandSide[bus.ID] = (2*power*previousCoefficient - previousInverseCoefficient)/magnitudeSquare -
+                                        admittanceRowSum;
             }
 
             return factorization.Solve(rightHandSide);
         }
 
-        private static Vector<Complex> CalculateNextCoefficient(IList<Complex> previousInverseCoefficient, ISolver<Complex> factorization, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
+        private static Vector<Complex> CalculateNextCoefficient(IList<Complex> previousInverseCoefficients, IList<Complex> previousCoefficients, ISolver<Complex> factorization, ICollection<PQBus> pqBuses, ICollection<PVBus> pvBuses)
         {
             var rightHandSide = new DenseVector(pqBuses.Count + pvBuses.Count);
 
             foreach (var bus in pqBuses)
-                rightHandSide[bus.ID] = (bus.Power*previousInverseCoefficient[bus.ID]).Conjugate();
+                rightHandSide[bus.ID] = (bus.Power * previousInverseCoefficients[bus.ID]).Conjugate();
+
+            foreach (var bus in pvBuses)
+            {
+                var power = bus.RealPower;
+                var previousCoefficient = previousCoefficients[bus.ID];
+                var previousInverseCoefficient = previousInverseCoefficients[bus.ID];
+                var magnitudeSquare = bus.VoltageMagnitude * bus.VoltageMagnitude;
+                rightHandSide[bus.ID] = (2 * power * previousCoefficient - previousInverseCoefficient) / magnitudeSquare;
+            }
 
             return factorization.Solve(rightHandSide);
         }
