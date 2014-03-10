@@ -432,7 +432,7 @@ namespace LoadFlowCalculationTest
         
         protected static void CreateOneSideSuppliedImaginaryConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
-            const double Y = 1000;
+            const double Y = 100;
             var admittancesArray = new[,] { { new Complex(0, (-1) * Y), new Complex(0, Y) }, { new Complex(0, Y), new Complex(0, (-1) * Y) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
 
