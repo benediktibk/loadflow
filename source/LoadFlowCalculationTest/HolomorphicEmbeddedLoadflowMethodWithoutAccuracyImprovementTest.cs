@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using LoadFlowCalculation;
-using MathNet.Numerics.LinearAlgebra.Complex;
+﻿using LoadFlowCalculation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestHelper;
 
 namespace LoadFlowCalculationTest
 {
