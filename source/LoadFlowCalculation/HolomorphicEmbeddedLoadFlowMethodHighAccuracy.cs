@@ -31,7 +31,7 @@ namespace LoadFlowCalculation
             throw new NotImplementedException();
         }
 
-        [DllImport("C:\\Users\\benediktibk\\Entwicklung\\LoadFlow\\dev\\source\\Debug\\LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int CreateLoadFlowCalculator(double targetPrecision, int numberOfCoefficients);
     }
 }
