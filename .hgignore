@@ -3,6 +3,8 @@ source/*/bin/**
 source/*/obj/**
 source/packages/**
 source/TestResults/**
+source/Debug/**
+source/*/Debug/**
 documents/~$*.xlsx
 *.sln.DotSettings.user
 *.suo
