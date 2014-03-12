@@ -1,6 +1,8 @@
 #include "CalculatorRegister.h"
 #include "ConsoleOutput.h"
 
+using namespace std;
+
 CalculatorRegister calculatorRegister;
 ConsoleOutput consoleOutput = 0;
 
@@ -14,44 +16,24 @@ extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calcu
 	calculatorRegister.remove(calculator);
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetAdmittanceReal(int calculator, int row, int column, double value)
+extern "C" __declspec(dllexport) void __cdecl SetAdmittance(int calculator, int row, int column, double real, double imaginary)
 {
-	calculatorRegister.get(calculator)->setAdmittanceReal(row, column, value);
+	calculatorRegister.get(calculator)->setAdmittance(row, column, complex<double>(real, imaginary));
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetAdmittanceImaginary(int calculator, int row, int column, double value)
+extern "C" __declspec(dllexport) void __cdecl SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary)
 {
-	calculatorRegister.get(calculator)->setAdmittanceImaginary(row, column, value);
+	calculatorRegister.get(calculator)->setPQBus(busId, node, complex<double>(powerReal, powerImaginary));
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetPQBusPowerReal(int calculator, int busId, int node, double value)
+extern "C" __declspec(dllexport) void __cdecl SetPVBus(int calculator, int busId, int node, double powerReal, double voltageMagnitude)
 {
-	calculatorRegister.get(calculator)->setPQBusPowerReal(busId, node, value);
+	calculatorRegister.get(calculator)->setPVBus(busId, node, powerReal, voltageMagnitude);
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetPQBusPowerImaginary(int calculator, int busId, int node, double value)
+extern "C" __declspec(dllexport) void __cdecl SetConstantCurrent(int calculator, int node, double real, double imaginary)
 {
-	calculatorRegister.get(calculator)->setPQBusPowerImaginary(busId, node, value);
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetPVBusPowerReal(int calculator, int busId, int node, double value)
-{
-	calculatorRegister.get(calculator)->setPVBusPowerReal(busId, node, value);
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetPVBusVoltageMagnitude(int calculator, int busId, int node, double value)
-{
-	calculatorRegister.get(calculator)->setPVBusVoltageMagnitude(busId, node, value);
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetConstantCurrentReal(int calculator, int node, double value)
-{
-	calculatorRegister.get(calculator)->setConstantCurrentReal(node, value);
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetConstantCurrentImaginary(int calculator, int node, double value)
-{
-	calculatorRegister.get(calculator)->setConstantCurrentImaginary(node, value);
+	calculatorRegister.get(calculator)->setConstantCurrent(node, complex<double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl Calculate(int calculator)

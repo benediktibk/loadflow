@@ -1,51 +1,38 @@
 #include "Calculator.h"
 
+using namespace std;
+
 Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
 	_targetPrecision(targetPrecision),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
-	_pvBusCount(pvBusCount)
+	_pvBusCount(pvBusCount),
+	_admittances(nodeCount, nodeCount),
+	_constantCurrents(nodeCount, complex<double>(0, 0)),
+	_pqBuses(pqBusCount, PQBus()),
+	_pvBuses(pvBusCount, PVBus()),
+	_voltages(nodeCount, complex<double>(0, 0))
 { }
 
-void Calculator::setAdmittanceReal(int row, int column, double value)
+void Calculator::setAdmittance(int row, int column, complex<double> value)
 {
-
+	_admittances(row, column) = value;
 }
 
-void Calculator::setAdmittanceImaginary(int row, int column, double value)
+void Calculator::setPQBus(int busId, int node, complex<double> power)
 {
-
+	_pqBuses[busId] = PQBus(node, power);
 }
 
-void Calculator::setPQBusPowerReal(int busId, int node, double value)
+void Calculator::setPVBus(int busId, int node, double powerReal, double voltageMagnitude)
 {
-
+	_pvBuses[busId] = PVBus(node, powerReal, voltageMagnitude);
 }
 
-void Calculator::setPQBusPowerImaginary(int busId, int node, double value)
+void Calculator::setConstantCurrent(int node, complex<double> value)
 {
-
-}
-
-void Calculator::setPVBusPowerReal(int busId, int node, double value)
-{
-
-}
-
-void Calculator::setPVBusVoltageMagnitude(int busId, int node, double value)
-{
-
-}
-
-void Calculator::setConstantCurrentReal(int node, double value)
-{
-
-}
-
-void Calculator::setConstantCurrentImaginary(int node, double value)
-{
-
+	_constantCurrents[node] = value;
 }
 
 void Calculator::calculate()
@@ -55,10 +42,10 @@ void Calculator::calculate()
 
 double Calculator::getVoltageReal(int node) const
 {
-	return 0;
+	return _voltages[node].real();
 }
 
 double Calculator::getVoltageImaginary(int node) const
 {
-	return 0;
+	return _voltages[node].imag();
 }

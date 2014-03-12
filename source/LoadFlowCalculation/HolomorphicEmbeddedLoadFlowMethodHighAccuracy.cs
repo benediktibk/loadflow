@@ -50,30 +50,17 @@ namespace LoadFlowCalculation
                     if (admittance == new Complex()) 
                         continue;
 
-                    SetAdmittanceReal(calculator, row, column, admittance.Real);
-                    SetAdmittanceImaginary(calculator, row, column, admittance.Imaginary);
+                    SetAdmittance(calculator, row, column, admittance.Real, admittance.Imaginary);
                 }
 
             for (var i = 0; i < nodeCount; ++i)
-            {
-                var current = constantCurrents[i];
-                SetConstantCurrentReal(calculator, i, current.Real);
-                SetConstantCurrentImaginary(calculator, i, current.Imaginary);
-            }
+                SetConstantCurrent(calculator, i, constantCurrents[i].Real, constantCurrents[i].Imaginary);
 
             for (var i = 0; i < pqBuses.Count; ++i)
-            {
-                var bus = pqBuses[i];
-                SetPQBusPowerReal(calculator, i, bus.ID, bus.Power.Real);
-                SetPQBusPowerImaginary(calculator, i, bus.ID, bus.Power.Imaginary);
-            }
+                SetPQBus(calculator, i, pqBuses[i].ID, pqBuses[i].Power.Real, pqBuses[i].Power.Imaginary);
 
             for (var i = 0; i < pvBuses.Count; ++i)
-            {
-                var bus = pvBuses[i];
-                SetPVBusPowerReal(calculator, i, bus.ID, bus.RealPower);
-                SetPVBusVoltageMagnitude(calculator, i, bus.ID, bus.VoltageMagnitude);
-            }
+                SetPVBus(calculator, i, pvBuses[i].ID, pvBuses[i].RealPower, pvBuses[i].VoltageMagnitude);
 
             Calculate(calculator);
 
@@ -99,28 +86,16 @@ namespace LoadFlowCalculation
         private static extern void DeleteLoadFlowCalculator(int calculator);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetAdmittanceReal(int calculator, int row, int column, double value);
+        private static extern void SetAdmittance(int calculator, int row, int column, double real, double imaginary);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetAdmittanceImaginary(int calculator, int row, int column, double value);
+        private static extern void SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetPQBusPowerReal(int calculator, int busId, int node, double value);
+        private static extern void SetPVBus(int calculator, int busId, int node, double powerReal, double voltageMagnitude);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetPQBusPowerImaginary(int calculator, int busId, int node, double value);
-
-        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetPVBusPowerReal(int calculator, int busId, int node, double value);
-
-        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetPVBusVoltageMagnitude(int calculator, int busId, int node, double value);
-
-        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetConstantCurrentReal(int calculator, int node, double value);
-
-        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void SetConstantCurrentImaginary(int calculator, int node, double value);
+        private static extern void SetConstantCurrent(int calculator, int node, double real, double imaginary);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void Calculate(int calculator);

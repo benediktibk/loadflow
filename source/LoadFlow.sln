@@ -2,6 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculation", "LoadFlowCalculation\LoadFlowCalculation.csproj", "{D019F54A-FB70-4BBC-AB53-102C78E54880}"
+	ProjectSection(ProjectDependencies) = postProject
+		{484F301D-5A80-460C-8267-189C879A2FEA} = {484F301D-5A80-460C-8267-189C879A2FEA}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculationTest", "LoadFlowCalculationTest\LoadFlowCalculationTest.csproj", "{EE5F94A4-9582-4DCA-93C2-8ADA4635D824}"
 EndProject
