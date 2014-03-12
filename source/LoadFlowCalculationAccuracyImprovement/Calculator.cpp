@@ -1,6 +1,9 @@
 #include "Calculator.h"
+#include <boost/numeric/ublas/lu.hpp>
 
 using namespace std;
+using namespace boost::numeric;
+using namespace boost::numeric::ublas;
 
 Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
 	_targetPrecision(targetPrecision),
@@ -14,7 +17,12 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount, complex<double>(0, 0)),
 	_consoleOutput(0)
-{ }
+{ 
+	assert(numberOfCoefficients > 0);
+	assert(nodeCount > 0);
+	assert(pqBusCount >= 0);
+	assert(pvBusCount >= 0);
+}
 
 void Calculator::setAdmittance(int row, int column, complex<double> value)
 {
@@ -37,8 +45,24 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 }
 
 void Calculator::calculate()
-{
-	writeLine("calculating");
+{            
+	InitializeAdmittanceFactorization();
+	ublas::vector< complex<double> > rightHandSide(_nodeCount);
+
+	for (size_t i = 0; i < _nodeCount; ++i)
+		rightHandSide(i) = _constantCurrents[i];
+
+	for (size_t i = 0; i < _pqBusCount; ++i)
+	{
+		const PQBus &bus = _pqBuses[i];
+		const complex<double> &power = bus.getPower();
+		rightHandSide(bus.getId()) += complex<double>(power.real(), (-1)*power.imag());
+	}
+
+	ublas::vector< complex<double> > result = solveAdmittanceEquationSystem(rightHandSide);
+
+	for (size_t i = 0; i < _nodeCount; ++i)
+		_voltages[i] = result(i);
 }
 
 double Calculator::getVoltageReal(int node) const
@@ -60,4 +84,30 @@ void Calculator::writeLine(const char *text)
 {
 	if (_consoleOutput != 0)
 		_consoleOutput(text);
+}
+
+void Calculator::InitializeAdmittanceFactorization()
+{	
+	typedef permutation_matrix<std::size_t> pmatrix;
+
+	// create a working copy of the input
+	matrix< complex<double> > admittances(_admittances);
+
+	// create a permutation matrix for the LU-factorization
+	pmatrix permutationMatrix(admittances.size1());
+
+	// perform LU-factorization
+	int result = lu_factorize(admittances, permutationMatrix);
+	assert(result == 0);
+
+	// create identity matrix of "inverse"
+	_admittancesInverse.assign(identity_matrix< complex<double> > (permutationMatrix.size()));
+
+	// backsubstitute to get the inverse
+	lu_substitute(admittances, permutationMatrix, _admittancesInverse);
+}
+
+ublas::vector< complex<double> > Calculator::solveAdmittanceEquationSystem(const ublas::vector< complex<double> > &rightHandSide)
+{
+	return prod(_admittancesInverse, rightHandSide);
 }

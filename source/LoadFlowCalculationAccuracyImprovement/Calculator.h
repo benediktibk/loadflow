@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <complex>
-#include <boost\numeric\ublas\matrix_sparse.hpp>
+#include <boost\numeric\ublas\matrix.hpp>
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
@@ -23,14 +23,17 @@ public:
 
 private:
 	void writeLine(const char *text);
+	void InitializeAdmittanceFactorization();
+	boost::numeric::ublas::vector< std::complex<double> > solveAdmittanceEquationSystem(const boost::numeric::ublas::vector< std::complex<double> > &rightHandSide);
 
 private:
 	const double _targetPrecision;
 	const int _numberOfCoefficients;
-	const int _nodeCount;
-	const int _pqBusCount;
-	const int _pvBusCount;
-	boost::numeric::ublas::mapped_matrix< std::complex<double> > _admittances;
+	const size_t _nodeCount;
+	const size_t _pqBusCount;
+	const size_t _pvBusCount;
+	boost::numeric::ublas::matrix< std::complex<double> > _admittances;
+	boost::numeric::ublas::matrix< std::complex<double> > _admittancesInverse;
 	std::vector< std::complex<double> > _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
