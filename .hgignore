@@ -6,5 +6,5 @@ source/TestResults/**
 source/Debug/**
 source/*/Debug/**
 documents/~$*.xlsx
-*.sln.DotSettings.user
+*.user
 *.suo
