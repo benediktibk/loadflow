@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -9,12 +10,11 @@ namespace LoadFlowCalculation
 {
     public class HolomorphicEmbeddedLoadFlowMethodHighAccuracy : LoadFlowCalculator
     {
-        private readonly double _targetPrecision;
-        private readonly int _numberOfCoefficients;
-
         private delegate void StringCallback(string text);
 
-        private StringCallback _stringCallback;
+        private readonly double _targetPrecision;
+        private readonly int _numberOfCoefficients;
+        private readonly StringCallback _stringCallback;
 
         public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients)
             : base(targetPrecision * 10000)
@@ -27,17 +27,22 @@ namespace LoadFlowCalculation
 
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
-            _stringCallback = Console.WriteLine;
+            _stringCallback += DebugOutput;
+        }
+
+        private void DebugOutput(string text)
+        {
+            Debug.WriteLine(text);
         }
 
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses,
             IList<PVBus> pvBuses)
         {
-            SetConsoleOutput(_stringCallback);
-
             var nodeCount = admittances.RowCount;
             var calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage / 10, _numberOfCoefficients, nodeCount,
                 pqBuses.Count, pvBuses.Count);
+
+            SetConsoleOutput(calculator, _stringCallback);
 
             if (calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
@@ -107,7 +112,7 @@ namespace LoadFlowCalculation
         private static extern double GetVoltageImaginary(int calculator, int node);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern double SetConsoleOutput(StringCallback function);
+        private static extern double SetConsoleOutput(int calculator, StringCallback function);
         #endregion
     }
 }

@@ -4,7 +4,6 @@
 using namespace std;
 
 CalculatorRegister calculatorRegister;
-ConsoleOutput consoleOutput = 0;
 
 extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
 {
@@ -51,13 +50,7 @@ extern "C" __declspec(dllexport) double __cdecl GetVoltageImaginary(int calculat
 	return calculatorRegister.get(calculator)->getVoltageImaginary(node);
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetConsoleOutput(ConsoleOutput function)
+extern "C" __declspec(dllexport) void __cdecl SetConsoleOutput(int calculator, ConsoleOutput function)
 {
-	consoleOutput = function;
-}
-
-void WriteLine(const char * text)
-{
-	if (consoleOutput != 0)
-		consoleOutput(text);
+	return calculatorRegister.get(calculator)->setConsoleOutput(function);
 }

@@ -1,5 +1,3 @@
 #pragma once
 
-typedef void (__cdecl * ConsoleOutput)(const char* text);
-
-void WriteLine(const char * text);
+typedef void (__stdcall * ConsoleOutput)(const char* text);

@@ -5,6 +5,7 @@
 #include <boost\numeric\ublas\matrix_sparse.hpp>
 #include "PQBus.h"
 #include "PVBus.h"
+#include "ConsoleOutput.h"
 
 class Calculator
 {
@@ -18,6 +19,10 @@ public:
 	void calculate();
 	double getVoltageReal(int node) const;
 	double getVoltageImaginary(int node) const;
+	void setConsoleOutput(ConsoleOutput function);
+
+private:
+	void writeLine(const char *text);
 
 private:
 	const double _targetPrecision;
@@ -30,5 +35,6 @@ private:
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;
+	ConsoleOutput _consoleOutput;
 };
 
