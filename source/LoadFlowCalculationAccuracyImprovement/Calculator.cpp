@@ -1,5 +1,6 @@
 #include "Calculator.h"
-#include <boost/numeric/ublas/lu.hpp>
+#include <boost/numeric/ublas/triangular.hpp>
+#include <sstream>
 
 using namespace std;
 using namespace boost::numeric;
@@ -12,6 +13,8 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_admittances(nodeCount, nodeCount),
+	_admittancesQ(nodeCount, nodeCount),
+	_admittancesR(nodeCount, nodeCount),
 	_constantCurrents(nodeCount, complex<double>(0, 0)),
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
@@ -27,6 +30,16 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 void Calculator::setAdmittance(int row, int column, complex<double> value)
 {
 	_admittances(row, column) = value;
+}
+
+void Calculator::setAdmittanceQ(int row, int column, complex<double> value)
+{
+	_admittancesQ(row, column) = value;
+}
+
+void Calculator::setAdmittanceR(int row, int column, complex<double> value)
+{
+	_admittancesR(row, column) = value;
 }
 
 void Calculator::setPQBus(int busId, int node, complex<double> power)
@@ -46,7 +59,6 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
-	InitializeAdmittanceFactorization();
 	ublas::vector< complex<double> > rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _nodeCount; ++i)
@@ -80,34 +92,34 @@ void Calculator::setConsoleOutput(ConsoleOutput function)
 	_consoleOutput = function;
 }
 
+void Calculator::writeLine(const matrix< complex<double> > &matrix)
+{
+	stringstream stream;
+	
+	for (size_t i = 0; i < matrix.size1(); ++i)
+	{
+		for (size_t j = 0; j < matrix.size2(); ++j)
+			stream << matrix(i, j) << " - ";
+
+		stream << "/";
+	}
+
+	writeLine(stream.str());
+}
+
+void Calculator::writeLine(const string &text)
+{
+	writeLine(text.c_str());
+}
+
 void Calculator::writeLine(const char *text)
 {
 	if (_consoleOutput != 0)
 		_consoleOutput(text);
 }
 
-void Calculator::InitializeAdmittanceFactorization()
-{	
-	typedef permutation_matrix<std::size_t> pmatrix;
-
-	// create a working copy of the input
-	matrix< complex<double> > admittances(_admittances);
-
-	// create a permutation matrix for the LU-factorization
-	pmatrix permutationMatrix(admittances.size1());
-
-	// perform LU-factorization
-	int result = lu_factorize(admittances, permutationMatrix);
-	assert(result == 0);
-
-	// create identity matrix of "inverse"
-	_admittancesInverse.assign(identity_matrix< complex<double> > (permutationMatrix.size()));
-
-	// backsubstitute to get the inverse
-	lu_substitute(admittances, permutationMatrix, _admittancesInverse);
-}
-
 ublas::vector< complex<double> > Calculator::solveAdmittanceEquationSystem(const ublas::vector< complex<double> > &rightHandSide)
 {
-	return prod(_admittancesInverse, rightHandSide);
+	ublas::vector< complex<double> > rightHandSideWithQ = prod(_admittancesQ, rightHandSide);
+	return solve(_admittancesR, rightHandSideWithQ, upper_tag());
 }
