@@ -25,14 +25,29 @@ public:
 	void setConsoleOutput(ConsoleOutput function);
 
 private:
+	void writeLine(const char *text, size_t argument);
 	void writeLine(const boost::numeric::ublas::matrix< std::complex<double> > &matrix);
 	void writeLine(const std::string &text);
 	void writeLine(const char *text);
-	boost::numeric::ublas::vector< std::complex<double> > solveAdmittanceEquationSystem(const boost::numeric::ublas::vector< std::complex<double> > &rightHandSide);
+	std::vector< std::complex<double> > solveAdmittanceEquationSystem(const std::vector< std::complex<double> > &rightHandSide);
+	std::vector< std::complex<double> > calculateAdmittanceRowSum() const;
+	void calculateFirstCoefficient(const std::vector< std::complex<double> > &admittanceRowSum);
+	void calculateSecondCoefficient(const std::vector< std::complex<double> > &admittanceRowSum);
+	void calculateNextCoefficient();
+	void calculateNextInverseCoefficient();
+	void calculateVoltagesFromCoefficients();
+	std::complex<double> calculateVoltageFromCoefficients(const std::vector< std::complex<double> > &coefficients);
+
+private:
+	std::vector< std::complex<double> > pointwiseMultiply(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	std::vector< std::complex<double> > pointwiseDivide(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	std::vector< std::complex<double> > add(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	std::vector< std::complex<double> > multiply(const std::vector< std::complex<double> > &one, const std::complex<double> &two);
+	std::vector< std::complex<double> > divide(const std::complex<double> &one, const std::vector< std::complex<double> > &two);
 
 private:
 	const double _targetPrecision;
-	const int _numberOfCoefficients;
+	const size_t _numberOfCoefficients;
 	const size_t _nodeCount;
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
@@ -44,5 +59,7 @@ private:
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;
 	ConsoleOutput _consoleOutput;
+	std::vector< std::vector< std::complex<double> > > _coefficients;
+	std::vector< std::vector< std::complex<double> > > _inverseCoefficients;
 };
 
