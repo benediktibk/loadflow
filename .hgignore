@@ -8,3 +8,4 @@ source/*/Debug/**
 documents/~$*.xlsx
 *.user
 *.suo
+*.sdf
