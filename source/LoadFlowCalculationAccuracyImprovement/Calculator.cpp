@@ -380,3 +380,18 @@ std::vector< complex<double> > Calculator::divide(const complex<double> &one, co
 
 	return result;
 }
+
+const std::complex<double>& Calculator::getCoefficient(int step, int node) const
+{
+	return _coefficients[step][node];
+}
+
+const std::complex<double>& Calculator::getInverseCoefficient(int step, int node) const
+{
+	return _inverseCoefficients[step][node];
+}
+
+int Calculator::getNodeCount() const
+{
+	return _nodeCount;
+}

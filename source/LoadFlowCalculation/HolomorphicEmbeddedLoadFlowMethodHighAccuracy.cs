@@ -15,6 +15,7 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
         private readonly StringCallback _stringCallback;
+        private int _calculator;
 
         public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients)
             : base(targetPrecision * 10000)
@@ -28,9 +29,17 @@ namespace LoadFlowCalculation
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
             _stringCallback += DebugOutput;
+            _calculator = -1;
         }
 
-        private void DebugOutput(string text)
+        ~HolomorphicEmbeddedLoadFlowMethodHighAccuracy()
+        {
+            if (_calculator >= 0)
+                DeleteLoadFlowCalculator(_calculator);
+            _calculator = -1;
+        }
+
+        private static void DebugOutput(string text)
         {
             Debug.WriteLine(text);
         }
@@ -38,8 +47,11 @@ namespace LoadFlowCalculation
         public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses,
             IList<PVBus> pvBuses)
         {
+            if (_calculator >= 0)
+                DeleteLoadFlowCalculator(_calculator);
+
             var nodeCount = admittances.RowCount;
-            var calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage / 10, _numberOfCoefficients, nodeCount,
+            _calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage / 10, _numberOfCoefficients, nodeCount,
                 pqBuses.Count, pvBuses.Count);
             var factorization = admittances.QR();
             var Q = factorization.Q.ConjugateTranspose();
@@ -47,9 +59,9 @@ namespace LoadFlowCalculation
 
             for (var i = 0; i < nodeCount; ++i)
 
-            SetConsoleOutput(calculator, _stringCallback);
+            SetConsoleOutput(_calculator, _stringCallback);
 
-            if (calculator < 0)
+            if (_calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
 
             for (var row = 0; row < admittances.RowCount; ++row)
@@ -60,7 +72,7 @@ namespace LoadFlowCalculation
                     if (admittance == new Complex()) 
                         continue;
 
-                    SetAdmittance(calculator, row, column, admittance.Real, admittance.Imaginary);
+                    SetAdmittance(_calculator, row, column, admittance.Real, admittance.Imaginary);
                 }
 
             for (var row = 0; row < admittances.RowCount; ++row)
@@ -71,7 +83,7 @@ namespace LoadFlowCalculation
                     if (admittance == new Complex())
                         continue;
 
-                    SetAdmittanceQ(calculator, row, column, admittance.Real, admittance.Imaginary);
+                    SetAdmittanceQ(_calculator, row, column, admittance.Real, admittance.Imaginary);
                 }
 
             for (var row = 0; row < admittances.RowCount; ++row)
@@ -82,32 +94,56 @@ namespace LoadFlowCalculation
                     if (admittance == new Complex())
                         continue;
 
-                    SetAdmittanceR(calculator, row, column, admittance.Real, admittance.Imaginary);
+                    SetAdmittanceR(_calculator, row, column, admittance.Real, admittance.Imaginary);
                 }
 
             for (var i = 0; i < nodeCount; ++i)
-                SetConstantCurrent(calculator, i, constantCurrents[i].Real, constantCurrents[i].Imaginary);
+                SetConstantCurrent(_calculator, i, constantCurrents[i].Real, constantCurrents[i].Imaginary);
 
             for (var i = 0; i < pqBuses.Count; ++i)
-                SetPQBus(calculator, i, pqBuses[i].ID, pqBuses[i].Power.Real, pqBuses[i].Power.Imaginary);
+                SetPQBus(_calculator, i, pqBuses[i].ID, pqBuses[i].Power.Real, pqBuses[i].Power.Imaginary);
 
             for (var i = 0; i < pvBuses.Count; ++i)
-                SetPVBus(calculator, i, pvBuses[i].ID, pvBuses[i].RealPower, pvBuses[i].VoltageMagnitude);
+                SetPVBus(_calculator, i, pvBuses[i].ID, pvBuses[i].RealPower, pvBuses[i].VoltageMagnitude);
 
-            Calculate(calculator);
+            Calculate(_calculator);
 
             var voltages = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
             {
-                var real = GetVoltageReal(calculator, i);
-                var imaginary = GetVoltageImaginary(calculator, i);
+                var real = GetVoltageReal(_calculator, i);
+                var imaginary = GetVoltageImaginary(_calculator, i);
                 voltages[i] = new Complex(real, imaginary);
             }
 
-            DeleteLoadFlowCalculator(calculator);
-
             return voltages;
+        }
+
+        public Vector<Complex> GetCoefficients(int step)
+        {
+            Debug.Assert(_calculator >= 0);
+            var nodeCount = GetLastNodeCount(_calculator);
+            var result = new DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+                result[i] = new Complex(GetCoefficientReal(_calculator, step, i),
+                    GetCoefficientImaginary(_calculator, step, i));
+
+            return result;
+        }
+
+        public Vector<Complex> GetInverseCoefficients(int step)
+        {
+            Debug.Assert(_calculator >= 0);
+            var nodeCount = GetLastNodeCount(_calculator);
+            var result = new DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+                result[i] = new Complex(GetInverseCoefficientReal(_calculator, step, i),
+                    GetInverseCoefficientImaginary(_calculator, step, i));
+
+            return result;
         }
 
         #region dll imports
@@ -146,6 +182,21 @@ namespace LoadFlowCalculation
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern double SetConsoleOutput(int calculator, StringCallback function);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern double GetCoefficientReal(int calculator, int step, int node);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern double GetCoefficientImaginary(int calculator, int step, int node);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern double GetInverseCoefficientReal(int calculator, int step, int node);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern double GetInverseCoefficientImaginary(int calculator, int step, int node);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetLastNodeCount(int calculator);
         #endregion
     }
 }

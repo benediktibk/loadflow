@@ -22,6 +22,9 @@ public:
 	void calculate();
 	double getVoltageReal(int node) const;
 	double getVoltageImaginary(int node) const;
+	const std::complex<double>& getCoefficient(int step, int node) const;
+	const std::complex<double>& getInverseCoefficient(int step, int node) const;
+	int getNodeCount() const;
 	void setConsoleOutput(ConsoleOutput function);
 
 private:
