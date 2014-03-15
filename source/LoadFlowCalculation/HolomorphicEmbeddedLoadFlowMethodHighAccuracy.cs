@@ -51,7 +51,7 @@ namespace LoadFlowCalculation
                 DeleteLoadFlowCalculator(_calculator);
 
             var nodeCount = admittances.RowCount;
-            _calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage / 10, _numberOfCoefficients, nodeCount,
+            _calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
                 pqBuses.Count, pvBuses.Count);
             var factorization = admittances.QR();
             var Q = factorization.Q.ConjugateTranspose();
