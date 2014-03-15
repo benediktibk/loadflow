@@ -66,15 +66,24 @@ namespace AnalyticContinuationTest
         }
 
         [TestMethod]
-        public void Evaluate_VoltageSeriesFromHELM_CorrectResultWithLowAccuracy()
+        public void Evaluate_VoltageSeriesFromHELMVersionOne_CorrectResultWithLowAccuracy()
         {
-            ComplexAssert.AreEqual(1, -0.1, _continuationVoltage.EvaluateAt1(), 0.1);
+            ComplexAssert.AreEqual(1, -0.1, _continuationVoltageVersionOne.EvaluateAt1(), 0.1);
+        }
+
+        [TestMethod]
+        public void Evaluate_VoltageSeriesFromHELMVersionTwo_CorrectResult()
+        {
+            var powerSeries = CreateHelmVoltageSeriesComplexVersionTwo();
+            var continuation = CreateAnalyticContinuation(powerSeries);
+
+            ComplexAssert.AreEqual(1.01982213936246, -0.0190474162595627, continuation.EvaluateAt1(), 0.0001);
         }
 
         [TestMethod]
         public void Evaluate_VoltageSeriesFromHELMInDecimalComplex_CorrectResultWithLowAccuracy()
         {
-            var powerSeries = CreateHelmVoltageSeriesDecimalComplex(32);
+            var powerSeries = CreateHelmVoltageSeriesDecimalComplexVersionOne(32);
             var continuation = new EpsilonAlgorithm<DecimalComplex>(powerSeries);
 
             var result = continuation.EvaluateAt1();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using AnalyticContinuation;
 using MathExtensions;
@@ -11,10 +12,10 @@ namespace AnalyticContinuationTest
     {
         protected PowerSeries<double> _powerSeriesExponential;
         protected PowerSeries<double> _powerSeriesSine;
-        protected PowerSeries<Complex> _powerSeriesVoltage;
+        protected PowerSeries<Complex> _powerSeriesVoltageVersionOne;
         protected IAnalyticContinuation<double> _continuationExponential;
         protected IAnalyticContinuation<double> _continuationSine;
-        protected IAnalyticContinuation<Complex> _continuationVoltage;
+        protected IAnalyticContinuation<Complex> _continuationVoltageVersionOne;
 
         protected abstract IAnalyticContinuation<double> CreateAnalyticContinuation(PowerSeries<double> powerSeries);
         protected abstract IAnalyticContinuation<Complex> CreateAnalyticContinuation(PowerSeries<Complex> powerSeries);
@@ -24,11 +25,10 @@ namespace AnalyticContinuationTest
         {
             _powerSeriesExponential = PowerSeriesDouble.CreateExponential(10, new CalculatorDouble());
             _powerSeriesSine = PowerSeriesDouble.CreateSine(10, new CalculatorDouble());
-            _powerSeriesVoltage = CreateHelmVoltageSeriesComplex(50);
+            _powerSeriesVoltageVersionOne = CreateHelmVoltageSeriesComplexVersionOne(50);
             _continuationExponential = CreateAnalyticContinuation(_powerSeriesExponential);
             _continuationSine = CreateAnalyticContinuation(_powerSeriesSine);
-            _continuationVoltage = CreateAnalyticContinuation(_powerSeriesVoltage);
-
+            _continuationVoltageVersionOne = CreateAnalyticContinuation(_powerSeriesVoltageVersionOne);
         }
 
         [TestMethod]
@@ -145,9 +145,9 @@ namespace AnalyticContinuationTest
             return powerSeries;
         }
 
-        public static PowerSeriesComplex CreateHelmVoltageSeriesComplex(int n)
+        public static PowerSeriesComplex CreateHelmVoltageSeriesComplexVersionOne(int n)
         {
-            var coefficients = CreateHelmVoltageSeriesCoefficients();
+            var coefficients = CreateHelmVoltageSeriesCoefficientsVersionOne();
 
             var series = new PowerSeriesComplex(n);
 
@@ -157,9 +157,9 @@ namespace AnalyticContinuationTest
             return series;
         }
 
-        public static PowerSeriesDecimalComplex CreateHelmVoltageSeriesDecimalComplex(int n)
+        public static PowerSeriesDecimalComplex CreateHelmVoltageSeriesDecimalComplexVersionOne(int n)
         {
-            var coefficients = CreateHelmVoltageSeriesCoefficients();
+            var coefficients = CreateHelmVoltageSeriesCoefficientsVersionOne();
 
             var series = new PowerSeriesDecimalComplex(n);
 
@@ -169,7 +169,20 @@ namespace AnalyticContinuationTest
             return series;
         }
 
-        private static Complex[] CreateHelmVoltageSeriesCoefficients()
+        public static PowerSeriesComplex CreateHelmVoltageSeriesComplexVersionTwo()
+        {
+            var coefficients = CreateHelmVoltageSeriesCoefficientsVersionTwo();
+
+            var n = coefficients.Count();
+            var series = new PowerSeriesComplex(n);
+
+            for (var i = 0; i < n; ++i)
+                series[i] = coefficients[i];
+
+            return series;
+        }
+
+        private static Complex[] CreateHelmVoltageSeriesCoefficientsVersionOne()
         {
             var coefficients = new[]
             {
@@ -223,6 +236,28 @@ namespace AnalyticContinuationTest
                 new Complex(1.23461757507178E+23, -2.63481304284825E+21),
                 new Complex(4.37382701455794E+23, -9.08448369839981E+21),
                 new Complex(1.55051048068301E+24, -3.13652011053964E+22),
+            };
+            return coefficients;
+        }
+
+        private static Complex[] CreateHelmVoltageSeriesCoefficientsVersionTwo()
+        {
+            var coefficients = new[]
+            {
+                new Complex(-1, 0),
+                new Complex(2.08041324631485, 0.0199997871033142),
+                new Complex(0.063672111981029, 0.0409995635617942),
+                new Complex(0.13604074589637, 0.0840491053016781),
+                new Complex(0.296255440996061, 0.17230066586844),
+                new Complex(0.656451743194087, 0.353216365030302),
+                new Complex(1.47721049494931, 0.72409354831212),
+                new Complex(3.36922630892791, 1.48439177403985),
+                new Complex(7.77415466876686, 3.04300313678168),
+                new Complex(18.1166948979226, 6.23815643040245),
+                new Complex(42.57694575212, 12.788220682325),
+                new Complex(100.788160092721, 26.2158523987663),
+                new Complex(240.076781143902, 53.7424974174709),
+                new Complex(574.972847500505, 110.172119705815)
             };
             return coefficients;
         }

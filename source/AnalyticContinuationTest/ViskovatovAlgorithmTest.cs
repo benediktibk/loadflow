@@ -36,7 +36,16 @@ namespace AnalyticContinuationTest
         [TestMethod]
         public void Evaluate_VoltageSeriesFromHELM_CorrectResultWithLowAccuracy()
         {
-            ComplexAssert.AreEqual(1, -0.1, _continuationVoltage.EvaluateAt1(), 0.4);
+            ComplexAssert.AreEqual(1, -0.1, _continuationVoltageVersionOne.EvaluateAt1(), 0.4);
+        }
+
+        [TestMethod]
+        public void Evaluate_VoltageSeriesFromHELMVersionTwo_CorrectResult()
+        {
+            var powerSeries = CreateHelmVoltageSeriesComplexVersionTwo();
+            var continuation = CreateAnalyticContinuation(powerSeries);
+
+            ComplexAssert.AreEqual(1.01982213936246, -0.0190474162595627, continuation.EvaluateAt1(), 0.0001);
         }
     }
 }
