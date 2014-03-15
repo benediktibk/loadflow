@@ -308,7 +308,7 @@ complex<double> Calculator::calculateVoltageFromCoefficients(const std::vector< 
 		currentEpsilon[i] = sum;
 	}
 
-	while(currentEpsilon.size() > 2)
+	while(currentEpsilon.size() > 1)
 	{
 		std::vector< complex<double> > nextEpsilon(currentEpsilon.size() - 1);
 
@@ -322,7 +322,7 @@ complex<double> Calculator::calculateVoltageFromCoefficients(const std::vector< 
 		currentEpsilon = nextEpsilon;
 	}
 
-	return coefficients.size() % 2 ? currentEpsilon.back() : previousEpsilon.back();
+	return coefficients.size() % 2 ? previousEpsilon.back() : currentEpsilon.back();
 }
 
 std::vector< complex<double> > Calculator::pointwiseMultiply(const std::vector< complex<double> > &one, const std::vector< complex<double> > &two)

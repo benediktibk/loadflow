@@ -63,6 +63,8 @@ namespace AnalyticContinuation
 
             do
             {
+                _epsilonNext = new List<T>(_epsilonCurrent.Count - 1);
+
                 for (var j = 0; j <= _epsilonCurrent.Count - 2; ++j)
                 {
                     var previousDifference = _calculator.Subtract(_epsilonCurrent[j + 1], _epsilonCurrent[j]);
@@ -72,12 +74,11 @@ namespace AnalyticContinuation
 
                 _epsilonPrevious = _epsilonCurrent;
                 _epsilonCurrent = _epsilonNext;
-                _epsilonNext = new List<T>(_epsilonCurrent.Count - 1);
-            } while (_epsilonCurrent.Count > 2);
+            } while (_epsilonCurrent.Count > 1);
 
             return n % 2 == 0
-                ? _epsilonCurrent[_epsilonCurrent.Count - 1]
-                : _epsilonPrevious[_epsilonPrevious.Count - 1];
+                ? _epsilonPrevious[_epsilonPrevious.Count - 1]
+                : _epsilonCurrent[_epsilonCurrent.Count - 1];
         }
 
         private void InitializeCurrentEpsilon(T x)
