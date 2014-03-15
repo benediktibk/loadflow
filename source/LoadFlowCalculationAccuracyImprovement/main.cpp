@@ -67,22 +67,22 @@ extern "C" __declspec(dllexport) void __cdecl SetConsoleOutput(int calculator, C
 
 extern "C" __declspec(dllexport) double __cdecl GetCoefficientReal(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getCoefficient(step, node).real();
+	return calculatorRegister.get(calculator)->getCoefficientReal(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetCoefficientImaginary(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getCoefficient(step, node).imag();
+	return calculatorRegister.get(calculator)->getCoefficientImaginary(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientReal(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getInverseCoefficient(step, node).real();
+	return calculatorRegister.get(calculator)->getInverseCoefficientReal(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientImaginary(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getInverseCoefficient(step, node).imag();
+	return calculatorRegister.get(calculator)->getInverseCoefficientImaginary(step, node);
 }
 
 extern "C" __declspec(dllexport) int __cdecl GetLastNodeCount(int calculator)
