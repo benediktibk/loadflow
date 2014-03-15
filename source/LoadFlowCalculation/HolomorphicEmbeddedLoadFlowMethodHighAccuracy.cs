@@ -18,7 +18,7 @@ namespace LoadFlowCalculation
         private int _calculator;
 
         public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients)
-            : base(targetPrecision * 10000)
+            : base(targetPrecision * 100000)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
