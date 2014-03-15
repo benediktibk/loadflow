@@ -61,7 +61,6 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
-	writeLine("calculating initial coefficients");
 	_coefficients.clear();
 	_inverseCoefficients.clear();
 	std::vector< complex<double> > admittanceRowSums = calculateAdmittanceRowSum();
@@ -69,17 +68,21 @@ void Calculator::calculate()
 	_inverseCoefficients.push_back(divide(complex<double>(1, 0), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
 	calculateNextInverseCoefficient();
+	bool precisionReached = false;
+	bool precisionReachedPrevious = false;
 	
-	writeLine("calculating coefficients");
-
-	while (_coefficients.size() < _numberOfCoefficients)
+	while (_coefficients.size() < _numberOfCoefficients && (!precisionReached || !precisionReachedPrevious))
 	{
 		calculateNextCoefficient();
 		calculateNextInverseCoefficient();
-	}
 
-	writeLine("calculating analytic continuation");
-	calculateVoltagesFromCoefficients();
+		std::vector< complex<double> > previousVoltages = _voltages;
+		calculateVoltagesFromCoefficients();
+		std::vector< complex<double> > voltageChange = subtract(previousVoltages, _voltages);
+		double maximumChange = findMaximumMagnitude(voltageChange);
+		precisionReachedPrevious = precisionReached;
+		precisionReached = maximumChange < _targetPrecision;
+	}
 }
 
 double Calculator::getVoltageReal(int node) const
@@ -286,7 +289,7 @@ void Calculator::calculateVoltagesFromCoefficients()
 {
 	for (size_t i = 0; i < _nodeCount; ++i)
 	{
-		std::vector< complex<double> > coefficients(_numberOfCoefficients);
+		std::vector< complex<double> > coefficients(_coefficients.size());
 
 		for (size_t j = 0; j < _coefficients.size(); ++j)
 			coefficients[j] = _coefficients[j][i];
@@ -297,16 +300,17 @@ void Calculator::calculateVoltagesFromCoefficients()
 
 complex<double> Calculator::calculateVoltageFromCoefficients(const std::vector< complex<double> > &coefficients)
 {
-	assert(coefficients.size() == _numberOfCoefficients);
-	std::vector< complex<double> > previousEpsilon(_numberOfCoefficients + 1, complex<double>(0, 0));
-	std::vector< complex<double> > currentEpsilon(_numberOfCoefficients, complex<double>(0, 0));
+	std::vector< complex<double> > previousEpsilon(coefficients.size() + 1, complex<double>(0, 0));
+	std::vector< complex<double> > currentEpsilon(coefficients.size(), complex<double>(0, 0));
 
 	complex<double> sum(0, 0);
-	for (size_t i = 0; i < _numberOfCoefficients; ++i)
+	for (size_t i = 0; i < coefficients.size(); ++i)
 	{
 		sum += coefficients[i];
 		currentEpsilon[i] = sum;
 	}
+
+	size_t initialCount = coefficients.size();
 
 	while(currentEpsilon.size() > 1)
 	{
@@ -322,7 +326,7 @@ complex<double> Calculator::calculateVoltageFromCoefficients(const std::vector< 
 		currentEpsilon = nextEpsilon;
 	}
 
-	return coefficients.size() % 2 ? previousEpsilon.back() : currentEpsilon.back();
+	return initialCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
 }
 
 std::vector< complex<double> > Calculator::pointwiseMultiply(const std::vector< complex<double> > &one, const std::vector< complex<double> > &two)
@@ -361,6 +365,18 @@ std::vector< complex<double> > Calculator::add(const std::vector< complex<double
 	return result;
 }
 
+std::vector< complex<double> > Calculator::subtract(const std::vector< complex<double> > &one, const std::vector< complex<double> > &two)
+{
+	assert(one.size() == two.size());
+	size_t n = one.size();
+	std::vector< complex<double> > result(n);
+
+	for (size_t i = 0; i < n; ++i)
+		result[i] = one[i] - two[i];
+	
+	return result;
+}
+
 std::vector< complex<double> > Calculator::multiply(const std::vector< complex<double> > &one, const complex<double> &two)
 {
 	std::vector< complex<double> > result(one);
@@ -377,6 +393,21 @@ std::vector< complex<double> > Calculator::divide(const complex<double> &one, co
 
 	for (size_t i = 0; i < result.size(); ++i)
 		result[i] = one/result[i];
+
+	return result;
+}
+
+double Calculator::findMaximumMagnitude(const std::vector< std::complex<double> > &values)
+{
+	assert(values.size() > 0);
+	double result = 0;
+
+	for (size_t i = 0; i < values.size(); ++i)
+	{
+		double magnitude = abs(values[i]);
+		if (magnitude > result)
+			result = magnitude;
+	}
 
 	return result;
 }

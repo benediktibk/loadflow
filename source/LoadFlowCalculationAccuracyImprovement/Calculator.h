@@ -42,11 +42,13 @@ private:
 	std::complex<double> calculateVoltageFromCoefficients(const std::vector< std::complex<double> > &coefficients);
 
 private:
-	std::vector< std::complex<double> > pointwiseMultiply(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
-	std::vector< std::complex<double> > pointwiseDivide(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
-	std::vector< std::complex<double> > add(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
-	std::vector< std::complex<double> > multiply(const std::vector< std::complex<double> > &one, const std::complex<double> &two);
-	std::vector< std::complex<double> > divide(const std::complex<double> &one, const std::vector< std::complex<double> > &two);
+	static std::vector< std::complex<double> > pointwiseMultiply(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	static std::vector< std::complex<double> > pointwiseDivide(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	static std::vector< std::complex<double> > add(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	static std::vector< std::complex<double> > subtract(const std::vector< std::complex<double> > &one, const std::vector< std::complex<double> > &two);
+	static std::vector< std::complex<double> > multiply(const std::vector< std::complex<double> > &one, const std::complex<double> &two);
+	static std::vector< std::complex<double> > divide(const std::complex<double> &one, const std::vector< std::complex<double> > &two);
+	static double findMaximumMagnitude(const std::vector< std::complex<double> > &values);
 
 private:
 	const double _targetPrecision;
