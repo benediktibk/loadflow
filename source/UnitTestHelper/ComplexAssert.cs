@@ -1,4 +1,5 @@
 ﻿using System;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 
@@ -19,6 +20,14 @@ namespace UnitTestHelper
         public static void AreEqual(double expectedReal, double expectedImaginary, Complex actual, double delta)
         {
             AreEqual(new Complex(expectedReal, expectedImaginary), actual, delta);
+        }
+
+        public static void AreEqual(Vector<Complex> expected, Vector<Complex> actual, double delta)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            for (var i = 0; i < expected.Count; ++i)
+                AreEqual(expected[i], actual[i], delta);
         }
     }
 }

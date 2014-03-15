@@ -61,16 +61,13 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
+	writeLine("calculating initial coefficients");
 	_coefficients.clear();
 	_inverseCoefficients.clear();
 	std::vector< complex<double> > admittanceRowSums = calculateAdmittanceRowSum();
-	writeLine("calculating first coefficients");
 	calculateFirstCoefficient(admittanceRowSums);
-	writeLine("calculating first inverse coefficients");
 	_inverseCoefficients.push_back(divide(complex<double>(1, 0), _coefficients.front()));
-	writeLine("calculating second coefficients");
 	calculateSecondCoefficient(admittanceRowSums);
-	writeLine("calculating second inverse coefficients");
 	calculateNextInverseCoefficient();
 	
 	writeLine("calculating coefficients");
@@ -81,6 +78,7 @@ void Calculator::calculate()
 		calculateNextInverseCoefficient();
 	}
 
+	writeLine("calculating analytic continuation");
 	calculateVoltagesFromCoefficients();
 }
 
@@ -291,7 +289,7 @@ void Calculator::calculateVoltagesFromCoefficients()
 		std::vector< complex<double> > coefficients(_numberOfCoefficients);
 
 		for (size_t j = 0; j < _coefficients.size(); ++j)
-			coefficients.push_back(_coefficients[j][i]);
+			coefficients[j] = _coefficients[j][i];
 
 		_voltages[i] = calculateVoltageFromCoefficients(coefficients);
 	}
@@ -299,11 +297,12 @@ void Calculator::calculateVoltagesFromCoefficients()
 
 complex<double> Calculator::calculateVoltageFromCoefficients(const std::vector< complex<double> > &coefficients)
 {
+	assert(coefficients.size() == _numberOfCoefficients);
 	std::vector< complex<double> > previousEpsilon(_numberOfCoefficients + 1, complex<double>(0, 0));
 	std::vector< complex<double> > currentEpsilon(_numberOfCoefficients, complex<double>(0, 0));
 
 	complex<double> sum(0, 0);
-	for (size_t i = 0; i < coefficients.size(); ++i)
+	for (size_t i = 0; i < _numberOfCoefficients; ++i)
 	{
 		sum += coefficients[i];
 		currentEpsilon[i] = sum;

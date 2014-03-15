@@ -321,5 +321,29 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
+        {
+            var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, true);
+
+           nodes = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+            var firstCoefficient = new DenseVector(new [] {new Complex(-1, 0)});
+            var secondCoefficient = new DenseVector(new[] { new Complex(2.08041324631485, 0.0199997871033142) });
+            var thirdCoefficient = new DenseVector(new[] { new Complex(0.063672111981029, 0.0409995635617942) });
+            var firstInverseCoefficient = new DenseVector(new[] { new Complex(-1, 0) });
+            var secondInverseCoefficient = new DenseVector(new[] { new Complex(-2.08041324631485, -0.0199997871033142) });
+            var thirdInverseCoefficient = new DenseVector(new[] { new Complex(-4.39139139593914, -0.124215207588218) });
+            ComplexAssert.AreEqual(firstCoefficient, calculator.GetCoefficients(0), 0.0001);
+            ComplexAssert.AreEqual(secondCoefficient, calculator.GetCoefficients(1), 0.0001);
+            ComplexAssert.AreEqual(thirdCoefficient, calculator.GetCoefficients(2), 0.0001);
+            ComplexAssert.AreEqual(firstInverseCoefficient, calculator.GetInverseCoefficients(0), 0.0001);
+            ComplexAssert.AreEqual(secondInverseCoefficient, calculator.GetInverseCoefficients(1), 0.0001);
+            ComplexAssert.AreEqual(thirdInverseCoefficient, calculator.GetInverseCoefficients(2), 0.0001);
+        }
     }
 }

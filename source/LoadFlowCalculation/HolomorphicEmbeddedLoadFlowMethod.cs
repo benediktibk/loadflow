@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using AnalyticContinuation;
@@ -67,6 +68,16 @@ namespace LoadFlowCalculation
                 currentVoltage = improvedVoltage;
 
             return currentVoltage;
+        }
+
+        public Vector<Complex> GetCoefficients(int step)
+        {
+            return _coefficients[step];
+        }
+
+        public Vector<Complex> GetInverseCoefficients(int step)
+        {
+            return _inverseCoefficients[step];
         }
 
         private bool CheckConvergence(Vector<Complex> currentVoltage, Vector<Complex> lastVoltage, double targetPrecisionScaled)
