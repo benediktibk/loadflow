@@ -69,7 +69,7 @@ void Calculator::calculate()
 		calculateVoltagesFromCoefficients();
 		floating powerError = calculatePowerError();
 
-		if (!_isnan(powerError) && _finite(powerError))
+		if (isValidFloating(powerError))
 		{
 			powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
 			partialResults.push_back(_voltages);
@@ -441,6 +441,22 @@ std::vector< complex<Calculator::floating> > Calculator::conjugate(const std::ve
 		result[i] = conj(values[i]);
 
 	return result;
+}
+
+bool Calculator::isValidFloating(floating value)
+{
+	bool isnan = true;
+	bool isinfinity = true;
+
+#ifdef _MSC_VER
+	isnan = _isnan(value);
+	isinfinity = !_finite(value);
+#else
+	isnan = std::isnan(value);
+	isinifinty = std::isinf(value);
+#endif
+
+	return !isnan && !isinfinity;
 }
 
 double Calculator::getCoefficientReal(int step, int node) const

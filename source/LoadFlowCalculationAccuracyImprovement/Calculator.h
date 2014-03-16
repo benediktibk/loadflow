@@ -57,6 +57,7 @@ private:
 	static std::vector< std::complex<floating> > ublasToStdVector(const Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> &values);
 	static Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> stdToUblasVector(const std::vector< std::complex<floating> > &values);
 	static std::vector< std::complex<floating> > conjugate(const std::vector< std::complex<floating> > &values);
+	static bool isValidFloating(floating value);
 
 private:
 	const floating _targetPrecision;
