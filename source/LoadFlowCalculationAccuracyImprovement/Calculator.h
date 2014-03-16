@@ -16,8 +16,6 @@ public:
 	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
 
 	void setAdmittance(int row, int column, std::complex<double> value);
-	void setAdmittanceQ(int row, int column, std::complex<double> value);
-	void setAdmittanceR(int row, int column, std::complex<double> value);
 	void setPQBus(int busId, int node, std::complex<double> power);
 	void setPVBus(int busId, int node, double powerReal, double voltageMagnitude);
 	void setConstantCurrent(int node, std::complex<double> value);

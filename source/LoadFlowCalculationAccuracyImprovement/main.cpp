@@ -20,16 +20,6 @@ extern "C" __declspec(dllexport) void __cdecl SetAdmittance(int calculator, int 
 	calculatorRegister.get(calculator)->setAdmittance(row, column, complex<double>(real, imaginary));
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetAdmittanceQ(int calculator, int row, int column, double real, double imaginary)
-{
-	calculatorRegister.get(calculator)->setAdmittanceQ(row, column, complex<double>(real, imaginary));
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetAdmittanceR(int calculator, int row, int column, double real, double imaginary)
-{
-	calculatorRegister.get(calculator)->setAdmittanceR(row, column, complex<double>(real, imaginary));
-}
-
 extern "C" __declspec(dllexport) void __cdecl SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary)
 {
 	calculatorRegister.get(calculator)->setPQBus(busId, node, complex<double>(powerReal, powerImaginary));

@@ -31,14 +31,6 @@ void Calculator::setAdmittance(int row, int column, complex<double> value)
 	_admittances.insert(row, column) = converToComplexFloating(value);
 }
 
-void Calculator::setAdmittanceQ(int row, int column, complex<double> value)
-{
-}
-
-void Calculator::setAdmittanceR(int row, int column, complex<double> value)
-{
-}
-
 void Calculator::setPQBus(int busId, int node, complex<double> power)
 {
 	_pqBuses[busId] = PQBus(node, power);
@@ -56,7 +48,6 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
-	writeLine("admittances", _admittances);
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	_coefficients.clear();
