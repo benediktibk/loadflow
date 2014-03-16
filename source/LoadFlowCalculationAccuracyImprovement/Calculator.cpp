@@ -1,7 +1,7 @@
 #include "Calculator.h"
 #include <sstream>
 #include <map>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 using namespace std;
 
@@ -69,7 +69,7 @@ void Calculator::calculate()
 		calculateVoltagesFromCoefficients();
 		floating powerError = calculatePowerError();
 
-		if (boost::math::isnormal(static_cast<double>(powerError)))
+		if (!_isnan(powerError) && _finite(powerError))
 		{
 			powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
 			partialResults.push_back(_voltages);
