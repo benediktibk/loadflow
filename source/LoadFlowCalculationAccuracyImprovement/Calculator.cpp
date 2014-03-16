@@ -2,6 +2,7 @@
 #include <boost/numeric/ublas/triangular.hpp>
 #include <sstream>
 #include <map>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace std;
 using namespace boost::numeric;
@@ -80,11 +81,16 @@ void Calculator::calculate()
 
 		calculateVoltagesFromCoefficients();
 		floating powerError = calculatePowerError();
-		powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
-		partialResults.push_back(_voltages);
+
+		if (boost::math::isnormal(static_cast<double>(powerError)))
+		{
+			powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
+			partialResults.push_back(_voltages);
+		}
 	}
 
-	_voltages = partialResults[powerErrors.begin()->second];
+	if (!powerErrors.empty())
+		_voltages = partialResults[powerErrors.begin()->second];
 }
 
 double Calculator::getVoltageReal(int node) const
