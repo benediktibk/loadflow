@@ -45,6 +45,7 @@ private:
 	void calculateNextInverseCoefficient();
 	void calculateVoltagesFromCoefficients();
 	std::complex<floating> calculateVoltageFromCoefficients(const std::vector< std::complex<floating> > &coefficients);
+	floating calculatePowerError() const;
 
 private:
 	static std::vector< std::complex<floating> > pointwiseMultiply(const std::vector< std::complex<floating> > &one, const std::vector< std::complex<floating> > &two);
@@ -55,6 +56,9 @@ private:
 	static std::vector< std::complex<floating> > divide(const std::complex<floating> &one, const std::vector< std::complex<floating> > &two);
 	static floating findMaximumMagnitude(const std::vector< std::complex<floating> > &values);
 	static std::complex<floating> converToComplexFloating(const std::complex<double> &value);
+	static std::vector< std::complex<floating> > ublasToStdVector(const boost::numeric::ublas::vector< std::complex<floating> > &values);
+	static boost::numeric::ublas::vector< std::complex<floating> > stdToUblasVector(const std::vector< std::complex<floating> > &values);
+	static std::vector< std::complex<floating> > conjugate(const std::vector< std::complex<floating> > &values);
 
 private:
 	const floating _targetPrecision;

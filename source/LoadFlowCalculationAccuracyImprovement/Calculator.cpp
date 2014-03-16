@@ -1,6 +1,7 @@
 #include "Calculator.h"
 #include <boost/numeric/ublas/triangular.hpp>
 #include <sstream>
+#include <map>
 
 using namespace std;
 using namespace boost::numeric;
@@ -68,21 +69,22 @@ void Calculator::calculate()
 	_inverseCoefficients.push_back(divide(complex<floating>(1, 0), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
 	calculateNextInverseCoefficient();
-	bool precisionReached = false;
-	bool precisionReachedPrevious = false;
+	map<floating, int> powerErrors;
+	std::vector< std::vector< complex<floating> > > partialResults;
+	partialResults.reserve(_numberOfCoefficients);
 	
-	while (_coefficients.size() < _numberOfCoefficients && (!precisionReached || !precisionReachedPrevious))
+	while (_coefficients.size() < _numberOfCoefficients)
 	{
 		calculateNextCoefficient();
 		calculateNextInverseCoefficient();
 
-		std::vector< complex<floating> > previousVoltages = _voltages;
 		calculateVoltagesFromCoefficients();
-		std::vector< complex<floating> > voltageChange = subtract(previousVoltages, _voltages);
-		floating maximumChange = findMaximumMagnitude(voltageChange);
-		precisionReachedPrevious = precisionReached;
-		precisionReached = maximumChange < _targetPrecision;
+		floating powerError = calculatePowerError();
+		powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
+		partialResults.push_back(_voltages);
 	}
+
+	_voltages = partialResults[powerErrors.begin()->second];
 }
 
 double Calculator::getVoltageReal(int node) const
@@ -135,19 +137,10 @@ void Calculator::writeLine(const char *text)
 
 std::vector< complex<Calculator::floating> > Calculator::solveAdmittanceEquationSystem(const std::vector< complex<floating> > &rightHandSide)
 {
-	ublas::vector< complex<floating> > rightHandSideConverted(rightHandSide.size());
-
-	for (size_t i = 0; i < rightHandSide.size(); ++i)
-		rightHandSideConverted[i] = rightHandSide[i];
-
+	ublas::vector< complex<floating> > rightHandSideConverted = stdToUblasVector(rightHandSide);
 	ublas::vector< complex<floating> > rightHandSideWithQ = prod(_admittancesQ, rightHandSideConverted);
-	ublas::vector< complex<floating> > resultUblasVector = solve(_admittancesR, rightHandSideWithQ, upper_tag());
-	std::vector< complex<floating> > resultConverted(resultUblasVector.size());
-
-	for (size_t i = 0; i < resultUblasVector.size(); ++i)
-		resultConverted[i] = resultUblasVector[i];
-
-	return resultConverted;
+	ublas::vector< complex<floating> > result = solve(_admittancesR, rightHandSideWithQ, upper_tag());
+	return ublasToStdVector(result);
 }
 
 std::vector< complex<Calculator::floating> > Calculator::calculateAdmittanceRowSum() const
@@ -330,6 +323,34 @@ complex<Calculator::floating> Calculator::calculateVoltageFromCoefficients(const
 	return initialCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
 }
 
+Calculator::floating Calculator::calculatePowerError() const
+{
+	ublas::vector< complex<floating> > voltages = stdToUblasVector(_voltages);
+	ublas::vector< complex<floating> > currents = prod(_admittances, voltages);
+	std::vector< complex<floating> > currentsConverted = ublasToStdVector(currents);
+	std::vector< complex<floating> > totalCurrents = subtract(currentsConverted, _constantCurrents);
+	std::vector< complex<floating> > powers = pointwiseMultiply(conjugate(totalCurrents), _voltages);
+	
+	assert(_nodeCount == powers.size());
+	floating sum = 0;
+
+	for (size_t i = 0; i < _pqBusCount; ++i)
+	{
+		const complex<floating> &currentPower = powers[_pqBuses[i].getId()];
+		const complex<floating> &powerShouldBe = _pqBuses[i].getPower();
+		sum += abs(currentPower - powerShouldBe);
+	}
+
+	for (size_t i = 0; i < _pvBusCount; ++i)
+	{
+		floating currentPower = powers[_pvBuses[i].getId()].real();
+		floating powerShouldBe  = static_cast<floating>(_pvBuses[i].getPowerReal());
+		sum += abs(currentPower - powerShouldBe);
+	}
+
+	return abs(sum);
+}
+
 std::vector< complex<Calculator::floating> > Calculator::pointwiseMultiply(const std::vector< complex<floating> > &one, const std::vector< complex<floating> > &two)
 {
 	assert(one.size() == two.size());
@@ -418,6 +439,36 @@ complex<Calculator::floating> Calculator::converToComplexFloating(const complex<
 	floating real = static_cast<floating>(value.real());
 	floating imaginary = static_cast<floating>(value.imag());
 	return complex<floating>(real, imaginary);
+}
+
+std::vector< complex<Calculator::floating> > Calculator::ublasToStdVector(const ublas::vector< complex<floating> > &values)
+{
+	std::vector< complex<floating> > result(values.size());
+
+	for (size_t i = 0; i < values.size(); ++i)
+		result[i] = values[i];
+
+	return result;
+}
+
+ublas::vector< complex<Calculator::floating> > Calculator::stdToUblasVector(const std::vector< complex<floating> > &values)
+{
+	ublas::vector< complex<floating> > result(values.size());
+
+	for (size_t i = 0; i < values.size(); ++i)
+		result[i] = values[i];
+
+	return result;
+}
+
+std::vector< complex<Calculator::floating> > Calculator::conjugate(const std::vector< complex<Calculator::floating> > &values)
+{
+	std::vector< complex<Calculator::floating> > result(values.size());
+
+	for (size_t i = 0; i < values.size(); ++i)
+		result[i] = conj(values[i]);
+
+	return result;
 }
 
 double Calculator::getCoefficientReal(int step, int node) const
