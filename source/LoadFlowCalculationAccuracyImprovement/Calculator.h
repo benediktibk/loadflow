@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include <complex>
-#include <boost\numeric\ublas\matrix.hpp>
+#include <Eigen/Core>
+#include <Eigen/Sparse>
+#include <Eigen/SparseLU>
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
@@ -33,12 +35,10 @@ private:
 	typedef long double floating;
 
 private:
-	void writeLine(const char *text, size_t argument);
-	void writeLine(const boost::numeric::ublas::matrix< std::complex<double> > &matrix);
-	void writeLine(const std::string &text);
+	void writeLine(const char *description, const Eigen::SparseMatrix< std::complex<floating> > &matrix);
 	void writeLine(const char *text);
 	std::vector< std::complex<floating> > solveAdmittanceEquationSystem(const std::vector< std::complex<floating> > &rightHandSide);
-	std::vector< std::complex<floating> > calculateAdmittanceRowSum() const;
+	std::vector< std::complex<floating> > calculateAdmittanceRowSum();
 	void calculateFirstCoefficient(const std::vector< std::complex<floating> > &admittanceRowSum);
 	void calculateSecondCoefficient(const std::vector< std::complex<floating> > &admittanceRowSum);
 	void calculateNextCoefficient();
@@ -56,8 +56,8 @@ private:
 	static std::vector< std::complex<floating> > divide(const std::complex<floating> &one, const std::vector< std::complex<floating> > &two);
 	static floating findMaximumMagnitude(const std::vector< std::complex<floating> > &values);
 	static std::complex<floating> converToComplexFloating(const std::complex<double> &value);
-	static std::vector< std::complex<floating> > ublasToStdVector(const boost::numeric::ublas::vector< std::complex<floating> > &values);
-	static boost::numeric::ublas::vector< std::complex<floating> > stdToUblasVector(const std::vector< std::complex<floating> > &values);
+	static std::vector< std::complex<floating> > ublasToStdVector(const Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> &values);
+	static Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> stdToUblasVector(const std::vector< std::complex<floating> > &values);
 	static std::vector< std::complex<floating> > conjugate(const std::vector< std::complex<floating> > &values);
 
 private:
@@ -66,9 +66,8 @@ private:
 	const size_t _nodeCount;
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
-	boost::numeric::ublas::matrix< std::complex<floating> > _admittances;
-	boost::numeric::ublas::matrix< std::complex<floating> > _admittancesQ;
-	boost::numeric::ublas::matrix< std::complex<floating> > _admittancesR;
+	Eigen::SparseLU<Eigen::SparseMatrix< std::complex<floating> >, Eigen::NaturalOrdering<int> > _factorization;
+	Eigen::SparseMatrix< std::complex<floating>, Eigen::ColMajor > _admittances;
 	std::vector< std::complex<floating> > _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;

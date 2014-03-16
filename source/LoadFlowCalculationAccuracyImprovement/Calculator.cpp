@@ -1,12 +1,9 @@
 #include "Calculator.h"
-#include <boost/numeric/ublas/triangular.hpp>
 #include <sstream>
 #include <map>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace std;
-using namespace boost::numeric;
-using namespace boost::numeric::ublas;
 
 Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
 	_targetPrecision(static_cast<floating>(targetPrecision)),
@@ -15,8 +12,6 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_admittances(nodeCount, nodeCount),
-	_admittancesQ(nodeCount, nodeCount),
-	_admittancesR(nodeCount, nodeCount),
 	_constantCurrents(nodeCount, complex<floating>(0, 0)),
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
@@ -33,17 +28,15 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 
 void Calculator::setAdmittance(int row, int column, complex<double> value)
 {
-	_admittances(row, column) = value;
+	_admittances.insert(row, column) = converToComplexFloating(value);
 }
 
 void Calculator::setAdmittanceQ(int row, int column, complex<double> value)
 {
-	_admittancesQ(row, column) = value;
 }
 
 void Calculator::setAdmittanceR(int row, int column, complex<double> value)
 {
-	_admittancesR(row, column) = value;
 }
 
 void Calculator::setPQBus(int busId, int node, complex<double> power)
@@ -63,6 +56,9 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
+	writeLine("admittances", _admittances);
+	_factorization.analyzePattern(_admittances);
+	_factorization.factorize(_admittances);
 	_coefficients.clear();
 	_inverseCoefficients.clear();
 	std::vector< complex<floating> > admittanceRowSums = calculateAdmittanceRowSum();
@@ -108,31 +104,12 @@ void Calculator::setConsoleOutput(ConsoleOutput function)
 	_consoleOutput = function;
 }
 
-void Calculator::writeLine(const char *text, size_t argument)
-{	
-	stringstream stream;
-	stream << text << ": " << argument;
-	writeLine(stream.str());
-}
-
-void Calculator::writeLine(const matrix< complex<double> > &matrix)
+void Calculator::writeLine(const char *description, const Eigen::SparseMatrix< std::complex<floating> > &matrix)
 {
 	stringstream stream;
-	
-	for (size_t i = 0; i < matrix.size1(); ++i)
-	{
-		for (size_t j = 0; j < matrix.size2(); ++j)
-			stream << matrix(i, j) << " - ";
-
-		stream << "/";
-	}
-
-	writeLine(stream.str());
-}
-
-void Calculator::writeLine(const string &text)
-{
-	writeLine(text.c_str());
+	stream << description << endl;
+	stream << matrix.toDense();
+	writeLine(stream.str().c_str());
 }
 
 void Calculator::writeLine(const char *text)
@@ -143,19 +120,17 @@ void Calculator::writeLine(const char *text)
 
 std::vector< complex<Calculator::floating> > Calculator::solveAdmittanceEquationSystem(const std::vector< complex<floating> > &rightHandSide)
 {
-	ublas::vector< complex<floating> > rightHandSideConverted = stdToUblasVector(rightHandSide);
-	ublas::vector< complex<floating> > rightHandSideWithQ = prod(_admittancesQ, rightHandSideConverted);
-	ublas::vector< complex<floating> > result = solve(_admittancesR, rightHandSideWithQ, upper_tag());
-	return ublasToStdVector(result);
+	Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> rightHandSideConverted = stdToUblasVector(rightHandSide);
+	return ublasToStdVector(_factorization.solve(rightHandSideConverted));
 }
 
-std::vector< complex<Calculator::floating> > Calculator::calculateAdmittanceRowSum() const
+std::vector< complex<Calculator::floating> > Calculator::calculateAdmittanceRowSum()
 {
 	std::vector< complex<floating> > result(_nodeCount, complex<floating>(0, 0));
 
 	for (size_t row = 0; row < _nodeCount; ++row)
 		for (size_t column = 0; column < _nodeCount; ++column)
-			result[row] += _admittances(row, column);
+			result[row] += _admittances.coeffRef(row, column);
 
 	return result;
 }
@@ -169,7 +144,7 @@ void Calculator::calculateFirstCoefficient(const std::vector< complex<floating> 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*(-1);
+		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*complex<floating>(-1, 0);
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -331,8 +306,8 @@ complex<Calculator::floating> Calculator::calculateVoltageFromCoefficients(const
 
 Calculator::floating Calculator::calculatePowerError() const
 {
-	ublas::vector< complex<floating> > voltages = stdToUblasVector(_voltages);
-	ublas::vector< complex<floating> > currents = prod(_admittances, voltages);
+	Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> voltages = stdToUblasVector(_voltages);
+	Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> currents = _admittances * voltages;
 	std::vector< complex<floating> > currentsConverted = ublasToStdVector(currents);
 	std::vector< complex<floating> > totalCurrents = subtract(currentsConverted, _constantCurrents);
 	std::vector< complex<floating> > powers = pointwiseMultiply(conjugate(totalCurrents), _voltages);
@@ -447,7 +422,7 @@ complex<Calculator::floating> Calculator::converToComplexFloating(const complex<
 	return complex<floating>(real, imaginary);
 }
 
-std::vector< complex<Calculator::floating> > Calculator::ublasToStdVector(const ublas::vector< complex<floating> > &values)
+std::vector< complex<Calculator::floating> > Calculator::ublasToStdVector(const Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> &values)
 {
 	std::vector< complex<floating> > result(values.size());
 
@@ -457,9 +432,9 @@ std::vector< complex<Calculator::floating> > Calculator::ublasToStdVector(const 
 	return result;
 }
 
-ublas::vector< complex<Calculator::floating> > Calculator::stdToUblasVector(const std::vector< complex<floating> > &values)
+Eigen::Matrix< std::complex<Calculator::floating>, Eigen::Dynamic, 1> Calculator::stdToUblasVector(const std::vector< complex<floating> > &values)
 {
-	ublas::vector< complex<floating> > result(values.size());
+	Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> result(values.size(), 1);
 
 	for (size_t i = 0; i < values.size(); ++i)
 		result[i] = values[i];

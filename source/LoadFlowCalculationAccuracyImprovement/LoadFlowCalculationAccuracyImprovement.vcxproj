@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\boost\boost_1_55_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\boost\boost_1_55_0;C:\Program Files\eigen;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\boost\boost_1_55_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
