@@ -417,7 +417,7 @@ std::vector< complex<Calculator::floating> > Calculator::ublasToStdVector(const 
 {
 	std::vector< complex<floating> > result(values.size());
 
-	for (size_t i = 0; i < values.size(); ++i)
+	for (int i = 0; i < values.size(); ++i)
 		result[i] = values[i];
 
 	return result;
@@ -449,7 +449,7 @@ bool Calculator::isValidFloating(floating value)
 	bool isinfinity = true;
 
 #ifdef _MSC_VER
-	isnan = _isnan(value);
+	isnan = _isnan(value) != 0;
 	isinfinity = !_finite(value);
 #else
 	isnan = std::isnan(value);
