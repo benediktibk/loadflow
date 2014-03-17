@@ -12,25 +12,26 @@
 #include "ConsoleOutput.h"
 #include "MultiPrecision.h"
 #include "Complex.h"
+#include "ICalculator.h"
 
-class Calculator
+class Calculator : public ICalculator
 {
 public:
 	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
 
-	void setAdmittance(int row, int column, std::complex<double> value);
-	void setPQBus(int busId, int node, std::complex<double> power);
-	void setPVBus(int busId, int node, double powerReal, double voltageMagnitude);
-	void setConstantCurrent(int node, std::complex<double> value);
-	void calculate();
-	double getVoltageReal(int node) const;
-	double getVoltageImaginary(int node) const;
-	double getCoefficientReal(int step, int node) const;
-	double getCoefficientImaginary(int step, int node) const;
-	double getInverseCoefficientReal(int step, int node) const;
-	double getInverseCoefficientImaginary(int step, int node) const;
-	int getNodeCount() const;
-	void setConsoleOutput(ConsoleOutput function);
+	virtual void setAdmittance(int row, int column, std::complex<double> value);
+	virtual void setPQBus(int busId, int node, std::complex<double> power);
+	virtual void setPVBus(int busId, int node, double powerReal, double voltageMagnitude);
+	virtual void setConstantCurrent(int node, std::complex<double> value);
+	virtual void calculate();
+	virtual double getVoltageReal(int node) const;
+	virtual double getVoltageImaginary(int node) const;
+	virtual double getCoefficientReal(int step, int node) const;
+	virtual double getCoefficientImaginary(int step, int node) const;
+	virtual double getInverseCoefficientReal(int step, int node) const;
+	virtual double getInverseCoefficientImaginary(int step, int node) const;
+	virtual int getNodeCount() const;
+	virtual void setConsoleOutput(ConsoleOutput function);
 
 private:
 	typedef long double floating;

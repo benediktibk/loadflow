@@ -6,7 +6,7 @@
 class ICalculator
 {
 public:
-	virtual ~ICalculator();
+	virtual ~ICalculator() { };
 
 	virtual void setAdmittance(int row, int column, std::complex<double> value) = 0;
 	virtual void setPQBus(int busId, int node, std::complex<double> power) = 0;
