@@ -19,67 +19,67 @@ extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calcu
 
 extern "C" __declspec(dllexport) void __cdecl SetAdmittance(int calculator, int row, int column, double real, double imaginary)
 {
-	calculatorRegister.get(calculator)->setAdmittance(row, column, complex<double>(real, imaginary));
+	calculatorRegister.get(calculator).setAdmittance(row, column, complex<double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary)
 {
-	calculatorRegister.get(calculator)->setPQBus(busId, node, complex<double>(powerReal, powerImaginary));
+	calculatorRegister.get(calculator).setPQBus(busId, node, complex<double>(powerReal, powerImaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetPVBus(int calculator, int busId, int node, double powerReal, double voltageMagnitude)
 {
-	calculatorRegister.get(calculator)->setPVBus(busId, node, powerReal, voltageMagnitude);
+	calculatorRegister.get(calculator).setPVBus(busId, node, powerReal, voltageMagnitude);
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetConstantCurrent(int calculator, int node, double real, double imaginary)
 {
-	calculatorRegister.get(calculator)->setConstantCurrent(node, complex<double>(real, imaginary));
+	calculatorRegister.get(calculator).setConstantCurrent(node, complex<double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl Calculate(int calculator)
 {
-	calculatorRegister.get(calculator)->calculate();
+	calculatorRegister.get(calculator).calculate();
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetVoltageReal(int calculator, int node)
 {
-	return calculatorRegister.get(calculator)->getVoltageReal(node);
+	return calculatorRegister.get(calculator).getVoltageReal(node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetVoltageImaginary(int calculator, int node)
 {
-	return calculatorRegister.get(calculator)->getVoltageImaginary(node);
+	return calculatorRegister.get(calculator).getVoltageImaginary(node);
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetConsoleOutput(int calculator, ConsoleOutput function)
 {
-	return calculatorRegister.get(calculator)->setConsoleOutput(function);
+	return calculatorRegister.get(calculator).setConsoleOutput(function);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetCoefficientReal(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getCoefficientReal(step, node);
+	return calculatorRegister.get(calculator).getCoefficientReal(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetCoefficientImaginary(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getCoefficientImaginary(step, node);
+	return calculatorRegister.get(calculator).getCoefficientImaginary(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientReal(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getInverseCoefficientReal(step, node);
+	return calculatorRegister.get(calculator).getInverseCoefficientReal(step, node);
 }
 
 extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientImaginary(int calculator, int step, int node)
 {
-	return calculatorRegister.get(calculator)->getInverseCoefficientImaginary(step, node);
+	return calculatorRegister.get(calculator).getInverseCoefficientImaginary(step, node);
 }
 
 extern "C" __declspec(dllexport) int __cdecl GetLastNodeCount(int calculator)
 {
-	return calculatorRegister.get(calculator)->getNodeCount();
+	return calculatorRegister.get(calculator).getNodeCount();
 }
 
 extern "C" { int _afxForceUSRDLL; }

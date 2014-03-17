@@ -10,7 +10,7 @@ class CalculatorRegister
 public:
 	~CalculatorRegister();
 
-	ICalculator * const get(int id);
+	ICalculator& get(int id);
 	int createCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
 	void remove(int id);
 	
