@@ -12,10 +12,10 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_admittances(nodeCount, nodeCount),
-	_constantCurrents(nodeCount, complex<floating>(0, 0)),
+	_constantCurrents(nodeCount),
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
-	_voltages(nodeCount, complex<floating>(0, 0)),
+	_voltages(nodeCount),
 	_consoleOutput(0),
 	_blub(12)
 { 
@@ -59,7 +59,7 @@ void Calculator::calculate()
 	_inverseCoefficients.clear();
 	std::vector< complex<floating> > admittanceRowSums = calculateAdmittanceRowSum();
 	calculateFirstCoefficient(admittanceRowSums);
-	_inverseCoefficients.push_back(divide(complex<floating>(1, 0), _coefficients.front()));
+	_inverseCoefficients.push_back(divide(complex<floating>(1.0, 0.0), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
 	calculateNextInverseCoefficient();
 	map<floating, int> powerErrors;
@@ -122,7 +122,7 @@ std::vector< complex<Calculator::floating> > Calculator::solveAdmittanceEquation
 
 std::vector< complex<Calculator::floating> > Calculator::calculateAdmittanceRowSum()
 {
-	std::vector< complex<floating> > result(_nodeCount, complex<floating>(0, 0));
+	std::vector< complex<floating> > result(_nodeCount);
 
 	for (size_t row = 0; row < _nodeCount; ++row)
 		for (size_t column = 0; column < _nodeCount; ++column)
@@ -135,12 +135,12 @@ void Calculator::calculateFirstCoefficient(const std::vector< complex<floating> 
 {
 	assert(_coefficients.size() == 0);
 
-	std::vector< complex<floating> > rightHandSide(_nodeCount, complex<floating>(0, 0));
+	std::vector< complex<floating> > rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*complex<floating>(-1, 0);
+		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*complex<floating>(-1.0, 0.0);
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -162,7 +162,7 @@ void Calculator::calculateSecondCoefficient(const std::vector< complex<floating>
 
 	const std::vector< complex<floating> > &previousCoefficients = _coefficients.back();
 	const std::vector< complex<floating> > &previousInverseCoefficients = _inverseCoefficients.back();
-	std::vector< complex<floating> > rightHandSide(_nodeCount, complex<floating>(0, 0));
+	std::vector< complex<floating> > rightHandSide(_nodeCount);
 			
 	assert(previousInverseCoefficients.size() == _nodeCount);
 	assert(previousCoefficients.size() == _nodeCount);
@@ -186,7 +186,7 @@ void Calculator::calculateSecondCoefficient(const std::vector< complex<floating>
 		complex<floating> previousInverseCoefficient = previousInverseCoefficients[id];
 		complex<floating> admittanceRowSum = admittanceRowSums[id];
 		floating magnitudeSquare = static_cast<floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (2*realPower*previousCoefficient - previousInverseCoefficient)/magnitudeSquare - admittanceRowSum;
+		rightHandSide[id] = (realPower*previousCoefficient*floating(2) - previousInverseCoefficient)/magnitudeSquare - admittanceRowSum;
 	}
 	
 	std::vector< complex<floating> > coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -201,7 +201,7 @@ void Calculator::calculateNextCoefficient()
 
 	const std::vector< complex<floating> > &previousCoefficients = _coefficients.back();
 	const std::vector< complex<floating> > &previousInverseCoefficients = _inverseCoefficients.back();
-	std::vector< complex<floating> > rightHandSide(_nodeCount, complex<floating>(0, 0));
+	std::vector< complex<floating> > rightHandSide(_nodeCount);
 			
 	assert(previousInverseCoefficients.size() == _nodeCount);
 	assert(previousCoefficients.size() == _nodeCount);
@@ -222,7 +222,7 @@ void Calculator::calculateNextCoefficient()
 		complex<floating> previousCoefficient = previousCoefficients[id];
 		complex<floating> previousInverseCoefficient = previousInverseCoefficients[id];
 		floating magnitudeSquare = static_cast<floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (2*realPower*previousCoefficient - previousInverseCoefficient)/magnitudeSquare;
+		rightHandSide[id] = (realPower*previousCoefficient*floating(2) - previousInverseCoefficient)/magnitudeSquare;
 	}
 	
 	std::vector< complex<floating> > coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -236,7 +236,7 @@ void Calculator::calculateNextInverseCoefficient()
 	assert(_inverseCoefficients.size() + 1 == _coefficients.size());
 
 	size_t n = _coefficients.size() - 1;
-	std::vector< complex<floating> > result(_nodeCount, complex<floating>(0, 0));
+	std::vector< complex<floating> > result(_nodeCount);
 
 	for (size_t i = 0; i < n; ++i)
 	{
@@ -251,7 +251,7 @@ void Calculator::calculateNextInverseCoefficient()
 	}
 
 	result = pointwiseDivide(result, _coefficients[0]);
-	result = multiply(result, complex<floating>(-1, 0));
+	result = multiply(result, complex<floating>(-1.0, 0.0));
 	assert(result.size() == _nodeCount);
 	_inverseCoefficients.push_back(result);
 }
@@ -271,10 +271,10 @@ void Calculator::calculateVoltagesFromCoefficients()
 
 complex<Calculator::floating> Calculator::calculateVoltageFromCoefficients(const std::vector< complex<floating> > &coefficients)
 {
-	std::vector< complex<floating> > previousEpsilon(coefficients.size() + 1, complex<floating>(0, 0));
-	std::vector< complex<floating> > currentEpsilon(coefficients.size(), complex<floating>(0, 0));
+	std::vector< complex<floating> > previousEpsilon(coefficients.size() + 1);
+	std::vector< complex<floating> > currentEpsilon(coefficients.size());
 
-	complex<floating> sum(0, 0);
+	complex<floating> sum;
 	for (size_t i = 0; i < coefficients.size(); ++i)
 	{
 		sum += coefficients[i];
@@ -290,7 +290,7 @@ complex<Calculator::floating> Calculator::calculateVoltageFromCoefficients(const
 		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
         {
             complex<floating> previousDifference = currentEpsilon[j + 1] - currentEpsilon[j];
-			nextEpsilon[j] = previousEpsilon[j + 1] + complex<floating>(1, 0)/previousDifference;
+			nextEpsilon[j] = previousEpsilon[j + 1] + complex<floating>(1.0, 0.0)/previousDifference;
         }
 
 		previousEpsilon = currentEpsilon;
@@ -309,7 +309,7 @@ Calculator::floating Calculator::calculatePowerError() const
 	std::vector< complex<floating> > powers = pointwiseMultiply(conjugate(totalCurrents), _voltages);
 	
 	assert(_nodeCount == powers.size());
-	floating sum = 0;
+	floating sum = 0.0;
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
@@ -399,7 +399,7 @@ std::vector< complex<Calculator::floating> > Calculator::divide(const complex<fl
 Calculator::floating Calculator::findMaximumMagnitude(const std::vector< std::complex<floating> > &values)
 {
 	assert(values.size() > 0);
-	floating result = 0;
+	floating result = 0.0;
 
 	for (size_t i = 0; i < values.size(); ++i)
 	{

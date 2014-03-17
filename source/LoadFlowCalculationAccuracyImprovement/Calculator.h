@@ -10,6 +10,7 @@
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
+#include "MultiPrecision.h"
 
 class Calculator
 {
