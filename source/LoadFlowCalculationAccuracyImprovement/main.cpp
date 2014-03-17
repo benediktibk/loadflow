@@ -12,6 +12,11 @@ extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorLongDouble(
 	return calculatorRegister.createCalculatorLongDouble(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount);
 }
 
+extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
+{
+	return calculatorRegister.createCalculatorMultiPrecision(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount);
+}
+
 extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calculator)
 {
 	calculatorRegister.remove(calculator);

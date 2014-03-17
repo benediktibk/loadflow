@@ -1,4 +1,6 @@
 #include "Calculator.h"
+#include "MultiPrecision.h"
+#include "Complex.h"
 #include <sstream>
 #include <map>
 #include <cmath>
@@ -6,6 +8,7 @@
 using namespace std;
 
 template class Calculator<long double, complex<long double> >;
+template class Calculator<MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
 Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :

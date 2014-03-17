@@ -10,8 +10,6 @@
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
-#include "MultiPrecision.h"
-#include "Complex.h"
 #include "ICalculator.h"
 
 template<typename Floating, typename ComplexFloating>

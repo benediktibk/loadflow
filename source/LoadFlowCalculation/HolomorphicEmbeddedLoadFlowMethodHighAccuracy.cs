@@ -67,7 +67,9 @@ namespace LoadFlowCalculation
                         pqBuses.Count, pvBuses.Count);
                     break;
                 case DataType.MultiPrecision:
-                    throw new NotImplementedException();
+                    _calculator = CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+                        pqBuses.Count, pvBuses.Count);
+                    break;
             }
 
             for (var i = 0; i < nodeCount; ++i)
@@ -140,6 +142,9 @@ namespace LoadFlowCalculation
         #region dll imports
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void DeleteLoadFlowCalculator(int calculator);

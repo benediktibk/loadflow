@@ -1,5 +1,7 @@
 #include "CalculatorRegister.h"
 #include "ConsoleOutput.h"
+#include "MultiPrecision.h"
+#include "Complex.h"
 #include <limits>
 
 using namespace std;
@@ -24,12 +26,31 @@ int CalculatorRegister::createCalculatorLongDouble(double targetPrecision, int n
 {
 	lock_guard<mutex> lock(_mutex);
 
+	int id = findEmptyId();
+
+	if (id >= 0)
+		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
+
+	return id;
+}
+
+int CalculatorRegister::createCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
+{
+	lock_guard<mutex> lock(_mutex);
+
+	int id = findEmptyId();
+
+	if (id >= 0)
+		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<MultiPrecision, Complex<MultiPrecision> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
+
+	return id;
+}
+
+int CalculatorRegister::findEmptyId() const
+{	
 	for (int i = 0; i < numeric_limits<int>::max(); ++i)
 		if (_calculators.count(i) == 0)
-		{
-			_calculators.insert(pair<int, ICalculator*>(i, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
 			return i;
-		}
 
 	return -1;
 }
