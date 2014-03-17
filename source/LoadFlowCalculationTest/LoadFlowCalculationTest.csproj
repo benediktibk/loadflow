@@ -80,7 +80,7 @@
     <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
     <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
     <Compile Include="JacobiMatrixBaseMethodTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyLongDoubleTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">

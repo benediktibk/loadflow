@@ -8,6 +8,12 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
+    public enum DataType
+    {
+        LongDouble,
+        MultiPrecision
+    };
+
     public class HolomorphicEmbeddedLoadFlowMethodHighAccuracy : LoadFlowCalculator
     {
         private delegate void StringCallback(string text);
@@ -15,9 +21,10 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
         private readonly StringCallback _stringCallback;
+        private readonly DataType _dataType;
         private int _calculator;
 
-        public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients)
+        public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients, DataType dataType)
             : base(targetPrecision * 100000)
         {
             if (numberOfCoefficients < 1)
@@ -29,6 +36,7 @@ namespace LoadFlowCalculation
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
             _stringCallback += DebugOutput;
+            _dataType = dataType;
             _calculator = -1;
         }
 
@@ -51,8 +59,16 @@ namespace LoadFlowCalculation
                 DeleteLoadFlowCalculator(_calculator);
 
             var nodeCount = admittances.RowCount;
-            _calculator = CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                pqBuses.Count, pvBuses.Count);
+
+            switch (_dataType)
+            {
+                case DataType.LongDouble:
+                    _calculator = CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+                        pqBuses.Count, pvBuses.Count);
+                    break;
+                case DataType.MultiPrecision:
+                    throw new NotImplementedException();
+            }
 
             for (var i = 0; i < nodeCount; ++i)
 
