@@ -33,32 +33,33 @@ public:
 
 private:
 	typedef long double floating;
+	typedef std::complex<floating> complexFloating;
 
 private:
-	void writeLine(const char *description, const Eigen::SparseMatrix< std::complex<floating> > &matrix);
+	void writeLine(const char *description, const Eigen::SparseMatrix<complexFloating> &matrix);
 	void writeLine(const char *text);
-	std::vector< std::complex<floating> > solveAdmittanceEquationSystem(const std::vector< std::complex<floating> > &rightHandSide);
-	std::vector< std::complex<floating> > calculateAdmittanceRowSum();
-	void calculateFirstCoefficient(const std::vector< std::complex<floating> > &admittanceRowSum);
-	void calculateSecondCoefficient(const std::vector< std::complex<floating> > &admittanceRowSum);
+	std::vector<complexFloating> solveAdmittanceEquationSystem(const std::vector<complexFloating> &rightHandSide);
+	std::vector<complexFloating> calculateAdmittanceRowSum();
+	void calculateFirstCoefficient(const std::vector<complexFloating> &admittanceRowSum);
+	void calculateSecondCoefficient(const std::vector<complexFloating> &admittanceRowSum);
 	void calculateNextCoefficient();
 	void calculateNextInverseCoefficient();
 	void calculateVoltagesFromCoefficients();
-	std::complex<floating> calculateVoltageFromCoefficients(const std::vector< std::complex<floating> > &coefficients);
+	complexFloating calculateVoltageFromCoefficients(const std::vector<complexFloating> &coefficients);
 	floating calculatePowerError() const;
 
 private:
-	static std::vector< std::complex<floating> > pointwiseMultiply(const std::vector< std::complex<floating> > &one, const std::vector< std::complex<floating> > &two);
-	static std::vector< std::complex<floating> > pointwiseDivide(const std::vector< std::complex<floating> > &one, const std::vector< std::complex<floating> > &two);
-	static std::vector< std::complex<floating> > add(const std::vector< std::complex<floating> > &one, const std::vector< std::complex<floating> > &two);
-	static std::vector< std::complex<floating> > subtract(const std::vector< std::complex<floating> > &one, const std::vector< std::complex<floating> > &two);
-	static std::vector< std::complex<floating> > multiply(const std::vector< std::complex<floating> > &one, const std::complex<floating> &two);
-	static std::vector< std::complex<floating> > divide(const std::complex<floating> &one, const std::vector< std::complex<floating> > &two);
-	static floating findMaximumMagnitude(const std::vector< std::complex<floating> > &values);
-	static std::complex<floating> converToComplexFloating(const std::complex<double> &value);
-	static std::vector< std::complex<floating> > ublasToStdVector(const Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> &values);
-	static Eigen::Matrix< std::complex<floating>, Eigen::Dynamic, 1> stdToUblasVector(const std::vector< std::complex<floating> > &values);
-	static std::vector< std::complex<floating> > conjugate(const std::vector< std::complex<floating> > &values);
+	static std::vector<complexFloating> pointwiseMultiply(const std::vector<complexFloating> &one, const std::vector<complexFloating> &two);
+	static std::vector<complexFloating> pointwiseDivide(const std::vector<complexFloating> &one, const std::vector<complexFloating> &two);
+	static std::vector<complexFloating> add(const std::vector<complexFloating> &one, const std::vector<complexFloating> &two);
+	static std::vector<complexFloating> subtract(const std::vector<complexFloating> &one, const std::vector<complexFloating> &two);
+	static std::vector<complexFloating> multiply(const std::vector<complexFloating> &one, const complexFloating &two);
+	static std::vector<complexFloating> divide(const complexFloating &one, const std::vector<complexFloating> &two);
+	static floating findMaximumMagnitude(const std::vector<complexFloating> &values);
+	static complexFloating converToComplexFloating(const std::complex<double> &value);
+	static std::vector<complexFloating> ublasToStdVector(const Eigen::Matrix<complexFloating, Eigen::Dynamic, 1> &values);
+	static Eigen::Matrix<complexFloating, Eigen::Dynamic, 1> stdToUblasVector(const std::vector<complexFloating> &values);
+	static std::vector<complexFloating> conjugate(const std::vector<complexFloating> &values);
 	static bool isValidFloating(floating value);
 
 private:
@@ -67,15 +68,15 @@ private:
 	const size_t _nodeCount;
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
-	Eigen::SparseLU<Eigen::SparseMatrix< std::complex<floating> >, Eigen::NaturalOrdering<int> > _factorization;
-	Eigen::SparseMatrix< std::complex<floating>, Eigen::ColMajor > _admittances;
-	std::vector< std::complex<floating> > _constantCurrents;
+	Eigen::SparseLU<Eigen::SparseMatrix<complexFloating>, Eigen::NaturalOrdering<int> > _factorization;
+	Eigen::SparseMatrix<complexFloating, Eigen::ColMajor > _admittances;
+	std::vector<complexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
-	std::vector< std::complex<floating> > _voltages;
+	std::vector<complexFloating> _voltages;
 	ConsoleOutput _consoleOutput;
-	std::vector< std::vector< std::complex<floating> > > _coefficients;
-	std::vector< std::vector< std::complex<floating> > > _inverseCoefficients;
+	std::vector< std::vector<complexFloating> > _coefficients;
+	std::vector< std::vector<complexFloating> > _inverseCoefficients;
 	mpz_class _blub;
 };
 
