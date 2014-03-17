@@ -27,7 +27,7 @@ int CalculatorRegister::createCalculatorLongDouble(double targetPrecision, int n
 	for (int i = 0; i < numeric_limits<int>::max(); ++i)
 		if (_calculators.count(i) == 0)
 		{
-			_calculators.insert(pair<int, ICalculator*>(i, new Calculator(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
+			_calculators.insert(pair<int, ICalculator*>(i, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
 			return i;
 		}
 

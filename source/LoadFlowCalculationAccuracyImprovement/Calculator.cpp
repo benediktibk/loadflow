@@ -5,7 +5,10 @@
 
 using namespace std;
 
-Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
+template class Calculator<long double, complex<long double> >;
+
+template<typename Floating, typename ComplexFloating>
+Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
 	_targetPrecision(static_cast<Floating>(targetPrecision)),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
@@ -27,27 +30,32 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_inverseCoefficients.reserve(_numberOfCoefficients);
 }
 
-void Calculator::setAdmittance(int row, int column, complex<double> value)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setAdmittance(int row, int column, complex<double> value)
 {
 	_admittances.insert(row, column) = converToComplexFloating(value);
 }
 
-void Calculator::setPQBus(int busId, int node, complex<double> power)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setPQBus(int busId, int node, complex<double> power)
 {
 	_pqBuses[busId] = PQBus(node, power);
 }
 
-void Calculator::setPVBus(int busId, int node, double powerReal, double voltageMagnitude)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setPVBus(int busId, int node, double powerReal, double voltageMagnitude)
 {
 	_pvBuses[busId] = PVBus(node, powerReal, voltageMagnitude);
 }
 
-void Calculator::setConstantCurrent(int node, complex<double> value)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex<double> value)
 {
 	_constantCurrents[node] = static_cast<ComplexFloating>(value);
 }
 
-void Calculator::calculate()
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculate()
 {            
 	stringstream stream;
 	stream << "blub is " << _blub << endl;
@@ -82,22 +90,26 @@ void Calculator::calculate()
 		_voltages = partialResults[powerErrors.begin()->second];
 }
 
-double Calculator::getVoltageReal(int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getVoltageReal(int node) const
 {
 	return static_cast<double>(_voltages[node].real());
 }
 
-double Calculator::getVoltageImaginary(int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getVoltageImaginary(int node) const
 {
 	return static_cast<double>(_voltages[node].imag());
 }
 
-void Calculator::setConsoleOutput(ConsoleOutput function)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setConsoleOutput(ConsoleOutput function)
 {
 	_consoleOutput = function;
 }
 
-void Calculator::writeLine(const char *description, const Eigen::SparseMatrix<ComplexFloating> &matrix)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::writeLine(const char *description, const Eigen::SparseMatrix<ComplexFloating> &matrix)
 {
 	stringstream stream;
 	stream << description << endl;
@@ -105,19 +117,22 @@ void Calculator::writeLine(const char *description, const Eigen::SparseMatrix<Co
 	writeLine(stream.str().c_str());
 }
 
-void Calculator::writeLine(const char *text)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::writeLine(const char *text)
 {
 	if (_consoleOutput != 0)
 		_consoleOutput(text);
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide)
 {
 	Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> rightHandSideConverted = stdToUblasVector(rightHandSide);
 	return ublasToStdVector(_factorization.solve(rightHandSideConverted));
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::calculateAdmittanceRowSum()
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdmittanceRowSum()
 {
 	std::vector<ComplexFloating> result(_nodeCount);
 
@@ -128,7 +143,8 @@ std::vector<Calculator::ComplexFloating> Calculator::calculateAdmittanceRowSum()
 	return result;
 }
 
-void Calculator::calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
 {
 	assert(_coefficients.size() == 0);
 
@@ -152,7 +168,8 @@ void Calculator::calculateFirstCoefficient(const std::vector<ComplexFloating> &a
 	_coefficients.push_back(coefficients);
 }
 
-void Calculator::calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
 {
 	assert(_coefficients.size() == 1);
 	assert(_inverseCoefficients.size() == 1);
@@ -191,7 +208,8 @@ void Calculator::calculateSecondCoefficient(const std::vector<ComplexFloating> &
 	_coefficients.push_back(coefficients);
 }
 
-void Calculator::calculateNextCoefficient()
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
 	assert(_coefficients.size() > 1);
 	assert(_inverseCoefficients.size() > 1);
@@ -227,7 +245,8 @@ void Calculator::calculateNextCoefficient()
 	_coefficients.push_back(coefficients);
 }
 
-void Calculator::calculateNextInverseCoefficient()
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateNextInverseCoefficient()
 {
 	assert(_inverseCoefficients.size() > 0);
 	assert(_inverseCoefficients.size() + 1 == _coefficients.size());
@@ -253,7 +272,8 @@ void Calculator::calculateNextInverseCoefficient()
 	_inverseCoefficients.push_back(result);
 }
 
-void Calculator::calculateVoltagesFromCoefficients()
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
 {
 	for (size_t i = 0; i < _nodeCount; ++i)
 	{
@@ -266,7 +286,8 @@ void Calculator::calculateVoltagesFromCoefficients()
 	}
 }
 
-Calculator::ComplexFloating Calculator::calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients)
+template<typename Floating, typename ComplexFloating>
+ComplexFloating Calculator<Floating, ComplexFloating>::calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients)
 {
 	std::vector<ComplexFloating> previousEpsilon(coefficients.size() + 1);
 	std::vector<ComplexFloating> currentEpsilon(coefficients.size());
@@ -297,7 +318,8 @@ Calculator::ComplexFloating Calculator::calculateVoltageFromCoefficients(const s
 	return initialCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
 }
 
-Calculator::Floating Calculator::calculatePowerError() const
+template<typename Floating, typename ComplexFloating>
+Floating Calculator<Floating, ComplexFloating>::calculatePowerError() const
 {
 	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> voltages = stdToUblasVector(_voltages);
 	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> currents = _admittances * voltages;
@@ -325,7 +347,8 @@ Calculator::Floating Calculator::calculatePowerError() const
 	return abs(sum);
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
 {
 	assert(one.size() == two.size());
 	size_t n = one.size();
@@ -337,7 +360,8 @@ std::vector<Calculator::ComplexFloating> Calculator::pointwiseMultiply(const std
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::pointwiseDivide(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::pointwiseDivide(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
 {
 	assert(one.size() == two.size());
 	size_t n = one.size();
@@ -349,7 +373,8 @@ std::vector<Calculator::ComplexFloating> Calculator::pointwiseDivide(const std::
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::add(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::add(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
 {
 	assert(one.size() == two.size());
 	size_t n = one.size();
@@ -361,7 +386,8 @@ std::vector<Calculator::ComplexFloating> Calculator::add(const std::vector<Compl
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::subtract(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::subtract(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
 {
 	assert(one.size() == two.size());
 	size_t n = one.size();
@@ -373,7 +399,8 @@ std::vector<Calculator::ComplexFloating> Calculator::subtract(const std::vector<
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::multiply(const std::vector<ComplexFloating> &one, const ComplexFloating &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::multiply(const std::vector<ComplexFloating> &one, const ComplexFloating &two)
 {
 	std::vector<ComplexFloating> result(one);
 
@@ -383,7 +410,8 @@ std::vector<Calculator::ComplexFloating> Calculator::multiply(const std::vector<
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::divide(const ComplexFloating &one, const std::vector<ComplexFloating> &two)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::divide(const ComplexFloating &one, const std::vector<ComplexFloating> &two)
 {
 	std::vector<ComplexFloating> result(two);
 
@@ -393,7 +421,8 @@ std::vector<Calculator::ComplexFloating> Calculator::divide(const ComplexFloatin
 	return result;
 }
 
-Calculator::Floating Calculator::findMaximumMagnitude(const std::vector<ComplexFloating> &values)
+template<typename Floating, typename ComplexFloating>
+Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const std::vector<ComplexFloating> &values)
 {
 	assert(values.size() > 0);
 	Floating result(0);
@@ -408,14 +437,16 @@ Calculator::Floating Calculator::findMaximumMagnitude(const std::vector<ComplexF
 	return result;
 }
 
-Calculator::ComplexFloating Calculator::converToComplexFloating(const complex<double> &value)
+template<typename Floating, typename ComplexFloating>
+ComplexFloating Calculator<Floating, ComplexFloating>::converToComplexFloating(const complex<double> &value)
 {
 	Floating real = static_cast<Floating>(value.real());
 	Floating imaginary = static_cast<Floating>(value.imag());
 	return ComplexFloating(real, imaginary);
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::ublasToStdVector(const Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> &values)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::ublasToStdVector(const Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> &values)
 {
 	std::vector<ComplexFloating> result(values.size());
 
@@ -425,7 +456,8 @@ std::vector<Calculator::ComplexFloating> Calculator::ublasToStdVector(const Eige
 	return result;
 }
 
-Eigen::Matrix<Calculator::ComplexFloating, Eigen::Dynamic, 1> Calculator::stdToUblasVector(const std::vector<ComplexFloating> &values)
+template<typename Floating, typename ComplexFloating>
+Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Calculator<Floating, ComplexFloating>::stdToUblasVector(const std::vector<ComplexFloating> &values)
 {
 	Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> result(values.size(), 1);
 
@@ -435,9 +467,10 @@ Eigen::Matrix<Calculator::ComplexFloating, Eigen::Dynamic, 1> Calculator::stdToU
 	return result;
 }
 
-std::vector<Calculator::ComplexFloating> Calculator::conjugate(const std::vector<ComplexFloating> &values)
+template<typename Floating, typename ComplexFloating>
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(const std::vector<ComplexFloating> &values)
 {
-	std::vector<Calculator::ComplexFloating> result(values.size());
+	std::vector<ComplexFloating> result(values.size());
 
 	for (size_t i = 0; i < values.size(); ++i)
 		result[i] = conj(values[i]);
@@ -445,27 +478,32 @@ std::vector<Calculator::ComplexFloating> Calculator::conjugate(const std::vector
 	return result;
 }
 
-double Calculator::getCoefficientReal(int step, int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getCoefficientReal(int step, int node) const
 {
 	return static_cast<double>(_coefficients[step][node].real());
 }
 
-double Calculator::getCoefficientImaginary(int step, int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getCoefficientImaginary(int step, int node) const
 {
 	return static_cast<double>(_coefficients[step][node].imag());
 }
 
-double Calculator::getInverseCoefficientReal(int step, int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getInverseCoefficientReal(int step, int node) const
 {
 	return static_cast<double>(_inverseCoefficients[step][node].real());
 }
 
-double Calculator::getInverseCoefficientImaginary(int step, int node) const
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getInverseCoefficientImaginary(int step, int node) const
 {
 	return static_cast<double>(_inverseCoefficients[step][node].imag());
 }
 
-int Calculator::getNodeCount() const
+template<typename Floating, typename ComplexFloating>
+int Calculator<Floating, ComplexFloating>::getNodeCount() const
 {
 	return _nodeCount;
 }

@@ -14,6 +14,7 @@
 #include "Complex.h"
 #include "ICalculator.h"
 
+template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
 {
 public:
@@ -32,10 +33,6 @@ public:
 	virtual double getInverseCoefficientImaginary(int step, int node) const;
 	virtual int getNodeCount() const;
 	virtual void setConsoleOutput(ConsoleOutput function);
-
-private:
-	typedef long double Floating;
-	typedef std::complex<long double> ComplexFloating;
 
 private:
 	void writeLine(const char *description, const Eigen::SparseMatrix<ComplexFloating> &matrix);
