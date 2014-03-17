@@ -63,7 +63,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
+      <Command>call $(SolutionDir)killvstest.bat
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,7 +82,8 @@
       <AdditionalDependencies>mpir.lib;mpirxx.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
+      <Command>call $(SolutionDir)killvstest.bat
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

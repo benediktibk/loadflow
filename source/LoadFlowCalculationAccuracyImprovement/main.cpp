@@ -1,5 +1,7 @@
 #include "CalculatorRegister.h"
 #include "ConsoleOutput.h"
+#include <Windows.h>
+#include <mpir.h>
 
 using namespace std;
 
@@ -78,4 +80,23 @@ extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientImaginary(i
 extern "C" __declspec(dllexport) int __cdecl GetLastNodeCount(int calculator)
 {
 	return calculatorRegister.get(calculator)->getNodeCount();
+}
+
+extern "C" { int _afxForceUSRDLL; }
+
+BOOL APIENTRY DllMain(HANDLE hModule, 
+                      DWORD  ul_reason_for_call, 
+                      LPVOID lpReserved)
+{
+    switch( ul_reason_for_call ) 
+	{
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+		mpf_set_default_prec(52);
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+		break;
+    }
+
+    return TRUE;
 }
