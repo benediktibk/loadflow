@@ -26,7 +26,7 @@ Complex<T>::Complex(int real) :
 { }
 
 template<typename T>
-Complex<T>::Complex(std::complex<T> const& rhs) :
+Complex<T>::Complex(std::complex<double> const& rhs) :
 	_real(static_cast<T>(rhs.real())),
 	_imag(static_cast<T>(rhs.imag()))
 { }
@@ -44,7 +44,7 @@ T const& Complex<T>::imag() const
 }
 
 template<typename T>
-const std::complex<double> Complex<T>::toStdComplex() const
+Complex<T>::operator std::complex<double>() const
 {
 	return std::complex<double>(static_cast<double>(_real), static_cast<double>(_imag));
 }
@@ -112,12 +112,6 @@ Complex<T>& Complex<T>::operator/=(Complex<T> const& rhs)
 {
 	*this = *this / rhs;
 	return *this;
-}
-
-template<typename T>
-Complex<T> Complex<T>::createFromStdComplex(const std::complex<double> &rhs)
-{
-	return Complex<T>(static_cast<T>(rhs.real()), static_cast<T>(rhs.imag()));
 }
 
 double toDouble(double value)

@@ -34,7 +34,7 @@ public:
 
 private:
 	typedef long double floating;
-	typedef Complex<long double> complexFloating;
+	typedef std::complex<long double> complexFloating;
 
 private:
 	void writeLine(const char *description, const Eigen::SparseMatrix<complexFloating> &matrix);

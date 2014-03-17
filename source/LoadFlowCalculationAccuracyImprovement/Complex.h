@@ -13,12 +13,12 @@ public:
 	Complex(T const& real, T const& imag);
 	explicit Complex(T const& real);
 	Complex(int real);
-	Complex(std::complex<T> const& rhs);
+	explicit Complex(std::complex<double> const& rhs);
 
 	T const& real() const;
 	T const& imag() const;
-	const std::complex<double> toStdComplex() const;
 	
+	operator std::complex<double>() const;
 	const Complex<T> operator+(Complex<T> const& rhs) const;
 	const Complex<T> operator-(Complex<T> const& rhs) const;
 	const Complex<T> operator*(Complex<T> const& rhs) const;
@@ -28,8 +28,6 @@ public:
 	Complex<T>& operator-=(Complex<T> const& rhs);
 	Complex<T>& operator*=(Complex<T> const& rhs);
 	Complex<T>& operator/=(Complex<T> const& rhs);
-
-	static Complex<T> createFromStdComplex(const std::complex<double> &rhs);
 
 private:
 	T _real;

@@ -44,7 +44,7 @@ void Calculator::setPVBus(int busId, int node, double powerReal, double voltageM
 
 void Calculator::setConstantCurrent(int node, complex<double> value)
 {
-	_constantCurrents[node] = complexFloating::createFromStdComplex(value);
+	_constantCurrents[node] = static_cast<complexFloating>(value);
 }
 
 void Calculator::calculate()
@@ -311,7 +311,7 @@ Calculator::floating Calculator::calculatePowerError() const
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		complexFloating currentPower = powers[_pqBuses[i].getId()];
-		complexFloating powerShouldBe = complexFloating::createFromStdComplex(_pqBuses[i].getPower());
+		complexFloating powerShouldBe = static_cast<complexFloating>(_pqBuses[i].getPower());
 		sum += abs(currentPower - powerShouldBe);
 	}
 
