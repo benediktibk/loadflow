@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
+#include <mpirxx.h>
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
@@ -74,5 +75,6 @@ private:
 	ConsoleOutput _consoleOutput;
 	std::vector< std::vector< std::complex<floating> > > _coefficients;
 	std::vector< std::vector< std::complex<floating> > > _inverseCoefficients;
+	mpz_class _blub;
 };
 

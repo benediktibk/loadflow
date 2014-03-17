@@ -16,7 +16,8 @@ Calculator::Calculator(double targetPrecision, int numberOfCoefficients, int nod
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount, complex<floating>(0, 0)),
-	_consoleOutput(0)
+	_consoleOutput(0),
+	_blub(12)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -48,6 +49,10 @@ void Calculator::setConstantCurrent(int node, complex<double> value)
 
 void Calculator::calculate()
 {            
+	stringstream stream;
+	stream << "blub is " << _blub << endl;
+	writeLine(stream.str().c_str());
+
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	_coefficients.clear();

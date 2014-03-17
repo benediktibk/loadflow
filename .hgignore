@@ -5,6 +5,8 @@ source/packages/**
 source/TestResults/**
 source/Debug/**
 source/*/Debug/**
+source/Release/**
+source/*/Release/**
 documents/~$*.xlsx
 *.user
 *.suo

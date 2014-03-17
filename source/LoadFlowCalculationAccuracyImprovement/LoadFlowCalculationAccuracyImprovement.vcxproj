@@ -22,7 +22,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -39,8 +39,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\eigen;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\boost\boost_1_55_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)external\mpir\include;$(SolutionDir)external\eigen;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\mpir\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)external\mpir\include;$(SolutionDir)external\eigen;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\mpir\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -51,15 +56,14 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>mpir.lib;mpirxx.lib</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y $(SolutionDir)Debug\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\Debug
-xcopy /Y $(SolutionDir)Debug\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\Release</Command>
+      <Command>xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -74,7 +78,11 @@ xcopy /Y $(SolutionDir)Debug\LoadFlowCalculationAccuracyImprovement.dll $(Soluti
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>mpir.lib;mpirxx.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
