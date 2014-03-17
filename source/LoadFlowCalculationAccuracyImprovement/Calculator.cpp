@@ -44,7 +44,7 @@ void Calculator::setPVBus(int busId, int node, double powerReal, double voltageM
 
 void Calculator::setConstantCurrent(int node, complex<double> value)
 {
-	_constantCurrents[node] = value;
+	_constantCurrents[node] = complexFloating::createFromStdComplex(value);
 }
 
 void Calculator::calculate()
@@ -59,7 +59,7 @@ void Calculator::calculate()
 	_inverseCoefficients.clear();
 	std::vector<complexFloating> admittanceRowSums = calculateAdmittanceRowSum();
 	calculateFirstCoefficient(admittanceRowSums);
-	_inverseCoefficients.push_back(divide(complexFloating(1.0, 0.0), _coefficients.front()));
+	_inverseCoefficients.push_back(divide(complexFloating(1), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
 	calculateNextInverseCoefficient();
 	map<floating, int> powerErrors;
@@ -74,11 +74,8 @@ void Calculator::calculate()
 		calculateVoltagesFromCoefficients();
 		floating powerError = calculatePowerError();
 
-		if (isValidFloating(powerError))
-		{
-			powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
-			partialResults.push_back(_voltages);
-		}
+		powerErrors.insert(pair<floating, int>(powerError, partialResults.size()));
+		partialResults.push_back(_voltages);
 	}
 
 	if (!powerErrors.empty())
@@ -140,7 +137,7 @@ void Calculator::calculateFirstCoefficient(const std::vector<complexFloating> &a
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*complexFloating(-1.0, 0.0);
+		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*complexFloating(floating(-1));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -251,7 +248,7 @@ void Calculator::calculateNextInverseCoefficient()
 	}
 
 	result = pointwiseDivide(result, _coefficients[0]);
-	result = multiply(result, complexFloating(-1.0, 0.0));
+	result = multiply(result, complexFloating(floating(-1)));
 	assert(result.size() == _nodeCount);
 	_inverseCoefficients.push_back(result);
 }
@@ -290,7 +287,7 @@ Calculator::complexFloating Calculator::calculateVoltageFromCoefficients(const s
 		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
         {
             complexFloating previousDifference = currentEpsilon[j + 1] - currentEpsilon[j];
-			nextEpsilon[j] = previousEpsilon[j + 1] + complexFloating(1.0, 0.0)/previousDifference;
+			nextEpsilon[j] = previousEpsilon[j + 1] + complexFloating(floating(1))/previousDifference;
         }
 
 		previousEpsilon = currentEpsilon;
@@ -309,12 +306,12 @@ Calculator::floating Calculator::calculatePowerError() const
 	std::vector<complexFloating> powers = pointwiseMultiply(conjugate(totalCurrents), _voltages);
 	
 	assert(_nodeCount == powers.size());
-	floating sum = 0.0;
+	floating sum(0);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
-		const complexFloating &currentPower = powers[_pqBuses[i].getId()];
-		const complexFloating &powerShouldBe = _pqBuses[i].getPower();
+		complexFloating currentPower = powers[_pqBuses[i].getId()];
+		complexFloating powerShouldBe = complexFloating::createFromStdComplex(_pqBuses[i].getPower());
 		sum += abs(currentPower - powerShouldBe);
 	}
 
@@ -399,7 +396,7 @@ std::vector<Calculator::complexFloating> Calculator::divide(const complexFloatin
 Calculator::floating Calculator::findMaximumMagnitude(const std::vector<complexFloating> &values)
 {
 	assert(values.size() > 0);
-	floating result = 0.0;
+	floating result(0);
 
 	for (size_t i = 0; i < values.size(); ++i)
 	{
@@ -446,22 +443,6 @@ std::vector<Calculator::complexFloating> Calculator::conjugate(const std::vector
 		result[i] = conj(values[i]);
 
 	return result;
-}
-
-bool Calculator::isValidFloating(floating value)
-{
-	bool isnan = true;
-	bool isinfinity = true;
-
-#ifdef _MSC_VER
-	isnan = _isnan(value) != 0;
-	isinfinity = !_finite(value);
-#else
-	isnan = std::isnan(value);
-	isinifinty = std::isinf(value);
-#endif
-
-	return !isnan && !isinfinity;
 }
 
 double Calculator::getCoefficientReal(int step, int node) const

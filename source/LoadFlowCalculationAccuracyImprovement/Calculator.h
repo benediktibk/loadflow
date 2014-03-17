@@ -34,7 +34,7 @@ public:
 
 private:
 	typedef long double floating;
-	typedef Complex<floating> complexFloating;
+	typedef Complex<long double> complexFloating;
 
 private:
 	void writeLine(const char *description, const Eigen::SparseMatrix<complexFloating> &matrix);
@@ -61,7 +61,6 @@ private:
 	static std::vector<complexFloating> ublasToStdVector(const Eigen::Matrix<complexFloating, Eigen::Dynamic, 1> &values);
 	static Eigen::Matrix<complexFloating, Eigen::Dynamic, 1> stdToUblasVector(const std::vector<complexFloating> &values);
 	static std::vector<complexFloating> conjugate(const std::vector<complexFloating> &values);
-	static bool isValidFloating(floating value);
 
 private:
 	const floating _targetPrecision;

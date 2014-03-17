@@ -3,6 +3,7 @@
 #include <complex>
 #include <Eigen/Core>
 #include <ostream>
+#include "MultiPrecision.h"
 
 template<typename T>
 class Complex
@@ -10,47 +11,30 @@ class Complex
 public:
 	Complex();
 	Complex(T const& real, T const& imag);
-	Complex(T const& real);
-	Complex(std::complex<double> rhs);
-	Complex(std::complex<T> rhs);
+	explicit Complex(T const& real);
+	Complex(int real);
+	Complex(std::complex<T> const& rhs);
 
 	T const& real() const;
 	T const& imag() const;
-
+	const std::complex<double> toStdComplex() const;
+	
+	const Complex<T> operator+(Complex<T> const& rhs) const;
+	const Complex<T> operator-(Complex<T> const& rhs) const;
+	const Complex<T> operator*(Complex<T> const& rhs) const;
+	const Complex<T> operator/(Complex<T> const& rhs) const;
 	Complex<T>& operator=(Complex<T> const& rhs);
 	Complex<T>& operator+=(Complex<T> const& rhs);
 	Complex<T>& operator-=(Complex<T> const& rhs);
 	Complex<T>& operator*=(Complex<T> const& rhs);
 	Complex<T>& operator/=(Complex<T> const& rhs);
-	std::complex<T> const& getValue() const;
+
+	static Complex<T> createFromStdComplex(const std::complex<double> &rhs);
 
 private:
-	std::complex<T> _value;
+	T _real;
+	T _imag;
 };
-
-template<typename T>
-const Complex<T> operator+(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.getValue() + rhs.getValue());
-}
-
-template<typename T>
-const Complex<T> operator-(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.getValue() - rhs.getValue());
-}
-
-template<typename T>
-const Complex<T> operator*(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.getValue() * rhs.getValue());
-}
-
-template<typename T>
-const Complex<T> operator/(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.getValue() / rhs.getValue());
-}
 
 template<typename T>
 bool operator==(Complex<T> const& lhs, Complex<T> const& rhs)
@@ -67,7 +51,7 @@ bool operator!=(Complex<T> const& lhs, Complex<T> const& rhs)
 template<typename T>
 std::ostream& operator<<(std::ostream &stream, Complex<T> const& value)
 {
-	stream << value.getValue();
+	stream << "(" << value.real() << ", " << value.imag() << ")";
 	return stream;
 }
 
@@ -76,19 +60,19 @@ namespace std
 	template<typename T>
 	const Complex<T> conj(Complex<T> const& value)
 	{
-		return Complex<T>(conj(value.getValue()));
+		return Complex<T>(value.real(), -value.imag());
 	}
 
 	template<typename T>
 	const T abs(Complex<T> const& value)
 	{
-		return abs(value.getValue());
+		return sqrt(abs2(value));
 	}
 
 	template<typename T>
 	const T abs2(Complex<T> const& value)
 	{
-		return abs2(value.getValue());
+		return value.real()*value.real() + value.imag()*value.imag();
 	}
 
 	template<typename T>
@@ -106,7 +90,7 @@ namespace std
 
 namespace Eigen 
 {
-	template<> struct NumTraits< Complex<long double> > : NumTraits<long double>
+	template<> struct NumTraits< Complex<long double> > : NumTraits<double>
 	{
 		typedef long double Real;
 		typedef long double NonInteger;
@@ -122,5 +106,33 @@ namespace Eigen
 			AddCost = 3,
 			MulCost = 3
 		};
+	};
+
+	template<> struct NumTraits< Complex<MultiPrecision> >
+	{
+		typedef MultiPrecision Real;
+		typedef MultiPrecision NonInteger;
+		typedef Complex<MultiPrecision> Nested;
+
+		enum 
+		{
+			IsComplex = 1,
+			IsInteger = 0,
+			IsSigned = 1,
+			RequireInitialization = 1,
+			ReadCost = 1,
+			AddCost = 3,
+			MulCost = 3
+		};
+
+		static inline Real epsilon() 
+		{ 
+			return static_cast<Real>(std::numeric_limits<long double>::epsilon()); 
+		}
+
+		static inline Real dummy_precision()
+		{
+			return Real(1e-30);
+		}
 	};
 }

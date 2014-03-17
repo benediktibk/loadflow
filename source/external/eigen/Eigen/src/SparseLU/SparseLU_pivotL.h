@@ -71,7 +71,7 @@ Index SparseLUImpl<Scalar,Index>::pivotL(const Index jcol, const RealScalar& dia
   
   // Determine the largest abs numerical value for partial pivoting 
   Index diagind = iperm_c(jcol); // diagonal index 
-  RealScalar pivmax = 0.0; 
+  RealScalar pivmax(0); 
   Index pivptr = nsupc; 
   Index diag = emptyIdxLU; 
   RealScalar rtemp;
@@ -86,7 +86,7 @@ Index SparseLUImpl<Scalar,Index>::pivotL(const Index jcol, const RealScalar& dia
   }
   
   // Test for singularity
-  if ( pivmax == 0.0 ) {
+  if ( pivmax == RealScalar(0) ) {
     pivrow = lsub_ptr[pivptr];
     perm_r(pivrow) = jcol;
     return (jcol+1);
@@ -102,7 +102,7 @@ Index SparseLUImpl<Scalar,Index>::pivotL(const Index jcol, const RealScalar& dia
     {
       // Diagonal element exists
       rtemp = std::abs(lu_col_ptr[diag]);
-      if (rtemp != 0.0 && rtemp >= thresh) pivptr = diag;
+      if (rtemp != RealScalar(0) && rtemp >= thresh) pivptr = diag;
     }
     pivrow = lsub_ptr[pivptr];
   }
@@ -122,7 +122,7 @@ Index SparseLUImpl<Scalar,Index>::pivotL(const Index jcol, const RealScalar& dia
     }
   }
   // cdiv operations
-  Scalar temp = Scalar(1.0) / lu_col_ptr[nsupc];
+  Scalar temp = Scalar(1) / lu_col_ptr[nsupc];
   for (k = nsupc+1; k < nsupr; k++)
     lu_col_ptr[k] *= temp; 
   return 0;
