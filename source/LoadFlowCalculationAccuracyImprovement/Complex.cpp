@@ -1,115 +1,82 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 
-template class Complex<double>;
 template class Complex<long double>;
 template class Complex<MultiPrecision>;
 
 template<typename T>
-Complex<T>::Complex() :
-	_real(0),
-	_imag(0)
+Complex<T>::Complex()
 { }
 
 template<typename T>
 Complex<T>::Complex(T const& real, T const& imag) :
-	_real(real),
-	_imag(imag)
+	_value(real, imag)
 { }
 
 template<typename T>
 Complex<T>::Complex(T const& real) :
-	_real(real),
-	_imag(0)
+	_value(real, 0)
+{ }
+
+template<typename T>
+Complex<T>::Complex(std::complex<double> rhs) :
+	_value(rhs.real(), rhs.imag())
+{ }
+
+template<typename T>
+Complex<T>::Complex(std::complex<T> rhs) :
+	_value(rhs)
 { }
 
 template<typename T>
 T const& Complex<T>::real() const
 {
-	return _real;
+	return _value.real();
 }
 
 template<typename T>
 T const& Complex<T>::imag() const
 {
-	return _imag;
-}
-
-template<typename T>
-const Complex<T> operator+(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.real() + rhs.real(), lhs.imag() + rhs.imag());
-}
-
-template<typename T>
-const Complex<T> operator-(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.real() - rhs.real(), lhs.imag() - rhs.imag());
-}
-
-template<typename T>
-const Complex<T> operator*(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return Complex<T>(lhs.real()*rhs.real() - lhs.imag()*rhs.imag(), lhs.imag()*rhs.real() + lhs.real()*rhs.imag());
-}
-
-template<typename T>
-const Complex<T> operator/(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	T divisor = rhs.real()*rhs.real() + rhs.imag()*rhs.imag();
-	T real = lhs.real()*rhs.real() + lhs.imag()*rhs.imag();
-	T imag = rhs.real()*lhs.imag() - rhs.real()*lhs.imag();
-	return Complex<T>(real/divisor, imag/divisor);
-}
-
-template<typename T>
-bool operator==(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return	lhs.real() == rhs.real() &&
-			lhs.imag() == rhs.imag();
-}
-
-template<typename T>
-bool operator!=(Complex<T> const& lhs, Complex<T> const& rhs)
-{
-	return	lhs.real() != rhs.real() ||
-			lhs.imag() != rhs.imag();
+	return _value.imag();
 }
 
 template<typename T>
 Complex<T>& Complex<T>::operator=(Complex<T> const& rhs)
 {
-	_real = rhs.real();
-	_imag = rhs.imag();
+	_value = rhs.getValue();
 	return *this;
 }
 
 template<typename T>
 Complex<T>& Complex<T>::operator+=(Complex<T> const& rhs)
 {
-	_real += rhs.real();
-	_imag += rhs.imag();
+	_value += rhs.getValue();
 	return *this;
 }
 
 template<typename T>
 Complex<T>& Complex<T>::operator-=(Complex<T> const& rhs)
 {
-	_real -= rhs.real();
-	_imag -= rhs.imag();
+	_value -= rhs.getValue();
 	return *this;
 }
 
 template<typename T>
 Complex<T>& Complex<T>::operator*=(Complex<T> const& rhs)
 {
-	*this = *this * rhs;
+	_value *= rhs.getValue();
 	return *this;
 }
 
 template<typename T>
 Complex<T>& Complex<T>::operator/=(Complex<T> const& rhs)
 {
-	*this = *this * rhs;
+	_value /= rhs.getValue();
 	return *this;
+}
+
+template<typename T>
+std::complex<T> const& Complex<T>::getValue() const
+{
+	return _value;
 }

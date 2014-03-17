@@ -11,6 +11,7 @@
 #include "PVBus.h"
 #include "ConsoleOutput.h"
 #include "MultiPrecision.h"
+#include "Complex.h"
 
 class Calculator
 {
@@ -33,7 +34,7 @@ public:
 
 private:
 	typedef long double floating;
-	typedef std::complex<floating> complexFloating;
+	typedef Complex<floating> complexFloating;
 
 private:
 	void writeLine(const char *description, const Eigen::SparseMatrix<complexFloating> &matrix);

@@ -186,7 +186,7 @@ void Calculator::calculateSecondCoefficient(const std::vector<complexFloating> &
 		complexFloating previousInverseCoefficient = previousInverseCoefficients[id];
 		complexFloating admittanceRowSum = admittanceRowSums[id];
 		floating magnitudeSquare = static_cast<floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (realPower*previousCoefficient*floating(2) - previousInverseCoefficient)/magnitudeSquare - admittanceRowSum;
+		rightHandSide[id] = (previousCoefficient*complexFloating(realPower*floating(2)) - previousInverseCoefficient)/complexFloating(magnitudeSquare) - admittanceRowSum;
 	}
 	
 	std::vector<complexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -222,7 +222,7 @@ void Calculator::calculateNextCoefficient()
 		complexFloating previousCoefficient = previousCoefficients[id];
 		complexFloating previousInverseCoefficient = previousInverseCoefficients[id];
 		floating magnitudeSquare = static_cast<floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (realPower*previousCoefficient*floating(2) - previousInverseCoefficient)/magnitudeSquare;
+		rightHandSide[id] = (previousCoefficient*complexFloating(realPower*floating(2)) - previousInverseCoefficient)/complexFloating(magnitudeSquare);
 	}
 	
 	std::vector<complexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
