@@ -89,6 +89,7 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CalculatorRegister.cpp" />
+    <ClCompile Include="Complex.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiPrecision.cpp" />
     <ClCompile Include="PQBus.cpp" />
@@ -97,6 +98,7 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
     <ClInclude Include="CalculatorRegister.h" />
+    <ClInclude Include="Complex.h" />
     <ClInclude Include="ConsoleOutput.h" />
     <ClInclude Include="MultiPrecision.h" />
     <ClInclude Include="PQBus.h" />
