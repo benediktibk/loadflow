@@ -9,7 +9,7 @@ CalculatorRegister calculatorRegister;
 
 extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
 {
-	return calculatorRegister.create(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount);
+	return calculatorRegister.createCalculatorLongDouble(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount);
 }
 
 extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calculator)
