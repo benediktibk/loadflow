@@ -22,8 +22,7 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount),
-	_consoleOutput(0),
-	_blub(12)
+	_consoleOutput(0)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -60,10 +59,6 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {            
-	stringstream stream;
-	stream << "blub is " << _blub << endl;
-	writeLine(stream.str().c_str());
-
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	_coefficients.clear();
