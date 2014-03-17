@@ -51,7 +51,7 @@ namespace LoadFlowCalculation
                 DeleteLoadFlowCalculator(_calculator);
 
             var nodeCount = admittances.RowCount;
-            _calculator = CreateLoadFlowCalculator(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+            _calculator = CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
                 pqBuses.Count, pvBuses.Count);
 
             for (var i = 0; i < nodeCount; ++i)
@@ -123,7 +123,7 @@ namespace LoadFlowCalculation
 
         #region dll imports
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int CreateLoadFlowCalculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
+        private static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void DeleteLoadFlowCalculator(int calculator);

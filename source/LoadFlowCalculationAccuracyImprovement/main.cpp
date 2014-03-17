@@ -7,7 +7,7 @@ using namespace std;
 
 CalculatorRegister calculatorRegister;
 
-extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
+extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
 {
 	return calculatorRegister.create(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount);
 }

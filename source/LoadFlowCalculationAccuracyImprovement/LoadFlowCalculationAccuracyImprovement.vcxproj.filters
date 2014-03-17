@@ -59,5 +59,8 @@
     <ClInclude Include="Complex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ICalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

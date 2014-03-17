@@ -100,6 +100,7 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     <ClInclude Include="CalculatorRegister.h" />
     <ClInclude Include="Complex.h" />
     <ClInclude Include="ConsoleOutput.h" />
+    <ClInclude Include="ICalculator.h" />
     <ClInclude Include="MultiPrecision.h" />
     <ClInclude Include="PQBus.h" />
     <ClInclude Include="PVBus.h" />
