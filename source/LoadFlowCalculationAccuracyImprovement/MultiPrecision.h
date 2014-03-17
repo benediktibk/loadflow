@@ -3,6 +3,8 @@
 class MultiPrecision
 {
 public:
+	typedef double ValueType;
+
 	MultiPrecision();
 	MultiPrecision(float value);
 	MultiPrecision(double value);
@@ -10,18 +12,20 @@ public:
 	MultiPrecision(int value);
 	~MultiPrecision();
 
-	const MultiPrecision operator+(const MultiPrecision &rhs) const;
-	const MultiPrecision operator-(const MultiPrecision &rhs) const;
-	const MultiPrecision operator*(const MultiPrecision &rhs) const;
-	const MultiPrecision operator/(const MultiPrecision &rhs) const;
 	operator double() const;
 	MultiPrecision& operator=(const MultiPrecision &rhs);
 	MultiPrecision& operator+=(const MultiPrecision &rhs);
 	MultiPrecision& operator-=(const MultiPrecision &rhs);
 	MultiPrecision& operator*=(const MultiPrecision &rhs);
 	MultiPrecision& operator/=(const MultiPrecision &rhs);
+	ValueType getValue() const;
 
 private:
-	double _value;
+	ValueType _value;
 };
+
+const MultiPrecision operator+(const MultiPrecision &lhs, const MultiPrecision &rhs);
+const MultiPrecision operator-(const MultiPrecision &lhs, const MultiPrecision &rhs);
+const MultiPrecision operator*(const MultiPrecision &lhs, const MultiPrecision &rhs);
+const MultiPrecision operator/(const MultiPrecision &lhs, const MultiPrecision &rhs);
 

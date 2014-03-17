@@ -24,26 +24,6 @@ MultiPrecision::MultiPrecision(int value) :
 MultiPrecision::~MultiPrecision(void)
 { }
 
-const MultiPrecision MultiPrecision::operator+(const MultiPrecision &rhs) const
-{
-	return MultiPrecision(_value+rhs._value);
-}
-
-const MultiPrecision MultiPrecision::operator-(const MultiPrecision &rhs) const
-{
-	return MultiPrecision(_value-rhs._value);
-}
-
-const MultiPrecision MultiPrecision::operator*(const MultiPrecision &rhs) const
-{
-	return MultiPrecision(_value*rhs._value);
-}
-
-const MultiPrecision MultiPrecision::operator/(const MultiPrecision &rhs) const
-{
-	return MultiPrecision(_value/rhs._value);
-}
-
 MultiPrecision::operator double() const
 {
 	return _value;
@@ -77,4 +57,29 @@ MultiPrecision& MultiPrecision::operator/=(const MultiPrecision &rhs)
 {
 	_value /= rhs._value;
 	return *this;
+}
+
+MultiPrecision::ValueType MultiPrecision::getValue() const
+{
+	return _value;
+}
+
+const MultiPrecision operator+(const MultiPrecision &lhs, const MultiPrecision &rhs)
+{
+	return MultiPrecision(lhs.getValue() + rhs.getValue());
+}
+
+const MultiPrecision operator-(const MultiPrecision &lhs, const MultiPrecision &rhs)
+{
+	return MultiPrecision(lhs.getValue() - rhs.getValue());
+}
+
+const MultiPrecision operator*(const MultiPrecision &lhs, const MultiPrecision &rhs)
+{
+	return MultiPrecision(lhs.getValue() * rhs.getValue());
+}
+
+const MultiPrecision operator/(const MultiPrecision &lhs, const MultiPrecision &rhs)
+{
+	return MultiPrecision(lhs.getValue() / rhs.getValue());
 }
