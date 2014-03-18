@@ -2,7 +2,6 @@
 #include "ConsoleOutput.h"
 #include "UnitTest.h"
 #include <Windows.h>
-#include <mpir.h>
 
 using namespace std;
 
@@ -92,23 +91,4 @@ extern "C" __declspec(dllexport) bool __cdecl RunTests()
 {
 	bool result = runTests();
 	return result;
-}
-
-extern "C" { int _afxForceUSRDLL; }
-
-BOOL APIENTRY DllMain(HANDLE hModule, 
-                      DWORD  ul_reason_for_call, 
-                      LPVOID lpReserved)
-{
-    switch( ul_reason_for_call ) 
-	{
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-		mpf_set_default_prec(52);
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-		break;
-    }
-
-    return TRUE;
 }

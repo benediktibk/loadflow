@@ -147,7 +147,7 @@ namespace Eigen
 
 		static inline Real epsilon() 
 		{ 
-			return static_cast<Real>(std::numeric_limits<long double>::epsilon()); 
+			return static_cast<Real>(std::numeric_limits<double>::epsilon()); 
 		}
 
 		static inline Real dummy_precision()

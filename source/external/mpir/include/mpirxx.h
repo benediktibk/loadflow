@@ -31,8 +31,8 @@ along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.  */
 #endif
 #endif
 
-#ifndef __GMP_PLUSPLUS__
-#define __GMP_PLUSPLUS__
+#ifndef __GMP_PLUSPLUS___
+#define __GMP_PLUSPLUS___
 
 #include <iosfwd>
 
@@ -1591,13 +1591,6 @@ public:
   __gmp_expr(unsigned long long int  l) { mpz_init_set_ui(mp, l); }
 #endif
 
-#if defined( _MSC_VER ) && _MSC_VER >= 1600
-#if defined( _STDINT_H ) || defined ( _STDINT_H_ ) || defined ( _STDINT )
-  __gmp_expr(intmax_t l) { mpz_init_set_sx(mp, l); }
-  __gmp_expr(uintmax_t l) { mpz_init_set_ux(mp, l); }
-#endif
-#endif
-
   __gmp_expr(float f) { mpz_init_set_d(mp, f); }
   __gmp_expr(double d) { mpz_init_set_d(mp, d); }
   // __gmp_expr(long double ld) { mpz_init_set_d(mp, ld); }
@@ -1661,14 +1654,7 @@ public:
   __gmp_expr & operator=(signed long long int i) { mpz_set_si(mp, i); return *this; }
   __gmp_expr & operator=(unsigned long long int i) { mpz_set_ui(mp, i); return *this; }
 #endif
-
-#if defined( _MSC_VER ) && _MSC_VER >= 1600
-#if defined( _STDINT_H ) || defined ( _STDINT_H_ ) || defined ( _STDINT )
-  __gmp_expr & operator=(intmax_t i) { mpz_set_sx(mp, i); return *this; }
-  __gmp_expr & operator=(uintmax_t i) { mpz_set_ux(mp, i); return *this; }
-#endif
-#endif
-
+  
   __gmp_expr & operator=(float f) { mpz_set_d(mp, f); return *this; }
   __gmp_expr & operator=(double d) { mpz_set_d(mp, d); return *this; }
   // __gmp_expr & operator=(long double ld)
