@@ -28,6 +28,7 @@ public:
 
 public:
 	static void setDefaultPrecision();
+	static unsigned int getBitPrecision();
 
 private:
 	static const unsigned int _precision;

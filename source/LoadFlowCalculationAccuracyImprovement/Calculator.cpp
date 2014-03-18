@@ -58,7 +58,7 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
-{            
+{          
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	_coefficients.clear();

@@ -149,12 +149,12 @@ namespace Eigen
 
 		static inline Real epsilon() 
 		{ 
-			return static_cast<Real>(std::numeric_limits<double>::epsilon()); 
+			return static_cast<Real>(std::pow(2, static_cast<double>(MultiPrecision::getBitPrecision())*(-1))); 
 		}
 
 		static inline Real dummy_precision()
 		{
-			return Real(1e-30);
+			return static_cast<Real>(std::pow(2, static_cast<double>(MultiPrecision::getBitPrecision() - 4)*(-1))); 
 		}
 	};
 }

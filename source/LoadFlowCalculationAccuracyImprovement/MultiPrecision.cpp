@@ -156,3 +156,8 @@ void MultiPrecision::setDefaultPrecision()
 {
 	mpf_set_default_prec(_precision);
 }
+
+unsigned int MultiPrecision::getBitPrecision()
+{
+	return _precision;
+}
