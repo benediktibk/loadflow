@@ -158,3 +158,8 @@ MultiPrecision std::ceil(MultiPrecision const& value)
 {
 	return MultiPrecision(ceil(value.getValue()));
 }
+
+void MultiPrecision::setDefaultPrecision()
+{
+	mpf_set_default_prec(_precision);
+}

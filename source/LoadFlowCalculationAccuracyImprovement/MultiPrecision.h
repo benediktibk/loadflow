@@ -27,6 +27,9 @@ public:
 	const MultiPrecision operator+() const;
 	const MultiPrecision operator-() const;
 
+public:
+	static void setDefaultPrecision();
+
 private:
 	static const unsigned int _precision;
 
