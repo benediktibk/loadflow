@@ -21,12 +21,6 @@ Complex<T>::Complex(T const& real) :
 { }
 
 template<typename T>
-Complex<T>::Complex(int real) :
-	_real(static_cast<T>(real)),
-	_imag(static_cast<T>(0))
-{ }
-
-template<typename T>
 Complex<T>::Complex(std::complex<double> const& rhs) :
 	_real(static_cast<T>(rhs.real())),
 	_imag(static_cast<T>(rhs.imag()))

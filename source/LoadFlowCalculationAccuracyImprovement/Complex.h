@@ -12,7 +12,6 @@ public:
 	Complex();
 	Complex(T const& real, T const& imag);
 	explicit Complex(T const& real);
-	Complex(int real);
 	explicit Complex(std::complex<double> const& rhs);
 
 	T const& real() const;

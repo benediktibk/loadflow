@@ -384,7 +384,7 @@ class SparseMatrix
       eigen_assert( (m_outerIndex[outer+1]-m_outerIndex[outer]==0 || m_data.index(m_data.size()-1)<inner) && "Invalid ordered insertion (invalid inner index)");
       Index p = m_outerIndex[outer+1];
       ++m_outerIndex[outer+1];
-      m_data.append(0, inner);
+      m_data.append(Scalar(0), inner);
       return m_data.value(p);
     }
 
@@ -1144,7 +1144,7 @@ EIGEN_DONT_INLINE typename SparseMatrix<_Scalar,_Options,_Index>::Scalar& Sparse
   m_innerNonZeros[outer]++;
 
   m_data.index(p) = inner;
-  return (m_data.value(p) = 0);
+  return (m_data.value(p) = _Scalar(0));
 }
 
 template<typename _Scalar, int _Options, typename _Index>
