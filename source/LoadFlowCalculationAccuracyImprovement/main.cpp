@@ -1,5 +1,6 @@
 #include "CalculatorRegister.h"
 #include "ConsoleOutput.h"
+#include "UnitTest.h"
 #include <Windows.h>
 #include <mpir.h>
 
@@ -85,6 +86,12 @@ extern "C" __declspec(dllexport) double __cdecl GetInverseCoefficientImaginary(i
 extern "C" __declspec(dllexport) int __cdecl GetLastNodeCount(int calculator)
 {
 	return calculatorRegister.get(calculator).getNodeCount();
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTests()
+{
+	bool result = runTests();
+	return result;
 }
 
 extern "C" { int _afxForceUSRDLL; }
