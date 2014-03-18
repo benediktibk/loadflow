@@ -51,33 +51,6 @@ Complex<T>::operator std::complex<double>() const
 }
 
 template<typename T>
-const Complex<T> Complex<T>::operator+(Complex<T> const& rhs) const
-{
-	return Complex<T>(_real + rhs.real(), _imag + rhs.imag());
-}
-
-template<typename T>
-const Complex<T> Complex<T>::operator-(Complex<T> const& rhs) const
-{
-	return Complex<T>(_real - rhs.real(), _imag - rhs.imag());
-}
-
-template<typename T>
-const Complex<T> Complex<T>::operator*(Complex<T> const& rhs) const
-{
-	return Complex<T>(_real*rhs.real() - _imag*rhs.imag(), _imag*rhs.real() + _real*rhs.imag());
-}
-
-template<typename T>
-const Complex<T> Complex<T>::operator/(Complex<T> const& rhs) const
-{
-	T divisor = rhs.real()*rhs.real() + rhs.imag()*rhs.imag();
-	T real = _real*rhs.real() + _imag*rhs.imag();
-	T imag = _imag*rhs.real() - _real*rhs.imag();
-	return Complex<T>(real/divisor, imag/divisor);
-}
-
-template<typename T>
 Complex<T>& Complex<T>::operator=(Complex<T> const& rhs)
 {
 	_real = rhs.real();

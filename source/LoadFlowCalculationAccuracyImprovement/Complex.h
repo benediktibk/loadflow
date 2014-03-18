@@ -19,10 +19,6 @@ public:
 	T const& imag() const;
 	
 	operator std::complex<double>() const;
-	const Complex<T> operator+(Complex<T> const& rhs) const;
-	const Complex<T> operator-(Complex<T> const& rhs) const;
-	const Complex<T> operator*(Complex<T> const& rhs) const;
-	const Complex<T> operator/(Complex<T> const& rhs) const;
 	Complex<T>& operator=(Complex<T> const& rhs);
 	Complex<T>& operator+=(Complex<T> const& rhs);
 	Complex<T>& operator-=(Complex<T> const& rhs);
@@ -33,6 +29,33 @@ private:
 	T _real;
 	T _imag;
 };
+
+template<typename T>
+const Complex<T> operator+(Complex<T> const& lhs, Complex<T> const& rhs)
+{
+	return Complex<T>(lhs.real() + rhs.real(), lhs.imag() + rhs.imag());
+}
+
+template<typename T>
+const Complex<T> operator-(Complex<T> const& lhs, Complex<T> const& rhs)
+{
+	return Complex<T>(lhs.real() - rhs.real(), lhs.imag() - rhs.imag());
+}
+
+template<typename T>
+const Complex<T> operator*(Complex<T> const& lhs, Complex<T> const& rhs)
+{
+	return Complex<T>(lhs.real()*rhs.real() - lhs.imag()*rhs.imag(), lhs.imag()*rhs.real() + lhs.real()*rhs.imag());
+}
+
+template<typename T>
+const Complex<T> operator/(Complex<T> const& lhs, Complex<T> const& rhs)
+{
+	T divisor = rhs.real()*rhs.real() + rhs.imag()*rhs.imag();
+	T real = lhs.real()*rhs.real() + lhs.imag()*rhs.imag();
+	T imag = lhs.imag()*rhs.real() - lhs.real()*rhs.imag();
+	return Complex<T>(real/divisor, imag/divisor);
+}
 
 template<typename T>
 bool operator==(Complex<T> const& lhs, Complex<T> const& rhs)
