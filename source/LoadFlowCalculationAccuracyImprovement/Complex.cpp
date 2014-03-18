@@ -1,5 +1,6 @@
 #include "Complex.h"
 
+template class Complex<double>;
 template class Complex<long double>;
 template class Complex<MultiPrecision>;
 
@@ -72,8 +73,8 @@ const Complex<T> Complex<T>::operator/(Complex<T> const& rhs) const
 {
 	T divisor = rhs.real()*rhs.real() + rhs.imag()*rhs.imag();
 	T real = _real*rhs.real() + _imag*rhs.imag();
-	T imag = _imag*rhs.real() + _real*rhs.imag();
-	return Complex<T>(real/divisor, real/imag);
+	T imag = _imag*rhs.real() - _real*rhs.imag();
+	return Complex<T>(real/divisor, imag/divisor);
 }
 
 template<typename T>
