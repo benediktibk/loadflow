@@ -14,7 +14,6 @@ public:
 	explicit MultiPrecision(float value);
 	explicit MultiPrecision(double value);
 	explicit MultiPrecision(int value);
-	~MultiPrecision();
 	
 	operator double() const;
 	operator int() const;
@@ -34,7 +33,7 @@ private:
 	static const unsigned int _precision;
 
 private:
-	ValueType *_value;
+	ValueType _value;
 };
 
 const MultiPrecision operator+(const MultiPrecision &lhs, const MultiPrecision &rhs);
