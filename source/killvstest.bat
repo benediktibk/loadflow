@@ -1,5 +1,5 @@
 @echo off
 rem ...
 set errorlevel=
-taskkill /F /IM vstest.executionengine.exe
+taskkill /F /T /IM vstest.executionengine.exe
 exit /b 0
