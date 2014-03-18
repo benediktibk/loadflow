@@ -63,6 +63,41 @@ bool runTestsComplexMultiPrecision()
 		return false;
 	if (!areEqual(divideExpected, divide, 0.0001))
 		return false;
+	if (one == two)
+		return false;
+	if (!(one != two))
+		return false;
+
+	return true;
+}
+
+bool runTestsMultiPrecision()
+{
+	MultiPrecision one(-2.3);
+	MultiPrecision two(5);
+
+	if (one == two)
+		return false;
+	if (!(one != two))
+		return false;
+	if (one > two)
+		return false;
+	if (!(one < two))
+		return false;
+	if (!(two > one))
+		return false;
+	if (two < one)
+		return false;
+
+	MultiPrecision copyOne(one);
+
+	if (one != copyOne)
+		return false;
+
+	copyOne = two;
+
+	if (copyOne != two)
+		return false;
 
 	return true;
 }
@@ -73,6 +108,9 @@ bool runTests()
 		return false;
 
 	if (!runTestsComplexMultiPrecision())
+		return false;
+
+	if (!runTestsMultiPrecision())
 		return false;
 
 	return true;

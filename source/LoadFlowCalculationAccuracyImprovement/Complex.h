@@ -59,13 +59,15 @@ const Complex<T> operator/(Complex<T> const& lhs, Complex<T> const& rhs)
 template<typename T>
 bool operator==(Complex<T> const& lhs, Complex<T> const& rhs)
 {
-	return lhs.getValue() == rhs.getValue();
+	return	lhs.real() == rhs.real() &&
+			lhs.imag() == lhs.imag();
 }
 
 template<typename T>
 bool operator!=(Complex<T> const& lhs, Complex<T> const& rhs)
 {
-	return lhs.getValue() != rhs.getValue();
+	return	lhs.real() != rhs.real() ||
+			lhs.imag() != rhs.imag();
 }
 
 template<typename T>
