@@ -4,6 +4,7 @@
 #include <sstream>
 #include <map>
 #include <cmath>
+#include <stdexcept>
 
 using namespace std;
 
@@ -79,7 +80,16 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		calculateNextCoefficient();
 		calculateNextInverseCoefficient();
 
-		calculateVoltagesFromCoefficients();
+		try
+		{
+			calculateVoltagesFromCoefficients();
+		}
+		catch (overflow_error e)
+		{
+			writeLine("had to stop earlier because of numerical issues");
+			break;
+		}
+
 		Floating powerError = calculatePowerError();
 
 		powerErrors.insert(pair<Floating, int>(powerError, partialResults.size()));
@@ -314,6 +324,8 @@ ComplexFloating Calculator<Floating, ComplexFloating>::calculateVoltageFromCoeff
 		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
         {
             ComplexFloating previousDifference = currentEpsilon[j + 1] - currentEpsilon[j];
+			if (abs(previousDifference) == Floating(0))
+				throw overflow_error("numeric error, would have to divide by zero");
 			nextEpsilon[j] = previousEpsilon[j + 1] + ComplexFloating(Floating(1))/previousDifference;
         }
 
