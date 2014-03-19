@@ -98,7 +98,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		if (_absolutePowerSum != 0 && powerError/_absolutePowerSum < _targetPrecision)
 		{
 			writeLine("finished earlier because the power error is already small enough");
-			return;
+			break;
 		}
 	}
 
