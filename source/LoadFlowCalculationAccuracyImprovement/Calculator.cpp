@@ -85,7 +85,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		powerErrors.insert(pair<Floating, int>(powerError, partialResults.size()));
 		partialResults.push_back(_voltages);
 
-		if (powerError/_absolutePowerSum < _targetPrecision)
+		if (_absolutePowerSum != Floating(0) && powerError/_absolutePowerSum < _targetPrecision)
 		{
 			writeLine("finished earlier because the power error is already small enough");
 			return;
