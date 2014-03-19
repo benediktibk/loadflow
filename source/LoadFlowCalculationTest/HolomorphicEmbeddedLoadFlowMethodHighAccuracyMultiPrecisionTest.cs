@@ -26,6 +26,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionOne_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne();
@@ -37,6 +38,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionTwo_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo();
@@ -59,6 +61,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNodeVersionTwo_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionTwo();
@@ -70,6 +73,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_CollapsingSystem_VoltageCollapse()
         {
             var nodes = CreateTestCollapsingSystem();
@@ -80,6 +84,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_NearlyCollapsingSystem_NoVoltageCollapse()
         {
             var nodes = CreateTestNearlyCollapsingSystem();
@@ -91,6 +96,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNodeVersionThree_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionThree();
@@ -211,6 +217,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
         {
             var nodes = CreateTestTwoNodeProblemWithOnePVBus();
@@ -221,6 +228,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
@@ -232,6 +240,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithTwoPVBuses();
@@ -243,6 +252,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithSlackBusAtTheEndAndPVBus_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus();
@@ -254,6 +264,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemWithTwoPVBusses();
@@ -276,6 +287,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBus_CorrectResults()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBus();
@@ -287,6 +299,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
         {
             var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
@@ -309,6 +322,7 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectResults()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
