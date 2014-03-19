@@ -13,7 +13,7 @@ template class Calculator<MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
 Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
-	_targetPrecision(static_cast<Floating>(targetPrecision)),
+	_targetPrecision(targetPrecision),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
@@ -71,7 +71,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	_inverseCoefficients.push_back(divide(ComplexFloating(1), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
 	calculateNextInverseCoefficient();
-	map<Floating, int> powerErrors;
+	map<double, int> powerErrors;
 	std::vector< std::vector<ComplexFloating> > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
 	
@@ -90,12 +90,12 @@ void Calculator<Floating, ComplexFloating>::calculate()
 			break;
 		}
 
-		Floating powerError = calculatePowerError();
+		double powerError = calculatePowerError();
 
-		powerErrors.insert(pair<Floating, int>(powerError, partialResults.size()));
+		powerErrors.insert(pair<double, int>(powerError, partialResults.size()));
 		partialResults.push_back(_voltages);
 
-		if (_absolutePowerSum != Floating(0) && powerError/_absolutePowerSum < _targetPrecision)
+		if (_absolutePowerSum != 0 && powerError/_absolutePowerSum < _targetPrecision)
 		{
 			writeLine("finished earlier because the power error is already small enough");
 			return;
@@ -103,7 +103,10 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	}
 
 	if (!powerErrors.empty())
-		_voltages = partialResults[powerErrors.begin()->second];
+	{
+		int bestResultIndex = powerErrors.begin()->second;
+		_voltages = partialResults[bestResultIndex];
+	}
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -337,7 +340,7 @@ ComplexFloating Calculator<Floating, ComplexFloating>::calculateVoltageFromCoeff
 }
 
 template<typename Floating, typename ComplexFloating>
-Floating Calculator<Floating, ComplexFloating>::calculatePowerError() const
+double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 {
 	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> voltages = stdToUblasVector(_voltages);
 	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> currents = _admittances * voltages;
@@ -346,23 +349,23 @@ Floating Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	std::vector<ComplexFloating> powers = pointwiseMultiply(conjugate(totalCurrents), _voltages);
 	
 	assert(_nodeCount == powers.size());
-	Floating sum(0);
+	double sum = 0;
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		ComplexFloating currentPower = powers[_pqBuses[i].getId()];
 		ComplexFloating powerShouldBe = static_cast<ComplexFloating>(_pqBuses[i].getPower());
-		sum += abs(currentPower - powerShouldBe);
+		sum += static_cast<double>(abs(currentPower - powerShouldBe));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		Floating currentPower = powers[_pvBuses[i].getId()].real();
 		Floating powerShouldBe  = static_cast<Floating>(_pvBuses[i].getPowerReal());
-		sum += abs(currentPower - powerShouldBe);
+		sum += static_cast<double>(abs(currentPower - powerShouldBe));
 	}
 
-	return abs(sum);
+	return sum;
 }
 
 template<typename Floating, typename ComplexFloating>

@@ -42,7 +42,7 @@ private:
 	void calculateNextInverseCoefficient();
 	void calculateVoltagesFromCoefficients();
 	ComplexFloating calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
-	Floating calculatePowerError() const;
+	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
 
 private:
@@ -59,7 +59,7 @@ private:
 	static std::vector<ComplexFloating> conjugate(const std::vector<ComplexFloating> &values);
 
 private:
-	const Floating _targetPrecision;
+	const double _targetPrecision;
 	const size_t _numberOfCoefficients;
 	const size_t _nodeCount;
 	const size_t _pqBusCount;
@@ -73,6 +73,6 @@ private:
 	ConsoleOutput _consoleOutput;
 	std::vector< std::vector<ComplexFloating> > _coefficients;
 	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
-	Floating _absolutePowerSum;
+	double _absolutePowerSum;
 };
 
