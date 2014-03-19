@@ -41,7 +41,7 @@ private:
 	void calculateNextCoefficient();
 	void calculateNextInverseCoefficient();
 	void calculateVoltagesFromCoefficients();
-	ComplexFloating calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
+	std::complex<double> calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
 
@@ -53,9 +53,10 @@ private:
 	static std::vector<ComplexFloating> multiply(const std::vector<ComplexFloating> &one, const ComplexFloating &two);
 	static std::vector<ComplexFloating> divide(const ComplexFloating &one, const std::vector<ComplexFloating> &two);
 	static Floating findMaximumMagnitude(const std::vector<ComplexFloating> &values);
-	static ComplexFloating converToComplexFloating(const std::complex<double> &value);
-	static std::vector<ComplexFloating> ublasToStdVector(const Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> &values);
-	static Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> stdToUblasVector(const std::vector<ComplexFloating> &values);
+	static std::vector<ComplexFloating> eigenToStdVector(const Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> &values);
+	static Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> stdToEigenVector(const std::vector<ComplexFloating> &values);
+	static Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> stdToEigenVector(const std::vector< std::complex<double> > &values);
+	static std::vector<ComplexFloating> stdComplexVectorToComplexFloatingVector(const std::vector< std::complex<double> > &values);
 	static std::vector<ComplexFloating> conjugate(const std::vector<ComplexFloating> &values);
 
 private:
@@ -69,7 +70,7 @@ private:
 	std::vector<ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
-	std::vector<ComplexFloating> _voltages;
+	std::vector< std::complex<double> > _voltages;
 	ConsoleOutput _consoleOutput;
 	std::vector< std::vector<ComplexFloating> > _coefficients;
 	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
