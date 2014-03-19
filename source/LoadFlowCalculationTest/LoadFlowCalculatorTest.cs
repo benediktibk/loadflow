@@ -284,9 +284,9 @@ namespace LoadFlowCalculationTest
             CreateThreeNodeProblemWithImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
             nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            nodes[2].Voltage = _voltages.At(2);
             return nodes;
         }
 
