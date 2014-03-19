@@ -43,6 +43,7 @@ private:
 	void calculateVoltagesFromCoefficients();
 	ComplexFloating calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
 	Floating calculatePowerError() const;
+	void calculateAbsolutePowerSum();
 
 private:
 	static std::vector<ComplexFloating> pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two);
@@ -72,5 +73,6 @@ private:
 	ConsoleOutput _consoleOutput;
 	std::vector< std::vector<ComplexFloating> > _coefficients;
 	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
+	Floating _absolutePowerSum;
 };
 

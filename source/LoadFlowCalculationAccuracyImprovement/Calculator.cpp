@@ -22,7 +22,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount),
-	_consoleOutput(0)
+	_consoleOutput(0),
+	_absolutePowerSum(0)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -59,6 +60,7 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
+	calculateAbsolutePowerSum();
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	_coefficients.clear();
@@ -82,6 +84,12 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 		powerErrors.insert(pair<Floating, int>(powerError, partialResults.size()));
 		partialResults.push_back(_voltages);
+
+		if (powerError/_absolutePowerSum < _targetPrecision)
+		{
+			writeLine("finished earlier because the power error is already small enough");
+			return;
+		}
 	}
 
 	if (!powerErrors.empty())
@@ -343,6 +351,26 @@ Floating Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	}
 
 	return abs(sum);
+}
+
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
+{
+	ComplexFloating sum;
+
+	for (size_t i = 0; i < _pqBusCount; ++i)
+	{
+		ComplexFloating power = static_cast<ComplexFloating>(_pqBuses[i].getPower());
+		sum += ComplexFloating(abs(power.real()), abs(power.imag()));
+	}
+
+	for (size_t i = 0; i < _pvBusCount; ++i)
+	{
+		Floating power  = static_cast<Floating>(_pvBuses[i].getPowerReal());
+		sum += ComplexFloating(abs(power), Floating(0));
+	}
+
+	_absolutePowerSum = abs(sum);
 }
 
 template<typename Floating, typename ComplexFloating>
