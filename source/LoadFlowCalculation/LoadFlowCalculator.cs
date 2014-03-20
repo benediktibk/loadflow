@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
+using MathNet.Numerics.Financial;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.Statistics;
@@ -138,7 +139,7 @@ namespace LoadFlowCalculation
             constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
         }
 
-        private static Node[] CombineVoltagesAndPowersToNodes(Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        private static Node[] CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
         {
             if (allPowers.Count != allVoltages.Count)
                 throw new ArgumentOutOfRangeException();
@@ -157,6 +158,30 @@ namespace LoadFlowCalculation
             }
 
             return result;
+        }
+
+        public static double CalculatePowerError(Matrix<Complex> admittances, Vector<Complex> voltages,
+            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        {
+            var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
+            double sum = 0;
+
+            foreach (var bus in pqBuses)
+            {
+                var id = bus.ID;
+                var power = bus.Power;
+                sum += Math.Abs(power.Real - powers[id].Real);
+                sum += Math.Abs(power.Imaginary - powers[id].Imaginary);
+            }
+
+            foreach (var bus in pvBuses)
+            {
+                var id = bus.ID;
+                var power = bus.RealPower;
+                sum += Math.Abs(power - powers[id].Real);
+            }
+
+            return sum;
         }
 
         public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)

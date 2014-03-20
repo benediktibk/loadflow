@@ -42,16 +42,21 @@ namespace LoadFlowCalculation
             var precisionReached = false;
             bool precisionReachedPrevious;
             var targetPrecisionScaled = _targetPrecision*nominalVoltage/10;
+            var powerErrors = new Dictionary<double, Vector<Complex>>();
 
             do
             {
                 CalculateNextCoefficientForVoltagePowerSeries(constantCurrents, factorization, pqBuses, pvBuses);
                 voltageAnalyticContinuation = CreateVoltageAnalyticContinuation();
                 currentVoltage = CalculateVoltagesWithAnalyticContinuations(voltageAnalyticContinuation);
+                var powerError = CalculatePowerError(admittances, currentVoltage, constantCurrents, pqBuses, pvBuses);
+                powerErrors.Add(powerError, currentVoltage);
                 precisionReachedPrevious = precisionReached;
                 precisionReached = CheckConvergence(currentVoltage, lastVoltage, targetPrecisionScaled);
                 lastVoltage = currentVoltage;
             } while (_coefficients.Count < _maximumNumberOfCoefficients && !(precisionReached && precisionReachedPrevious));
+
+            currentVoltage = powerErrors[powerErrors.Keys.Min()];
 
             if (!_finalAccuarcyImprovement) 
                 return currentVoltage;
