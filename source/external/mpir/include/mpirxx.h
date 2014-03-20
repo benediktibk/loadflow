@@ -34,6 +34,8 @@ along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.  */
 #ifndef __GMP_PLUSPLUS___
 #define __GMP_PLUSPLUS___
 
+#pragma warning( disable : 4244 )
+
 #include <iosfwd>
 
 #include <cstring>  /* for strlen */
