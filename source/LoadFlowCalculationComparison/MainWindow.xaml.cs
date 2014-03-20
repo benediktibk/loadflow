@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using LoadFlowCalculationComparison.AlgorithmSettings;
 using LoadFlowCalculation;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -26,6 +27,8 @@ namespace LoadFlowCalculationComparison
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CalculationResults _calculationResults;
         private List<CalculationResult> _newCalculationResults;
+
+        private delegate void ProblemOnceSolved();
 
         public MainWindow()
         {
@@ -47,6 +50,11 @@ namespace LoadFlowCalculationComparison
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
             GeneralSettingsGrid.DataContext = _generalSettings;
             CalculateButton.DataContext = _generalSettings;
+        }
+
+        private void IncreaseProgressBarCount()
+        {
+            CalculateProgressBar.Value += 1;
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -137,14 +145,17 @@ namespace LoadFlowCalculationComparison
             _generalSettings.CalculationRunning = true;
             _calculationResults.Clear();
             _newCalculationResults = new List<CalculationResult>(10);
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
+            CalculateProgressBar.Value = 0;
             var calculationTask = Task.Factory.StartNew(() =>
             {
-                _newCalculationResults.Add(CalculateNodePotentialResult());
-                _newCalculationResults.Add(CalculateCurrentIterationResult());
-                _newCalculationResults.Add(CalculateNewtonRaphsonResult());
-                _newCalculationResults.Add(CalculateFastDecoupledLoadFlowResult());
-                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowResult());
-                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult());
+                _newCalculationResults.Add(CalculateNodePotentialResult(dispatcher));
+                _newCalculationResults.Add(CalculateCurrentIterationResult(dispatcher));
+                _newCalculationResults.Add(CalculateNewtonRaphsonResult(dispatcher));
+                _newCalculationResults.Add(CalculateFastDecoupledLoadFlowResult(dispatcher));
+                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowResult(dispatcher));
+                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(dispatcher));
             });
 
             calculationTask.ContinueWith(t => CopyCalculationResults(), CancellationToken.None,
@@ -161,60 +172,60 @@ namespace LoadFlowCalculationComparison
             _generalSettings.CalculationRunning = false;
         }
 
-        private CalculationResult CalculateNodePotentialResult()
+        private CalculationResult CalculateNodePotentialResult(Dispatcher mainDispatcher)
         {
             var calculator = new NodePotentialMethod(_nodePotential.SingularityDetection);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "Node Potential";
             return result;
         }
 
-        private CalculationResult CalculateCurrentIterationResult()
+        private CalculationResult CalculateCurrentIterationResult(Dispatcher mainDispatcher)
         {
             var calculator = new CurrentIteration(_currentIteration.TargetPrecision,
                 _currentIteration.MaximumIterations);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "Current Iteration";
             return result;
         }
 
-        private CalculationResult CalculateNewtonRaphsonResult()
+        private CalculationResult CalculateNewtonRaphsonResult(Dispatcher mainDispatcher)
         {
             var calculator = new NewtonRaphsonMethod(_newtonRaphson.TargetPrecision,
                 _newtonRaphson.MaximumIterations);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "Newton Raphson";
             return result;
         }
 
-        private CalculationResult CalculateFastDecoupledLoadFlowResult()
+        private CalculationResult CalculateFastDecoupledLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
                 _fastDecoupledLoadFlow.MaximumIterations);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "FDLF";
             return result;
         }
 
-        private CalculationResult CalculateHolomorphicEmbeddingLoadFlowResult()
+        private CalculationResult CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, false);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "HELM";
             return result;
         }
 
-        private CalculationResult CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult()
+        private CalculationResult CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
-            var result = CalculateResult(calculator);
+            var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "HELM - C++";
             return result;
         }
 
-        private CalculationResult CalculateResult(LoadFlowCalculator calculator)
+        private CalculationResult CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
@@ -235,6 +246,7 @@ namespace LoadFlowCalculationComparison
                 executionTimes.Add(stopWatch.Elapsed.TotalSeconds);
 
                 ++i;
+                mainDispatcher.Invoke(new ProblemOnceSolved(IncreaseProgressBarCount));
             } while (i < numberOfExecutions);
 
             var result = new CalculationResult();
