@@ -1766,8 +1766,8 @@ public:
   __gmp_expr(unsigned long int l) { mpq_init(mp); mpq_set_ui(mp, l, 1); }
 
 #ifdef MPIRXX_HAVE_LLONG
-  __gmp_expr(signed long long int l) { mpq_init(mp); mpq_set_si(mp, l, 1); }
-  __gmp_expr(unsigned long long int l) { mpq_init(mp); mpq_set_ui(mp, l, 1); }
+  __gmp_expr(signed long long int l) { mpq_init(mp); mpq_set_si(mp, static_cast<mpir_si>(l), 1); }
+  __gmp_expr(unsigned long long int l) { mpq_init(mp); mpq_set_ui(mp, static_cast<mpir_ui>(l), 1); }
 #endif
 
   __gmp_expr(float f) { mpq_init(mp); mpq_set_d(mp, f); }
@@ -1849,9 +1849,9 @@ public:
 
 #ifdef MPIRXX_HAVE_LLONG
   __gmp_expr & operator=(signed long long int l)
-  { mpq_set_si(mp, l, 1); return *this; }
+  { mpq_set_si(mp, static_cast<mpir_si>(l), 1); return *this; }
   __gmp_expr & operator=(unsigned long long int l)
-  { mpq_set_ui(mp, l, 1); return *this; }
+  { mpq_set_ui(mp, static_cast<mpir_ui>(l), 1); return *this; }
 #endif
 
   __gmp_expr & operator=(float f) { mpq_set_d(mp, f); return *this; }
@@ -1983,12 +1983,12 @@ public:
   { mpf_init2(mp, prec); mpf_set_ui(mp, s); }
 
 #ifdef MPIRXX_HAVE_LLONG
-  __gmp_expr(signed long long int s) { mpf_init_set_si(mp, s); }
+  __gmp_expr(signed long long int s) { mpf_init_set_si(mp, static_cast<mpir_si>(s)); }
   __gmp_expr(signed long long int s, mp_bitcnt_t prec)
-  { mpf_init2(mp, prec); mpf_set_si(mp, s); }
-  __gmp_expr(unsigned long long int s) { mpf_init_set_ui(mp, s); }
+  { mpf_init2(mp, prec); mpf_set_si(mp, static_cast<mpir_si>(s)); }
+  __gmp_expr(unsigned long long int s) { mpf_init_set_ui(mp, static_cast<mpir_ui>(s)); }
   __gmp_expr(unsigned long long int s, mp_bitcnt_t prec)
-  { mpf_init2(mp, prec); mpf_set_ui(mp, s); }
+  { mpf_init2(mp, prec); mpf_set_ui(mp, static_cast<mpir_ui>(s)); }
 #endif
 
   __gmp_expr(float f) { mpf_init_set_d(mp, f); }
@@ -2068,9 +2068,9 @@ public:
 
 #ifdef MPIRXX_HAVE_LLONG
   __gmp_expr & operator=(signed long long int l)
-  { mpf_set_si(mp, l); return *this; }
+  { mpf_set_si(mp, static_cast<mpir_si>(l)); return *this; }
   __gmp_expr & operator=(unsigned long long int l)
-  { mpf_set_ui(mp, l); return *this; }
+  { mpf_set_ui(mp, static_cast<mpir_ui>(l)); return *this; }
 #endif
 
   __gmp_expr & operator=(float f) { mpf_set_d(mp, f); return *this; }
