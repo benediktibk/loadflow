@@ -1587,8 +1587,8 @@ public:
   __gmp_expr(unsigned long int  l) { mpz_init_set_ui(mp, l); }
 
 #ifdef MPIRXX_HAVE_LLONG
-  __gmp_expr(signed long long int l) { mpz_init_set_si(mp, l); }
-  __gmp_expr(unsigned long long int  l) { mpz_init_set_ui(mp, l); }
+  __gmp_expr(signed long long int l) { mpz_init_set_si(mp, static_cast<mpir_si>(l)); }
+  __gmp_expr(unsigned long long int  l) { mpz_init_set_ui(mp, static_cast<mpir_ui>(l)); }
 #endif
 
   __gmp_expr(float f) { mpz_init_set_d(mp, f); }
@@ -1651,8 +1651,8 @@ public:
   __gmp_expr & operator=(unsigned long int i) { mpz_set_ui(mp, i); return *this; }
 
 #ifdef MPIRXX_HAVE_LLONG
-  __gmp_expr & operator=(signed long long int i) { mpz_set_si(mp, i); return *this; }
-  __gmp_expr & operator=(unsigned long long int i) { mpz_set_ui(mp, i); return *this; }
+  __gmp_expr & operator=(signed long long int i) { mpz_set_si(mp, static_cast<mpir_si>(i)); return *this; }
+  __gmp_expr & operator=(unsigned long long int i) { mpz_set_ui(mp, static_cast<mpir_ui>(i)); return *this; }
 #endif
   
   __gmp_expr & operator=(float f) { mpz_set_d(mp, f); return *this; }
