@@ -64,7 +64,8 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +84,8 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     </Link>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

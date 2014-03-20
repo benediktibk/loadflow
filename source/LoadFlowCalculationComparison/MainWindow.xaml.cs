@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace LoadFlowCalculationComparison
         private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
         private readonly IterativeMethodSettings _newtonRaphson;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
+        private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlowHighAccuracy;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CalculationResults _calculationResults;
         private List<CalculationResult> _newCalculationResults;
@@ -31,6 +33,7 @@ namespace LoadFlowCalculationComparison
             _currentIteration = new IterativeMethodSettings(_generalSettings);
             _fastDecoupledLoadFlow = new IterativeMethodSettings(_generalSettings);
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
+            _holomorphicEmbeddedLoadFlowHighAccuracy = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
             _newtonRaphson = new IterativeMethodSettings(_generalSettings);
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
 
@@ -38,6 +41,7 @@ namespace LoadFlowCalculationComparison
             _calculationResults = FindResource("CalculationResults") as CalculationResults;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
+            HolomorphicEmbeddedLoadFlowHighAccuracyGrid.DataContext = _holomorphicEmbeddedLoadFlowHighAccuracy;
             FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
             CurrentIterationGrid.DataContext = _currentIteration;
             NewtonRaphsonGrid.DataContext = _newtonRaphson;
@@ -129,6 +133,7 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine(Directory.GetCurrentDirectory());
             _generalSettings.CalculationRunning = true;
             _calculationResults.Clear();
             _newCalculationResults = new List<CalculationResult>(10);
@@ -139,6 +144,7 @@ namespace LoadFlowCalculationComparison
                 _newCalculationResults.Add(CalculateNewtonRaphsonResult());
                 _newCalculationResults.Add(CalculateFastDecoupledLoadFlowResult());
                 _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowResult());
+                _newCalculationResults.Add(CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult());
             });
 
             calculationTask.ContinueWith(t => CopyCalculationResults(), CancellationToken.None,
@@ -196,6 +202,15 @@ namespace LoadFlowCalculationComparison
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, false);
             var result = CalculateResult(calculator);
             result.Algorithm = "HELM";
+            return result;
+        }
+
+        private CalculationResult CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult()
+        {
+            var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
+                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
+            var result = CalculateResult(calculator);
+            result.Algorithm = "HELM - C++";
             return result;
         }
 

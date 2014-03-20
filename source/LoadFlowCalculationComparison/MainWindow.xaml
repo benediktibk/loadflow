@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         mc:Ignorable="d"
         Title="Load Flow Calculation Methods - Comparison" 
-        Height="550" 
+        Height="650" 
         Width="1000">
     <Window.Resources>
         <ObjectDataProvider x:Key="DataFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -28,6 +28,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="90"/>
                     <RowDefinition Height="60"/>
+                    <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
@@ -184,7 +185,36 @@
                         </TextBox.IsEnabled>
                     </TextBox>
                 </Grid>
-                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=ChangesAllowed, Mode=OneWay}"  Grid.Row="6"/>
+                <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="HolomorphicEmbeddedLoadFlowHighAccuracyGrid" Grid.Row="6">
+                    <TextBlock Text="Holomorphic Embedding Load Flow - High Accuracy" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                    <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
+                        <TextBox.Text>
+                            <Binding Path="TargetPrecision" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
+                    </TextBox>
+                    <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
+                        <TextBox.Text>
+                            <Binding Path="MaximumNumberOfCoefficients" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
+                    </TextBox>
+                </Grid>
+                <Button Name="CalculateButton" Content="calculate" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="CalculateClicked" IsEnabled="{Binding Path=ChangesAllowed, Mode=OneWay}"  Grid.Row="7"/>
             </Grid>
         </ScrollViewer>
         <Grid Grid.Column="1">
