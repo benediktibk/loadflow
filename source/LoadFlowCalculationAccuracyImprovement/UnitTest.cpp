@@ -204,12 +204,73 @@ bool runTestsCoefficientStoragePV()
 	return true;
 }
 
+bool runTestsCoefficientStorageMixed()
+{
+	vector<PQBus> pqBuses;
+	pqBuses.push_back(PQBus(1, complex<double>()));
+	vector<PVBus> pvBuses;
+	pvBuses.push_back(PVBus(0, 0, 1));
+	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(2, 2);
+	admittances.insert(0, 0) = complex<double>(100, 100);
+	admittances.insert(0, 1) = complex<double>(-10, 0);
+	admittances.insert(1, 0) = complex<double>(-10, 0);
+	admittances.insert(1, 1) = complex<double>(0, 0);
+	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
+	vector< complex<long double> > coefficients(2);
+
+	if (0 != storage.getCoefficientCount())
+		return false;
+
+	coefficients[0] = complex<long double>(2, 0);
+	coefficients[1] = complex<long double>(0, 3);
+	storage.addCoefficients(coefficients);
+	coefficients[0] = complex<long double>(3, 0);
+	coefficients[1] = complex<long double>(0, 7);
+	storage.addCoefficients(coefficients);
+	coefficients[0] = complex<long double>(5, 0);
+	coefficients[1] = complex<long double>(1, 1);
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(0, 3), storage.getCoefficient(1, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(0, 7), storage.getCoefficient(1, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(1, 1), storage.getCoefficient(1, 2), 0.000001))
+		return false;
+	
+	if (!areEqual(complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(800, -680), storage.getCombinedCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(3600, -2960), storage.getCombinedCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(11360, -9650), storage.getCombinedCoefficient(0, 2), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(11360, -9650), storage.getLastCombinedCoefficient(0), 0.000001))
+		return false;
+
+	return true;
+}
+
 bool runTestsCoefficientStorage()
 {
 	if (!runTestsCoefficientStoragePQ())
 		return false;
 
 	if (!runTestsCoefficientStoragePV())
+		return false;
+
+	if (!runTestsCoefficientStorageMixed())
 		return false;
 
 	return true;

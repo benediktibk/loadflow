@@ -20,6 +20,8 @@ public:
 	ComplexType const& getLastInverseCoefficient(int node) const;
 	ComplexType const& getSquaredCoefficient(int node, int step) const;
 	ComplexType const& getLastSquaredCoefficient(int node) const;
+	ComplexType const& getCombinedCoefficient(int node, int step) const;
+	ComplexType const& getLastCombinedCoefficient(int node) const;
 	std::vector< std::complex<double> > calculateVoltagesFromCoefficients();
 	size_t getCoefficientCount() const;
 
@@ -29,8 +31,11 @@ private:
 	void calculateFirstInverseCoefficients();
 	void calculateNextSquaredCoefficients();
 	void calculateNextSquaredCoefficient(int node);
+	void calculateNextCombinedCoefficients();
+	void calculateNextCombinedCoefficient(int node);
 	void insertInverseCoefficient(int node, ComplexType const& value);
 	void insertSquaredCoefficient(int node, ComplexType const& value);
+	void insertCombinedCoefficient(int node, ComplexType const& value);
 	std::complex<double> calculateVoltageFromCoefficients(int node);
 
 private:
@@ -40,6 +45,7 @@ private:
 	std::map<int, std::vector<ComplexType> > _inverseCoefficients;
 	std::vector<int> _pqBuses;
 	std::map<int, std::vector<ComplexType> > _squaredCoefficients;
+	std::map<int, std::vector<ComplexType> > _combinedCoefficients;
 	std::vector<int> _pvBuses;
 };
 
