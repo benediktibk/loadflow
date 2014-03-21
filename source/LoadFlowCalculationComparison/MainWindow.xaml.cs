@@ -26,10 +26,10 @@ namespace LoadFlowCalculationComparison
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlowHighAccuracy;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CombinedCalculationResults _combinedCalculationResults;
+        private readonly CalculationResults _calculationResults;
 
-        private delegate void ProblemOnceSolved();
-
-        private delegate void ResultCalculated(CombinedCalculationResult result);
+        private delegate void ResultCalculated(CalculationResult result);
+        private delegate void CombinedResultCalculated(CombinedCalculationResult result);
 
         public MainWindow()
         {
@@ -43,6 +43,7 @@ namespace LoadFlowCalculationComparison
 
             InitializeComponent();
             _combinedCalculationResults = FindResource("CombinedCalculationResults") as CombinedCalculationResults;
+            _calculationResults = FindResource("CalculationResults") as CalculationResults;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
             HolomorphicEmbeddedLoadFlowHighAccuracyGrid.DataContext = _holomorphicEmbeddedLoadFlowHighAccuracy;
@@ -53,12 +54,13 @@ namespace LoadFlowCalculationComparison
             CalculateButton.DataContext = _generalSettings;
         }
 
-        private void IncreaseProgressBarCount()
+        private void AddCalculationResult(CalculationResult result)
         {
             CalculateProgressBar.Value += 1;
+            _calculationResults.Add(result);
         }
 
-        private void AddCalculationResult(CombinedCalculationResult result)
+        private void AddCombinedCalculationResult(CombinedCalculationResult result)
         {
             _combinedCalculationResults.Add(result);
         }
@@ -152,6 +154,7 @@ namespace LoadFlowCalculationComparison
             Debug.WriteLine(Directory.GetCurrentDirectory());
             _generalSettings.CalculationRunning = true;
             _combinedCalculationResults.Clear();
+            _calculationResults.Clear();
             var dispatcher = Dispatcher.CurrentDispatcher;
             CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
             CalculateProgressBar.Value = 0;
@@ -177,57 +180,45 @@ namespace LoadFlowCalculationComparison
         private void CalculateNodePotentialResult(Dispatcher mainDispatcher)
         {
             var calculator = new NodePotentialMethod(_nodePotential.SingularityDetection);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "Node Potential";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "Node Potential");
         }
 
         private void CalculateCurrentIterationResult(Dispatcher mainDispatcher)
         {
             var calculator = new CurrentIteration(_currentIteration.TargetPrecision,
                 _currentIteration.MaximumIterations);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "Current Iteration";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "Current Iteration");
         }
 
         private void CalculateNewtonRaphsonResult(Dispatcher mainDispatcher)
         {
             var calculator = new NewtonRaphsonMethod(_newtonRaphson.TargetPrecision,
                 _newtonRaphson.MaximumIterations);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "Newton Raphson";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "Newton Raphson");
         }
 
         private void CalculateFastDecoupledLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
                 _fastDecoupledLoadFlow.MaximumIterations);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "FDLF";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "FDLF");
         }
 
         private void CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.LongDouble);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "HELM - double";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "HELM - double");
         }
 
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
-            var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "HELM - multi";
-            mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
+            CalculateResult(calculator, mainDispatcher, "HELM - multi");
         }
 
-        private CombinedCalculationResult CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher)
+        private void CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher, string algorithmName)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
@@ -237,6 +228,7 @@ namespace LoadFlowCalculationComparison
             Vector<Complex> correctVoltages;
             bool voltageCollapseReal;
             var i = 0;
+            Vector<Complex> voltageError;
 
             do
             {
@@ -247,21 +239,31 @@ namespace LoadFlowCalculationComparison
                 stopWatch.Stop();
                 executionTimes.Add(stopWatch.Elapsed.TotalSeconds);
 
+                var result = new CalculationResult();
+                voltageError = correctVoltages - powerNet.NodeVoltages;
+                result.Algorithm = algorithmName;
+                result.MaximumRelativeVoltageError = voltageError.AbsoluteMaximum().Magnitude / powerNet.NominalVoltage;
+                result.VoltageCollapseDetected = voltageCollapseDetected;
+                result.VoltageCollapse = voltageCollapseReal;
+                result.ExecutionTime = stopWatch.Elapsed.TotalSeconds;
+                result.RelativePowerError = powerNet.RelativePowerError;
+
                 ++i;
-                mainDispatcher.Invoke(new ProblemOnceSolved(IncreaseProgressBarCount));
+                mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
             } while (i < numberOfExecutions);
 
-            var result = new CombinedCalculationResult();
+            var combinedResult = new CombinedCalculationResult();
             var statistics = new DescriptiveStatistics(executionTimes);
-            var voltageError = correctVoltages - powerNet.NodeVoltages;
-            result.VoltageCollapseDetected = voltageCollapseDetected;
-            result.VoltageCollapse = voltageCollapseReal;
-            result.AverageExecutionTime = statistics.Mean;
-            result.StandardDeviationExecutionTime = statistics.StandardDeviation;
-            result.RelativePowerError = powerNet.RelativePowerError;
-            result.MaximumRelativeVoltageError = voltageError.AbsoluteMaximum().Magnitude/powerNet.NominalVoltage;
+            voltageError = correctVoltages - powerNet.NodeVoltages;
+            combinedResult.VoltageCollapseDetected = voltageCollapseDetected;
+            combinedResult.VoltageCollapse = voltageCollapseReal;
+            combinedResult.AverageExecutionTime = statistics.Mean;
+            combinedResult.StandardDeviationExecutionTime = statistics.StandardDeviation;
+            combinedResult.RelativePowerError = powerNet.RelativePowerError;
+            combinedResult.MaximumRelativeVoltageError = voltageError.AbsoluteMaximum().Magnitude/powerNet.NominalVoltage;
+            combinedResult.Algorithm = algorithmName;
 
-            return result;
+            mainDispatcher.Invoke(new CombinedResultCalculated(AddCombinedCalculationResult), combinedResult);
         }
 
         private PowerNetSingleVoltageLevel CreatePowerNet(out Vector<Complex> correctVoltages, out bool voltageCollapse)

@@ -17,6 +17,7 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <local:CombinedCalculationResults x:Key="CombinedCalculationResults"/>
+        <local:CalculationResults x:Key="CalculationResults"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -220,9 +221,10 @@
         </ScrollViewer>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="30*"/>
+                <RowDefinition Height="70*"/>
             </Grid.RowDefinitions>
-            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
+            <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
                     <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
@@ -231,6 +233,16 @@
                     <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
                     <DataGridTextColumn Binding="{Binding AverageExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
                     <DataGridTextColumn Binding="{Binding StandardDeviationExecutionTime, StringFormat={}{0:e3}}" Header="sigma t"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{StaticResource CalculationResults}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
+                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
+                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapseDetected}" Header="reported collapse"/>
+                    <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
+                    <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
+                    <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
