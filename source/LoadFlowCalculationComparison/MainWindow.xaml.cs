@@ -26,7 +26,6 @@ namespace LoadFlowCalculationComparison
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlowHighAccuracy;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CalculationResults _calculationResults;
-        private List<CalculationResult> _newCalculationResults;
 
         private delegate void ProblemOnceSolved();
 

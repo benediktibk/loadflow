@@ -72,12 +72,9 @@
     <Compile Include="NodeTest.cs" />
     <Compile Include="NodePotentialMethodTest.cs" />
     <Compile Include="CurrentIterationTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadflowMethodWithoutAccuracyImprovementTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadflowMethodWithAccuracyImprovementTest.cs" />
     <Compile Include="FastDecoupledLoadFlowMethodTest.cs" />
     <Compile Include="PQBusTest.cs" />
     <Compile Include="PVBusTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
     <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
     <Compile Include="JacobiMatrixBaseMethodTest.cs" />
     <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyLongDoubleTest.cs" />
