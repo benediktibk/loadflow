@@ -78,6 +78,6 @@ private:
 	std::vector< std::vector<ComplexFloating> > _coefficients;
 	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
 	double _absolutePowerSum;
-	CoefficientStorage<ComplexFloating> *_coefficientStorage;
+	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 };
 
