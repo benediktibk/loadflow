@@ -250,7 +250,7 @@ namespace LoadFlowCalculationComparison
             {
                 powerNet = CreatePowerNet(out correctVoltages, out voltageCollapseReal);
 
-                stopWatch.Start();
+                stopWatch.Restart();
                 voltageCollapseDetected = powerNet.CalculateMissingInformation(calculator);
                 stopWatch.Stop();
                 executionTimes.Add(stopWatch.Elapsed.TotalSeconds);
