@@ -157,7 +157,7 @@
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="HolomorphicEmbeddedLoadFlowGrid" Grid.Row="5">
-                    <TextBlock Text="Holomorphic Embedding Load Flow" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                    <TextBlock Text="Holomorphic Embedding Load Flow - double" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
@@ -186,7 +186,7 @@
                     </TextBox>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Name="HolomorphicEmbeddedLoadFlowHighAccuracyGrid" Grid.Row="6">
-                    <TextBlock Text="Holomorphic Embedding Load Flow - C++" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+                    <TextBlock Text="Holomorphic Embedding Load Flow - multi" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
                     <TextBlock Text="target precision" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,24,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>

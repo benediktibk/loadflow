@@ -144,6 +144,8 @@ namespace LoadFlowCalculationComparison
             _fastDecoupledLoadFlow.MaximumIterations = fdlfMaximumIterations;
             _holomorphicEmbeddedLoadFlow.TargetPrecision = helmTargetPrecision;
             _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
+            _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision = helmTargetPrecision;
+            _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
         }
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
@@ -210,10 +212,10 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
-            var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
-                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, false);
+            var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
+                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.LongDouble);
             var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "HELM";
+            result.Algorithm = "HELM - double";
             mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
         }
 
@@ -222,7 +224,7 @@ namespace LoadFlowCalculationComparison
             var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
             var result = CalculateResult(calculator, mainDispatcher);
-            result.Algorithm = "HELM - C++";
+            result.Algorithm = "HELM - multi";
             mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
         }
 
