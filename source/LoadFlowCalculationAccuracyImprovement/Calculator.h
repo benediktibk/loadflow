@@ -10,12 +10,14 @@
 #include "PVBus.h"
 #include "ConsoleOutput.h"
 #include "ICalculator.h"
+#include "CoefficientStorage.h"
 
 template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
 {
 public:
 	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount);
+	virtual ~Calculator();
 
 	virtual void setAdmittance(int row, int column, std::complex<double> value);
 	virtual void setPQBus(int busId, int node, std::complex<double> power);
@@ -76,5 +78,6 @@ private:
 	std::vector< std::vector<ComplexFloating> > _coefficients;
 	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
 	double _absolutePowerSum;
+	CoefficientStorage<ComplexFloating> *_coefficientStorage;
 };
 

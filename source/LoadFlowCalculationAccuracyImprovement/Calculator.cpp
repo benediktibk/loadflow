@@ -24,7 +24,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount),
 	_consoleOutput(0),
-	_absolutePowerSum(0)
+	_absolutePowerSum(0),
+	_coefficientStorage(0)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -32,6 +33,13 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	assert(pvBusCount >= 0);
 	_coefficients.reserve(_numberOfCoefficients);
 	_inverseCoefficients.reserve(_numberOfCoefficients);
+}
+
+template<typename Floating, typename ComplexFloating>
+Calculator<Floating, ComplexFloating>::~Calculator()
+{
+	delete _coefficientStorage;
+	_coefficientStorage = 0;
 }
 
 template<typename Floating, typename ComplexFloating>
