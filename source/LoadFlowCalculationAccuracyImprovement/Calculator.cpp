@@ -208,11 +208,12 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std
 		int id = bus.getId();
 		Floating realPower = static_cast<Floating>(bus.getPowerReal());
 		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
-		//ComplexFloating const& previousInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
-		ComplexFloating previousInverseCoefficient;
+		ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
+		ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
 		ComplexFloating const& admittanceRowSum = admittanceRowSums[id];
+		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare) - admittanceRowSum;
+		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare) - admittanceRowSum;
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -239,10 +240,11 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		int id = bus.getId();
 		Floating const& realPower = static_cast<Floating>(bus.getPowerReal());
 		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
-		//ComplexFloating const& previousInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
-		ComplexFloating previousInverseCoefficient;
+		ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
+		ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
+		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare);
+		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
