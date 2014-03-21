@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using LoadFlowCalculationComparison.AlgorithmSettings;
 using LoadFlowCalculation;
@@ -58,6 +59,21 @@ namespace LoadFlowCalculationComparison
         {
             CalculateProgressBar.Value += 1;
             _calculationResults.Add(result);
+            ScrollResultDataGridToEnd();
+        }
+
+        private void ScrollResultDataGridToEnd()
+        {
+            if (ResultDataGrid.Items.Count <= 0)
+                return;
+
+            var border = VisualTreeHelper.GetChild(ResultDataGrid, 0) as Decorator;
+            if (border == null)
+                return;
+
+            var scroll = border.Child as ScrollViewer;
+            if (scroll != null)
+                scroll.ScrollToEnd();
         }
 
         private void AddCombinedCalculationResult(CombinedCalculationResult result)
