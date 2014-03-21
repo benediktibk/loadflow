@@ -31,8 +31,6 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	assert(nodeCount > 0);
 	assert(pqBusCount >= 0);
 	assert(pvBusCount >= 0);
-	_coefficients.reserve(_numberOfCoefficients);
-	_inverseCoefficients.reserve(_numberOfCoefficients);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -69,28 +67,25 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
+	delete _coefficientStorage;
+	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses);
 	calculateAbsolutePowerSum();
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
-	_coefficients.clear();
-	_inverseCoefficients.clear();
 	std::vector<ComplexFloating> admittanceRowSums = calculateAdmittanceRowSum();
 	calculateFirstCoefficient(admittanceRowSums);
-	_inverseCoefficients.push_back(divide(ComplexFloating(1), _coefficients.front()));
 	calculateSecondCoefficient(admittanceRowSums);
-	calculateNextInverseCoefficient();
 	map<double, int> powerErrors;
 	std::vector< std::vector< complex<double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
 	
-	while (_coefficients.size() < _numberOfCoefficients)
+	while (_coefficientStorage->getCoefficientCount() < _numberOfCoefficients)
 	{
 		calculateNextCoefficient();
-		calculateNextInverseCoefficient();
 
 		try
 		{
-			calculateVoltagesFromCoefficients();
+			_voltages = _coefficientStorage->calculateVoltagesFromCoefficients();
 		}
 		catch (overflow_error e)
 		{
@@ -173,8 +168,6 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
 {
-	assert(_coefficients.size() == 0);
-
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
@@ -189,159 +182,72 @@ void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std:
 		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()] + _constantCurrents[bus.getId()];
 	}
 
-
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
-	_coefficients.push_back(coefficients);
+	_coefficientStorage->addCoefficients(coefficients);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
 {
-	assert(_coefficients.size() == 1);
-	assert(_inverseCoefficients.size() == 1);
-
-	const std::vector<ComplexFloating> &previousCoefficients = _coefficients.back();
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
-			
-	assert(previousCoefficients.size() == _nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
-		const PQBus &bus = _pqBuses[i];
+		PQBus const& bus = _pqBuses[i];
 		int id = bus.getId();
-		ComplexFloating ownCurrent = static_cast<ComplexFloating>(bus.getPower())*getLastInverseCoefficient(id);
-		ComplexFloating constantCurrent = _constantCurrents[id];
-		ComplexFloating totalCurrent = conj(ownCurrent) + constantCurrent;
+		ComplexFloating const& ownCurrent = static_cast<ComplexFloating>(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
+		ComplexFloating const& constantCurrent = _constantCurrents[id];
+		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
 		rightHandSide[id] = admittanceRowSums[id] + totalCurrent;
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
-		const PVBus &bus = _pvBuses[i];
+		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
 		Floating realPower = static_cast<Floating>(bus.getPowerReal());
-		ComplexFloating previousCoefficient = previousCoefficients[id];
-		ComplexFloating previousInverseCoefficient = getLastInverseCoefficient(id);
-		ComplexFloating admittanceRowSum = admittanceRowSums[id];
+		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
+		//ComplexFloating const& previousInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
+		ComplexFloating previousInverseCoefficient;
+		ComplexFloating const& admittanceRowSum = admittanceRowSums[id];
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare) - admittanceRowSum;
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
-	_coefficients.push_back(coefficients);
+	_coefficientStorage->addCoefficients(coefficients);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
-	assert(_coefficients.size() > 1);
-	assert(_inverseCoefficients.size() > 1);
-
-	const std::vector<ComplexFloating> &previousCoefficients = _coefficients.back();
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 			
-	assert(previousCoefficients.size() == _nodeCount);
-
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
 		ComplexFloating power(bus.getPower());
-		rightHandSide[id] = conj(power*getLastInverseCoefficient(id));
+		rightHandSide[id] = conj(power*_coefficientStorage->getLastInverseCoefficient(id));
 	}
 		
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
-		const PVBus &bus = _pvBuses[i];
+		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
-		Floating realPower = static_cast<Floating>(bus.getPowerReal());
-		ComplexFloating previousCoefficient = previousCoefficients[id];
-		ComplexFloating previousInverseCoefficient = getLastInverseCoefficient(id);
+		Floating const& realPower = static_cast<Floating>(bus.getPowerReal());
+		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
+		//ComplexFloating const& previousInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
+		ComplexFloating previousInverseCoefficient;
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare);
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
-	_coefficients.push_back(coefficients);
-}
-
-template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateNextInverseCoefficient()
-{
-	assert(_inverseCoefficients.size() > 0);
-	assert(_inverseCoefficients.size() + 1 == _coefficients.size());
-
-	size_t n = _coefficients.size() - 1;
-	std::vector<ComplexFloating> result(_nodeCount);
-
-	for (size_t i = 0; i < n; ++i)
-	{
-		const std::vector<ComplexFloating> &inverseCoefficient = _inverseCoefficients[i];
-		const std::vector<ComplexFloating> &coefficient = _coefficients[n - i];
-		
-		assert(inverseCoefficient.size() == _nodeCount);
-		assert(coefficient.size() == _nodeCount);
-
-		std::vector<ComplexFloating> summand = pointwiseMultiply(coefficient, inverseCoefficient);
-		result = add(result, summand);
-	}
-
-	result = pointwiseDivide(result, _coefficients[0]);
-	result = multiply(result, ComplexFloating(Floating(-1)));
-	assert(result.size() == _nodeCount);
-	_inverseCoefficients.push_back(result);
-}
-
-template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
-{
-	for (size_t i = 0; i < _nodeCount; ++i)
-	{
-		std::vector<ComplexFloating> coefficients(_coefficients.size());
-
-		for (size_t j = 0; j < _coefficients.size(); ++j)
-			coefficients[j] = _coefficients[j][i];
-
-		_voltages[i] = calculateVoltageFromCoefficients(coefficients);
-	}
-}
-
-template<typename Floating, typename ComplexFloating>
-complex<double> Calculator<Floating, ComplexFloating>::calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients)
-{
-	std::vector<ComplexFloating> previousEpsilon(coefficients.size() + 1);
-	std::vector<ComplexFloating> currentEpsilon(coefficients.size());
-
-	ComplexFloating sum;
-	for (size_t i = 0; i < coefficients.size(); ++i)
-	{
-		sum += coefficients[i];
-		currentEpsilon[i] = sum;
-	}
-
-	size_t initialCount = coefficients.size();
-
-	while(currentEpsilon.size() > 1)
-	{
-		std::vector<ComplexFloating> nextEpsilon(currentEpsilon.size() - 1);
-
-		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
-        {
-            ComplexFloating previousDifference = currentEpsilon[j + 1] - currentEpsilon[j];
-			if (abs(previousDifference) == Floating(0))
-				throw overflow_error("numeric error, would have to divide by zero");
-			nextEpsilon[j] = previousEpsilon[j + 1] + ComplexFloating(Floating(1))/previousDifference;
-        }
-
-		previousEpsilon = currentEpsilon;
-		currentEpsilon = nextEpsilon;
-	}
-
-	ComplexFloating const& result =  initialCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
-	return static_cast< complex<double> >(result);
+	_coefficientStorage->addCoefficients(coefficients);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -391,12 +297,6 @@ void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
 	}
 
 	_absolutePowerSum = abs(sum);
-}
-
-template<typename Floating, typename ComplexFloating>
-ComplexFloating const& Calculator<Floating, ComplexFloating>::getLastInverseCoefficient(int id) const
-{
-	return _inverseCoefficients.back()[id];
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -547,25 +447,29 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(co
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::getCoefficientReal(int step, int node) const
 {
-	return static_cast<double>(_coefficients[step][node].real());
+	assert(_coefficientStorage != 0);
+	return static_cast<double>(_coefficientStorage->getCoefficient(node, step).real());
 }
 
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::getCoefficientImaginary(int step, int node) const
 {
-	return static_cast<double>(_coefficients[step][node].imag());
+	assert(_coefficientStorage != 0);
+	return static_cast<double>(_coefficientStorage->getCoefficient(node, step).imag());
 }
 
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::getInverseCoefficientReal(int step, int node) const
 {
-	return static_cast<double>(_inverseCoefficients[step][node].real());
+	assert(_coefficientStorage != 0);
+	return static_cast<double>(_coefficientStorage->getInverseCoefficient(node, step).real());
 }
 
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::getInverseCoefficientImaginary(int step, int node) const
 {
-	return static_cast<double>(_inverseCoefficients[step][node].imag());
+	assert(_coefficientStorage != 0);
+	return static_cast<double>(_coefficientStorage->getInverseCoefficient(node, step).imag());
 }
 
 template<typename Floating, typename ComplexFloating>

@@ -334,10 +334,10 @@ namespace LoadFlowCalculationTest
             var secondInverseCoefficient = new DenseVector(new[] { new Complex(-2.08041324631485, -0.0199997871033142) });
             var thirdInverseCoefficient = new DenseVector(new[] { new Complex(-4.39139139593914, -0.124215207588218) });
             ComplexAssert.AreEqual(firstCoefficient, calculator.GetCoefficients(0), 0.0001);
-            ComplexAssert.AreEqual(secondCoefficient, calculator.GetCoefficients(1), 0.0001);
-            ComplexAssert.AreEqual(thirdCoefficient, calculator.GetCoefficients(2), 0.0001);
             ComplexAssert.AreEqual(firstInverseCoefficient, calculator.GetInverseCoefficients(0), 0.0001);
+            ComplexAssert.AreEqual(secondCoefficient, calculator.GetCoefficients(1), 0.0001);
             ComplexAssert.AreEqual(secondInverseCoefficient, calculator.GetInverseCoefficients(1), 0.0001);
+            ComplexAssert.AreEqual(thirdCoefficient, calculator.GetCoefficients(2), 0.0001);
             ComplexAssert.AreEqual(thirdInverseCoefficient, calculator.GetInverseCoefficients(2), 0.0001);
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);

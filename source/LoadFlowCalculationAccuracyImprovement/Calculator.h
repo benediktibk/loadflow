@@ -41,12 +41,8 @@ private:
 	void calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSum);
 	void calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSum);
 	void calculateNextCoefficient();
-	void calculateNextInverseCoefficient();
-	void calculateVoltagesFromCoefficients();
-	std::complex<double> calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
-	ComplexFloating const& getLastInverseCoefficient(int id) const;
 
 private:
 	static std::vector<ComplexFloating> pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two);
@@ -75,8 +71,6 @@ private:
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;
 	ConsoleOutput _consoleOutput;
-	std::vector< std::vector<ComplexFloating> > _coefficients;
-	std::vector< std::vector<ComplexFloating> > _inverseCoefficients;
 	double _absolutePowerSum;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 };

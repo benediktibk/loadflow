@@ -18,6 +18,7 @@ public:
 	ComplexType const& getInverseCoefficient(int node, int step) const;
 	ComplexType const& getLastInverseCoefficient(int node) const;
 	std::vector< std::complex<double> > calculateVoltagesFromCoefficients();
+	size_t getCoefficientCount() const;
 
 private:
 	void calculateNextInverseCoefficients();

@@ -70,7 +70,7 @@ vector< complex<double> > CoefficientStorage<ComplexType, RealType>::calculateVo
 template<typename ComplexType, typename RealType>
 complex<double> CoefficientStorage<ComplexType, RealType>::calculateVoltageFromCoefficients(int node)
 {
-	size_t coefficientCount = _coefficients.size();
+	size_t coefficientCount = getCoefficientCount();
 	vector<ComplexType> previousEpsilon(coefficientCount + 1);
 	vector<ComplexType> currentEpsilon(coefficientCount);
 
@@ -102,9 +102,15 @@ complex<double> CoefficientStorage<ComplexType, RealType>::calculateVoltageFromC
 }
 
 template<typename ComplexType, typename RealType>
+size_t CoefficientStorage<ComplexType, RealType>::getCoefficientCount() const
+{
+	return _coefficients.size();
+}
+
+template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficients()
 {
-	if (_coefficients.size() == 0)
+	if (_coefficients.size() == 1)
 	{
 		calculateFirstInverseCoefficients();
 		return;
@@ -119,16 +125,16 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(
 {
 	ComplexType result(0);
 
-	int n = _coefficients.size() - 2;
-	for (int i = 0; i <= n; ++i)
+	int n = _coefficients.size() - 1;
+	for (int i = 0; i < n; ++i)
 	{
-		ComplexType const& coefficient = getCoefficient(node, i);
-		ComplexType const& inverseCoefficient = getInverseCoefficient(node, n - i);
+		ComplexType const& coefficient = getCoefficient(node, n - i);
+		ComplexType const& inverseCoefficient = getInverseCoefficient(node, i);
 		result += coefficient*inverseCoefficient;
 	}
 
 	ComplexType const& firstCoefficient = getCoefficient(node, 0);
-	result = result/firstCoefficient*ComplexType(-1);
+	result = result/firstCoefficient*ComplexType(RealType(-1), RealType(0));
 	insertInverseCoefficient(node, result);
 }
 
