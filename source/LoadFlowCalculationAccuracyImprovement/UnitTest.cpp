@@ -1,7 +1,17 @@
 #include "UnitTest.h"
 #include "Complex.h"
+#include "CoefficientStorage.h"
+#include <complex>
+
+using namespace std;
 
 bool areEqual(Complex<double> const& one, Complex<double> const& two, double delta)
+{
+	return	std::abs(one.real() - two.real()) < delta &&
+			std::abs(one.imag() - two.imag()) < delta;
+}
+
+bool areEqual(complex<long double> const& one, complex<long double> const& two, double delta)
 {
 	return	std::abs(one.real() - two.real()) < delta &&
 			std::abs(one.imag() - two.imag()) < delta;
@@ -102,6 +112,57 @@ bool runTestsMultiPrecision()
 	return true;
 }
 
+bool runTestsCoefficientStorage()
+{
+	vector<PQBus> pqBuses;
+	pqBuses.push_back(PQBus(0, complex<double>()));
+	vector<PVBus> pvBuses;
+	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses);
+	vector< complex<long double> > coefficients;
+
+	if (0 != storage.getCoefficientCount())
+		return false;
+
+	coefficients.push_back(complex<long double>(2, 0));
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(2, 0), storage.getLastCoefficient(0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(0.5, 0), storage.getLastInverseCoefficient(0), 0.000001))
+		return false;
+
+	coefficients[0] = complex<long double>(3, 0);
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(3, 0), storage.getLastCoefficient(0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(-0.75, 0), storage.getLastInverseCoefficient(0), 0.000001))
+		return false;
+
+	coefficients[0] = complex<long double>(5, 0);
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(5, 0), storage.getLastCoefficient(0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>((-1.0)/8, 0), storage.getLastInverseCoefficient(0), 0.000001))
+		return false;
+
+	if (!areEqual(complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(0.5, 0), storage.getInverseCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(-0.75, 0), storage.getInverseCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>((-1.0)/8, 0), storage.getInverseCoefficient(0, 2), 0.000001))
+		return false;
+
+	return true;
+}
+
 bool runTests()
 {
 	if (!runTestsComplexDouble())
@@ -111,6 +172,9 @@ bool runTests()
 		return false;
 
 	if (!runTestsMultiPrecision())
+		return false;
+
+	if (!runTestsCoefficientStorage())
 		return false;
 
 	return true;
