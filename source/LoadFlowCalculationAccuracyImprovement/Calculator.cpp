@@ -194,17 +194,15 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std
 	assert(_inverseCoefficients.size() == 1);
 
 	const std::vector<ComplexFloating> &previousCoefficients = _coefficients.back();
-	const std::vector<ComplexFloating> &previousInverseCoefficients = _inverseCoefficients.back();
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 			
-	assert(previousInverseCoefficients.size() == _nodeCount);
 	assert(previousCoefficients.size() == _nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
-		ComplexFloating ownCurrent = static_cast<ComplexFloating>(bus.getPower())*previousInverseCoefficients[id];
+		ComplexFloating ownCurrent = static_cast<ComplexFloating>(bus.getPower())*getLastInverseCoefficient(id);
 		ComplexFloating constantCurrent = _constantCurrents[id];
 		ComplexFloating totalCurrent = conj(ownCurrent) + constantCurrent;
 		rightHandSide[id] = admittanceRowSums[id] + totalCurrent;
@@ -216,7 +214,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std
 		int id = bus.getId();
 		Floating realPower = static_cast<Floating>(bus.getPowerReal());
 		ComplexFloating previousCoefficient = previousCoefficients[id];
-		ComplexFloating previousInverseCoefficient = previousInverseCoefficients[id];
+		ComplexFloating previousInverseCoefficient = getLastInverseCoefficient(id);
 		ComplexFloating admittanceRowSum = admittanceRowSums[id];
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare) - admittanceRowSum;
@@ -387,6 +385,12 @@ void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
 	}
 
 	_absolutePowerSum = abs(sum);
+}
+
+template<typename Floating, typename ComplexFloating>
+ComplexFloating const& Calculator<Floating, ComplexFloating>::getLastInverseCoefficient(int id) const
+{
+	return _inverseCoefficients.back()[id];
 }
 
 template<typename Floating, typename ComplexFloating>

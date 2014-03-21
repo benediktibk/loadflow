@@ -44,6 +44,7 @@ private:
 	std::complex<double> calculateVoltageFromCoefficients(const std::vector<ComplexFloating> &coefficients);
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
+	ComplexFloating const& getLastInverseCoefficient(int id) const;
 
 private:
 	static std::vector<ComplexFloating> pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two);
