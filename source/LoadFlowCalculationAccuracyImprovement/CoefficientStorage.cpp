@@ -32,6 +32,7 @@ CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberO
 	{
 		_squaredCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
 		_combinedCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
+		_weightedCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
 		_pvBuses.push_back(pvBuses[i].getId());
 	}
 }
@@ -42,6 +43,7 @@ void CoefficientStorage<ComplexType, RealType>::addCoefficients(std::vector<Comp
 	_coefficients.push_back(coefficients);
 	calculateNextInverseCoefficients();
 	calculateNextSquaredCoefficients();
+	calculateNextWeightedCoefficients();
 	calculateNextCombinedCoefficients();
 }
 
@@ -84,6 +86,13 @@ ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastSquaredCoef
 {
 	assert(_coefficients.size() > 0);
 	return getSquaredCoefficient(node, _coefficients.size() - 1);
+}
+
+template<typename ComplexType, typename RealType>
+ComplexType const& CoefficientStorage<ComplexType, RealType>::getWeightedCoefficient(int node, int step) const
+{
+	assert(_weightedCoefficients.count(node) == 1);
+	return _weightedCoefficients.at(node)[step];
 }
 
 template<typename ComplexType, typename RealType>
@@ -213,6 +222,31 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficient(
 }
 
 template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficients()
+{
+	for (size_t i = 0; i < _pvBuses.size(); ++i)
+		calculateNextWeightedCoefficient(_pvBuses[i]);
+}
+
+template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficient(int node)
+{
+	ComplexType coefficient;
+	
+	for (int i = 0; i < _nodeCount; ++i)
+	{
+		ComplexType admittance = _admittances.coeff(node, i);
+
+		if (admittance == ComplexType(RealType(0), RealType(0)))
+			continue;
+
+		coefficient += conj(admittance*getLastCoefficient(i));
+	}
+
+	insertWeightedCoefficent(node, coefficient);
+}
+
+template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficients()
 {
 	for (size_t i = 0; i < _pvBuses.size(); ++i)
@@ -222,24 +256,11 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient(int node)
 {
-	vector<ComplexType> weightedCoefficients(getCoefficientCount());
-
-	for (int i = 0; i < _nodeCount; ++i)
-	{
-		ComplexType admittance = _admittances.coeff(node, i);
-
-		if (admittance == ComplexType(RealType(0), RealType(0)))
-			continue;
-
-		for (size_t j = 0; j < getCoefficientCount(); ++j)
-			weightedCoefficients[j] += conj(admittance*getCoefficient(i, j));
-	}
-		
-	ComplexType result(0);
-
+	ComplexType result;
 	int n = _coefficients.size() - 1;
+
 	for (int i = 0; i <= n; ++i)
-		result += weightedCoefficients[n - i]*getSquaredCoefficient(node, i);
+		result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
 
 	insertCombinedCoefficient(node, result);
 }
@@ -263,4 +284,11 @@ void CoefficientStorage<ComplexType, RealType>::insertCombinedCoefficient(int no
 {
 	assert(_combinedCoefficients.count(node) == 1);
 	_combinedCoefficients[node].push_back(value);
+}
+
+template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::insertWeightedCoefficent(int node, ComplexType const& value)
+{
+	assert(_weightedCoefficients.count(node) == 1);
+	_weightedCoefficients[node].push_back(value);
 }
