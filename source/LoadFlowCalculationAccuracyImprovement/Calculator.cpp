@@ -232,10 +232,8 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	assert(_inverseCoefficients.size() > 1);
 
 	const std::vector<ComplexFloating> &previousCoefficients = _coefficients.back();
-	const std::vector<ComplexFloating> &previousInverseCoefficients = _inverseCoefficients.back();
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 			
-	assert(previousInverseCoefficients.size() == _nodeCount);
 	assert(previousCoefficients.size() == _nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
@@ -243,7 +241,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
 		ComplexFloating power(bus.getPower());
-		rightHandSide[id] = conj(power*previousInverseCoefficients[id]);
+		rightHandSide[id] = conj(power*getLastInverseCoefficient(id));
 	}
 		
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -252,7 +250,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		int id = bus.getId();
 		Floating realPower = static_cast<Floating>(bus.getPowerReal());
 		ComplexFloating previousCoefficient = previousCoefficients[id];
-		ComplexFloating previousInverseCoefficient = previousInverseCoefficients[id];
+		ComplexFloating previousInverseCoefficient = getLastInverseCoefficient(id);
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousInverseCoefficient)/ComplexFloating(magnitudeSquare);
 	}
