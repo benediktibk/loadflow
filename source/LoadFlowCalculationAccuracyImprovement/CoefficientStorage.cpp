@@ -22,6 +22,13 @@ CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberO
 		_inverseCoefficients.insert(pair<int, vector<ComplexType> >(pqBuses[i].getId(), vector<ComplexType>()));
 		_pqBuses.push_back(pqBuses[i].getId());
 	}
+
+	_pvBuses.reserve(pvBuses.size());
+	for (size_t i = 0; i < pvBuses.size(); ++i)
+	{
+		_squaredCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
+		_pvBuses.push_back(pvBuses[i].getId());
+	}
 }
 
 template<typename ComplexType, typename RealType>
@@ -29,6 +36,7 @@ void CoefficientStorage<ComplexType, RealType>::addCoefficients(std::vector<Comp
 {
 	_coefficients.push_back(coefficients);
 	calculateNextInverseCoefficients();
+	calculateNextSquaredCoefficients();
 }
 
 template<typename ComplexType, typename RealType>
@@ -40,6 +48,7 @@ ComplexType const& CoefficientStorage<ComplexType, RealType>::getCoefficient(int
 template<typename ComplexType, typename RealType>
 ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastCoefficient(int node) const
 {
+	assert(_coefficients.size() > 0);
 	return getCoefficient(node, _coefficients.size() - 1);
 }
 
@@ -53,7 +62,22 @@ ComplexType const& CoefficientStorage<ComplexType, RealType>::getInverseCoeffici
 template<typename ComplexType, typename RealType>
 ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastInverseCoefficient(int node) const
 {
+	assert(_coefficients.size() > 0);
 	return getInverseCoefficient(node, _coefficients.size() - 1);
+}
+
+template<typename ComplexType, typename RealType>
+ComplexType const& CoefficientStorage<ComplexType, RealType>::getSquaredCoefficient(int node, int step) const
+{
+	assert(_squaredCoefficients.count(node) == 1);
+	return _squaredCoefficients.at(node)[step];
+}
+
+template<typename ComplexType, typename RealType>
+ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastSquaredCoefficient(int node) const
+{
+	assert(_coefficients.size() > 0);
+	return getSquaredCoefficient(node, _coefficients.size() - 1);
 }
 
 template<typename ComplexType, typename RealType>
@@ -149,10 +173,35 @@ void CoefficientStorage<ComplexType, RealType>::calculateFirstInverseCoefficient
 		insertInverseCoefficient(node, inverseCoefficient);
 	}
 }
+template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficients()
+{
+	for (size_t i = 0; i < _pvBuses.size(); ++i)
+		calculateNextSquaredCoefficient(_pvBuses[i]);
+}
+
+template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficient(int node)
+{
+	int n = _coefficients.size() - 1;
+	ComplexType coefficient;
+
+	for (int j = 0; j <= n; ++j)
+		coefficient += getCoefficient(node, j)*getCoefficient(node, n - j);
+
+	insertSquaredCoefficient(node, coefficient);
+}
 
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::insertInverseCoefficient(int node, ComplexType const& value)
 {
 	assert(_inverseCoefficients.count(node) == 1);
 	_inverseCoefficients[node].push_back(value);
+}
+
+template<typename ComplexType, typename RealType>
+void CoefficientStorage<ComplexType, RealType>::insertSquaredCoefficient(int node, ComplexType const& value)
+{
+	assert(_squaredCoefficients.count(node) == 1);
+	_squaredCoefficients[node].push_back(value);
 }

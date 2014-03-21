@@ -112,7 +112,7 @@ bool runTestsMultiPrecision()
 	return true;
 }
 
-bool runTestsCoefficientStorage()
+bool runTestsCoefficientStoragePQ()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
@@ -158,6 +158,56 @@ bool runTestsCoefficientStorage()
 	if (!areEqual(complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
 		return false;
 	if (!areEqual(complex<long double>((-1.0)/8, 0), storage.getInverseCoefficient(0, 2), 0.000001))
+		return false;
+
+	return true;
+}
+
+bool runTestsCoefficientStoragePV()
+{
+	vector<PQBus> pqBuses;
+	vector<PVBus> pvBuses;
+	pvBuses.push_back(PVBus(0, 0, 1));
+	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses);
+	vector< complex<long double> > coefficients;
+
+	if (0 != storage.getCoefficientCount())
+		return false;
+
+	coefficients.push_back(complex<long double>(2, 0));
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(4, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+		return false;
+
+	coefficients[0] = complex<long double>(3, 0);
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(12, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+		return false;
+
+	coefficients[0] = complex<long double>(5, 0);
+	storage.addCoefficients(coefficients);
+
+	if (!areEqual(complex<long double>(29, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+		return false;
+
+	if (!areEqual(complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
+		return false;
+	if (!areEqual(complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
+		return false;
+
+	return true;
+}
+
+bool runTestsCoefficientStorage()
+{
+	if (!runTestsCoefficientStoragePQ())
+		return false;
+
+	if (!runTestsCoefficientStoragePV())
 		return false;
 
 	return true;
