@@ -16,7 +16,7 @@
                 <x:Type TypeName="localSettings:ProblemSelectionEnum"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <local:CalculationResults x:Key="CalculationResults"/>
+        <local:CombinedCalculationResults x:Key="CombinedCalculationResults"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -222,7 +222,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CalculationResults}">
+            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
                     <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>

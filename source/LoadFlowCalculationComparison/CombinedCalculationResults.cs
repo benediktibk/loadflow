@@ -2,6 +2,6 @@
 
 namespace LoadFlowCalculationComparison
 {
-    public class CalculationResults : ObservableCollection<CalculationResult>
+    public class CombinedCalculationResults : ObservableCollection<CombinedCalculationResult>
     { }
 }

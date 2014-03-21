@@ -25,11 +25,11 @@ namespace LoadFlowCalculationComparison
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlowHighAccuracy;
         private readonly NodePotentialMethodSettings _nodePotential;
-        private readonly CalculationResults _calculationResults;
+        private readonly CombinedCalculationResults _combinedCalculationResults;
 
         private delegate void ProblemOnceSolved();
 
-        private delegate void ResultCalculated(CalculationResult result);
+        private delegate void ResultCalculated(CombinedCalculationResult result);
 
         public MainWindow()
         {
@@ -42,7 +42,7 @@ namespace LoadFlowCalculationComparison
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
 
             InitializeComponent();
-            _calculationResults = FindResource("CalculationResults") as CalculationResults;
+            _combinedCalculationResults = FindResource("CombinedCalculationResults") as CombinedCalculationResults;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
             HolomorphicEmbeddedLoadFlowHighAccuracyGrid.DataContext = _holomorphicEmbeddedLoadFlowHighAccuracy;
@@ -58,9 +58,9 @@ namespace LoadFlowCalculationComparison
             CalculateProgressBar.Value += 1;
         }
 
-        private void AddCalculationResult(CalculationResult result)
+        private void AddCalculationResult(CombinedCalculationResult result)
         {
-            _calculationResults.Add(result);
+            _combinedCalculationResults.Add(result);
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -151,7 +151,7 @@ namespace LoadFlowCalculationComparison
         {
             Debug.WriteLine(Directory.GetCurrentDirectory());
             _generalSettings.CalculationRunning = true;
-            _calculationResults.Clear();
+            _combinedCalculationResults.Clear();
             var dispatcher = Dispatcher.CurrentDispatcher;
             CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
             CalculateProgressBar.Value = 0;
@@ -227,7 +227,7 @@ namespace LoadFlowCalculationComparison
             mainDispatcher.Invoke(new ResultCalculated(AddCalculationResult), result);
         }
 
-        private CalculationResult CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher)
+        private CombinedCalculationResult CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
@@ -251,7 +251,7 @@ namespace LoadFlowCalculationComparison
                 mainDispatcher.Invoke(new ProblemOnceSolved(IncreaseProgressBarCount));
             } while (i < numberOfExecutions);
 
-            var result = new CalculationResult();
+            var result = new CombinedCalculationResult();
             var statistics = new DescriptiveStatistics(executionTimes);
             var voltageError = correctVoltages - powerNet.NodeVoltages;
             result.VoltageCollapseDetected = voltageCollapseDetected;
