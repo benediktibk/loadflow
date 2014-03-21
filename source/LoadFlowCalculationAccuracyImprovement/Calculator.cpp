@@ -178,8 +178,11 @@ void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std:
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
-		const PVBus &bus = _pvBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()] + _constantCurrents[bus.getId()];
+		PVBus const& bus = _pvBuses[i];
+		int id = bus.getId();
+		ComplexFloating const& admittanceRowSum = admittanceRowSums[id];
+		ComplexFloating const& constantCurrent = _constantCurrents[id];
+		rightHandSide[id] = admittanceRowSum + constantCurrent;
 	}
 
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
