@@ -117,7 +117,8 @@ bool runTestsCoefficientStoragePQ()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses);
+	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients;
 
 	if (0 != storage.getCoefficientCount())
@@ -168,7 +169,8 @@ bool runTestsCoefficientStoragePV()
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 1));
-	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses);
+	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients;
 
 	if (0 != storage.getCoefficientCount())

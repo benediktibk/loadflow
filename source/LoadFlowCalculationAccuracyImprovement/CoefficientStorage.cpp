@@ -11,8 +11,9 @@ template class CoefficientStorage< complex<long double>, long double >;
 template class CoefficientStorage< Complex<MultiPrecision>, MultiPrecision >;
 
 template<typename ComplexType, typename RealType>
-CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, vector<PQBus> const& pqBuses, vector<PVBus> const &pvBuses) :
-	_nodeCount(nodeCount)
+CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, vector<PQBus> const& pqBuses, vector<PVBus> const &pvBuses, Eigen::SparseMatrix<ComplexType, Eigen::ColMajor > const& admittances) :
+	_nodeCount(nodeCount),
+	_admittances(admittances)
 {
 	_coefficients.reserve(maximumNumberOfCoefficients);
 

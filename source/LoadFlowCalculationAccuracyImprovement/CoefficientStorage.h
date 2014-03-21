@@ -5,12 +5,13 @@
 #include <complex>
 #include "PQBus.h"
 #include "PVBus.h"
+#include <Eigen/Sparse>
 
 template<typename ComplexType, typename RealType>
 class CoefficientStorage
 {
 public:
-	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses);
+	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses, Eigen::SparseMatrix<ComplexType, Eigen::ColMajor > const& admittances);
 
 	void addCoefficients(std::vector<ComplexType> const &coefficients);
 	ComplexType const& getCoefficient(int node, int step) const;
@@ -34,6 +35,7 @@ private:
 
 private:
 	const int _nodeCount;
+	Eigen::SparseMatrix<ComplexType, Eigen::ColMajor > const& _admittances;
 	std::vector< std::vector<ComplexType> > _coefficients;
 	std::map<int, std::vector<ComplexType> > _inverseCoefficients;
 	std::vector<int> _pqBuses;

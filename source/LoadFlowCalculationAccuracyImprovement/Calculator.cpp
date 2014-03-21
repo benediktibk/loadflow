@@ -68,7 +68,7 @@ template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
 	delete _coefficientStorage;
-	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses);
+	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
 	calculateAbsolutePowerSum();
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
