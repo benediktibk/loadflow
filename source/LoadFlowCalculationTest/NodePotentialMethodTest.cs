@@ -208,7 +208,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 10);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.2, 10);
         }
 
         [TestMethod]

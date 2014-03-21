@@ -7,11 +7,11 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public class HolomorphicEmbeddedLoadFlowMethodHighAccuracyMultiPrecisionTest : HolomorphicEmbeddedLoadFlowMethodHighAccuracyTest
+    public class HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest : HolomorphicEmbeddedLoadFlowMethodTest
     {
-        protected override HolomorphicEmbeddedLoadFlowMethodHighAccuracy CreateHighAccuracyLoadFlowCalculator()
+        protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMLoadFlowCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(0.00001, 100, DataType.MultiPrecision);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, DataType.MultiPrecision);
         }
 
         [TestMethod]
@@ -337,7 +337,7 @@ namespace LoadFlowCalculationTest
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
-            var calculator = CreateHighAccuracyLoadFlowCalculator();
+            var calculator = CreateHELMLoadFlowCalculator();
 
             nodes = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 

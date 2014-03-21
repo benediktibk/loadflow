@@ -7,18 +7,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LoadFlowCalculationTest
 {
     [TestClass]
-    public abstract class HolomorphicEmbeddedLoadFlowMethodHighAccuracyTest : LoadFlowCalculatorTest
+    public abstract class HolomorphicEmbeddedLoadFlowMethodTest : LoadFlowCalculatorTest
     {
-        private readonly List<HolomorphicEmbeddedLoadFlowMethodHighAccuracy> _highAccuracyCalculator = new List<HolomorphicEmbeddedLoadFlowMethodHighAccuracy>();
+        private readonly List<HolomorphicEmbeddedLoadFlowMethod> _highAccuracyCalculator = new List<HolomorphicEmbeddedLoadFlowMethod>();
 
         protected override LoadFlowCalculator CreateLoadFlowCalculator()
         {
-            var calculator = CreateHighAccuracyLoadFlowCalculator();
+            var calculator = CreateHELMLoadFlowCalculator();
             _highAccuracyCalculator.Add(calculator);
             return calculator;
         }
 
-        protected abstract HolomorphicEmbeddedLoadFlowMethodHighAccuracy CreateHighAccuracyLoadFlowCalculator();
+        protected abstract HolomorphicEmbeddedLoadFlowMethod CreateHELMLoadFlowCalculator();
 
         [TestCleanup]
         public void CleanUp()

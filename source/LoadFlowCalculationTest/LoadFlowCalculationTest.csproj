@@ -77,9 +77,9 @@
     <Compile Include="PVBusTest.cs" />
     <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
     <Compile Include="JacobiMatrixBaseMethodTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyLongDoubleTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyMultiPrecisionTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodHighAccuracyTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
+    <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">

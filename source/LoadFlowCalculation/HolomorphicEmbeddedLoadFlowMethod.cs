@@ -14,7 +14,7 @@ namespace LoadFlowCalculation
         MultiPrecision
     };
 
-    public class HolomorphicEmbeddedLoadFlowMethodHighAccuracy : LoadFlowCalculator, IDisposable
+    public class HolomorphicEmbeddedLoadFlowMethod : LoadFlowCalculator, IDisposable
     {
         private delegate void StringCallback(string text);
 
@@ -25,7 +25,7 @@ namespace LoadFlowCalculation
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethodHighAccuracy(double targetPrecision, int numberOfCoefficients, DataType dataType)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, DataType dataType)
             : base(targetPrecision * 100000)
         {
             if (numberOfCoefficients < 1)
@@ -42,7 +42,7 @@ namespace LoadFlowCalculation
             _disposed = false;
         }
 
-        ~HolomorphicEmbeddedLoadFlowMethodHighAccuracy()
+        ~HolomorphicEmbeddedLoadFlowMethod()
         {
             DisposeInternal();
         }

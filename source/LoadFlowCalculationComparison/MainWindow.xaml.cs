@@ -211,7 +211,7 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
-            var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.LongDouble);
             var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "HELM - double";
@@ -220,7 +220,7 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
-            var calculator = new HolomorphicEmbeddedLoadFlowMethodHighAccuracy(_holomorphicEmbeddedLoadFlow.TargetPrecision,
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
             var result = CalculateResult(calculator, mainDispatcher);
             result.Algorithm = "HELM - multi";
