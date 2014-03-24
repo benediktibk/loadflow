@@ -19,6 +19,7 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_admittances(nodeCount, nodeCount),
+	_totalAdmittanceRowSums(nodeCount),
 	_constantCurrents(nodeCount),
 	_pqBuses(pqBusCount, PQBus()),
 	_pvBuses(pvBusCount, PVBus()),
@@ -47,6 +48,12 @@ void Calculator<Floating, ComplexFloating>::setAdmittance(int row, int column, c
 }
 
 template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::setAdmittanceRowSum(int row, complex<double> value)
+{
+	_totalAdmittanceRowSums[row] = ComplexFloating(value);
+}
+
+template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setPQBus(int busId, int node, complex<double> power)
 {
 	_pqBuses[busId] = PQBus(node, power);
@@ -72,9 +79,9 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	calculateAbsolutePowerSum();
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
-	std::vector<ComplexFloating> admittanceRowSums = calculateAdmittanceRowSum();
-	calculateFirstCoefficient(admittanceRowSums);
-	calculateSecondCoefficient(admittanceRowSums);
+	vector<ComplexFloating> partialAdmittanceRowSums = calculateAdmittanceRowSum();
+	calculateFirstCoefficient(partialAdmittanceRowSums);
+	calculateSecondCoefficient(partialAdmittanceRowSums);
 	map<double, int> powerErrors;
 	std::vector< std::vector< complex<double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
@@ -165,22 +172,23 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 	return result;
 }
 
+
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
+void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSums[bus.getId()]*ComplexFloating(Floating(-1));
+		rightHandSide[bus.getId()] = admittanceRowSum[bus.getId()]*ComplexFloating(Floating(-1));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
-		ComplexFloating const& admittanceRowSum = admittanceRowSums[id];
+		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		rightHandSide[id] = admittanceRowSum + constantCurrent;
 	}
@@ -191,7 +199,7 @@ void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(const std:
 }
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSums)
+void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 
@@ -202,7 +210,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std
 		ComplexFloating const& ownCurrent = static_cast<ComplexFloating>(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
-		rightHandSide[id] = admittanceRowSums[id] + totalCurrent;
+		rightHandSide[id] = admittanceRowSum[id] + totalCurrent;
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -213,7 +221,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(const std
 		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
 		ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
 		ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
-		ComplexFloating const& admittanceRowSum = admittanceRowSums[id];
+		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare) - admittanceRowSum;

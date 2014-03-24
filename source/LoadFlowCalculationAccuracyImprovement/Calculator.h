@@ -20,6 +20,7 @@ public:
 	virtual ~Calculator();
 
 	virtual void setAdmittance(int row, int column, std::complex<double> value);
+	virtual void setAdmittanceRowSum(int row, std::complex<double> value);
 	virtual void setPQBus(int busId, int node, std::complex<double> power);
 	virtual void setPVBus(int busId, int node, double powerReal, double voltageMagnitude);
 	virtual void setConstantCurrent(int node, std::complex<double> value);
@@ -38,8 +39,8 @@ private:
 	void writeLine(const char *text);
 	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();
-	void calculateFirstCoefficient(const std::vector<ComplexFloating> &admittanceRowSum);
-	void calculateSecondCoefficient(const std::vector<ComplexFloating> &admittanceRowSum);
+	void calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
+	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	void calculateNextCoefficient();
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
@@ -66,6 +67,7 @@ private:
 	const size_t _pvBusCount;
 	Eigen::SparseLU<Eigen::SparseMatrix<ComplexFloating>, Eigen::NaturalOrdering<int> > _factorization;
 	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor > _admittances;
+	std::vector<ComplexFloating> _totalAdmittanceRowSums;
 	std::vector<ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;

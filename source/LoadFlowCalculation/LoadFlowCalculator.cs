@@ -14,7 +14,7 @@ namespace LoadFlowCalculation
     {
         private readonly double _maximumPowerError;
 
-        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
+        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
 
         protected LoadFlowCalculator(double maximumPowerError)
         {
@@ -63,8 +63,9 @@ namespace LoadFlowCalculation
                 Matrix<Complex> admittancesToUnknownVoltages;
                 Vector<Complex> constantCurrentRightHandSide;
                 ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
+                var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittances);
 
-                var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages,
+                var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
@@ -105,6 +106,28 @@ namespace LoadFlowCalculation
                 voltageCollapse = true;
 
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+        }
+
+        private Vector<Complex> CalculateTotalAdmittanceRowSums(Matrix<Complex> admittances)
+        {
+            var result = new DenseVector(admittances.RowCount);
+
+            for (var row = 0; row < admittances.RowCount; ++row)
+            {
+                var sum = new Complex();
+
+                for (var column = 0; column < admittances.ColumnCount; ++column)
+                {
+                    var admittance = admittances[row, column];
+
+                    if (admittance != 0)
+                        sum += admittance;
+                }
+
+                result[row] = sum;
+            }
+
+            return result;
         }
 
         public static Complex CalculatePowerLoss(Matrix<Complex> admittances, Vector<Complex> allVoltages)

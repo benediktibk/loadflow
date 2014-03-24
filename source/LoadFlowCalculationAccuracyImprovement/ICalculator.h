@@ -7,8 +7,9 @@ class ICalculator
 {
 public:
 	virtual ~ICalculator() { };
-
+	
 	virtual void setAdmittance(int row, int column, std::complex<double> value) = 0;
+	virtual void setAdmittanceRowSum(int row, std::complex<double> value) = 0;
 	virtual void setPQBus(int busId, int node, std::complex<double> power) = 0;
 	virtual void setPVBus(int busId, int node, double powerReal, double voltageMagnitude) = 0;
 	virtual void setConstantCurrent(int node, std::complex<double> value) = 0;

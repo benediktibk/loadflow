@@ -70,8 +70,7 @@ namespace LoadFlowCalculation
             Debug.WriteLine(text);
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses,
-            IList<PVBus> pvBuses)
+        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             if (_calculator >= 0)
                 DeleteLoadFlowCalculator(_calculator);
@@ -98,15 +97,20 @@ namespace LoadFlowCalculation
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
 
             for (var row = 0; row < admittances.RowCount; ++row)
+            {
                 for (var column = 0; column < admittances.ColumnCount; ++column)
                 {
                     var admittance = admittances[row, column];
 
-                    if (admittance == new Complex()) 
+                    if (admittance == new Complex())
                         continue;
 
                     SetAdmittance(_calculator, row, column, admittance.Real, admittance.Imaginary);
                 }
+
+                var totalRowSum = totalAdmittanceRowSums[row];
+                SetAdmittanceRowSum(_calculator, row, totalRowSum.Real, totalRowSum.Imaginary);
+            }
 
             for (var i = 0; i < nodeCount; ++i)
                 SetConstantCurrent(_calculator, i, constantCurrents[i].Real, constantCurrents[i].Imaginary);
@@ -169,6 +173,9 @@ namespace LoadFlowCalculation
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetAdmittance(int calculator, int row, int column, double real, double imaginary);
+
+        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SetAdmittanceRowSum(int calculator, int row, double real, double imaginary);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary);
