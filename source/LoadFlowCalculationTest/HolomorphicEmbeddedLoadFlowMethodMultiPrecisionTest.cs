@@ -356,5 +356,26 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
+
+        [TestMethod]
+        [TestCategory("Slow")]
+        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectCoefficients()
+        {
+            var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
+            var calculator = CreateHELMLoadFlowCalculator();
+
+            calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Complex a;
+            Complex b;
+            Complex c;
+            CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out a, out b, out c);
+            var firstCoefficient = calculator.GetCoefficients(0)[0];
+            var secondCoefficient = calculator.GetCoefficients(1)[0];
+            var thirdCoefficient = calculator.GetCoefficients(2)[0];
+            ComplexAssert.AreEqual(a, firstCoefficient, 0.00001);
+            ComplexAssert.AreEqual(b, secondCoefficient, 0.00001);
+            ComplexAssert.AreEqual(c, thirdCoefficient, 0.00001);
+        }
     }
 }
