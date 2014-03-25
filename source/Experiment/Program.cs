@@ -41,12 +41,17 @@ namespace Experiment
 
         static Complex CalculateNextCoefficient(IList<Complex> coefficients, Complex slackVoltage, Complex admittance, double voltageMagnitudeSquared)
         {
+            var constantCurrent = admittance * slackVoltage;
             var lastCoefficient = coefficients.Last();
             var lastSquaredCoefficient = CalculateNextSquaredCoefficient(coefficients);
-            var constantCurrent = admittance * slackVoltage;
-            var lastCombinedCoefficient = (-1) * admittance * lastCoefficient * voltageMagnitudeSquared;
+            var lastCombinedCoefficient = CalculateLastCombinedCoefficient(coefficients, admittance, voltageMagnitudeSquared);
             var rightHandSide = (2 * 1 * lastCoefficient - lastCombinedCoefficient + lastSquaredCoefficient * Complex.Conjugate(constantCurrent)) / voltageMagnitudeSquared;
             return rightHandSide/admittance;
+        }
+
+        private static Complex CalculateLastCombinedCoefficient(IList<Complex> coefficients, Complex admittance, double voltageMagnitudeSquared)
+        {
+            return (-1) * admittance * coefficients.Last() * voltageMagnitudeSquared;
         }
 
         static Complex CalculateNextSquaredCoefficient(IList<Complex> coefficients)
