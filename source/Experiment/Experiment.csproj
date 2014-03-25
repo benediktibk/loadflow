@@ -57,6 +57,10 @@
       <Project>{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}</Project>
       <Name>MathExtensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestHelper\UnitTestHelper.csproj">
+      <Project>{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15}</Project>
+      <Name>UnitTestHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

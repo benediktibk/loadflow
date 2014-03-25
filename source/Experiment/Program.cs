@@ -33,7 +33,9 @@ namespace Experiment
 
             var continuation = new EpsilonAlgorithm<Complex>(powerSeries);
             var voltage = continuation.EvaluateAt1();
+            var correct = Math.Abs(1.0198 - voltage.Real) < 0.001 && Math.Abs(-0.019 - voltage.Imaginary) < 0.001;
             Console.WriteLine("result voltage: " + voltage);
+            Console.WriteLine(correct ? "the result is correct" : "the result is incorrect");
             Console.ReadKey();
         }
 
