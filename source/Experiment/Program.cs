@@ -43,8 +43,9 @@ namespace Experiment
         {
             var lastCoefficient = coefficients.Last();
             var lastSquaredCoefficient = CalculateNextSquaredCoefficient(coefficients);
-            return ((2/admittance + new Complex(voltageMagnitudeSquared, 0))*lastCoefficient -
-                    slackVoltage*lastSquaredCoefficient)/voltageMagnitudeSquared;
+            var rightHandSide = ((2*1 + admittance*voltageMagnitudeSquared)*lastCoefficient -
+                                 admittance * slackVoltage * lastSquaredCoefficient) / voltageMagnitudeSquared;
+            return rightHandSide/admittance;
         }
 
         static Complex CalculateNextSquaredCoefficient(IList<Complex> coefficients)
