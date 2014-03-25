@@ -43,8 +43,7 @@ namespace Experiment
         {
             var lastCoefficient = coefficients.Last();
             var lastSquaredCoefficient = CalculateNextSquaredCoefficient(coefficients);
-            var rightHandSide = (2 * 1 * lastCoefficient + admittance * voltageMagnitudeSquared * lastCoefficient -
-                                 admittance * slackVoltage * lastSquaredCoefficient) / voltageMagnitudeSquared;
+            var rightHandSide = (2 * 1 * lastCoefficient - admittance * slackVoltage * lastSquaredCoefficient) / voltageMagnitudeSquared + admittance * lastCoefficient;
             return rightHandSide/admittance;
         }
 
