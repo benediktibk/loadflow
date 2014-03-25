@@ -260,7 +260,8 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient
 	int n = _coefficients.size() - 1;
 
 	for (int i = 0; i <= n; ++i)
-		result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
+		if (i != node)
+			result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
 
 	insertCombinedCoefficient(node, result);
 }

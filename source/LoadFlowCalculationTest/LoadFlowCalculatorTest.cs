@@ -494,9 +494,9 @@ namespace LoadFlowCalculationTest
             admittances = DenseMatrix.OfArray(admittancesArray);
 
             var inputVoltage = Complex.FromPolarCoordinates(1.05, 0);
-            var outputVoltage = Complex.FromPolarCoordinates(1.02, -1.07*Math.PI/180);
-            var inputPower = Complex.FromPolarCoordinates(1.873527316, 57.74103245*Math.PI/180);
-            var outputPower = Complex.FromPolarCoordinates(1.819997964, -123.3289676*Math.PI/180);
+            var outputVoltage = new Complex(1.019822135751, -0.0190476096206661);
+            var inputPower = new Complex(1, 1.5843378730725);
+            var outputPower = new Complex(-1, -1.52066212692788);
             voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
             powers = new DenseVector(new[] { inputPower, outputPower });
             nominalVoltage = 1;
