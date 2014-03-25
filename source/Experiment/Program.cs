@@ -43,7 +43,7 @@ namespace Experiment
         {
             var constantCurrent = admittance * slackVoltage;
             var lastCoefficient = coefficients.Last();
-            var lastSquaredCoefficient = CalculateNextSquaredCoefficient(coefficients);
+            var lastSquaredCoefficient = CalculateLastSquaredCoefficient(coefficients);
             var lastCombinedCoefficient = CalculateLastCombinedCoefficient(coefficients, admittance, voltageMagnitudeSquared);
             var rightHandSide = (2 * 1 * lastCoefficient - lastCombinedCoefficient + lastSquaredCoefficient * Complex.Conjugate(constantCurrent)) / voltageMagnitudeSquared;
             return rightHandSide/admittance;
@@ -54,7 +54,7 @@ namespace Experiment
             return (-1) * admittance * coefficients.Last() * voltageMagnitudeSquared;
         }
 
-        static Complex CalculateNextSquaredCoefficient(IList<Complex> coefficients)
+        static Complex CalculateLastSquaredCoefficient(IList<Complex> coefficients)
         {
             var n = coefficients.Count - 1;
             var coefficient = new Complex();
