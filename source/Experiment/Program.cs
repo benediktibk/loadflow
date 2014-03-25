@@ -14,7 +14,7 @@ namespace Experiment
             var slackVoltage = new Complex(1.05, 0);
             const double voltageMagnitude = 1.02;
             const double voltageMagnitudeSquared = voltageMagnitude*voltageMagnitude;
-            var admittance = new Complex(0, 50);
+            var admittance = new Complex(0, -50);
             const int coefficientCount = 20;
             var coefficients = new List<Complex>(coefficientCount);
             coefficients.Add(slackVoltage);
@@ -45,7 +45,7 @@ namespace Experiment
             var lastCoefficient = coefficients.Last();
             var lastSquaredCoefficient = CalculateLastSquaredCoefficient(coefficients);
             var lastCombinedCoefficient = CalculateLastCombinedCoefficient(coefficients, admittance, voltageMagnitudeSquared);
-            var rightHandSide = (2 * 1 * lastCoefficient - lastCombinedCoefficient + lastSquaredCoefficient * Complex.Conjugate(constantCurrent)) / voltageMagnitudeSquared;
+            var rightHandSide = (2 * (-1) * lastCoefficient - lastCombinedCoefficient + lastSquaredCoefficient * Complex.Conjugate(constantCurrent)) / voltageMagnitudeSquared;
             return rightHandSide/admittance;
         }
 
