@@ -41,6 +41,7 @@ private:
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();
 	void calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
+	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();

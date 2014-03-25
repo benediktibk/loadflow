@@ -199,7 +199,7 @@ void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 }
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<ComplexFloating> const& admittanceRowSum)
+void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<ComplexFloating> const& admittanceRowSums)
 {
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 
@@ -210,21 +210,14 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 		ComplexFloating const& ownCurrent = static_cast<ComplexFloating>(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
-		rightHandSide[id] = admittanceRowSum[id] + totalCurrent;
+		rightHandSide[id] = admittanceRowSums[id] + totalCurrent;
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		int id = bus.getId();
-		Floating realPower = static_cast<Floating>(bus.getPowerReal());
-		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
-		ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
-		ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
-		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
-		ComplexFloating const& constantCurrent = _constantCurrents[id];
-		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare) - admittanceRowSum;
+		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[bus.getId()];
+		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - admittanceRowSum;
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -248,19 +241,25 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		int id = bus.getId();
-		Floating const& realPower = static_cast<Floating>(bus.getPowerReal());
-		ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
-		ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
-		ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
-		ComplexFloating const& constantCurrent = _constantCurrents[id];
-		Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-		rightHandSide[id] = (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
+		rightHandSide[bus.getId()] = calculateRightHandSide(bus);
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	_coefficientStorage->addCoefficients(coefficients);
+}
+
+template<typename Floating, typename ComplexFloating>
+ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PVBus const& bus)
+{
+	int id = bus.getId();
+	Floating realPower = static_cast<Floating>(bus.getPowerReal());
+	ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
+	ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
+	ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
+	ComplexFloating const& constantCurrent = _constantCurrents[id];
+	Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
+	return (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 }
 
 template<typename Floating, typename ComplexFloating>
