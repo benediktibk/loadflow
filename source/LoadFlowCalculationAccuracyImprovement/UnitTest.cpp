@@ -214,7 +214,7 @@ bool runTestsCoefficientStorageMixed()
 	admittances.insert(0, 0) = complex<double>(100, 100);
 	admittances.insert(0, 1) = complex<double>(-10, 0);
 	admittances.insert(1, 0) = complex<double>(-10, 0);
-	admittances.insert(1, 1) = complex<double>(0, 0);
+	admittances.insert(1, 1) = complex<double>(20, 0);
 	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients(2);
 
