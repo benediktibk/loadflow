@@ -40,13 +40,9 @@ namespace LoadFlowCalculationTest
         protected static void CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out Complex a,
             out Complex b, out Complex c)
         {
-            var admittance = new Complex(0, 50);
-            var vSlack = new Complex(1.05, 0);
-            const double vMagnitude = 1.02;
-            const double vMagnitudeSquare = vMagnitude*vMagnitude;
-            a = vSlack;
-            b = a/vMagnitudeSquare*(vSlack*a + vMagnitudeSquare + 2/admittance);
-            c = b/vMagnitudeSquare*(2/admittance + vMagnitudeSquare - 2*a*vSlack);
+            a = new Complex(1.05, 0);
+            b = new Complex(-0.062673010380623, -0.0403690888119954);
+            c = new Complex(0.0686026762176026, 0.0475978097324825);
         }
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
