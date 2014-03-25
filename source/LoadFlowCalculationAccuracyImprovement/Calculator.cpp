@@ -253,11 +253,11 @@ template<typename Floating, typename ComplexFloating>
 ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PVBus const& bus)
 {
 	int id = bus.getId();
-	Floating realPower = static_cast<Floating>(bus.getPowerReal());
+	Floating realPower = static_cast<Floating>(bus.getPowerReal()*(-1));
 	ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
 	ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
 	ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
-	ComplexFloating const& constantCurrent = _constantCurrents[id];
+	ComplexFloating const& constantCurrent = _constantCurrents[id]*ComplexFloating(Floating(-1));
 	Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 	return (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 }
