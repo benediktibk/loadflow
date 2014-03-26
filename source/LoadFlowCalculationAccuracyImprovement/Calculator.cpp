@@ -259,7 +259,7 @@ ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PV
 	ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
 	ComplexFloating const& constantCurrent = _constantCurrents[id];
 	Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-	return (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare) - conj(_admittances.coeffRef(id, id))*previousCoefficient;
+	return (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 }
 
 template<typename Floating, typename ComplexFloating>

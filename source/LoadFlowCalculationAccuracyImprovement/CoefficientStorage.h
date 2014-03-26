@@ -52,5 +52,6 @@ private:
 	std::map<int, std::vector<ComplexType> > _combinedCoefficients;
 	std::map<int, std::vector<ComplexType> > _weightedCoefficients;
 	std::vector<int> _pvBuses;
+	std::map<int, RealType> _pvBusVoltageMagnitudeSquares;
 };
 
