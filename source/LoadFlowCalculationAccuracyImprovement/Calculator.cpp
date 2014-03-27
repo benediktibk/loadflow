@@ -180,7 +180,17 @@ template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
 	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
-	bool modificationNecessary = isOneElementZero(coefficients);
+	bool modificationNecessary = isPQCoefficientZero(coefficients);
+
+	if (!modificationNecessary)
+	{		
+		_coefficientStorage->addCoefficients(coefficients);
+		return true;
+	}
+	
+	_embeddingModification = ComplexFloating(1);
+	coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
+	modificationNecessary = isPQCoefficientZero(coefficients);
 
 	if (modificationNecessary)
 		return false;
@@ -473,11 +483,16 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(co
 }
 
 template<typename Floating, typename ComplexFloating>
-bool Calculator<Floating, ComplexFloating>::isOneElementZero(std::vector<ComplexFloating> &values)
+bool Calculator<Floating, ComplexFloating>::isPQCoefficientZero(vector<ComplexFloating> const& coefficients) const
 {
-	for (size_t i = 0; i < values.size(); ++i)
-		if (values[i] == ComplexFloating(Floating(0), Floating(0)))
+	for (size_t i = 0; i < _pqBusCount; ++i)
+	{
+		PQBus const& bus = _pqBuses[i];
+		int id = bus.getId();
+
+		if (coefficients[id] == ComplexFloating())
 			return true;
+	}
 
 	return false;
 }

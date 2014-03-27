@@ -41,6 +41,7 @@ private:
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();
 	bool calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	std::vector<ComplexFloating> calculateFirstCoefficientInternal(std::vector<ComplexFloating> const& admittanceRowSum);
+	bool isPQCoefficientZero(std::vector<ComplexFloating> const& coefficients) const;
 	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
@@ -60,7 +61,6 @@ private:
 	static Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> stdToEigenVector(const std::vector< std::complex<double> > &values);
 	static std::vector<ComplexFloating> stdComplexVectorToComplexFloatingVector(const std::vector< std::complex<double> > &values);
 	static std::vector<ComplexFloating> conjugate(const std::vector<ComplexFloating> &values);
-	static bool isOneElementZero(std::vector<ComplexFloating> &values);
 
 private:
 	const double _targetPrecision;
