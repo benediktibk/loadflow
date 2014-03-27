@@ -180,11 +180,7 @@ template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
 	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
-
-	bool modificationNecessary = false;
-	for (size_t i = 0; i < coefficients.size() && !modificationNecessary; ++i)
-		if (coefficients[i] == ComplexFloating(Floating(0), Floating(0)))
-			modificationNecessary = true;
+	bool modificationNecessary = isOneElementZero(coefficients);
 
 	if (modificationNecessary)
 		return false;
@@ -474,6 +470,16 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(co
 		result[i] = conj(values[i]);
 
 	return result;
+}
+
+template<typename Floating, typename ComplexFloating>
+bool Calculator<Floating, ComplexFloating>::isOneElementZero(std::vector<ComplexFloating> &values)
+{
+	for (size_t i = 0; i < values.size(); ++i)
+		if (values[i] == ComplexFloating(Floating(0), Floating(0)))
+			return true;
+
+	return false;
 }
 
 template<typename Floating, typename ComplexFloating>

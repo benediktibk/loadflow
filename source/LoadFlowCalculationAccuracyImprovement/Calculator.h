@@ -60,6 +60,7 @@ private:
 	static Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> stdToEigenVector(const std::vector< std::complex<double> > &values);
 	static std::vector<ComplexFloating> stdComplexVectorToComplexFloatingVector(const std::vector< std::complex<double> > &values);
 	static std::vector<ComplexFloating> conjugate(const std::vector<ComplexFloating> &values);
+	static bool isOneElementZero(std::vector<ComplexFloating> &values);
 
 private:
 	const double _targetPrecision;
