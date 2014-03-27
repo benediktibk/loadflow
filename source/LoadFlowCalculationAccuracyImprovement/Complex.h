@@ -60,7 +60,7 @@ template<typename T>
 bool operator==(Complex<T> const& lhs, Complex<T> const& rhs)
 {
 	return	lhs.real() == rhs.real() &&
-			lhs.imag() == lhs.imag();
+			lhs.imag() == rhs.imag();
 }
 
 template<typename T>

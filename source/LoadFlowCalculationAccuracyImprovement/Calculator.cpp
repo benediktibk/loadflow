@@ -193,7 +193,6 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
-	writeLine("admittances", _admittances);
 	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
 	bool modificationNecessary = isPQCoefficientZero(coefficients);
 
@@ -236,8 +235,6 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 
 	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
-	writeLine("right hand side", rightHandSide);
-	writeLine("coefficients", coefficients);
 	return coefficients;
 }
 

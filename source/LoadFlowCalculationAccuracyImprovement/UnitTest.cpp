@@ -118,6 +118,12 @@ bool runTestsMultiPrecision()
 	if (copyOne != two)
 		return false;
 
+	MultiPrecision oneThird(1.0/3);
+	MultiPrecision zero;
+
+	if (oneThird == zero)
+		return false;
+
 	return true;
 }
 
@@ -287,13 +293,13 @@ bool runTestsCoefficientStorage()
 
 bool runTests()
 {
+	if (!runTestsMultiPrecision())
+		return false;
+
 	if (!runTestsComplexDouble())
 		return false;
 
 	if (!runTestsComplexMultiPrecision())
-		return false;
-
-	if (!runTestsMultiPrecision())
 		return false;
 
 	if (!runTestsCoefficientStorage())
