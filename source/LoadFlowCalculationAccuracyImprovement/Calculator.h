@@ -35,7 +35,8 @@ public:
 	virtual void setConsoleOutput(ConsoleOutput function);
 
 private:
-	void writeLine(const char *description, const Eigen::SparseMatrix<ComplexFloating> &matrix);
+	void writeLine(const char *description, std::vector<ComplexFloating> const& values);
+	void writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix);
 	void writeLine(const char *text);
 	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();

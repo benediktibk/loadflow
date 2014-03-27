@@ -142,7 +142,21 @@ void Calculator<Floating, ComplexFloating>::setConsoleOutput(ConsoleOutput funct
 }
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::writeLine(const char *description, const Eigen::SparseMatrix<ComplexFloating> &matrix)
+void Calculator<Floating, ComplexFloating>::writeLine(const char *description, vector<ComplexFloating> const& values)
+{
+	assert(!values.empty());
+	stringstream stream;
+	stream << description << endl;
+
+	stream << values.front();
+	for (vector<ComplexFloating>::const_iterator i = values.begin() + 1; i != values.end(); ++i)
+		stream << " - " << *i;
+
+	writeLine(stream.str().c_str());
+}
+
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix)
 {
 	stringstream stream;
 	stream << description << endl;
@@ -179,6 +193,7 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
+	writeLine("admittances", _admittances);
 	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
 	bool modificationNecessary = isPQCoefficientZero(coefficients);
 
@@ -221,6 +236,8 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 
 	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
+	writeLine("right hand side", rightHandSide);
+	writeLine("coefficients", coefficients);
 	return coefficients;
 }
 

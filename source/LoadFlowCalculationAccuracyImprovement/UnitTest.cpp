@@ -47,6 +47,9 @@ bool runTestsComplexDouble()
 	if (!areEqual(divideExpected, divide, 0.0001))
 		return false;
 
+	if (Complex<double>(0, 1.0/3) == Complex<double>())
+		return false;
+
 	return true;
 }
 
@@ -76,6 +79,12 @@ bool runTestsComplexMultiPrecision()
 	if (one == two)
 		return false;
 	if (!(one != two))
+		return false;
+
+	Complex<MultiPrecision> onlyImaginaryValue(MultiPrecision(0), MultiPrecision(1.0/3));
+	Complex<MultiPrecision> zero;
+
+	if (onlyImaginaryValue == zero)
 		return false;
 
 	return true;
