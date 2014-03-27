@@ -202,7 +202,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 		return true;
 	}
 	
-	_embeddingModification = ComplexFloating(1000);
+	_embeddingModification = ComplexFloating(1);
 	coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
 	modificationNecessary = isPQCoefficientZero(coefficients);
 
