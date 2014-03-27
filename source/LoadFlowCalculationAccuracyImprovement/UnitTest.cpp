@@ -209,7 +209,7 @@ bool runTestsCoefficientStorageMixed()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(1, complex<double>()));
 	vector<PVBus> pvBuses;
-	pvBuses.push_back(PVBus(0, 0, 1));
+	pvBuses.push_back(PVBus(0, 0, 0.7));
 	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(2, 2);
 	admittances.insert(0, 0) = complex<double>(100, 100);
 	admittances.insert(0, 1) = complex<double>(-10, 0);
@@ -250,13 +250,13 @@ bool runTestsCoefficientStorageMixed()
 		return false;
 	if (!areEqual(complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(800, -680), storage.getCombinedCoefficient(0, 0), 0.000001))
+	if (!areEqual(complex<long double>(86, 22), storage.getCombinedCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(3600, -2960), storage.getCombinedCoefficient(0, 1), 0.000001))
+	if (!areEqual(complex<long double>(83, 493), storage.getCombinedCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(11360, -9650), storage.getCombinedCoefficient(0, 2), 0.000001))
+	if (!areEqual(complex<long double>(30, 1501), storage.getCombinedCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(11360, -9650), storage.getLastCombinedCoefficient(0), 0.000001))
+	if (!areEqual(complex<long double>(30, 1501), storage.getLastCombinedCoefficient(0), 0.000001))
 		return false;
 
 	return true;
