@@ -39,7 +39,7 @@ private:
 	void writeLine(const char *text);
 	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();
-	void calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
+	bool calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();

@@ -80,7 +80,10 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
 	vector<ComplexFloating> partialAdmittanceRowSums = calculateAdmittanceRowSum();
-	calculateFirstCoefficient(partialAdmittanceRowSums);
+
+	if (!calculateFirstCoefficient(partialAdmittanceRowSums))
+		return;
+
 	calculateSecondCoefficient(partialAdmittanceRowSums);
 	map<double, int> powerErrors;
 	std::vector< std::vector< complex<double> > > partialResults;
@@ -174,7 +177,7 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
+bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 
@@ -195,7 +198,13 @@ void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
+
+	for (size_t i = 0; i < coefficients.size(); ++i)
+		if (coefficients[i] == ComplexFloating(Floating(0), Floating(0)))
+			return false;
+
 	_coefficientStorage->addCoefficients(coefficients);
+	return true;
 }
 
 template<typename Floating, typename ComplexFloating>
