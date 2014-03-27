@@ -26,7 +26,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_voltages(nodeCount),
 	_consoleOutput(0),
 	_absolutePowerSum(0),
-	_coefficientStorage(0)
+	_coefficientStorage(0),
+	_embeddingModification(0)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -184,7 +185,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = admittanceRowSum[bus.getId()]*ComplexFloating(Floating(-1));
+		rightHandSide[bus.getId()] = (admittanceRowSum[bus.getId()] + _embeddingModification)*ComplexFloating(Floating(-1));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -193,7 +194,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 		int id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
-		rightHandSide[id] = admittanceRowSum + constantCurrent;
+		rightHandSide[id] = admittanceRowSum + _embeddingModification + constantCurrent;
 	}
 
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -219,14 +220,14 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 		ComplexFloating const& ownCurrent = static_cast<ComplexFloating>(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
-		rightHandSide[id] = admittanceRowSums[id] + totalCurrent;
+		rightHandSide[id] = admittanceRowSums[id] + _embeddingModification + totalCurrent;
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[bus.getId()];
-		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - admittanceRowSum;
+		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - (admittanceRowSum + _embeddingModification);
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);

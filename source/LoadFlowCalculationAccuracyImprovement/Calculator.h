@@ -76,5 +76,6 @@ private:
 	ConsoleOutput _consoleOutput;
 	double _absolutePowerSum;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
+	ComplexFloating _embeddingModification;
 };
 
