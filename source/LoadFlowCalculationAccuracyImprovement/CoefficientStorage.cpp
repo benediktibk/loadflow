@@ -239,6 +239,9 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficient
 	
 	for (int i = 0; i < _nodeCount; ++i)
 	{
+		if (i == node)
+			continue;
+
 		ComplexType admittance = _admittances.coeff(node, i);
 
 		if (admittance == ComplexType(RealType(0), RealType(0)))
@@ -264,11 +267,9 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient
 	int n = _coefficients.size() - 1;
 
 	for (int i = 0; i <= n; ++i)
-		if (i != node)
 			result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
-		else
-			result += conj(_admittances.coeff(node, node))*getLastCoefficient(node)*ComplexType(_pvBusVoltageMagnitudeSquares[node]);
-
+	
+	result += conj(_admittances.coeff(node, node))*getLastCoefficient(node)*ComplexType(_pvBusVoltageMagnitudeSquares[node]);
 	insertCombinedCoefficient(node, result);
 }
 

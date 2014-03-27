@@ -212,7 +212,7 @@ bool runTestsCoefficientStorageMixed()
 	pvBuses.push_back(PVBus(0, 0, 0.7));
 	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(2, 2);
 	admittances.insert(0, 0) = complex<double>(100, 100);
-	admittances.insert(0, 1) = complex<double>(-10, 0);
+	admittances.insert(0, 1) = complex<double>(-10, 1);
 	admittances.insert(1, 0) = complex<double>(-10, 0);
 	admittances.insert(1, 1) = complex<double>(20, 0);
 	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
