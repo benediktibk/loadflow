@@ -30,11 +30,14 @@ CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberO
 	_pvBuses.reserve(pvBuses.size());
 	for (size_t i = 0; i < pvBuses.size(); ++i)
 	{
-		_squaredCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
-		_combinedCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
-		_weightedCoefficients.insert(pair<int, vector<ComplexType> >(pvBuses[i].getId(), vector<ComplexType>()));
-		_pvBuses.push_back(pvBuses[i].getId());
-		_pvBusVoltageMagnitudeSquares.insert(pair<int, RealType>(pvBuses[i].getId(), pvBuses[i].getVoltageMagnitude()*pvBuses[i].getVoltageMagnitude()));
+		PVBus const& bus = pvBuses[i];
+		int id = bus.getId();
+		double voltageMagnitude = bus.getVoltageMagnitude();
+		_squaredCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
+		_combinedCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
+		_weightedCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
+		_pvBuses.push_back(id);
+		_pvBusVoltageMagnitudeSquares.insert(pair<int, RealType>(id, RealType(voltageMagnitude*voltageMagnitude)));
 	}
 }
 
@@ -264,7 +267,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient
 		if (i != node)
 			result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
 		else
-			result += conj(_admittances.coeffRef(node, node))*getLastCoefficient(node)*_pvBusVoltageMagnitudeSquares[node];
+			result += conj(_admittances.coeff(node, node))*getLastCoefficient(node)*ComplexType(_pvBusVoltageMagnitudeSquares[node]);
 
 	insertCombinedCoefficient(node, result);
 }
