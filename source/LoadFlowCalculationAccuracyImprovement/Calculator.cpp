@@ -176,11 +176,27 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdm
 	return result;
 }
 
-
 template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
 {
-	std::vector<ComplexFloating> rightHandSide(_nodeCount);
+	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
+
+	bool modificationNecessary = false;
+	for (size_t i = 0; i < coefficients.size() && !modificationNecessary; ++i)
+		if (coefficients[i] == ComplexFloating(Floating(0), Floating(0)))
+			modificationNecessary = true;
+
+	if (modificationNecessary)
+		return false;
+
+	_coefficientStorage->addCoefficients(coefficients);
+	return true;
+}
+
+template<typename Floating, typename ComplexFloating>
+vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoefficientInternal(vector<ComplexFloating> const& admittanceRowSum)
+{
+	vector<ComplexFloating> rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
@@ -197,15 +213,9 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 		rightHandSide[id] = admittanceRowSum + _embeddingModification + constantCurrent;
 	}
 
-	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
-
-	for (size_t i = 0; i < coefficients.size(); ++i)
-		if (coefficients[i] == ComplexFloating(Floating(0), Floating(0)))
-			return false;
-
-	_coefficientStorage->addCoefficients(coefficients);
-	return true;
+	return coefficients;
 }
 
 template<typename Floating, typename ComplexFloating>

@@ -40,6 +40,7 @@ private:
 	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
 	std::vector<ComplexFloating> calculateAdmittanceRowSum();
 	bool calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
+	std::vector<ComplexFloating> calculateFirstCoefficientInternal(std::vector<ComplexFloating> const& admittanceRowSum);
 	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
