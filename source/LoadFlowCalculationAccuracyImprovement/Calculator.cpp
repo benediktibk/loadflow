@@ -216,7 +216,7 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 		int id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
-		rightHandSide[id] = admittanceRowSum + _embeddingModification + constantCurrent;
+		rightHandSide[id] = admittanceRowSum + constantCurrent;
 	}
 
 	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -243,7 +243,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 	{
 		PVBus const& bus = _pvBuses[i];
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[bus.getId()];
-		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - (admittanceRowSum + _embeddingModification);
+		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - admittanceRowSum;
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
