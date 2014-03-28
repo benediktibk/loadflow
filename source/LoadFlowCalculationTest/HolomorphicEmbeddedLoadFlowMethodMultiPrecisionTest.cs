@@ -231,10 +231,13 @@ namespace LoadFlowCalculationTest
         [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
+            Assert.Fail();
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, DataType.MultiPrecision);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
+            calculator.Dispose();
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.001);
         }
