@@ -33,11 +33,13 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	assert(nodeCount > 0);
 	assert(pqBusCount >= 0);
 	assert(pvBusCount >= 0);
+	_continuations.reserve(nodeCount);
 }
 
 template<typename Floating, typename ComplexFloating>
 Calculator<Floating, ComplexFloating>::~Calculator()
 {
+	deleteContinuations();
 	delete _coefficientStorage;
 	_coefficientStorage = 0;
 }
@@ -75,8 +77,13 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
+	deleteContinuations();
 	delete _coefficientStorage;
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
+
+	for (size_t i = 0; i < _nodeCount; ++i)
+		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
+
 	calculateAbsolutePowerSum();
 	_factorization.analyzePattern(_admittances);
 	_factorization.factorize(_admittances);
@@ -96,7 +103,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 		try
 		{
-			_voltages = _coefficientStorage->calculateVoltagesFromCoefficients();
+			calculateVoltagesFromCoefficients();
 		}
 		catch (overflow_error e)
 		{
@@ -349,6 +356,24 @@ void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
 	}
 
 	_absolutePowerSum = abs(sum);
+}
+
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::deleteContinuations()
+{
+	for (size_t i = 0; i < _continuations.size(); ++i)
+		delete _continuations[i];
+	_continuations.clear();
+}
+
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
+{
+	for (size_t i = 0; i < _nodeCount; ++i)
+	{
+		_continuations[i]->updateWithLastCoefficients();
+		_voltages[i] = _continuations[i]->getResult();
+	}
 }
 
 template<typename Floating, typename ComplexFloating>

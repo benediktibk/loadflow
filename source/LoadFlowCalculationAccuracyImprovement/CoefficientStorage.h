@@ -23,7 +23,6 @@ public:
 	ComplexType const& getWeightedCoefficient(int node, int step) const;
 	ComplexType const& getCombinedCoefficient(int node, int step) const;
 	ComplexType const& getLastCombinedCoefficient(int node) const;
-	std::vector< std::complex<double> > calculateVoltagesFromCoefficients();
 	size_t getCoefficientCount() const;
 
 private:
@@ -40,7 +39,6 @@ private:
 	void insertSquaredCoefficient(int node, ComplexType const& value);
 	void insertCombinedCoefficient(int node, ComplexType const& value);
 	void insertWeightedCoefficent(int node, ComplexType const& value);
-	std::complex<double> calculateVoltageFromCoefficients(int node);
 
 private:
 	const int _nodeCount;

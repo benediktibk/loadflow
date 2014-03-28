@@ -114,51 +114,6 @@ ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastCombinedCoe
 }
 
 template<typename ComplexType, typename RealType>
-vector< complex<double> > CoefficientStorage<ComplexType, RealType>::calculateVoltagesFromCoefficients()
-{
-	vector< complex<double> > voltages(_nodeCount);
-
-	for (int i = 0; i < _nodeCount; ++i)
-		voltages[i] = calculateVoltageFromCoefficients(i);
-
-	return voltages;
-}
-
-template<typename ComplexType, typename RealType>
-complex<double> CoefficientStorage<ComplexType, RealType>::calculateVoltageFromCoefficients(int node)
-{
-	size_t coefficientCount = getCoefficientCount();
-	vector<ComplexType> previousEpsilon(coefficientCount + 1);
-	vector<ComplexType> currentEpsilon(coefficientCount);
-
-	ComplexType sum;
-	for (size_t i = 0; i < coefficientCount; ++i)
-	{
-		sum += getCoefficient(node, i);
-		currentEpsilon[i] = sum;
-	}
-
-	while(currentEpsilon.size() > 1)
-	{
-		vector<ComplexType> nextEpsilon(currentEpsilon.size() - 1);
-
-		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
-        {
-            ComplexType previousDifference = currentEpsilon[j + 1] - currentEpsilon[j];
-			if (abs(previousDifference) == RealType(0))
-				throw overflow_error("numeric error, would have to divide by zero");
-			nextEpsilon[j] = previousEpsilon[j + 1] + ComplexType(RealType(1), RealType(0))/previousDifference;
-        }
-
-		previousEpsilon = currentEpsilon;
-		currentEpsilon = nextEpsilon;
-	}
-
-	ComplexType const& result =  coefficientCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
-	return static_cast< complex<double> >(result);
-}
-
-template<typename ComplexType, typename RealType>
 size_t CoefficientStorage<ComplexType, RealType>::getCoefficientCount() const
 {
 	return _coefficients.size();

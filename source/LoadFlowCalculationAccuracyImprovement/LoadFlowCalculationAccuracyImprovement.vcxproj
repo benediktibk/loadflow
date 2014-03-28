@@ -89,6 +89,7 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnalyticContinuation.cpp" />
     <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CalculatorRegister.cpp" />
     <ClCompile Include="CoefficientStorage.cpp" />
@@ -100,6 +101,7 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalyticContinuation.h" />
     <ClInclude Include="Calculator.h" />
     <ClInclude Include="CalculatorRegister.h" />
     <ClInclude Include="CoefficientStorage.h" />

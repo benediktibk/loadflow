@@ -11,6 +11,7 @@
 #include "ConsoleOutput.h"
 #include "ICalculator.h"
 #include "CoefficientStorage.h"
+#include "AnalyticContinuation.h"
 
 template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
@@ -48,6 +49,8 @@ private:
 	void calculateNextCoefficient();
 	double calculatePowerError() const;
 	void calculateAbsolutePowerSum();
+	void deleteContinuations();
+	void calculateVoltagesFromCoefficients();
 
 private:
 	static std::vector<ComplexFloating> pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two);
@@ -79,6 +82,7 @@ private:
 	ConsoleOutput _consoleOutput;
 	double _absolutePowerSum;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
+	std::vector<AnalyticContinuation<Floating, ComplexFloating>*> _continuations;
 	ComplexFloating _embeddingModification;
 };
 
