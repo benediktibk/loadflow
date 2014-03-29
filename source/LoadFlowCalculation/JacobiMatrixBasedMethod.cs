@@ -12,24 +12,26 @@ using DenseVector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 
 namespace LoadFlowCalculation
 {
-    public abstract class JacobiMatrixBasedMethod : LoadFlowCalculator
+    public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {
         private readonly double _initialRealVoltage;
         private readonly double _initialImaginaryVoltage;
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
+        private readonly double _maximumPowerError;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage, double maximumPowerError) : base(maximumPowerError)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage, double maximumPowerError)
         {
             _initialRealVoltage = initialRealVoltage;
             _initialImaginaryVoltage = initialImaginaryVoltage;
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
+            _maximumPowerError = maximumPowerError;
         }
 
         public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var nodeCount = admittances.RowCount;
             var iterations = 0;
@@ -78,10 +80,15 @@ namespace LoadFlowCalculation
             return currentVoltages;
         }
 
+        public double GetMaximumPowerError()
+        {
+            return _maximumPowerError;
+        }
+
         private static void CalculatePowerDifferences(Matrix<Complex> admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
             Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
         {
-            var powersCurrent = CalculateAllPowers(admittances, currentVoltages, constantCurrents);
+            var powersCurrent = LoadFlowCalculator.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
             powersRealDifference = new List<double>(pqBuses.Count + pvBuses.Count);
             powersImaginaryDifference = new List<double>(pqBuses.Count);
 

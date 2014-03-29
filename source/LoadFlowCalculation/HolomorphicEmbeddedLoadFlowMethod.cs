@@ -14,7 +14,7 @@ namespace LoadFlowCalculation
         MultiPrecision
     };
 
-    public class HolomorphicEmbeddedLoadFlowMethod : LoadFlowCalculator, IDisposable
+    public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
         private delegate void StringCallback(string text);
 
@@ -26,7 +26,6 @@ namespace LoadFlowCalculation
         private bool _disposed;
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, DataType dataType)
-            : base(targetPrecision * 100000)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -70,7 +69,7 @@ namespace LoadFlowCalculation
             Debug.WriteLine(text);
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             if (_calculator >= 0)
                 DeleteLoadFlowCalculator(_calculator);
@@ -133,6 +132,11 @@ namespace LoadFlowCalculation
             }
 
             return voltages;
+        }
+
+        public double GetMaximumPowerError()
+        {
+            return _targetPrecision*100000;
         }
 
         public Vector<Complex> GetCoefficients(int step)

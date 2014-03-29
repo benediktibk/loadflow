@@ -234,7 +234,7 @@ namespace LoadFlowCalculationComparison
             CalculateResult(calculator, mainDispatcher, "HELM - multi");
         }
 
-        private void CalculateResult(LoadFlowCalculator calculator, Dispatcher mainDispatcher, string algorithmName)
+        private void CalculateResult(INodeVoltageCalculator nodeVoltageCalculator, Dispatcher mainDispatcher, string algorithmName)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
@@ -245,13 +245,14 @@ namespace LoadFlowCalculationComparison
             bool voltageCollapseReal;
             var i = 0;
             Vector<Complex> voltageError;
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
 
             do
             {
                 powerNet = CreatePowerNet(out correctVoltages, out voltageCollapseReal);
 
                 stopWatch.Restart();
-                voltageCollapseDetected = powerNet.CalculateMissingInformation(calculator);
+                voltageCollapseDetected = powerNet.CalculateMissingInformation(loadFlowCalculator);
                 stopWatch.Stop();
                 executionTimes.Add(stopWatch.Elapsed.TotalSeconds);
 

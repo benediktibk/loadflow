@@ -6,16 +6,16 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class NodePotentialMethod : LoadFlowCalculator
+    public class NodePotentialMethod : INodeVoltageCalculator
     {
         private readonly double _singularityDetection;
 
-        public NodePotentialMethod(double singularityDetection) : base(1E15)
+        public NodePotentialMethod(double singularityDetection)
         {
             _singularityDetection = singularityDetection;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
@@ -60,7 +60,7 @@ namespace LoadFlowCalculation
 
             Matrix<Complex> admittancesReduced;
             Vector<Complex> additionalConstantCurrents;
-            ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnkownVoltage, indexOfNodesWithKnownVoltage,
+            LoadFlowCalculator.ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnkownVoltage, indexOfNodesWithKnownVoltage,
                 knownVoltages, out admittancesReduced, out additionalConstantCurrents);
             var reducedConstantCurrents = new DenseVector(indexOfNodesWithUnkownVoltage.Count);
 
@@ -71,8 +71,13 @@ namespace LoadFlowCalculation
 
             var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, nominalVoltage, totalConstantCurrents,
                 knownPowers);
-            return CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
+            return LoadFlowCalculator.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
+        }
+
+        public double GetMaximumPowerError()
+        {
+            return 1E15;
         }
 
         private Vector<Complex> CalculateUnknownVoltagesInternal(Matrix<Complex> admittances, double nominalVoltage,

@@ -53,7 +53,7 @@ namespace LoadFlowCalculationTest
             powerNet.SetNode(1, loadNode);
             powerNet.SetAdmittance(0, 1, new Complex(admittance, 0));
 
-            var voltageCollapse = powerNet.CalculateMissingInformation(new CurrentIteration(0.000000001, 1000000));
+            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
             var voltages = powerNet.NodeVoltages;
             var powers = powerNet.NodePowers;
@@ -103,7 +103,7 @@ namespace LoadFlowCalculationTest
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
             powerNet.SetAdmittance(0, 1, new Complex(admittance, 0));
-            powerNet.CalculateMissingInformation(new CurrentIteration(0.000000001, 1000000));
+            powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
             var relativePowerError = powerNet.RelativePowerError;
 
@@ -126,7 +126,7 @@ namespace LoadFlowCalculationTest
             powerNet.SetAdmittance(0, 1, new Complex(1, 0));
             powerNet.SetAdmittance(0, 2, new Complex(2, 0));
             powerNet.SetAdmittance(1, 2, new Complex(3, 0));
-            var voltageCollapse = powerNet.CalculateMissingInformation(new CurrentIteration(0.000001, 1));
+            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 
             var relativePowerError = powerNet.RelativePowerError;
 
@@ -151,7 +151,7 @@ namespace LoadFlowCalculationTest
             powerNet.SetAdmittance(0, 2, new Complex(2, 0));
             powerNet.SetAdmittance(1, 2, new Complex(3, 0));
 
-            var voltageCollapse = powerNet.CalculateMissingInformation(new CurrentIteration(0.000001, 1));
+            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 
             var voltages = powerNet.NodeVoltages;
             var powers = powerNet.NodePowers;

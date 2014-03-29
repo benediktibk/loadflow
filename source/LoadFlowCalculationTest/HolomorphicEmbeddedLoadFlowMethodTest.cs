@@ -12,14 +12,14 @@ namespace LoadFlowCalculationTest
     {
         private readonly List<HolomorphicEmbeddedLoadFlowMethod> _highAccuracyCalculator = new List<HolomorphicEmbeddedLoadFlowMethod>();
 
-        protected override LoadFlowCalculator CreateLoadFlowCalculator()
+        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            var calculator = CreateHELMLoadFlowCalculator();
+            var calculator = CreateHELMNodeVoltageCalculator();
             _highAccuracyCalculator.Add(calculator);
             return calculator;
         }
 
-        protected abstract HolomorphicEmbeddedLoadFlowMethod CreateHELMLoadFlowCalculator();
+        protected abstract HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator();
 
         [TestCleanup]
         public void CleanUp()

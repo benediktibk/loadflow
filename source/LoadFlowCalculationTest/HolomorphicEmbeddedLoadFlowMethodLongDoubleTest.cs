@@ -9,7 +9,7 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class HolomorphicEmbeddedLoadFlowMethodLongDoubleTest : HolomorphicEmbeddedLoadFlowMethodTest
     {
-        protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMLoadFlowCalculator()
+        protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
             return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, DataType.LongDouble);
         }
@@ -288,9 +288,10 @@ namespace LoadFlowCalculationTest
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
-            var calculator = CreateHELMLoadFlowCalculator();
+            var nodeVoltageCalculator = CreateHELMNodeVoltageCalculator();
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
 
-            nodes = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             var firstCoefficient = new DenseVector(new[] { new Complex(-1, 0) });
             var secondCoefficient = new DenseVector(new[] { new Complex(2.08041324631485, 0.0199997871033142) });
@@ -298,12 +299,12 @@ namespace LoadFlowCalculationTest
             var firstInverseCoefficient = new DenseVector(new[] { new Complex(-1, 0) });
             var secondInverseCoefficient = new DenseVector(new[] { new Complex(-2.08041324631485, -0.0199997871033142) });
             var thirdInverseCoefficient = new DenseVector(new[] { new Complex(-4.39139139593914, -0.124215207588218) });
-            ComplexAssert.AreEqual(firstCoefficient, calculator.GetCoefficients(0), 0.0001);
-            ComplexAssert.AreEqual(firstInverseCoefficient, calculator.GetInverseCoefficients(0), 0.0001);
-            ComplexAssert.AreEqual(secondCoefficient, calculator.GetCoefficients(1), 0.0001);
-            ComplexAssert.AreEqual(secondInverseCoefficient, calculator.GetInverseCoefficients(1), 0.0001);
-            ComplexAssert.AreEqual(thirdCoefficient, calculator.GetCoefficients(2), 0.0001);
-            ComplexAssert.AreEqual(thirdInverseCoefficient, calculator.GetInverseCoefficients(2), 0.0001);
+            ComplexAssert.AreEqual(firstCoefficient, nodeVoltageCalculator.GetCoefficients(0), 0.0001);
+            ComplexAssert.AreEqual(firstInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(0), 0.0001);
+            ComplexAssert.AreEqual(secondCoefficient, nodeVoltageCalculator.GetCoefficients(1), 0.0001);
+            ComplexAssert.AreEqual(secondInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(1), 0.0001);
+            ComplexAssert.AreEqual(thirdCoefficient, nodeVoltageCalculator.GetCoefficients(2), 0.0001);
+            ComplexAssert.AreEqual(thirdInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(2), 0.0001);
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
@@ -312,17 +313,18 @@ namespace LoadFlowCalculationTest
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectCoefficients()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
-            var calculator = CreateHELMLoadFlowCalculator();
+            var nodeVoltageCalculator = CreateHELMNodeVoltageCalculator();
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
 
-            calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Complex a;
             Complex b;
             Complex c;
             CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out a, out b, out c);
-            var firstCoefficient = calculator.GetCoefficients(0)[0];
-            var secondCoefficient = calculator.GetCoefficients(1)[0];
-            var thirdCoefficient = calculator.GetCoefficients(2)[0];
+            var firstCoefficient = nodeVoltageCalculator.GetCoefficients(0)[0];
+            var secondCoefficient = nodeVoltageCalculator.GetCoefficients(1)[0];
+            var thirdCoefficient = nodeVoltageCalculator.GetCoefficients(2)[0];
             ComplexAssert.AreEqual(a, firstCoefficient, 0.00001);
             ComplexAssert.AreEqual(b, secondCoefficient, 0.00001);
             ComplexAssert.AreEqual(c, thirdCoefficient, 0.00001);

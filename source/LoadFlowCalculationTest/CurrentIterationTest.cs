@@ -7,7 +7,7 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class CurrentIterationTest : LoadFlowCalculatorTest
     {
-        protected override LoadFlowCalculator CreateLoadFlowCalculator()
+        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
             return new CurrentIteration(0.00001, 1000);
         }
@@ -15,7 +15,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_OnlyOneIterationAllowed_VoltageCollapse()
         {
-            var calculator = new CurrentIteration(0.00000001, 1);
+            var calculator = new LoadFlowCalculator(new CurrentIteration(0.00000001, 1));
             CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes =new[] { new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);

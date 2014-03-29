@@ -21,7 +21,14 @@ namespace LoadFlowCalculationTest
         protected bool _voltageCollapse;
         #endregion
 
-        abstract protected LoadFlowCalculator CreateLoadFlowCalculator();
+        #region helper functions
+        abstract protected INodeVoltageCalculator CreateNodeVoltageCalculator();
+
+        protected LoadFlowCalculator CreateLoadFlowCalculator()
+        {
+            return new LoadFlowCalculator(CreateNodeVoltageCalculator());
+        }
+        #endregion
 
         #region test initalization
         [TestInitialize]

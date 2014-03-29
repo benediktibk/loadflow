@@ -9,7 +9,7 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class NodePotentialMethodTest : LoadFlowCalculatorTest
     {
-        protected override LoadFlowCalculator CreateLoadFlowCalculator()
+        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
             return new NodePotentialMethod(0.0001);
         }

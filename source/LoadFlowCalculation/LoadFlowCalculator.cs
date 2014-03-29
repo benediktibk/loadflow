@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
-using MathNet.Numerics.Financial;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
-using MathNet.Numerics.Statistics;
 
 namespace LoadFlowCalculation
 {
-    public abstract class LoadFlowCalculator
+    public class LoadFlowCalculator
     {
         private readonly double _maximumPowerError;
+        private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
-        public abstract Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses);
-
-        protected LoadFlowCalculator(double maximumPowerError)
+        public LoadFlowCalculator(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            _maximumPowerError = maximumPowerError;
+            _nodeVoltageCalculator = nodeVoltageCalculator;
+            _maximumPowerError = nodeVoltageCalculator.GetMaximumPowerError();
         }
 
         /// <summary>
@@ -65,7 +63,7 @@ namespace LoadFlowCalculation
                 ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
                 var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittances);
 
-                var unknownVoltages = CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
+                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,

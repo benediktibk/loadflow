@@ -7,12 +7,12 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public class CurrentIteration : LoadFlowCalculator
+    public class CurrentIteration : INodeVoltageCalculator
     {
         private readonly int _maximumIterations;
         private readonly double _targetPrecision;
 
-        public CurrentIteration(double targetPrecision, int maximumIterations) : base(targetPrecision*100)
+        public CurrentIteration(double targetPrecision, int maximumIterations)
         {
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
@@ -69,7 +69,7 @@ namespace LoadFlowCalculation
             return voltages;
         }
 
-        public override Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var nodeCount = admittances.RowCount;
             var initialVoltages = new DenseVector(nodeCount);
@@ -79,6 +79,11 @@ namespace LoadFlowCalculation
 
             return CalculateUnknownVoltages(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses,
                 initialVoltages);
+        }
+
+        public double GetMaximumPowerError()
+        {
+            return _targetPrecision*100;
         }
 
         private Complex CalculateVoltage(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents, IList<Complex> powers,

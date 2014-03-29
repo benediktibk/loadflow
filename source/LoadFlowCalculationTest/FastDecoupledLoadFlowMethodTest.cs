@@ -11,7 +11,7 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class FastDecoupledLoadFlowMethodTest : JacobiMatrixBaseMethodTest
     {
-        protected override LoadFlowCalculator CreateLoadFlowCalculator()
+        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
             return new FastDecoupledLoadFlowMethod(0.0001, 10000);
         }

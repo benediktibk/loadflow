@@ -6,7 +6,7 @@ namespace LoadFlowCalculationTest
     [TestClass]
     public class NewtonRaphsonMethodTest : JacobiMatrixBaseMethodTest
     {
-        protected override LoadFlowCalculator CreateLoadFlowCalculator()
+        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
             return new NewtonRaphsonMethod(0.0001, 1000);
         }
