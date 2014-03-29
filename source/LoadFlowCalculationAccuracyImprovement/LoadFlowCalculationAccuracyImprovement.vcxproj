@@ -95,9 +95,11 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     <ClCompile Include="CoefficientStorage.cpp" />
     <ClCompile Include="Complex.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MultiPrecision.cpp" />
     <ClCompile Include="PQBus.cpp" />
     <ClCompile Include="PVBus.cpp" />
+    <ClCompile Include="Decomposition.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +110,11 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     <ClInclude Include="Complex.h" />
     <ClInclude Include="ConsoleOutput.h" />
     <ClInclude Include="ICalculator.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MultiPrecision.h" />
     <ClInclude Include="PQBus.h" />
     <ClInclude Include="PVBus.h" />
+    <ClInclude Include="Decomposition.h" />
     <ClInclude Include="UnitTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -133,7 +133,7 @@ bool runTestsCoefficientStoragePQ()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	Matrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients;
 
@@ -185,7 +185,7 @@ bool runTestsCoefficientStoragePV()
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 1));
-	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	Matrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients;
 
@@ -226,11 +226,11 @@ bool runTestsCoefficientStorageMixed()
 	pqBuses.push_back(PQBus(1, complex<double>()));
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 0.7));
-	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(2, 2);
-	admittances.insert(0, 0) = complex<double>(100, 100);
-	admittances.insert(0, 1) = complex<double>(-10, 1);
-	admittances.insert(1, 0) = complex<double>(-10, 0);
-	admittances.insert(1, 1) = complex<double>(20, 0);
+	Matrix< complex<long double> > admittances(2, 2);
+	admittances.setValue(0, 0, complex<double>(100, 100));
+	admittances.setValue(0, 1, complex<double>(-10, 1));
+	admittances.setValue(1, 0, complex<double>(-10, 0));
+	admittances.setValue(1, 1, complex<double>(20, 0));
 	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
 	vector< complex<long double> > coefficients(2);
 
@@ -297,7 +297,7 @@ bool runTestsAnalyticContinuationStepByStep()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	Matrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
 	vector< complex<long double> > coefficients(1);
@@ -346,7 +346,7 @@ bool runTestsAnalyticContinuationBunchAtOnce()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	Matrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
 	vector< complex<long double> > coefficients(1);

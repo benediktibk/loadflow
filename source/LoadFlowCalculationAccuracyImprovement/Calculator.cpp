@@ -18,6 +18,7 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
+	_factorization(0),
 	_admittances(nodeCount, nodeCount),
 	_totalAdmittanceRowSums(nodeCount),
 	_constantCurrents(nodeCount),
@@ -39,15 +40,13 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 template<typename Floating, typename ComplexFloating>
 Calculator<Floating, ComplexFloating>::~Calculator()
 {
-	deleteContinuations();
-	delete _coefficientStorage;
-	_coefficientStorage = 0;
+	freeMemory();
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setAdmittance(int row, int column, complex<double> value)
 {
-	_admittances.insert(row, column) = ComplexFloating(value);
+	_admittances.setValue(row, column, ComplexFloating(value));
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -77,17 +76,15 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
-	deleteContinuations();
-	delete _coefficientStorage;
+	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
+	_factorization = new Decomposition<ComplexFloating>(_admittances);
 
 	for (size_t i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 
 	calculateAbsolutePowerSum();
-	_factorization.analyzePattern(_admittances);
-	_factorization.factorize(_admittances);
-	vector<ComplexFloating> partialAdmittanceRowSums = calculateAdmittanceRowSum();
+	vector<ComplexFloating> partialAdmittanceRowSums = _admittances.calculateRowSums();
 
 	if (!calculateFirstCoefficient(partialAdmittanceRowSums))
 		return;
@@ -181,20 +178,7 @@ void Calculator<Floating, ComplexFloating>::writeLine(const char *text)
 template<typename Floating, typename ComplexFloating>
 std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide)
 {
-	Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> rightHandSideConverted = stdToEigenVector(rightHandSide);
-	return eigenToStdVector(_factorization.solve(rightHandSideConverted));
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateAdmittanceRowSum()
-{
-	std::vector<ComplexFloating> result(_nodeCount);
-
-	for (size_t row = 0; row < _nodeCount; ++row)
-		for (size_t column = 0; column < _nodeCount; ++column)
-			result[row] += _admittances.coeffRef(row, column);
-
-	return result;
+	return _factorization->solveEquationSystem(rightHandSide);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -312,11 +296,9 @@ ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PV
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 {
-	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> voltages = stdToEigenVector(_voltages);
-	Eigen::Matrix< ComplexFloating, Eigen::Dynamic, 1> currents = _admittances * voltages;
-	std::vector<ComplexFloating> currentsConverted = eigenToStdVector(currents);
-	std::vector<ComplexFloating> totalCurrents = subtract(currentsConverted, _constantCurrents);
-	std::vector<ComplexFloating> powers = pointwiseMultiply(conjugate(totalCurrents), stdComplexVectorToComplexFloatingVector(_voltages));
+	std::vector<ComplexFloating> currents = _admittances.multiply(Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
+	std::vector<ComplexFloating> totalCurrents = Matrix<ComplexFloating>::subtract(currents, _constantCurrents);
+	std::vector<ComplexFloating> powers = Matrix<ComplexFloating>::pointwiseMultiply(conjugate(totalCurrents), Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
 	
 	assert(_nodeCount == powers.size());
 	double sum = 0;
@@ -359,6 +341,16 @@ void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
 }
 
 template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::freeMemory()
+{
+	delete _coefficientStorage;
+	_coefficientStorage = 0;
+	delete _factorization;
+	_factorization = 0;
+	deleteContinuations();
+}
+
+template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::deleteContinuations()
 {
 	for (size_t i = 0; i < _continuations.size(); ++i)
@@ -377,80 +369,6 @@ void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
 }
 
 template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::pointwiseMultiply(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
-{
-	assert(one.size() == two.size());
-	size_t n = one.size();
-	std::vector<ComplexFloating> result(n);
-
-	for (size_t i = 0; i < n; ++i)
-		result[i] = one[i]*two[i];
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::pointwiseDivide(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
-{
-	assert(one.size() == two.size());
-	size_t n = one.size();
-	std::vector<ComplexFloating> result(n);
-
-	for (size_t i = 0; i < n; ++i)
-		result[i] = one[i]/two[i];
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::add(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
-{
-	assert(one.size() == two.size());
-	size_t n = one.size();
-	std::vector<ComplexFloating> result(n);
-
-	for (size_t i = 0; i < n; ++i)
-		result[i] = one[i] + two[i];
-	
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::subtract(const std::vector<ComplexFloating> &one, const std::vector<ComplexFloating> &two)
-{
-	assert(one.size() == two.size());
-	size_t n = one.size();
-	std::vector<ComplexFloating> result(n);
-
-	for (size_t i = 0; i < n; ++i)
-		result[i] = one[i] - two[i];
-	
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::multiply(const std::vector<ComplexFloating> &one, const ComplexFloating &two)
-{
-	std::vector<ComplexFloating> result(one);
-
-	for (size_t i = 0; i < result.size(); ++i)
-		result[i] *= two;
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::divide(const ComplexFloating &one, const std::vector<ComplexFloating> &two)
-{
-	std::vector<ComplexFloating> result(two);
-
-	for (size_t i = 0; i < result.size(); ++i)
-		result[i] = one/result[i];
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
 Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const std::vector<ComplexFloating> &values)
 {
 	assert(values.size() > 0);
@@ -462,50 +380,6 @@ Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const std::
 		if (magnitude > result)
 			result = magnitude;
 	}
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::eigenToStdVector(const Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> &values)
-{
-	std::vector<ComplexFloating> result(values.size());
-
-	for (int i = 0; i < values.size(); ++i)
-		result[i] = values[i];
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Calculator<Floating, ComplexFloating>::stdToEigenVector(const std::vector<ComplexFloating> &values)
-{
-	Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> result(values.size(), 1);
-
-	for (size_t i = 0; i < values.size(); ++i)
-		result[i] = values[i];
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Calculator<Floating, ComplexFloating>::stdToEigenVector(const std::vector< complex<double> > &values)
-{
-	Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> result(values.size(), 1);
-
-	for (size_t i = 0; i < values.size(); ++i)
-		result[i] = static_cast<ComplexFloating>(values[i]);
-
-	return result;
-}
-
-template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::stdComplexVectorToComplexFloatingVector(const std::vector< complex<double> > &values)
-{
-	std::vector<ComplexFloating> result(values.size());
-	
-	for (size_t i = 0; i < values.size(); ++i)
-		result[i] = static_cast<ComplexFloating>(values[i]);
 
 	return result;
 }
