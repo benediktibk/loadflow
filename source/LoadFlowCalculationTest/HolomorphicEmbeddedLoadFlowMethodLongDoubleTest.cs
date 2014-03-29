@@ -221,17 +221,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
-        {
-            var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.001);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithTwoPVBuses();
