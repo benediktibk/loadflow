@@ -292,7 +292,7 @@ bool runTestsCoefficientStorage()
 	return true;
 }
 
-bool runTestsAnalyticContinuation()
+bool runTestsAnalyticContinuationStepByStep()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
@@ -336,6 +336,54 @@ bool runTestsAnalyticContinuation()
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
+		return false;
+
+	return true;
+}
+
+bool runTestsAnalyticContinuationBunchAtOnce()
+{
+	vector<PQBus> pqBuses;
+	pqBuses.push_back(PQBus(0, complex<double>()));
+	vector<PVBus> pvBuses;
+	Eigen::SparseMatrix<complex<long double>, Eigen::ColMajor> admittances(1, 1);
+	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
+	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
+	vector< complex<long double> > coefficients(1);
+
+	coefficients[0] = 0;
+	coefficientStorage.addCoefficients(coefficients);
+	coefficients[0] = 0.5;
+	coefficientStorage.addCoefficients(coefficients);
+	continuation.updateWithLastCoefficients();
+	if (!areEqual(complex<double>(0.5, 0), continuation.getResult(), 0.00001))
+		return false;
+
+	coefficients[0] = 0.0625;
+	coefficientStorage.addCoefficients(coefficients);
+	coefficients[0] = 0.01660156;
+	coefficientStorage.addCoefficients(coefficients);
+	coefficients[0] = 0.00473809;
+	coefficientStorage.addCoefficients(coefficients);
+	continuation.updateWithLastCoefficients();
+	if (!areEqual(complex<double>(0.58574349, 0), continuation.getResult(), 0.00001))
+		return false;
+
+	coefficients[0] = 0.00137754;
+	coefficientStorage.addCoefficients(coefficients);
+	continuation.updateWithLastCoefficients();
+	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
+		return false;
+
+	return true;
+}
+
+bool runTestsAnalyticContinuation()
+{
+	if (!runTestsAnalyticContinuationStepByStep())
+		return false;
+
+	if (!runTestsAnalyticContinuationBunchAtOnce())
 		return false;
 
 	return true;
