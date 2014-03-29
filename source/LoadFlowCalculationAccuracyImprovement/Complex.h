@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <ostream>
 #include "MultiPrecision.h"
+#include <Eigen/src/Core/MathFunctions.h>
 
 template<typename T>
 class Complex
@@ -157,4 +158,25 @@ namespace Eigen
 			return static_cast<Real>(std::pow(2, static_cast<double>(MultiPrecision::getBitPrecision() - 4)*(-1))); 
 		}
 	};
+
+	namespace internal
+	{
+		template<>
+		struct abs2_impl< Complex<long double> >
+		{
+		  static inline long double run(const Complex<long double>& x)
+		  {
+			return x.real()*x.real() + x.imag()*x.imag();
+		  }
+		};
+
+		template<>
+		struct abs2_impl< Complex<MultiPrecision> >
+		{
+		  static inline MultiPrecision run(const Complex<MultiPrecision>& x)
+		  {
+			return x.real()*x.real() + x.imag()*x.imag();
+		  }
+		};
+	}
 }

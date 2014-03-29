@@ -394,7 +394,7 @@ class SparseMatrix
     {
       Index p = m_outerIndex[outer+1];
       ++m_outerIndex[outer+1];
-      m_data.append(0, inner);
+      m_data.append(Scalar(0), inner);
       return m_data.value(p);
     }
 

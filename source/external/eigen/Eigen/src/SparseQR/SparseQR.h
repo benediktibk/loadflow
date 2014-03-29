@@ -328,9 +328,9 @@ void SparseQR<MatrixType,OrderingType>::factorize(const MatrixType& mat)
    */
   if(m_useDefaultThreshold) 
   {
-    RealScalar max2Norm = 0.0;
+    RealScalar max2Norm(0.0);
     for (int j = 0; j < n; j++) max2Norm = (max)(max2Norm, m_pmat.col(j).norm());
-    m_threshold = 20 * (m + n) * max2Norm * NumTraits<RealScalar>::epsilon();
+    m_threshold = RealScalar(20 * (m + n)) * max2Norm * NumTraits<RealScalar>::epsilon();
   }
   
   // Initialize the numerical permutation
@@ -435,24 +435,24 @@ void SparseQR<MatrixType,OrderingType>::factorize(const MatrixType& mat)
     Scalar c0 = nzcolQ ? tval(Qidx(0)) : Scalar(0);
     
     // First, the squared norm of Q((col+1):m, col)
-    RealScalar sqrNorm = 0.;
+    RealScalar sqrNorm(0.0);
     for (Index itq = 1; itq < nzcolQ; ++itq) sqrNorm += numext::abs2(tval(Qidx(itq)));
     
     if(sqrNorm == RealScalar(0) && numext::imag(c0) == RealScalar(0))
     {
-      tau = RealScalar(0);
+      tau = Scalar(0);
       beta = numext::real(c0);
-      tval(Qidx(0)) = 1;
+      tval(Qidx(0)) = Scalar(1);
      }
     else
     {
       beta = std::sqrt(numext::abs2(c0) + sqrNorm);
       if(numext::real(c0) >= RealScalar(0))
         beta = -beta;
-      tval(Qidx(0)) = 1;
+      tval(Qidx(0)) = Scalar(1);
       for (Index itq = 1; itq < nzcolQ; ++itq)
-        tval(Qidx(itq)) /= (c0 - beta);
-      tau = numext::conj((beta-c0) / beta);
+        tval(Qidx(itq)) /= (c0 - Scalar(beta));
+      tau = numext::conj((Scalar(beta)-c0) / Scalar(beta));
         
     }
 
@@ -469,7 +469,7 @@ void SparseQR<MatrixType,OrderingType>::factorize(const MatrixType& mat)
 
     if(abs(beta) >= m_threshold)
     {
-      m_R.insertBackByOuterInner(col, nonzeroCol) = beta;
+      m_R.insertBackByOuterInner(col, nonzeroCol) = Scalar(beta);
       nonzeroCol++;
       // The householder coefficient
       m_hcoeffs(col) = tau;
