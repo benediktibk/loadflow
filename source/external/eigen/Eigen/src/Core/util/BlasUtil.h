@@ -184,7 +184,7 @@ struct blas_traits<CwiseUnaryOp<scalar_conjugate_op<Scalar>, NestedXpr> >
     NeedToConjugate = Base::NeedToConjugate ? 0 : IsComplex
   };
   static inline ExtractType extract(const XprType& x) { return Base::extract(x.nestedExpression()); }
-  static inline Scalar extractScalarFactor(const XprType& x) { return conj(Base::extractScalarFactor(x.nestedExpression())); }
+  static inline Scalar extractScalarFactor(const XprType& x) { return conj<Scalar>(Base::extractScalarFactor(x.nestedExpression())); }
 };
 
 // pop scalar multiple

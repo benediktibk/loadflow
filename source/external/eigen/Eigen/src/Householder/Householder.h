@@ -78,7 +78,7 @@ void MatrixBase<Derived>::makeHouseholder(
 
   if(tailSqNorm == RealScalar(0) && numext::imag(c0)==RealScalar(0))
   {
-    tau = RealScalar(0);
+    tau = Scalar(0);
     beta = numext::real(c0);
     essential.setZero();
   }
@@ -87,8 +87,8 @@ void MatrixBase<Derived>::makeHouseholder(
     beta = sqrt(numext::abs2(c0) + tailSqNorm);
     if (numext::real(c0)>=RealScalar(0))
       beta = -beta;
-    essential = tail / (c0 - beta);
-    tau = conj((beta - c0) / beta);
+    essential = tail / (c0 - Scalar(beta));
+    tau = conj((Scalar(beta) - c0) / Scalar(beta));
   }
 }
 

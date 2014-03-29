@@ -490,7 +490,7 @@ ColPivHouseholderQR<MatrixType>& ColPivHouseholderQR<MatrixType>::compute(const 
     m_qr.col(k).tail(rows-k).makeHouseholderInPlace(m_hCoeffs.coeffRef(k), beta);
 
     // apply the householder transformation to the diagonal coefficient
-    m_qr.coeffRef(k,k) = beta;
+    m_qr.coeffRef(k,k) = Scalar(beta);
 
     // remember the maximum absolute value of diagonal coefficients
     if(abs(beta) > m_maxpivot) m_maxpivot = abs(beta);
