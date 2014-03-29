@@ -211,16 +211,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
-        {
-            var nodes = CreateTestTwoNodeProblemWithOnePVBus();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithTwoPVBuses();
@@ -240,17 +230,6 @@ namespace LoadFlowCalculationTest
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.02, 20);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithTwoPVBuses_CorrectResults()
-        {
-            var nodes = CreateTestFiveNodeProblemWithTwoPVBusses();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
