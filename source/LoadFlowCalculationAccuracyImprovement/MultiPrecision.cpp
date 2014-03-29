@@ -1,6 +1,6 @@
 #include "MultiPrecision.h"
 
-const unsigned int MultiPrecision::_precision = 250;
+const unsigned int MultiPrecision::_precision = 300;
 
 MultiPrecision::MultiPrecision() :
 	_value(0, _precision)
