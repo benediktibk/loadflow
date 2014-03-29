@@ -148,7 +148,7 @@ namespace LoadFlowCalculationComparison
                     fdlfTargetPrecision = 0.00001;
                     fdlfMaximumIterations = 1000;
                     helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 50;
+                    helmMaximumNumberOfCoefficients = 200;
                     break;
             }
 
@@ -229,8 +229,8 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
-            var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
-                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.MultiPrecision);
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
+                _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, DataType.MultiPrecision);
             CalculateResult(calculator, mainDispatcher, "HELM - multi");
         }
 
