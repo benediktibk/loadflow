@@ -3,6 +3,7 @@
 #include "Complex.h"
 #include <vector>
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -18,37 +19,35 @@ AnalyticContinuation<Floating, ComplexFloating>::AnalyticContinuation(Coefficien
 	_next(_maximumNumberOfCoefficients),
 	_alreadyProcessed(0)
 {
-	assert(_maximumNumberOfCoefficients > 0);
-	assert(_node >= 0);
+	assert(maximumNumberOfCoefficients > 0);
+	assert(node >= 0);
 }
 
 template<typename Floating, typename ComplexFloating>
 void AnalyticContinuation<Floating, ComplexFloating>::updateWithLastCoefficients()
 {	
-	size_t coefficientCount = _coefficients.getCoefficientCount();
-	vector<ComplexFloating> previousEpsilon(coefficientCount + 1);
-	vector<ComplexFloating> currentEpsilon(coefficientCount);
+	assert(_alreadyProcessed < _maximumNumberOfCoefficients);
+	
+	while (_alreadyProcessed < _coefficients.getCoefficientCount())
+		updateWithLastCoefficientsOnce();
+}
 
-	ComplexFloating sum;
-	for (size_t i = 0; i < coefficientCount; ++i)
+template<typename Floating, typename ComplexFloating>
+void AnalyticContinuation<Floating, ComplexFloating>::updateWithLastCoefficientsOnce()
+{
+	ComplexFloating const& newCoefficient = _coefficients.getCoefficient(_node, _alreadyProcessed);
+	_next[0] = _current[0] + newCoefficient;
+
+	if (_alreadyProcessed > 0)
 	{
-		sum += _coefficients.getCoefficient(_node, i);
-		currentEpsilon[i] = sum;
+		_next[1] = calculateImprovement(_current[0], _next[0], ComplexFloating());
+
+		for (size_t i = 2; i <= _alreadyProcessed; ++i)
+			_next[i] = calculateImprovement(_current[i - 1], _next[i - 1], _current[i - 2]);
 	}
 
-	while(currentEpsilon.size() > 1)
-	{
-		vector<ComplexFloating> nextEpsilon(currentEpsilon.size() - 1);
-
-		for (size_t j = 0; j <= currentEpsilon.size() - 2; ++j)
-			nextEpsilon[j] = calculateImprovement(currentEpsilon[j], currentEpsilon[j + 1], previousEpsilon[j + 1]);
-
-		previousEpsilon = currentEpsilon;
-		currentEpsilon = nextEpsilon;
-	}
-
-	ComplexFloating const& result =  coefficientCount % 2 == 0 ? previousEpsilon.back() : currentEpsilon.back();
-	_result = static_cast< complex<double> >(result);
+	swap(_next, _current);
+	++_alreadyProcessed;
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -61,7 +60,9 @@ ComplexFloating AnalyticContinuation<Floating, ComplexFloating>::calculateImprov
 }
 
 template<typename Floating, typename ComplexFloating>
-std::complex<double> const& AnalyticContinuation<Floating, ComplexFloating>::getResult() const
-{
-	return _result;
+std::complex<double> AnalyticContinuation<Floating, ComplexFloating>::getResult() const
+{	
+	assert(_alreadyProcessed > 0);
+	ComplexFloating const& result =  _alreadyProcessed % 2 == 0 ? _current[_alreadyProcessed - 2] : _current[_alreadyProcessed - 1];
+	return static_cast< complex<double> >(result);
 }
