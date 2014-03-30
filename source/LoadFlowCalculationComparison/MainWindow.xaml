@@ -247,9 +247,10 @@
                     <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="2">
+            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="3">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
+                    <DataGridCheckBoxColumn Binding="{Binding Known}" Header="known"/>
                     <DataGridTextColumn Binding="{Binding Correct, StringFormat={}{0:0.####}}" Header="correct"/>
                     <DataGridTextColumn Binding="{Binding NodePotentialMethod, StringFormat={}{0:0.####}}" Header="node potential"/>
                     <DataGridTextColumn Binding="{Binding CurrentIteraion, StringFormat={}{0:0.####}}" Header="current iteration"/>

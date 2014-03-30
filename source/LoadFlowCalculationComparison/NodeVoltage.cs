@@ -5,6 +5,7 @@ namespace LoadFlowCalculationComparison
     public class NodeVoltage
     {
         public string NodeName { get; set; }
+        public bool Known { get; set; }
         public Complex Correct { get; set; }
         public Complex NodePotentialMethod { get; set; }
         public Complex CurrentIteraion { get; set; }
@@ -18,6 +19,7 @@ namespace LoadFlowCalculationComparison
             return new NodeVoltage
             {
                 NodeName = new string(NodeName.ToCharArray()),
+                Known = Known,
                 Correct = DeepCloneComplex(Correct),
                 NodePotentialMethod = DeepCloneComplex(NodePotentialMethod),
                 CurrentIteraion = DeepCloneComplex(CurrentIteraion),

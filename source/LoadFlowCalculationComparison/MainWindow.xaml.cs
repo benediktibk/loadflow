@@ -256,7 +256,7 @@ namespace LoadFlowCalculationComparison
 
             for (var i = 0; i < nodeCount; ++i)
             {
-                var line = new NodeVoltage {NodeName = "node " + i, Correct = correctVoltages[i]};
+                var line = new NodeVoltage {NodeName = "node " + i, Correct = correctVoltages[i], Known = powerNet.IsVoltageOfNodeKnown(i)};
                 _nodeVoltages.Add(line);
             }
 

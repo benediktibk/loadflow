@@ -46,6 +46,11 @@ namespace LoadFlowCalculation
             _nodes[i] = node;
         }
 
+        public bool IsVoltageOfNodeKnown(int node)
+        {
+            return _nodes[node].VoltageIsKnown;
+        }
+
         public void SetAdmittance(int i, int j, Complex admittance)
         {
             if (i == j)
