@@ -89,6 +89,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeVoltage.cs" />
+    <Compile Include="NodeVoltages.cs" />
     <Compile Include="NotNegativeValidationRule.cs" />
     <Compile Include="PositiveValidationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

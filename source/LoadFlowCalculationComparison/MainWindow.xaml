@@ -18,6 +18,7 @@
         </ObjectDataProvider>
         <local:CombinedCalculationResults x:Key="CombinedCalculationResults"/>
         <local:CalculationResults x:Key="CalculationResults"/>
+        <local:NodeVoltages x:Key="NodeVoltages"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -222,7 +223,8 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30*"/>
-                <RowDefinition Height="70*"/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="30*"/>
             </Grid.RowDefinitions>
             <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
                 <DataGrid.Columns>
@@ -243,6 +245,18 @@
                     <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
                     <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
                     <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
+                    <DataGridCheckBoxColumn Binding="{Binding Correct}" Header="correct"/>
+                    <DataGridCheckBoxColumn Binding="{Binding NodePotentialMethod}" Header="node potential"/>
+                    <DataGridCheckBoxColumn Binding="{Binding CurrentIteraion}" Header="current iteration"/>
+                    <DataGridCheckBoxColumn Binding="{Binding NewtonRaphson}" Header="newton raphson"/>
+                    <DataGridCheckBoxColumn Binding="{Binding FastDecoupledLoadFlow}" Header="FDLF"/>
+                    <DataGridCheckBoxColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble}" Header="HELM - long double"/>
+                    <DataGridCheckBoxColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti}" Header="HELM - multi"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
