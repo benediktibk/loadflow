@@ -35,6 +35,7 @@ namespace LoadFlowCalculationComparison
         #region delegates
         private delegate void ResultCalculated(CalculationResult result);
         private delegate void CombinedResultCalculated(CombinedCalculationResult result);
+        private delegate void SetVoltages(Vector<Complex> voltages);
         #endregion
 
         #region constructor
@@ -74,6 +75,66 @@ namespace LoadFlowCalculationComparison
         private void AddCombinedCalculationResult(CombinedCalculationResult result)
         {
             _combinedCalculationResults.Add(result);
+        }
+
+        private void SetVoltagesNodePotentialMethod(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.NodePotentialMethod = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesCurrentIteration(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.CurrentIteraion = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesNewtonRaphson(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.NewtonRaphson = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesFastDecoupledLoadFlow(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.FastDecoupledLoadFlow = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesHolomorphicEmbeddingLoadFlowLongDouble(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.HolomorphicEmbeddingLoadFlowLongDouble = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesHolomorphicEmbeddingLoadFlowMulti(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.HolomorphicEmbeddingLoadFlowMulti = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
         }
         #endregion
 
@@ -221,45 +282,51 @@ namespace LoadFlowCalculationComparison
         private void CalculateNodePotentialResult(Dispatcher mainDispatcher)
         {
             var calculator = new NodePotentialMethod(_nodePotential.SingularityDetection);
-            CalculateResult(calculator, mainDispatcher, "Node Potential");
+            var voltages = CalculateResult(calculator, mainDispatcher, "Node Potential");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesNodePotentialMethod), voltages);
         }
 
         private void CalculateCurrentIterationResult(Dispatcher mainDispatcher)
         {
             var calculator = new CurrentIteration(_currentIteration.TargetPrecision,
                 _currentIteration.MaximumIterations);
-            CalculateResult(calculator, mainDispatcher, "Current Iteration");
+            var voltages = CalculateResult(calculator, mainDispatcher, "Current Iteration");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesCurrentIteration), voltages);
         }
 
         private void CalculateNewtonRaphsonResult(Dispatcher mainDispatcher)
         {
             var calculator = new NewtonRaphsonMethod(_newtonRaphson.TargetPrecision,
                 _newtonRaphson.MaximumIterations);
-            CalculateResult(calculator, mainDispatcher, "Newton Raphson");
+            var voltages = CalculateResult(calculator, mainDispatcher, "Newton Raphson");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesNewtonRaphson), voltages);
         }
 
         private void CalculateFastDecoupledLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new FastDecoupledLoadFlowMethod(_fastDecoupledLoadFlow.TargetPrecision,
                 _fastDecoupledLoadFlow.MaximumIterations);
-            CalculateResult(calculator, mainDispatcher, "FDLF");
+            var voltages = CalculateResult(calculator, mainDispatcher, "FDLF");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesFastDecoupledLoadFlow), voltages);
         }
 
         private void CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
                 _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.LongDouble);
-            CalculateResult(calculator, mainDispatcher, "HELM - double");
+            var voltages = CalculateResult(calculator, mainDispatcher, "HELM - double");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowLongDouble), voltages);
         }
 
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
                 _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, DataType.MultiPrecision);
-            CalculateResult(calculator, mainDispatcher, "HELM - multi");
+            var voltages = CalculateResult(calculator, mainDispatcher, "HELM - multi");
+            mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowMulti), voltages);
         }
 
-        private void CalculateResult(INodeVoltageCalculator nodeVoltageCalculator, Dispatcher mainDispatcher, string algorithmName)
+        private Vector<Complex> CalculateResult(INodeVoltageCalculator nodeVoltageCalculator, Dispatcher mainDispatcher, string algorithmName)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
@@ -306,6 +373,7 @@ namespace LoadFlowCalculationComparison
             combinedResult.Algorithm = algorithmName;
 
             mainDispatcher.Invoke(new CombinedResultCalculated(AddCombinedCalculationResult), combinedResult);
+            return powerNet.NodeVoltages;
         }
 #endregion
 

@@ -12,5 +12,25 @@ namespace LoadFlowCalculationComparison
         public Complex FastDecoupledLoadFlow { get; set; }
         public Complex HolomorphicEmbeddingLoadFlowLongDouble { get; set; }
         public Complex HolomorphicEmbeddingLoadFlowMulti { get; set; }
+
+        public NodeVoltage DeepClone()
+        {
+            return new NodeVoltage
+            {
+                NodeName = new string(NodeName.ToCharArray()),
+                Correct = DeepCloneComplex(Correct),
+                NodePotentialMethod = DeepCloneComplex(NodePotentialMethod),
+                CurrentIteraion = DeepCloneComplex(CurrentIteraion),
+                NewtonRaphson = DeepCloneComplex(NewtonRaphson),
+                FastDecoupledLoadFlow = DeepCloneComplex(FastDecoupledLoadFlow),
+                HolomorphicEmbeddingLoadFlowLongDouble = DeepCloneComplex(HolomorphicEmbeddingLoadFlowLongDouble),
+                HolomorphicEmbeddingLoadFlowMulti = DeepCloneComplex(HolomorphicEmbeddingLoadFlowMulti)
+            };
+        }
+
+        private static Complex DeepCloneComplex(Complex value)
+        {
+            return new Complex(value.Real, value.Imaginary);
+        }
     }
 }
