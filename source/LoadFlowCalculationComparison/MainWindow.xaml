@@ -247,7 +247,7 @@
                     <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}">
+            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="2">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
                     <DataGridTextColumn Binding="{Binding Correct}" Header="correct"/>
