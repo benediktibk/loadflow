@@ -250,13 +250,13 @@
             <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="2">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
-                    <DataGridTextColumn Binding="{Binding Correct}" Header="correct"/>
-                    <DataGridTextColumn Binding="{Binding NodePotentialMethod}" Header="node potential"/>
-                    <DataGridTextColumn Binding="{Binding CurrentIteraion}" Header="current iteration"/>
-                    <DataGridTextColumn Binding="{Binding NewtonRaphson}" Header="newton raphson"/>
-                    <DataGridTextColumn Binding="{Binding FastDecoupledLoadFlow}" Header="FDLF"/>
-                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble}" Header="HELM - long double"/>
-                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti}" Header="HELM - multi"/>
+                    <DataGridTextColumn Binding="{Binding Correct, StringFormat={}{0:0.####}}" Header="correct"/>
+                    <DataGridTextColumn Binding="{Binding NodePotentialMethod, StringFormat={}{0:0.####}}" Header="node potential"/>
+                    <DataGridTextColumn Binding="{Binding CurrentIteraion, StringFormat={}{0:0.####}}" Header="current iteration"/>
+                    <DataGridTextColumn Binding="{Binding NewtonRaphson, StringFormat={}{0:0.####}}" Header="newton raphson"/>
+                    <DataGridTextColumn Binding="{Binding FastDecoupledLoadFlow, StringFormat={}{0:0.####}}" Header="FDLF"/>
+                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble, StringFormat={}{0:0.####}}" Header="HELM - long double"/>
+                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti, StringFormat={}{0:0.####}}" Header="HELM - multi"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

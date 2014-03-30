@@ -209,7 +209,7 @@ namespace LoadFlowCalculationComparison
                     fdlfTargetPrecision = 0.000001;
                     fdlfMaximumIterations = 10000;
                     helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 46;
+                    helmMaximumNumberOfCoefficients = 100;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
                     nodePotentialSingularityDetection = 0.00001;
