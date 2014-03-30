@@ -162,8 +162,10 @@ namespace LoadFlowCalculationComparison
             var newtonRaphsonMaximumIterations = 0;
             var fdlfTargetPrecision = 0.0;
             var fdlfMaximumIterations = 0;
-            var helmTargetPrecision = 0.0;
-            var helmMaximumNumberOfCoefficients = 0;
+            var helmLongDoubleTargetPrecision = 0.0;
+            var helmLongDoubleMaximumNumberOfCoefficients = 0;
+            var helmMultiTargetPrecision = 0.0;
+            var helmMultiMaximumNumberOfCoefficients = 0;
 
             switch (_generalSettings.ProblemSelection)
             {
@@ -175,8 +177,10 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 1000;
                     fdlfTargetPrecision = 0.00001;
                     fdlfMaximumIterations = 1000;
-                    helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 50;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 50;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
                     break;
                 case ProblemSelectionEnum.StableTwoNodeSystem:
                     nodePotentialSingularityDetection = 0.00001;
@@ -186,8 +190,10 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 2;
                     fdlfTargetPrecision = 0.000001;
                     fdlfMaximumIterations = 10000;
-                    helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 50;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 50;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
                     nodePotentialSingularityDetection = 0.00001;
@@ -197,8 +203,10 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 1000;
                     fdlfTargetPrecision = 0.00001;
                     fdlfMaximumIterations = 10000;
-                    helmTargetPrecision = 0.001;
-                    helmMaximumNumberOfCoefficients = 60;
+                    helmLongDoubleTargetPrecision = 0.001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 60;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithOneGroundNode:
                     nodePotentialSingularityDetection = 0.00001;
@@ -208,8 +216,10 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 2;
                     fdlfTargetPrecision = 0.000001;
                     fdlfMaximumIterations = 10000;
-                    helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 100;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 60;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
                     nodePotentialSingularityDetection = 0.00001;
@@ -219,8 +229,10 @@ namespace LoadFlowCalculationComparison
                     newtonRaphsonMaximumIterations = 1000;
                     fdlfTargetPrecision = 0.00001;
                     fdlfMaximumIterations = 1000;
-                    helmTargetPrecision = 0.00001;
-                    helmMaximumNumberOfCoefficients = 200;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 60;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 300;
                     break;
             }
 
@@ -231,10 +243,10 @@ namespace LoadFlowCalculationComparison
             _newtonRaphson.MaximumIterations = newtonRaphsonMaximumIterations;
             _fastDecoupledLoadFlow.TargetPrecision = fdlfTargetPrecision;
             _fastDecoupledLoadFlow.MaximumIterations = fdlfMaximumIterations;
-            _holomorphicEmbeddedLoadFlow.TargetPrecision = helmTargetPrecision;
-            _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
-            _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision = helmTargetPrecision;
-            _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
+            _holomorphicEmbeddedLoadFlow.TargetPrecision = helmLongDoubleTargetPrecision;
+            _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmLongDoubleMaximumNumberOfCoefficients;
+            _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision = helmMultiTargetPrecision;
+            _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients = helmMultiMaximumNumberOfCoefficients;
         }
         #endregion
 
