@@ -29,6 +29,7 @@ namespace LoadFlowCalculationComparison
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CombinedCalculationResults _combinedCalculationResults;
         private readonly CalculationResults _calculationResults;
+        private readonly NodeVoltages _nodeVoltages;
         #endregion
 
         #region delegates
@@ -50,6 +51,7 @@ namespace LoadFlowCalculationComparison
             InitializeComponent();
             _combinedCalculationResults = FindResource("CombinedCalculationResults") as CombinedCalculationResults;
             _calculationResults = FindResource("CalculationResults") as CalculationResults;
+            _nodeVoltages = FindResource("NodeVoltages") as NodeVoltages;
             NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
             HolomorphicEmbeddedLoadFlowHighAccuracyGrid.DataContext = _holomorphicEmbeddedLoadFlowHighAccuracy;
@@ -185,6 +187,18 @@ namespace LoadFlowCalculationComparison
             var dispatcher = Dispatcher.CurrentDispatcher;
             CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
             CalculateProgressBar.Value = 0;
+            Vector<Complex> correctVoltages;
+            bool voltageCollapse;
+            var powerNet = CreatePowerNet(out correctVoltages, out voltageCollapse);
+            var nodeCount = powerNet.NodeCount;
+            _nodeVoltages.Clear();
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var line = new NodeVoltage {NodeName = "node " + i, Correct = correctVoltages[i]};
+                _nodeVoltages.Add(line);
+            }
+
             var calculationTask = Task.Factory.StartNew(() =>
             {
                 CalculateNodePotentialResult(dispatcher);

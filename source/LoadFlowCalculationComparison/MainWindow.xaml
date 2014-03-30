@@ -250,13 +250,13 @@
             <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
-                    <DataGridCheckBoxColumn Binding="{Binding Correct}" Header="correct"/>
-                    <DataGridCheckBoxColumn Binding="{Binding NodePotentialMethod}" Header="node potential"/>
-                    <DataGridCheckBoxColumn Binding="{Binding CurrentIteraion}" Header="current iteration"/>
-                    <DataGridCheckBoxColumn Binding="{Binding NewtonRaphson}" Header="newton raphson"/>
-                    <DataGridCheckBoxColumn Binding="{Binding FastDecoupledLoadFlow}" Header="FDLF"/>
-                    <DataGridCheckBoxColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble}" Header="HELM - long double"/>
-                    <DataGridCheckBoxColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti}" Header="HELM - multi"/>
+                    <DataGridTextColumn Binding="{Binding Correct}" Header="correct"/>
+                    <DataGridTextColumn Binding="{Binding NodePotentialMethod}" Header="node potential"/>
+                    <DataGridTextColumn Binding="{Binding CurrentIteraion}" Header="current iteration"/>
+                    <DataGridTextColumn Binding="{Binding NewtonRaphson}" Header="newton raphson"/>
+                    <DataGridTextColumn Binding="{Binding FastDecoupledLoadFlow}" Header="FDLF"/>
+                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble}" Header="HELM - long double"/>
+                    <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti}" Header="HELM - multi"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
