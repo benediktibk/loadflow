@@ -19,6 +19,7 @@ namespace LoadFlowCalculationComparison
 {
     public partial class MainWindow
     {
+        #region variables
         private readonly GeneralSettings _generalSettings;
         private readonly IterativeMethodSettings _currentIteration;
         private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
@@ -28,10 +29,14 @@ namespace LoadFlowCalculationComparison
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CombinedCalculationResults _combinedCalculationResults;
         private readonly CalculationResults _calculationResults;
+        #endregion
 
+        #region delegates
         private delegate void ResultCalculated(CalculationResult result);
         private delegate void CombinedResultCalculated(CombinedCalculationResult result);
+        #endregion
 
+        #region constructor
         public MainWindow()
         {
             _generalSettings = new GeneralSettings();
@@ -54,7 +59,9 @@ namespace LoadFlowCalculationComparison
             GeneralSettingsGrid.DataContext = _generalSettings;
             CalculateButton.DataContext = _generalSettings;
         }
+        #endregion
 
+        #region result adding
         private void AddCalculationResult(CalculationResult result)
         {
             CalculateProgressBar.Value += 1;
@@ -62,6 +69,13 @@ namespace LoadFlowCalculationComparison
             ScrollResultDataGridToEnd();
         }
 
+        private void AddCombinedCalculationResult(CombinedCalculationResult result)
+        {
+            _combinedCalculationResults.Add(result);
+        }
+        #endregion
+
+        #region automatic gui update
         private void ScrollResultDataGridToEnd()
         {
             if (ResultDataGrid.Items.Count <= 0)
@@ -74,11 +88,6 @@ namespace LoadFlowCalculationComparison
             var scroll = border.Child as ScrollViewer;
             if (scroll != null)
                 scroll.ScrollToEnd();
-        }
-
-        private void AddCombinedCalculationResult(CombinedCalculationResult result)
-        {
-            _combinedCalculationResults.Add(result);
         }
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -164,7 +173,9 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision = helmTargetPrecision;
             _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients = helmMaximumNumberOfCoefficients;
         }
+        #endregion
 
+        #region result calculation
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine(Directory.GetCurrentDirectory());
@@ -282,7 +293,9 @@ namespace LoadFlowCalculationComparison
 
             mainDispatcher.Invoke(new CombinedResultCalculated(AddCombinedCalculationResult), combinedResult);
         }
+#endregion
 
+        #region power net creation
         private PowerNetSingleVoltageLevel CreatePowerNet(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             switch (_generalSettings.ProblemSelection)
@@ -303,7 +316,7 @@ namespace LoadFlowCalculationComparison
             throw new ArgumentOutOfRangeException();
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
@@ -339,7 +352,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
@@ -368,7 +381,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
@@ -398,7 +411,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private PowerNetSingleVoltageLevel CreatePowerNetForStableTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNetSingleVoltageLevel CreatePowerNetForStableTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);
             powerNet.SetAdmittance(0, 1, new Complex(1000, 2000));
@@ -431,5 +444,6 @@ namespace LoadFlowCalculationComparison
             voltageCollapse = true;
             return powerNet;
         }
+        #endregion
     }
 }
