@@ -325,7 +325,7 @@ namespace LoadFlowCalculationComparison
         private void CalculateHolomorphicEmbeddingLoadFlowResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlow.TargetPrecision,
-                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, DataType.LongDouble);
+                _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients, new PrecisionLongDouble());
             var voltages = CalculateResult(calculator, mainDispatcher, "HELM - double");
             mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowLongDouble), voltages);
         }
@@ -333,7 +333,7 @@ namespace LoadFlowCalculationComparison
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
-                _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, DataType.MultiPrecision);
+                _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, new PrecisionMulti(300));
             var voltages = CalculateResult(calculator, mainDispatcher, "HELM - multi");
             mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowMulti), voltages);
         }

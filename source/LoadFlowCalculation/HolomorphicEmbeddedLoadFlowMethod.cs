@@ -8,12 +8,6 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation
 {
-    public enum DataType
-    {
-        LongDouble,
-        MultiPrecision
-    };
-
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
         private delegate void StringCallback(string text);
@@ -21,11 +15,11 @@ namespace LoadFlowCalculation
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
         private readonly StringCallback _stringCallback;
-        private readonly DataType _dataType;
+        private readonly Precision _precision;
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, DataType dataType)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -36,7 +30,7 @@ namespace LoadFlowCalculation
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
             _stringCallback += DebugOutput;
-            _dataType = dataType;
+            _precision = precision;
             _calculator = -1;
             _disposed = false;
         }
@@ -76,7 +70,7 @@ namespace LoadFlowCalculation
 
             var nodeCount = admittances.RowCount;
 
-            switch (_dataType)
+            switch (_precision.Type)
             {
                 case DataType.LongDouble:
                     _calculator = CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
@@ -84,7 +78,7 @@ namespace LoadFlowCalculation
                     break;
                 case DataType.MultiPrecision:
                     _calculator = CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, 300);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
                     break;
             }
 

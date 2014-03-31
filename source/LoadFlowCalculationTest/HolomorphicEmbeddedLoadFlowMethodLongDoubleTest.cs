@@ -11,7 +11,7 @@ namespace LoadFlowCalculationTest
     {
         protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, DataType.LongDouble);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, new PrecisionLongDouble());
         }
 
         [TestMethod]
