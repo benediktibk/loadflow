@@ -7,7 +7,7 @@ CalculatorMulti::CalculatorMulti(double targetPrecision, int numberOfCoefficient
 {
 	assert(bitPrecision > 0);
 	// unfortunately necessary
-	//MultiPrecision::setDefaultPrecision(bitPrecision);
+	MultiPrecision::setDefaultPrecision(bitPrecision);
 }
 
 MultiPrecision CalculatorMulti::createFloating(double value) const
