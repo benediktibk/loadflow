@@ -22,26 +22,26 @@ ICalculator& CalculatorRegister::get(int id)
 	return *(_calculators.at(id));
 }
 
-int CalculatorRegister::createCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
+int CalculatorRegister::createCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage)
 {
 	lock_guard<mutex> lock(_mutex);
 
 	int id = findEmptyId();
 
 	if (id >= 0)
-		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
+		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
 
 	return id;
 }
 
-int CalculatorRegister::createCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount)
+int CalculatorRegister::createCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage)
 {
 	lock_guard<mutex> lock(_mutex);
 
 	int id = findEmptyId();
 
 	if (id >= 0)
-		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<MultiPrecision, Complex<MultiPrecision> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount)));
+		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<MultiPrecision, Complex<MultiPrecision> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
 
 	return id;
 }

@@ -12,12 +12,13 @@ template class Calculator<long double, complex<long double> >;
 template class Calculator<MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
-Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount) :
+Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage) :
 	_targetPrecision(targetPrecision),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
+	_nominalVoltage(nominalVoltage),
 	_factorization(0),
 	_admittances(nodeCount, nodeCount),
 	_totalAdmittanceRowSums(nodeCount),
@@ -34,6 +35,7 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	assert(nodeCount > 0);
 	assert(pqBusCount >= 0);
 	assert(pvBusCount >= 0);
+	assert(nominalVoltage > 0);
 	_continuations.reserve(nodeCount);
 }
 
@@ -90,7 +92,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		return;
 
 	calculateSecondCoefficient(partialAdmittanceRowSums);
-	map<double, int> powerErrors;
+	map<double, int> totalErrors;
 	std::vector< std::vector< complex<double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
 	
@@ -108,21 +110,20 @@ void Calculator<Floating, ComplexFloating>::calculate()
 			break;
 		}
 
-		double powerError = calculatePowerError();
-
-		powerErrors.insert(pair<double, int>(powerError, partialResults.size()));
+		double totalError = calculateTotalRelativeError();
+		totalErrors.insert(pair<double, int>(totalError, partialResults.size()));
 		partialResults.push_back(_voltages);
 
-		if (_absolutePowerSum != 0 && powerError/_absolutePowerSum < _targetPrecision)
+		if (_absolutePowerSum != 0 && totalError < _targetPrecision)
 		{
-			writeLine("finished earlier because the power error is already small enough");
+			writeLine("finished earlier because the total error is already small enough");
 			break;
 		}
 	}
 
-	if (!powerErrors.empty())
+	if (!totalErrors.empty())
 	{
-		int bestResultIndex = powerErrors.begin()->second;
+		int bestResultIndex = totalErrors.begin()->second;
 		_voltages = partialResults[bestResultIndex];
 	}
 }
@@ -318,6 +319,33 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	}
 
 	return sum;
+}
+
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
+{	
+	double sum = 0;
+
+	for (size_t i = 0; i < _pvBusCount; ++i)
+	{
+		PVBus const &bus = _pvBuses[i];
+		int id = bus.getId();
+		double currentMagnitude = abs(_voltages[id]);
+		double magnitudeShouldBe = bus.getVoltageMagnitude();
+		sum += abs(currentMagnitude - magnitudeShouldBe);
+	}
+
+	return sum;
+}
+
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::calculateTotalRelativeError() const
+{	
+	double powerError = calculatePowerError();
+	double voltageError = calculateVoltageError();
+	double powerErrorRelative = _absolutePowerSum != 0 ? powerError/_absolutePowerSum : powerError;
+	double voltageErrorRelative = _pvBusCount != 0 ? voltageError/(_nominalVoltage*_pvBusCount) : voltageError;
+	return powerErrorRelative + voltageErrorRelative;
 }
 
 template<typename Floating, typename ComplexFloating>
