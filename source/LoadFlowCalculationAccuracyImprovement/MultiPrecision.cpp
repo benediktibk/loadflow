@@ -22,6 +22,10 @@ MultiPrecision::MultiPrecision(double value) :
 	_value(value, _precision)
 { }
 
+MultiPrecision::MultiPrecision(double value, int bitPrecision) :
+	_value(value, bitPrecision)
+{ }
+
 MultiPrecision::MultiPrecision(int value) :
 	_value(value, _precision)
 { }
