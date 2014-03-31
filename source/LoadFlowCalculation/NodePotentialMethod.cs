@@ -8,13 +8,6 @@ namespace LoadFlowCalculation
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        private readonly double _singularityDetection;
-
-        public NodePotentialMethod(double singularityDetection)
-        {
-            _singularityDetection = singularityDetection;
-        }
-
         public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             Vector<Complex> knownPowers;
@@ -86,12 +79,6 @@ namespace LoadFlowCalculation
             var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
             var totalCurrents = ownCurrents.Add(constantCurrents);
             var factorization = admittances.QR();
-            var determinant = factorization.Determinant;
-
-            if (determinant.Magnitude < _singularityDetection)
-                throw new ArgumentOutOfRangeException("admittances",
-                    "the resulting admittance matrix is nearly singular");
-
             return factorization.Solve(totalCurrents);
         }
     }

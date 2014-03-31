@@ -71,7 +71,7 @@ namespace LoadFlowCalculation
 
         public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            var initialVoltageCalculator = new NodePotentialMethod(0.000001);
+            var initialVoltageCalculator = new NodePotentialMethod();
             var initialVoltages = initialVoltageCalculator.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
                 nominalVoltage, constantCurrents, pqBuses, pvBuses);
 

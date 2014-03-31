@@ -78,7 +78,6 @@
     <Compile Include="AlgorithmSettings\NotifyPropertyChanged.cs" />
     <Compile Include="AlgorithmSettings\IterativeMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettings.cs" />
-    <Compile Include="AlgorithmSettings\NodePotentialMethodSettings.cs" />
     <Compile Include="AlgorithmSettings\GeneralSettings.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

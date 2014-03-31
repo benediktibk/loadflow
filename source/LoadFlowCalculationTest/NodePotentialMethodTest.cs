@@ -11,7 +11,7 @@ namespace LoadFlowCalculationTest
     {
         protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new NodePotentialMethod(0.0001);
+            return new NodePotentialMethod();
         }
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()

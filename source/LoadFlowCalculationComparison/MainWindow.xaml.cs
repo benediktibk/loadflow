@@ -26,7 +26,6 @@ namespace LoadFlowCalculationComparison
         private readonly IterativeMethodSettings _newtonRaphson;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy _holomorphicEmbeddedLoadFlowHighAccuracy;
-        private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CombinedCalculationResults _combinedCalculationResults;
         private readonly CalculationResults _calculationResults;
         private readonly NodeVoltages _nodeVoltages;
@@ -47,13 +46,11 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
             _holomorphicEmbeddedLoadFlowHighAccuracy = new HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy(_generalSettings);
             _newtonRaphson = new IterativeMethodSettings(_generalSettings);
-            _nodePotential = new NodePotentialMethodSettings(_generalSettings);
 
             InitializeComponent();
             _combinedCalculationResults = FindResource("CombinedCalculationResults") as CombinedCalculationResults;
             _calculationResults = FindResource("CalculationResults") as CalculationResults;
             _nodeVoltages = FindResource("NodeVoltages") as NodeVoltages;
-            NodePotentialGrid.DataContext = _nodePotential;
             HolomorphicEmbeddedLoadFlowGrid.DataContext = _holomorphicEmbeddedLoadFlow;
             HolomorphicEmbeddedLoadFlowHighAccuracyGrid.DataContext = _holomorphicEmbeddedLoadFlowHighAccuracy;
             FastDecoupledLoadFlowGrid.DataContext = _fastDecoupledLoadFlow;
@@ -155,7 +152,6 @@ namespace LoadFlowCalculationComparison
 
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var nodePotentialSingularityDetection = 0.0;
             var currentIterationTargetPrecision = 0.0;
             var currentIterationMaximumIterations = 0;
             var newtonRaphsonTargetPrecision = 0.0;
@@ -171,7 +167,6 @@ namespace LoadFlowCalculationComparison
             switch (_generalSettings.ProblemSelection)
             {
                 case ProblemSelectionEnum.CollapsingTwoNodeSystem:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
@@ -185,7 +180,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.StableTwoNodeSystem:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.001;
@@ -199,7 +193,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
@@ -213,7 +206,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithOneGroundNode:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.001;
@@ -227,7 +219,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
@@ -241,7 +232,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 500;
                     break;
                 case ProblemSelectionEnum.TwoNodeSystemWithOnePVBus:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
@@ -255,7 +245,6 @@ namespace LoadFlowCalculationComparison
                     helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.ThreeNodeSystemWithTwoPVBusses:
-                    nodePotentialSingularityDetection = 0.00001;
                     currentIterationTargetPrecision = 0.00001;
                     currentIterationMaximumIterations = 1000;
                     newtonRaphsonTargetPrecision = 0.00001;
@@ -270,7 +259,6 @@ namespace LoadFlowCalculationComparison
                     break;
             }
 
-            _nodePotential.SingularityDetection = nodePotentialSingularityDetection;
             _currentIteration.TargetPrecision = currentIterationTargetPrecision;
             _currentIteration.MaximumIterations = currentIterationMaximumIterations;
             _newtonRaphson.TargetPrecision = newtonRaphsonTargetPrecision;
@@ -328,7 +316,7 @@ namespace LoadFlowCalculationComparison
 
         private void CalculateNodePotentialResult(Dispatcher mainDispatcher)
         {
-            var calculator = new NodePotentialMethod(_nodePotential.SingularityDetection);
+            var calculator = new NodePotentialMethod();
             var voltages = CalculateResult(calculator, mainDispatcher, "Node Potential");
             mainDispatcher.Invoke(new SetVoltages(SetVoltagesNodePotentialMethod), voltages);
         }
