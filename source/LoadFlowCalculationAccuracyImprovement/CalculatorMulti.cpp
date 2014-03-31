@@ -5,7 +5,9 @@ CalculatorMulti::CalculatorMulti(double targetPrecision, int numberOfCoefficient
 	Calculator< MultiPrecision, Complex<MultiPrecision> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage),
 	_bitPrecision(bitPrecision)
 {
-	assert(bitPrecision > 30);
+	assert(bitPrecision > 0);
+	// unfortunately necessary
+	//MultiPrecision::setDefaultPrecision(bitPrecision);
 }
 
 MultiPrecision CalculatorMulti::createFloating(double value) const

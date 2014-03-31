@@ -2,7 +2,7 @@
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class ChangeAllowable : NotifyPropertyChanged
+    public class ChangeAllowable : NotifyPropertyChanged
     {
         private readonly GeneralSettings _generalSettings;
 

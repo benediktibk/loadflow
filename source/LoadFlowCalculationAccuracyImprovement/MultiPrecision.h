@@ -29,10 +29,11 @@ public:
 
 public:
 	static void setDefaultPrecision();
+	static void setDefaultPrecision(unsigned int bitPrecision);
 	static unsigned int getBitPrecision();
 
 private:
-	static const unsigned int _precision;
+	static unsigned int _precision;
 
 private:
 	ValueType _value;

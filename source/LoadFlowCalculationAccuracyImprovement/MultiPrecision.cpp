@@ -1,6 +1,6 @@
 #include "MultiPrecision.h"
 
-const unsigned int MultiPrecision::_precision = 300;
+unsigned int MultiPrecision::_precision = 300;
 
 MultiPrecision::MultiPrecision() :
 	_value(0, _precision)
@@ -160,6 +160,13 @@ void MultiPrecision::setDefaultPrecision()
 {
 	mpf_set_default_prec(_precision);
 }
+
+void MultiPrecision::setDefaultPrecision(unsigned int bitPrecision)
+{
+	_precision = bitPrecision;
+	setDefaultPrecision();
+}
+
 
 unsigned int MultiPrecision::getBitPrecision()
 {

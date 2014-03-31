@@ -25,7 +25,7 @@ namespace LoadFlowCalculationComparison
         private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
         private readonly IterativeMethodSettings _newtonRaphson;
         private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlow;
-        private readonly HolomorphicEmbeddedLoadFlowMethodSettings _holomorphicEmbeddedLoadFlowHighAccuracy;
+        private readonly HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy _holomorphicEmbeddedLoadFlowHighAccuracy;
         private readonly NodePotentialMethodSettings _nodePotential;
         private readonly CombinedCalculationResults _combinedCalculationResults;
         private readonly CalculationResults _calculationResults;
@@ -45,7 +45,7 @@ namespace LoadFlowCalculationComparison
             _currentIteration = new IterativeMethodSettings(_generalSettings);
             _fastDecoupledLoadFlow = new IterativeMethodSettings(_generalSettings);
             _holomorphicEmbeddedLoadFlow = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
-            _holomorphicEmbeddedLoadFlowHighAccuracy = new HolomorphicEmbeddedLoadFlowMethodSettings(_generalSettings);
+            _holomorphicEmbeddedLoadFlowHighAccuracy = new HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy(_generalSettings);
             _newtonRaphson = new IterativeMethodSettings(_generalSettings);
             _nodePotential = new NodePotentialMethodSettings(_generalSettings);
 
@@ -166,6 +166,7 @@ namespace LoadFlowCalculationComparison
             var helmLongDoubleMaximumNumberOfCoefficients = 0;
             var helmMultiTargetPrecision = 0.0;
             var helmMultiMaximumNumberOfCoefficients = 0;
+            var helmMultiBitPrecision = 0;
 
             switch (_generalSettings.ProblemSelection)
             {
@@ -181,6 +182,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleMaximumNumberOfCoefficients = 50;
                     helmMultiTargetPrecision = 0.00001;
                     helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.StableTwoNodeSystem:
                     nodePotentialSingularityDetection = 0.00001;
@@ -194,6 +196,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleMaximumNumberOfCoefficients = 50;
                     helmMultiTargetPrecision = 0.00001;
                     helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithFourPQBuses:
                     nodePotentialSingularityDetection = 0.00001;
@@ -207,6 +210,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleMaximumNumberOfCoefficients = 60;
                     helmMultiTargetPrecision = 0.00001;
                     helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithOneGroundNode:
                     nodePotentialSingularityDetection = 0.00001;
@@ -220,6 +224,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleMaximumNumberOfCoefficients = 60;
                     helmMultiTargetPrecision = 0.00001;
                     helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
                     break;
                 case ProblemSelectionEnum.FiveNodeSystemWithThreePQBusesAndOnePVBus:
                     nodePotentialSingularityDetection = 0.00001;
@@ -233,6 +238,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleMaximumNumberOfCoefficients = 60;
                     helmMultiTargetPrecision = 0.00001;
                     helmMultiMaximumNumberOfCoefficients = 300;
+                    helmMultiBitPrecision = 500;
                     break;
             }
 
@@ -247,6 +253,7 @@ namespace LoadFlowCalculationComparison
             _holomorphicEmbeddedLoadFlow.MaximumNumberOfCoefficients = helmLongDoubleMaximumNumberOfCoefficients;
             _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision = helmMultiTargetPrecision;
             _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients = helmMultiMaximumNumberOfCoefficients;
+            _holomorphicEmbeddedLoadFlowHighAccuracy.BitPrecision = helmMultiBitPrecision;
         }
         #endregion
 
@@ -333,7 +340,7 @@ namespace LoadFlowCalculationComparison
         private void CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult(Dispatcher mainDispatcher)
         {
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
-                _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, new PrecisionMulti(300));
+                _holomorphicEmbeddedLoadFlowHighAccuracy.MaximumNumberOfCoefficients, new PrecisionMulti(_holomorphicEmbeddedLoadFlowHighAccuracy.BitPrecision));
             var voltages = CalculateResult(calculator, mainDispatcher, "HELM - multi");
             mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowMulti), voltages);
         }

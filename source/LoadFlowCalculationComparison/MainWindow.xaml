@@ -34,7 +34,7 @@
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
-                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Grid HorizontalAlignment="Stretch" Margin="10,0,0,10" VerticalAlignment="Stretch" Grid.Row="0" Name="GeneralSettingsGrid" DataContext="{Binding _ge}">
@@ -173,7 +173,7 @@
                             <Binding Path="ChangesAllowed" Mode="OneWay"/>
                         </TextBox.IsEnabled>
                     </TextBox>
-                    <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="number of coefficients" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="MaximumNumberOfCoefficients" UpdateSourceTrigger="PropertyChanged">
@@ -202,12 +202,25 @@
                             <Binding Path="ChangesAllowed" Mode="OneWay"/>
                         </TextBox.IsEnabled>
                     </TextBox>
-                    <TextBlock Text="maximum iterations" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="number of coefficients" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Right" Height="23" Margin="0,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="MaximumNumberOfCoefficients" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <local:NotNegativeValidationRule ValidationStep="ConvertedProposedValue"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <TextBox.IsEnabled>
+                            <Binding Path="ChangesAllowed" Mode="OneWay"/>
+                        </TextBox.IsEnabled>
+                    </TextBox>
+                    <TextBlock Text="bit precision" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Right" Height="23" Margin="0,74,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="100" TextAlignment="Right">
+                        <TextBox.Text>
+                            <Binding Path="BitPrecision" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:PositiveValidationRule ValidationStep="ConvertedProposedValue"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
