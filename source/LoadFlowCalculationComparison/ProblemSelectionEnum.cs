@@ -8,6 +8,7 @@
         FiveNodeSystemWithOneGroundNode,
         FiveNodeSystemWithThreePQBusesAndOnePVBus,
         TwoNodeSystemWithOnePVBus,
-        ThreeNodeSystemWithTwoPVBusses
+        ThreeNodeSystemWithTwoPVBusses,
+        NearlyCollapsingSystemWithPQBus
     }
 }

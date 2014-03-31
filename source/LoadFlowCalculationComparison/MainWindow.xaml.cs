@@ -257,6 +257,19 @@ namespace LoadFlowCalculationComparison
                     helmMultiMaximumNumberOfCoefficients = 100;
                     helmMultiBitPrecision = 300;
                     break;
+                case ProblemSelectionEnum.NearlyCollapsingSystemWithPQBus:
+                    currentIterationTargetPrecision = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.00001;
+                    newtonRaphsonMaximumIterations = 1000;
+                    fdlfTargetPrecision = 0.00001;
+                    fdlfMaximumIterations = 1000;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 60;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 800;
+                    helmMultiBitPrecision = 2000;
+                    break;
             }
 
             _currentIteration.TargetPrecision = currentIterationTargetPrecision;
@@ -432,9 +445,28 @@ namespace LoadFlowCalculationComparison
                     return CreatePowerNetOnePVBus(out correctVoltages, out voltageCollapse);
                 case ProblemSelectionEnum.ThreeNodeSystemWithTwoPVBusses:
                     return CreatePowerNetThreeNodeSystemWithTwoPVBuses(out correctVoltages, out voltageCollapse);
+                case ProblemSelectionEnum.NearlyCollapsingSystemWithPQBus:
+                    return CreatePowerNetWithPQBusNearlyCollapsing(out correctVoltages, out voltageCollapse);
             }
 
             throw new ArgumentOutOfRangeException();
+        }
+
+        private static PowerNetSingleVoltageLevel CreatePowerNetWithPQBusNearlyCollapsing(out Vector<Complex> correctVoltages,
+            out bool voltageCollapse)
+        {
+            const double load = 0.2499999; // 0.25 is the collapse-border
+            var loadVoltage = new Complex((1 + Math.Sqrt(1 - 4*load))/2, 0);
+            var supplyVoltage = new Complex(1, 0);
+            correctVoltages = new DenseVector(new []{supplyVoltage, loadVoltage});
+            voltageCollapse = false;
+            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            powerNet.SetAdmittance(0, 1, new Complex(1, 0));
+            var supplyNode = new Node() {Voltage = supplyVoltage};
+            var loadNode = new Node() {Power = new Complex((-1)*load, 0)};
+            powerNet.SetNode(0, supplyNode);
+            powerNet.SetNode(1, loadNode);
+            return powerNet;
         }
 
         private static PowerNetSingleVoltageLevel CreatePowerNetThreeNodeSystemWithTwoPVBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
