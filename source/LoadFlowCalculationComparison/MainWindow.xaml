@@ -264,7 +264,13 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
                     <DataGridCheckBoxColumn Binding="{Binding Known}" Header="known"/>
-                    <DataGridTextColumn Binding="{Binding Correct, StringFormat={}{0:0.####}}" Header="correct"/>
+                    <DataGridTextColumn Binding="{Binding Correct, StringFormat={}{0:0.####}}" Header="correct">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="LightGreen"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding NodePotentialMethod, StringFormat={}{0:0.####}}" Header="node potential"/>
                     <DataGridTextColumn Binding="{Binding CurrentIteraion, StringFormat={}{0:0.####}}" Header="current iteration"/>
                     <DataGridTextColumn Binding="{Binding NewtonRaphson, StringFormat={}{0:0.####}}" Header="newton raphson"/>
