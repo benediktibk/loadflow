@@ -308,14 +308,19 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	{
 		complex<double> currentPower = static_cast< complex<double> >(powers[_pqBuses[i].getId()]);
 		complex<double> powerShouldBe = _pqBuses[i].getPower();
-		sum += abs(currentPower - powerShouldBe);
+		complex<double> difference = currentPower - powerShouldBe;
+		double realDifferenceRelative = powerShouldBe.real() != 0 ? difference.real()/powerShouldBe.real() : difference.real();
+		double imaginaryDifferenceRelative = powerShouldBe.imag() != 0 ? difference.imag()/powerShouldBe.imag() : difference.imag();
+		sum += abs(realDifferenceRelative) + abs(imaginaryDifferenceRelative);
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		double currentPower = static_cast<double>(powers[_pvBuses[i].getId()].real());
 		double powerShouldBe  = _pvBuses[i].getPowerReal();
-		sum += abs(currentPower - powerShouldBe);
+		double difference = currentPower - powerShouldBe;
+		double differenceRelative = powerShouldBe != 0 ? difference/powerShouldBe : difference;
+		sum += abs(differenceRelative);
 	}
 
 	return sum;
@@ -332,7 +337,7 @@ double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
 		int id = bus.getId();
 		double currentMagnitude = abs(_voltages[id]);
 		double magnitudeShouldBe = bus.getVoltageMagnitude();
-		sum += abs(currentMagnitude - magnitudeShouldBe);
+		sum += abs((currentMagnitude - magnitudeShouldBe)/magnitudeShouldBe);
 	}
 
 	return sum;
@@ -343,9 +348,7 @@ double Calculator<Floating, ComplexFloating>::calculateTotalRelativeError() cons
 {	
 	double powerError = calculatePowerError();
 	double voltageError = calculateVoltageError();
-	double powerErrorRelative = _absolutePowerSum != 0 ? powerError/_absolutePowerSum : powerError;
-	double voltageErrorRelative = _pvBusCount != 0 ? voltageError/(_nominalVoltage*_pvBusCount) : voltageError;
-	return powerErrorRelative + voltageErrorRelative;
+	return powerError + voltageError;
 }
 
 template<typename Floating, typename ComplexFloating>
