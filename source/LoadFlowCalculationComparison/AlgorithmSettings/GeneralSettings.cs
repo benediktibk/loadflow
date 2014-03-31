@@ -1,15 +1,6 @@
 ﻿
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    public enum ProblemSelectionEnum
-    {
-        CollapsingTwoNodeSystem,
-        StableTwoNodeSystem,
-        FiveNodeSystemWithFourPQBuses,
-        FiveNodeSystemWithOneGroundNode,
-        FiveNodeSystemWithThreePQBusesAndOnePVBus
-    }
-
     public class GeneralSettings : NotifyPropertyChanged
     {
         private ProblemSelectionEnum _problemSelection = ProblemSelectionEnum.CollapsingTwoNodeSystem;
