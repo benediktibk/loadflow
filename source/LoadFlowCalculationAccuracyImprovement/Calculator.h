@@ -35,7 +35,7 @@ public:
 	virtual void setConsoleOutput(ConsoleOutput function);
 
 protected:
-	virtual Floating createFloating(double value) const;
+	virtual Floating createFloating(double value) const = 0;
 	ComplexFloating createComplexFloating(std::complex<double> const &value) const;
 
 private:

@@ -51,6 +51,12 @@
     <ClCompile Include="Decomposition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CalculatorLongDouble.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorMulti.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalculatorRegister.h">
@@ -90,6 +96,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Decomposition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorLongDouble.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorMulti.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

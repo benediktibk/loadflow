@@ -2,6 +2,8 @@
 #include "ConsoleOutput.h"
 #include "MultiPrecision.h"
 #include "Complex.h"
+#include "CalculatorLongDouble.h"
+#include "CalculatorMulti.h"
 #include <limits>
 
 using namespace std;
@@ -29,7 +31,7 @@ int CalculatorRegister::createCalculatorLongDouble(double targetPrecision, int n
 	int id = findEmptyId();
 
 	if (id >= 0)
-		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<long double, complex<long double> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
+		_calculators.insert(pair<int, ICalculator*>(id, new CalculatorLongDouble(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
 
 	return id;
 }
@@ -41,7 +43,7 @@ int CalculatorRegister::createCalculatorMultiPrecision(double targetPrecision, i
 	int id = findEmptyId();
 
 	if (id >= 0)
-		_calculators.insert(pair<int, ICalculator*>(id, new Calculator<MultiPrecision, Complex<MultiPrecision> >(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
+		_calculators.insert(pair<int, ICalculator*>(id, new CalculatorMulti(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage)));
 
 	return id;
 }

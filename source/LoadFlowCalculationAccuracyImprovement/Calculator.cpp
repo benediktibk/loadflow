@@ -143,12 +143,6 @@ void Calculator<Floating, ComplexFloating>::setConsoleOutput(ConsoleOutput funct
 {
 	_consoleOutput = function;
 }
-
-template<typename Floating, typename ComplexFloating>
-Floating Calculator<Floating, ComplexFloating>::createFloating(double value) const
-{
-	return static_cast<Floating>(value);
-}
 	
 template<typename Floating, typename ComplexFloating>
 ComplexFloating Calculator<Floating, ComplexFloating>::createComplexFloating(complex<double> const &value) const
