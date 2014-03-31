@@ -517,7 +517,7 @@ namespace LoadFlowCalculationTest
             var inputVoltage = new Complex(1, 0);
             var outputVoltage = new Complex();
             var inputPower = new Complex();
-            var outputPower = new Complex(-0.5, 0);
+            var outputPower = new Complex(-10, 0);
             voltages = new DenseVector(new[] { inputVoltage, outputVoltage });
             powers = new DenseVector(new[] { inputPower, outputPower });
             nominalVoltage = 1;

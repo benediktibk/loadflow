@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
-using System.Reflection.Emit;
-using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
-using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 using DenseVector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 
 namespace LoadFlowCalculation
 {
     public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {
-        private readonly double _initialRealVoltage;
-        private readonly double _initialImaginaryVoltage;
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
         private readonly double _maximumPowerError;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double initialRealVoltage, double initialImaginaryVoltage, double maximumPowerError)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double maximumPowerError)
         {
-            _initialRealVoltage = initialRealVoltage;
-            _initialImaginaryVoltage = initialImaginaryVoltage;
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
             _maximumPowerError = maximumPowerError;
@@ -33,11 +24,10 @@ namespace LoadFlowCalculation
 
         public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            var nodeCount = admittances.RowCount;
             var iterations = 0;
-            var currentVoltages =
-                CombineRealAndImaginaryParts(CreateInitialRealVoltages(nominalVoltage, nodeCount),
-                CreateInitialImaginaryVoltages(nominalVoltage, nodeCount));
+            var initialVoltageCalculator = new NodePotentialMethod();
+            var currentVoltages = initialVoltageCalculator.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
+                nominalVoltage, constantCurrents, pqBuses, pvBuses);
             IList<double> powersRealDifference;
             IList<double> powersImaginaryDifference;
             CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
@@ -169,26 +159,6 @@ namespace LoadFlowCalculation
             Debug.Assert(firstPartCount == firstParts.Count);
             Debug.Assert(secondPartCount == secondParts.Count);
             Debug.Assert(thirdPartCount == thirdParts.Count);
-        }
-
-        private Vector<double> CreateInitialRealVoltages(double nominalVoltage, int nodeCount)
-        {
-            var result = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-                result[i] = _initialRealVoltage * nominalVoltage;
-
-            return result;
-        }
-
-        private Vector<double> CreateInitialImaginaryVoltages(double nominalVoltage, int nodeCount)
-        {
-            var result = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-                result[i] = _initialImaginaryVoltage * nominalVoltage;
-
-            return result;
         }
 
         public static Vector<double> ExtractRealParts(IList<Complex> constantCurrents)
