@@ -27,7 +27,6 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pvBuses(pvBusCount, PVBus()),
 	_voltages(nodeCount),
 	_consoleOutput(0),
-	_absolutePowerSum(0),
 	_coefficientStorage(0),
 	_embeddingModification(0)
 { 
@@ -48,13 +47,13 @@ Calculator<Floating, ComplexFloating>::~Calculator()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setAdmittance(int row, int column, complex<double> value)
 {
-	_admittances.setValue(row, column, ComplexFloating(value));
+	_admittances.setValue(row, column, createComplexFloating(value));
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setAdmittanceRowSum(int row, complex<double> value)
 {
-	_totalAdmittanceRowSums[row] = ComplexFloating(value);
+	_totalAdmittanceRowSums[row] = createComplexFloating(value);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -72,7 +71,7 @@ void Calculator<Floating, ComplexFloating>::setPVBus(int busId, int node, double
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, complex<double> value)
 {
-	_constantCurrents[node] = static_cast<ComplexFloating>(value);
+	_constantCurrents[node] = createComplexFloating(value);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -85,7 +84,6 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	for (size_t i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 
-	calculateAbsolutePowerSum();
 	vector<ComplexFloating> partialAdmittanceRowSums = _admittances.calculateRowSums();
 
 	if (!calculateFirstCoefficient(partialAdmittanceRowSums))
@@ -114,7 +112,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		totalErrors.insert(pair<double, int>(totalError, partialResults.size()));
 		partialResults.push_back(_voltages);
 
-		if (_absolutePowerSum != 0 && totalError < _targetPrecision)
+		if (totalError < _targetPrecision)
 		{
 			writeLine("finished earlier because the total error is already small enough");
 			break;
@@ -144,6 +142,18 @@ template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setConsoleOutput(ConsoleOutput function)
 {
 	_consoleOutput = function;
+}
+
+template<typename Floating, typename ComplexFloating>
+Floating Calculator<Floating, ComplexFloating>::createFloating(double value) const
+{
+	return static_cast<Floating>(value);
+}
+	
+template<typename Floating, typename ComplexFloating>
+ComplexFloating Calculator<Floating, ComplexFloating>::createComplexFloating(complex<double> const &value) const
+{
+	return ComplexFloating(createFloating(value.real()), createFloating(value.imag()));
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -194,7 +204,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 		return true;
 	}
 	
-	_embeddingModification = ComplexFloating(1);
+	_embeddingModification = ComplexFloating(createFloating(1));
 	coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
 	modificationNecessary = isPQCoefficientZero(coefficients);
 
@@ -213,7 +223,7 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = (admittanceRowSum[bus.getId()] + _embeddingModification)*ComplexFloating(Floating(-1));
+		rightHandSide[bus.getId()] = (admittanceRowSum[bus.getId()] + _embeddingModification)*ComplexFloating(createFloating(-1));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -239,7 +249,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 	{
 		PQBus const& bus = _pqBuses[i];
 		int id = bus.getId();
-		ComplexFloating const& ownCurrent = static_cast<ComplexFloating>(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
+		ComplexFloating const& ownCurrent = createComplexFloating(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
 		ComplexFloating const& constantCurrent = _constantCurrents[id];
 		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
 		rightHandSide[id] = admittanceRowSums[id] + _embeddingModification + totalCurrent;
@@ -266,7 +276,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
-		ComplexFloating power(bus.getPower());
+		ComplexFloating power = createComplexFloating(bus.getPower());
 		rightHandSide[id] = conj(power*_coefficientStorage->getLastInverseCoefficient(id));
 	}
 		
@@ -285,13 +295,13 @@ template<typename Floating, typename ComplexFloating>
 ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PVBus const& bus)
 {
 	int id = bus.getId();
-	Floating realPower = static_cast<Floating>(bus.getPowerReal());
+	Floating realPower = createFloating(bus.getPowerReal());
 	ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
 	ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
 	ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
 	ComplexFloating const& constantCurrent = _constantCurrents[id];
-	Floating magnitudeSquare = static_cast<Floating>(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
-	return (previousCoefficient*ComplexFloating(realPower*Floating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
+	Floating magnitudeSquare = createFloating(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
+	return (previousCoefficient*ComplexFloating(realPower*createFloating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -349,26 +359,6 @@ double Calculator<Floating, ComplexFloating>::calculateTotalRelativeError() cons
 	double powerError = calculatePowerError();
 	double voltageError = calculateVoltageError();
 	return powerError + voltageError;
-}
-
-template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateAbsolutePowerSum()
-{
-	complex<double> sum;
-
-	for (size_t i = 0; i < _pqBusCount; ++i)
-	{
-		complex<double> power = _pqBuses[i].getPower();
-		sum += complex<double>(abs(power.real()), abs(power.imag()));
-	}
-
-	for (size_t i = 0; i < _pvBusCount; ++i)
-	{
-		double power  = _pvBuses[i].getPowerReal();
-		sum += complex<double>(abs(power), 0);
-	}
-
-	_absolutePowerSum = abs(sum);
 }
 
 template<typename Floating, typename ComplexFloating>

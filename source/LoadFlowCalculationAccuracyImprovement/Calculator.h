@@ -34,6 +34,10 @@ public:
 	virtual int getNodeCount() const;
 	virtual void setConsoleOutput(ConsoleOutput function);
 
+protected:
+	virtual Floating createFloating(double value) const;
+	ComplexFloating createComplexFloating(std::complex<double> const &value) const;
+
 private:
 	void writeLine(const char *description, std::vector<ComplexFloating> const& values);
 	void writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix);
@@ -48,7 +52,6 @@ private:
 	double calculatePowerError() const;
 	double calculateVoltageError() const;
 	double calculateTotalRelativeError() const;
-	void calculateAbsolutePowerSum();
 	void freeMemory();
 	void deleteContinuations();
 	void calculateVoltagesFromCoefficients();
@@ -72,7 +75,6 @@ private:
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;
 	ConsoleOutput _consoleOutput;
-	double _absolutePowerSum;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 	std::vector<AnalyticContinuation<Floating, ComplexFloating>*> _continuations;
 	ComplexFloating _embeddingModification;
