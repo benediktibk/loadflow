@@ -250,5 +250,16 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.001, 0.02);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
+        {
+            var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 10);
+        }
     }
 }

@@ -329,5 +329,16 @@ namespace LoadFlowCalculationTest
             ComplexAssert.AreEqual(b, secondCoefficient, 0.00001);
             ComplexAssert.AreEqual(c, thirdCoefficient, 0.00001);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
+        {
+            var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
     }
 }
