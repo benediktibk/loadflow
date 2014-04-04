@@ -352,6 +352,18 @@ namespace LoadFlowCalculationTest
             nodes[2].Power = _powers.At(2);
             return nodes;
         }
+
+        protected IList<Node> CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPVBusses()
+        {
+            CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
+            nodes[2].RealPower = _powers.At(2).Real;
+            return nodes;
+        }
         #endregion
 
         #region collapse

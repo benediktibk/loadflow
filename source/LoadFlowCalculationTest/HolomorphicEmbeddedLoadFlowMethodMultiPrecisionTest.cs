@@ -406,5 +406,18 @@ namespace LoadFlowCalculationTest
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
+        {
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500));
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
+            var nodes = CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPVBusses();
+
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
     }
 }
