@@ -16,10 +16,11 @@ namespace LoadFlowCalculation
         private readonly int _numberOfCoefficients;
         private readonly StringCallback _stringCallback;
         private readonly Precision _precision;
+        private readonly bool _calculatePartialResults;
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision, bool calculatePartialResults)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -32,6 +33,7 @@ namespace LoadFlowCalculation
             _stringCallback += DebugOutput;
             _precision = precision;
             _calculator = -1;
+            _calculatePartialResults = calculatePartialResults;
             _disposed = false;
         }
 
@@ -74,11 +76,11 @@ namespace LoadFlowCalculation
             {
                 case DataType.LongDouble:
                     _calculator = CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage, _calculatePartialResults);
                     break;
                 case DataType.MultiPrecision:
                     _calculator = CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision, _calculatePartialResults);
                     break;
             }
 
@@ -161,10 +163,10 @@ namespace LoadFlowCalculation
 
         #region dll imports
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
+        private static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, [MarshalAs(UnmanagedType.I1)]bool calculatePartialResults);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision);
+        private static extern int CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision, [MarshalAs(UnmanagedType.I1)]bool calculatePartialResults);
 
         [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void DeleteLoadFlowCalculator(int calculator);

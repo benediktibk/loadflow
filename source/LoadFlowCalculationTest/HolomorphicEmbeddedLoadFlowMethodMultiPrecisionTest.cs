@@ -11,7 +11,7 @@ namespace LoadFlowCalculationTest
     {
         protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300));
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300), true);
         }
 
         [TestMethod]
@@ -231,7 +231,7 @@ namespace LoadFlowCalculationTest
         [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
-            var nodeVoltageCalculator =  new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500));
+            var nodeVoltageCalculator =  new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500), false);
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
@@ -410,7 +410,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500));
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500), false);
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPVBusses();
 

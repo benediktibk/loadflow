@@ -12,13 +12,14 @@ template class Calculator<long double, complex<long double> >;
 template class Calculator<MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
-Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage) :
+Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool calculatePartialResults) :
 	_targetPrecision(targetPrecision),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_nominalVoltage(nominalVoltage),
+	_calculatePartialResults(calculatePartialResults),
 	_factorization(0),
 	_admittances(nodeCount, nodeCount),
 	_totalAdmittanceRowSums(nodeCount),
@@ -98,6 +99,9 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	{
 		calculateNextCoefficient();
 
+		if (!_calculatePartialResults)
+			continue;
+
 		try
 		{
 			calculateVoltagesFromCoefficients();
@@ -119,7 +123,9 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		}
 	}
 
-	if (!totalErrors.empty())
+	if (!_calculatePartialResults)
+		calculateVoltagesFromCoefficients();
+	else if (!totalErrors.empty())
 	{
 		int bestResultIndex = totalErrors.begin()->second;
 		_voltages = partialResults[bestResultIndex];

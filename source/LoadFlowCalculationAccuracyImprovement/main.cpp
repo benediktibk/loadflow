@@ -8,14 +8,14 @@ using namespace std;
 
 CalculatorRegister calculatorRegister;
 
-extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage)
+extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool calculatePartialResults)
 {
-	return calculatorRegister.createCalculatorLongDouble(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage);
+	return calculatorRegister.createCalculatorLongDouble(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage, calculatePartialResults);
 }
 
-extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision)
+extern "C" __declspec(dllexport) int __cdecl CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision, bool calculatePartialResults)
 {
-	return calculatorRegister.createCalculatorMultiPrecision(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage, bitPrecision);
+	return calculatorRegister.createCalculatorMultiPrecision(targetPrecision, numberOfCoefficients, nodeCount, pqBusCount, pvBusCount, nominalVoltage, bitPrecision, calculatePartialResults);
 }
 
 extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calculator)
