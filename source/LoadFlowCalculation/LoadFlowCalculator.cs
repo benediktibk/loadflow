@@ -31,9 +31,6 @@ namespace LoadFlowCalculation
         {
             CheckDimensions(admittances, nodes);
 
-            if (!IsAdmittanceMatrixValid(admittances))
-                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix is invalid");
-
             List<int> indexOfSlackBuses;
             List<int> indexOfPQBuses;
             List<int> indexOfPVBuses;
@@ -358,21 +355,6 @@ namespace LoadFlowCalculation
             if (rows != nodeCount)
                 throw new ArgumentOutOfRangeException("nodes",
                     "the count of nodes does not match the dimensions of the admittance matrix");
-
-            if (!admittances.IsSymmetric)
-                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix must be symmetric");
-        }
-
-        private static bool IsAdmittanceMatrixValid(Matrix<Complex> admittances)
-        {
-            for (var i = 0; i < admittances.ColumnCount; ++i)
-            {
-                var column = admittances.Column(i);
-                if (column.Sum().Magnitude > 0.00001)
-                    return false;
-            }
-
-            return true;
         }
     }
 }

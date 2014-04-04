@@ -91,24 +91,6 @@ namespace LoadFlowCalculationTest
 
             _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof (ArgumentOutOfRangeException))]
-        public void CalculateNodeVoltagesAndPowers_InvalidAdmittanceMatrix_ThrowsException()
-        {
-            CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var diagonal = _admittances.Diagonal();
-            var diagonalArray = diagonal.ToArray();
-            diagonalArray[0] += new Complex(1, 0);
-            diagonal.SetValues(diagonalArray);
-            _admittances.SetDiagonal(diagonal);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-
-            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-        }
-
         [TestMethod]
         public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
         {
@@ -359,6 +341,16 @@ namespace LoadFlowCalculationTest
             var pvNode = new Node() { RealPower = _powers[1].Real, VoltageMagnitude = _voltages[1].Magnitude };
             var pqNode = new Node() { Power = _powers[2] };
             return new[] { supplyNode, pvNode, pqNode };
+        }
+
+        protected IList<Node> CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPQBusses()
+        {
+            CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].Power = _powers.At(1);
+            nodes[2].Power = _powers.At(2);
+            return nodes;
         }
         #endregion
 
@@ -625,6 +617,18 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
+        protected static void CreateAsymmetricThreeNodeProblem(out Matrix<Complex> admittances,
+            out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        {
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(100, 200), new Complex(50, -100), new Complex(200, 600));
+            admittances[1, 2] += new Complex(4, 1);
+            admittances[2, 1] -= new Complex(4, 1);
+            
+            voltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
+            var currents = admittances.Multiply(voltages);
+            powers = voltages.PointwiseMultiply(currents.Conjugate());
+            nominalVoltage = 1;
+        }
 
         protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
