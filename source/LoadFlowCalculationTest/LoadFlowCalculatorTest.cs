@@ -474,7 +474,7 @@ namespace LoadFlowCalculationTest
         #endregion
 
         #region system creation
-        protected static void CreateOneSideSuppliedConnection(double R, out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        private static void CreateOneSideSuppliedConnection(double R, out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             var Y = 1.0 / R;
             var admittancesArray = new[,]{ { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
@@ -489,8 +489,8 @@ namespace LoadFlowCalculationTest
             powers = new DenseVector(new []{inputPower, outputPower});
             nominalVoltage = 1;
         }
-        
-        protected static void CreateOneSideSuppliedImaginaryConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+
+        private static void CreateOneSideSuppliedImaginaryConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             const double Y = 100;
             var admittancesArray = new[,] { { new Complex(0, (-1) * Y), new Complex(0, Y) }, { new Complex(0, Y), new Complex(0, (-1) * Y) } };
@@ -506,7 +506,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateOneSideSuppliedImaginaryConnectionVersionTwo(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        private static void CreateOneSideSuppliedImaginaryConnectionVersionTwo(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             var X = new Complex(0, 0.02);
             var admittancesArray = new[,] { { 1/X, -1/X }, { -1/X, 1/X } };
@@ -521,7 +521,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateCollapsingOneSideSuppliedConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        private static void CreateCollapsingOneSideSuppliedConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             var admittancesArray = new[,] { { new Complex(1, 0), new Complex(-1, 0) }, { new Complex(-1, 0), new Complex(1, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
@@ -535,7 +535,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateNearlyCollapsingOneSideSuppliedConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
+        private static void CreateNearlyCollapsingOneSideSuppliedConnection(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             var admittancesArray = new[,] { { new Complex(1, 0), new Complex(-1, 0) }, { new Complex(-1, 0), new Complex(1, 0) } };
             admittances = DenseMatrix.OfArray(admittancesArray);
@@ -549,7 +549,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateFiveNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateFiveNodeProblemAdmittanceMatrix(
@@ -564,7 +564,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateFiveNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateFiveNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateFiveNodeProblemAdmittanceMatrix(
@@ -579,7 +579,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateFiveNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateFiveNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateFiveNodeProblemAdmittanceMatrix(
@@ -594,7 +594,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static Matrix<Complex> CreateFiveNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
+        private static Matrix<Complex> CreateFiveNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
             Complex oneFour, Complex oneFive,
             Complex twoThree, Complex twoFour, Complex twoFive, Complex threeFour, Complex threeFive, Complex fourFive)
         {
@@ -618,7 +618,7 @@ namespace LoadFlowCalculationTest
             });
         }
 
-        protected static void CreateThreeNodeProblemWithImaginaryConnections(out Matrix<Complex> admittances,
+        private static void CreateThreeNodeProblemWithImaginaryConnections(out Matrix<Complex> admittances,
             out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(0, 500), new Complex(0, 0), new Complex(0, -600));
@@ -629,7 +629,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateAsymmetricThreeNodeProblem(out Matrix<Complex> admittances,
+        private static void CreateAsymmetricThreeNodeProblem(out Matrix<Complex> admittances,
             out Vector<Complex> voltages, out Vector<Complex> powers, out double nominalVoltage)
         {
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(100, 200), new Complex(50, -100), new Complex(200, 600));
@@ -642,7 +642,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateThreeNodeProblemWithGroundNode(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
@@ -653,7 +653,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static void CreateThreeNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateThreeNodeProblemWithMostlyImaginaryConnections(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(5, 500), new Complex(20, -300), new Complex(10, 1000));
@@ -664,7 +664,7 @@ namespace LoadFlowCalculationTest
             nominalVoltage = 1;
         }
 
-        protected static Matrix<Complex> CreateThreeNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
+        private static Matrix<Complex> CreateThreeNodeProblemAdmittanceMatrix(Complex oneTwo, Complex oneThree,
             Complex twoThree)
         {
             return DenseMatrix.OfArray(new[,]
@@ -675,7 +675,7 @@ namespace LoadFlowCalculationTest
             });
         }
 
-        protected static void CreateThreeNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+        private static void CreateThreeNodeProblem(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
             out double nominalVoltage)
         {
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(200, -200),
@@ -687,7 +687,6 @@ namespace LoadFlowCalculationTest
             powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
-
         #endregion
     }
 }
