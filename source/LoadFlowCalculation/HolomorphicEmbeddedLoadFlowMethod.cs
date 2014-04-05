@@ -83,9 +83,7 @@ namespace LoadFlowCalculation
                         pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision, _calculatePartialResults);
                     break;
             }
-
-            for (var i = 0; i < nodeCount; ++i)
-
+            
             SetConsoleOutput(_calculator, _stringCallback);
 
             if (_calculator < 0)

@@ -449,7 +449,7 @@ namespace LoadFlowCalculationComparison
             mainDispatcher.Invoke(new CombinedResultCalculated(AddCombinedCalculationResult), combinedResult);
             return powerNet.NodeVoltages;
         }
-#endregion
+        #endregion
 
         #region power net creation
         private PowerNetSingleVoltageLevel CreatePowerNet(out Vector<Complex> correctVoltages, out bool voltageCollapse)
