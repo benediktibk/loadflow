@@ -84,13 +84,11 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 	for (size_t i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
-
-	vector<ComplexFloating> partialAdmittanceRowSums = _admittances.calculateRowSums();
-
-	if (!calculateFirstCoefficient(partialAdmittanceRowSums))
+	
+	if (!calculateFirstCoefficient())
 		return;
 
-	calculateSecondCoefficient(partialAdmittanceRowSums);
+	calculateSecondCoefficient();
 	map<double, int> totalErrors;
 	std::vector< std::vector< complex<double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
@@ -193,9 +191,9 @@ std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmitta
 }
 
 template<typename Floating, typename ComplexFloating>
-bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<ComplexFloating> const& admittanceRowSum)
+bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 {
-	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
+	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal();
 	bool modificationNecessary = isPQCoefficientZero(coefficients);
 
 	if (!modificationNecessary)
@@ -205,7 +203,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 	}
 	
 	_embeddingModification = ComplexFloating(createFloating(1));
-	coefficients = calculateFirstCoefficientInternal(admittanceRowSum);
+	coefficients = calculateFirstCoefficientInternal();
 	modificationNecessary = isPQCoefficientZero(coefficients);
 
 	if (modificationNecessary)
@@ -216,7 +214,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient(vector<Com
 }
 
 template<typename Floating, typename ComplexFloating>
-vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoefficientInternal(vector<ComplexFloating> const& admittanceRowSum)
+vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoefficientInternal()
 {
 	vector<ComplexFloating> rightHandSide(_nodeCount);
 
@@ -243,7 +241,7 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 }
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<ComplexFloating> const& admittanceRowSums)
+void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 {
 	std::vector<ComplexFloating> rightHandSide(_nodeCount);
 

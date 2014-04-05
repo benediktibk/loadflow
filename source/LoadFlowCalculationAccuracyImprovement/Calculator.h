@@ -43,10 +43,10 @@ private:
 	void writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix);
 	void writeLine(const char *text);
 	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
-	bool calculateFirstCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
-	std::vector<ComplexFloating> calculateFirstCoefficientInternal(std::vector<ComplexFloating> const& admittanceRowSum);
+	bool calculateFirstCoefficient();
+	std::vector<ComplexFloating> calculateFirstCoefficientInternal();
 	bool isPQCoefficientZero(std::vector<ComplexFloating> const& coefficients) const;
-	void calculateSecondCoefficient(std::vector<ComplexFloating> const& admittanceRowSum);
+	void calculateSecondCoefficient();
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
 	double calculatePowerError() const;

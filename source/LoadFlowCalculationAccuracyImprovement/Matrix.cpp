@@ -26,22 +26,6 @@ void Matrix<T>::setValue(int row, int column, T const& value)
 	assert(column < _columns);
 	_values.coeffRef(row, column) = value;
 }
-
-template<typename T>
-std::vector<T> Matrix<T>::calculateRowSums() const
-{
-	std::vector<T> result(_rows);
-
-	for (int row = 0; row < _rows; ++row)
-		for (int column = 0; column < _columns; ++column)
-		{
-			T value = _values.coeff(row, column);
-			if (value != T(0))
-				result[row] += value;
-		}
-
-	return result;
-}
 	
 template<typename T>
 std::vector<T> Matrix<T>::multiply(std::vector<T> const& rhs) const

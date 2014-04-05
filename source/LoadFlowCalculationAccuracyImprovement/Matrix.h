@@ -11,7 +11,6 @@ public:
 	Matrix(int rows, int columns);
 	
 	void setValue(int row, int column, T const& value);
-	std::vector<T> calculateRowSums() const;
 	std::vector<T> multiply(std::vector<T> const& rhs) const;
 	Eigen::SparseMatrix<T, Eigen::ColMajor > const& getValues() const;
 	T getValue(int row, int column) const;
