@@ -487,9 +487,9 @@ namespace LoadFlowCalculationComparison
             out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(3, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
-            powerNet.SetAdmittance(0, 2, new Complex(200, -200));
-            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(200, -200));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
             correctVoltages = new DenseVector(3);
             correctVoltages[0] = new Complex(1, 0.2);
             correctVoltages[1] = new Complex(1.1, -0.1);
@@ -515,7 +515,7 @@ namespace LoadFlowCalculationComparison
             correctVoltages = new DenseVector(new []{supplyVoltage, loadVoltage});
             voltageCollapse = false;
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1, 0));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
             var supplyNode = new Node() { Voltage = supplyVoltage };
             var loadNode = new Node() { Power = new Complex((-1)*load, 0) };
             powerNet.SetNode(0, supplyNode);
@@ -532,7 +532,7 @@ namespace LoadFlowCalculationComparison
             correctVoltages = new DenseVector(new[] { supplyVoltage, loadVoltage });
             voltageCollapse = false;
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1, 0));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
             var supplyNode = new Node() { Voltage = supplyVoltage };
             var loadNode = new Node() { RealPower = (-1) * load, VoltageMagnitude = loadVoltage.Magnitude };
             powerNet.SetNode(0, supplyNode);
@@ -543,9 +543,9 @@ namespace LoadFlowCalculationComparison
         private static PowerNetSingleVoltageLevel CreatePowerNetThreeNodeSystemWithTwoPVBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(3, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
-            powerNet.SetAdmittance(0, 2, new Complex(0, 0));
-            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
             correctVoltages = new DenseVector(3);
             correctVoltages[0] = new Complex(1, 0.2);
             correctVoltages[1] = new Complex(1.1, -0.1);
@@ -568,16 +568,16 @@ namespace LoadFlowCalculationComparison
         private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
-            powerNet.SetAdmittance(0, 2, new Complex(0, 0));
-            powerNet.SetAdmittance(0, 3, new Complex(200, -100));
-            powerNet.SetAdmittance(0, 4, new Complex(0, -200));
-            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
-            powerNet.SetAdmittance(1, 3, new Complex(0, 0));
-            powerNet.SetAdmittance(1, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(2, 3, new Complex(200, -500));
-            powerNet.SetAdmittance(2, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(3, 4, new Complex(700, 500));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
+            powerNet.AddSymmetricAdmittance(0, 4, new Complex(0, -200));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
+            powerNet.AddSymmetricAdmittance(1, 3, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(1, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(2, 3, new Complex(200, -500));
+            powerNet.AddSymmetricAdmittance(2, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(3, 4, new Complex(700, 500));
             correctVoltages = new DenseVector(5);
             correctVoltages[0] = new Complex(1, -0.1);
             correctVoltages[1] = new Complex(1.05, 0.1);
@@ -602,16 +602,16 @@ namespace LoadFlowCalculationComparison
         private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
-            powerNet.SetAdmittance(0, 2, new Complex(0, 0));
-            powerNet.SetAdmittance(0, 3, new Complex(200, -100));
-            powerNet.SetAdmittance(0, 4, new Complex(0, -200));
-            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
-            powerNet.SetAdmittance(1, 3, new Complex(0, 0));
-            powerNet.SetAdmittance(1, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(2, 3, new Complex(200, -500));
-            powerNet.SetAdmittance(2, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(3, 4, new Complex(700, 500));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
+            powerNet.AddSymmetricAdmittance(0, 4, new Complex(0, -200));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
+            powerNet.AddSymmetricAdmittance(1, 3, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(1, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(2, 3, new Complex(200, -500));
+            powerNet.AddSymmetricAdmittance(2, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(3, 4, new Complex(700, 500));
             correctVoltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
             var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -631,16 +631,16 @@ namespace LoadFlowCalculationComparison
         private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(5, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 500));
-            powerNet.SetAdmittance(0, 2, new Complex(0, 0));
-            powerNet.SetAdmittance(0, 3, new Complex(200, -100));
-            powerNet.SetAdmittance(0, 4, new Complex(0, -200));
-            powerNet.SetAdmittance(1, 2, new Complex(100, 300));
-            powerNet.SetAdmittance(1, 3, new Complex(0, 0));
-            powerNet.SetAdmittance(1, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(2, 3, new Complex(200, -500));
-            powerNet.SetAdmittance(2, 4, new Complex(0, 0));
-            powerNet.SetAdmittance(3, 4, new Complex(700, 500));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
+            powerNet.AddSymmetricAdmittance(0, 4, new Complex(0, -200));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
+            powerNet.AddSymmetricAdmittance(1, 3, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(1, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(2, 3, new Complex(200, -500));
+            powerNet.AddSymmetricAdmittance(2, 4, new Complex(0, 0));
+            powerNet.AddSymmetricAdmittance(3, 4, new Complex(700, 500));
             correctVoltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.02), new Complex(0.97, -0.15), new Complex(0.8, 0.05) });
             var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
@@ -661,7 +661,7 @@ namespace LoadFlowCalculationComparison
         private static PowerNetSingleVoltageLevel CreatePowerNetForStableTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 2000));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 2000));
             correctVoltages = new DenseVector(2);
             correctVoltages[0] = new Complex(1, 0);
             correctVoltages[1] = new Complex(0.95, 0.03);
@@ -681,7 +681,7 @@ namespace LoadFlowCalculationComparison
             var loadNode = new Node {Power = new Complex(-100, -50)};
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
-            powerNet.SetAdmittance(0, 1, new Complex(1, 2));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 2));
 
             correctVoltages = new DenseVector(2);
             voltageCollapse = true;
@@ -692,7 +692,7 @@ namespace LoadFlowCalculationComparison
             out bool voltageCollapse)
         {
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);
-            powerNet.SetAdmittance(0, 1, new Complex(1000, 2000));
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 2000));
             correctVoltages = new DenseVector(2);
             correctVoltages[0] = new Complex(1, 0);
             correctVoltages[1] = new Complex(0.95, 0.03);

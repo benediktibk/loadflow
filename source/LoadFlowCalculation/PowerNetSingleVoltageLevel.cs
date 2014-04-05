@@ -51,17 +51,15 @@ namespace LoadFlowCalculation
             return _nodes[node].VoltageIsKnown;
         }
 
-        public void SetAdmittance(int i, int j, Complex admittance)
+        public void AddSymmetricAdmittance(int i, int j, Complex admittance)
         {
             if (i == j)
                 throw new ArgumentOutOfRangeException();
 
-            _admittances[i, i] += _admittances[i, j];
-            _admittances[j, j] += _admittances[i, j];
             _admittances[i, i] += admittance;
             _admittances[j, j] += admittance;
-            _admittances[i, j] = (-1)*admittance;
-            _admittances[j, i] = (-1)*admittance;
+            _admittances[i, j] -= admittance;
+            _admittances[j, i] -= admittance;
         }
 
         public Complex GetAdmittance(int i, int j)
