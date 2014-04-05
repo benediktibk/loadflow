@@ -8,26 +8,26 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
-    public class PowerNetSingleVoltageLevelTest
+    public class PowerNetTest
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_NodeCount0_ThrowsException()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(0, 2);
+            var powerNet = new PowerNet(0, 2);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_NominalVoltage0_ThrowsException()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 0);
+            var powerNet = new PowerNet(2, 0);
         }
 
         [TestMethod]
         public void Constructor_NodeCount3_NodeCountIs3()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 2);
+            var powerNet = new PowerNet(3, 2);
 
             Assert.AreEqual(3, powerNet.NodeCount);
         }
@@ -35,7 +35,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void Constructor_NominalVoltage2_NominalVoltageIs2()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 2);
+            var powerNet = new PowerNet(3, 2);
 
             Assert.AreEqual(2, powerNet.NominalVoltage);
         }
@@ -43,7 +43,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void CalculateMissingInformation_TwoNodeSystem_CorrectVoltagesAndPowers()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             var supplyNode = new Node();
             var loadNode = new Node();
             const double admittance = 100;
@@ -72,7 +72,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddSymmetricAdmittance_DiagonalPosition_ThrowsException()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
 
             powerNet.AddSymmetricAdmittance(1, 1, new Complex());
         }
@@ -80,7 +80,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void AddSymmetricAdmittance_OnePositionTwiceSet_AllValuesAreCorrect()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
 
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, -2));
             powerNet.AddSymmetricAdmittance(1, 0, new Complex(3, 1));
@@ -94,7 +94,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void AddUnsymmetricAdmittance_SymmetricValuesAlreadySet_AllValuesAreCorrect()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
 
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, -2));
             powerNet.AddUnsymmetricAdmittance(1, 0, new Complex(3, 1));
@@ -108,7 +108,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void RelativePowerError_StableTwoNodeSystem_0()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             var supplyNode = new Node();
             var loadNode = new Node();
             const double admittance = 100;
@@ -128,7 +128,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void RelativePowerError_CollapsingSystem_Not0()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             var supplyNode = new Node();
             var loadNodeOne = new Node();
             var loadNodeTwo = new Node();
@@ -152,7 +152,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
         [TestMethod]
         public void CalculateMissingInformation_CollapsingSystem_InitalSetValuesAreCorrect()
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             var supplyNode = new Node();
             var loadNodeOne = new Node();
             var loadNodeTwo = new Node();

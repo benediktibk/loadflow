@@ -61,7 +61,7 @@
     <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\Precision.cs" />
     <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\PrecisionLongDouble.cs" />
     <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\PrecisionMulti.cs" />
-    <Compile Include="SingleVoltageLevel\PowerNetSingleVoltageLevel.cs" />
+    <Compile Include="SingleVoltageLevel\PowerNet.cs" />
     <Compile Include="SingleVoltageLevel\PQBus.cs" />
     <Compile Include="SingleVoltageLevel\PVBus.cs" />
   </ItemGroup>

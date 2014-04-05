@@ -77,7 +77,7 @@
     <Compile Include="SingleVoltageLevel\NodeAssert.cs" />
     <Compile Include="SingleVoltageLevel\NodePotentialMethodTest.cs" />
     <Compile Include="SingleVoltageLevel\NodeTest.cs" />
-    <Compile Include="SingleVoltageLevel\PowerNetSingleVoltageLevelTest.cs" />
+    <Compile Include="SingleVoltageLevel\PowerNetTest.cs" />
     <Compile Include="SingleVoltageLevel\PQBusTest.cs" />
     <Compile Include="SingleVoltageLevel\PVBusTest.cs" />
   </ItemGroup>

@@ -58,7 +58,7 @@ namespace LoadFlowCalculationComparison
         #endregion
 
         #region power net creation
-        private PowerNetSingleVoltageLevel CreatePowerNet(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private PowerNet CreatePowerNet(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
             switch (_generalSettings.ProblemSelection)
             {
@@ -94,9 +94,9 @@ namespace LoadFlowCalculationComparison
             throw new ArgumentOutOfRangeException();
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndPQBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetWithUnsymmetricMatrixAndPQBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
             powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
@@ -115,9 +115,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndPVBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetWithUnsymmetricMatrixAndPVBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
             powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
@@ -136,9 +136,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndOnePQAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetWithUnsymmetricMatrixAndOnePQAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
             powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
@@ -157,11 +157,11 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithOnePQAndOnePVBus(
+        private static PowerNet CreatePowerNetWithOnePQAndOnePVBus(
             out Vector<Complex> correctVoltages,
             out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(200, -200));
             powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
@@ -181,7 +181,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithPQBusNearlyCollapsing(out Vector<Complex> correctVoltages,
+        private static PowerNet CreatePowerNetWithPQBusNearlyCollapsing(out Vector<Complex> correctVoltages,
             out bool voltageCollapse)
         {
             const double load = 0.2499999; // 0.25 is the collapse-border
@@ -189,7 +189,7 @@ namespace LoadFlowCalculationComparison
             var supplyVoltage = new Complex(1, 0);
             correctVoltages = new DenseVector(new[] { supplyVoltage, loadVoltage });
             voltageCollapse = false;
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
             var supplyNode = new Node() { Voltage = supplyVoltage };
             var loadNode = new Node() { Power = new Complex((-1) * load, 0) };
@@ -198,7 +198,7 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetWithPVBusNearlyCollapsing(out Vector<Complex> correctVoltages,
+        private static PowerNet CreatePowerNetWithPVBusNearlyCollapsing(out Vector<Complex> correctVoltages,
             out bool voltageCollapse)
         {
             const double load = 0.2499999; // 0.25 is the collapse-border
@@ -206,7 +206,7 @@ namespace LoadFlowCalculationComparison
             var supplyVoltage = new Complex(1, 0);
             correctVoltages = new DenseVector(new[] { supplyVoltage, loadVoltage });
             voltageCollapse = false;
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
             var supplyNode = new Node() { Voltage = supplyVoltage };
             var loadNode = new Node() { RealPower = (-1) * load, VoltageMagnitude = loadVoltage.Magnitude };
@@ -215,9 +215,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetThreeNodeSystemWithTwoPVBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetThreeNodeSystemWithTwoPVBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            var powerNet = new PowerNet(3, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
             powerNet.AddSymmetricAdmittance(1, 2, new Complex(100, 300));
@@ -240,9 +240,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetForFiveNodeSystemWithFourPQBuses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(5, 1);
+            var powerNet = new PowerNet(5, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
             powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
@@ -274,9 +274,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetForFiveNodeSystemWithOneGroundNode(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(5, 1);
+            var powerNet = new PowerNet(5, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
             powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
@@ -303,9 +303,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetForFiveNodeSystemWithThreePQBusesAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(5, 1);
+            var powerNet = new PowerNet(5, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 500));
             powerNet.AddSymmetricAdmittance(0, 2, new Complex(0, 0));
             powerNet.AddSymmetricAdmittance(0, 3, new Complex(200, -100));
@@ -333,9 +333,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        private static PowerNetSingleVoltageLevel CreatePowerNetForStableTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        private static PowerNet CreatePowerNetForStableTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 2000));
             correctVoltages = new DenseVector(2);
             correctVoltages[0] = new Complex(1, 0);
@@ -349,9 +349,9 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        public static PowerNetSingleVoltageLevel CreatePowerNetForCollapsingTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        public static PowerNet CreatePowerNetForCollapsingTwoNodeSystem(out Vector<Complex> correctVoltages, out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             var supplyNode = new Node { Voltage = new Complex(1, 0) };
             var loadNode = new Node { Power = new Complex(-100, -50) };
             powerNet.SetNode(0, supplyNode);
@@ -363,10 +363,10 @@ namespace LoadFlowCalculationComparison
             return powerNet;
         }
 
-        public static PowerNetSingleVoltageLevel CreatePowerNetOnePVBus(out Vector<Complex> correctVoltages,
+        public static PowerNet CreatePowerNetOnePVBus(out Vector<Complex> correctVoltages,
             out bool voltageCollapse)
         {
-            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+            var powerNet = new PowerNet(2, 1);
             powerNet.AddSymmetricAdmittance(0, 1, new Complex(1000, 2000));
             correctVoltages = new DenseVector(2);
             correctVoltages[0] = new Complex(1, 0);
@@ -542,7 +542,7 @@ namespace LoadFlowCalculationComparison
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
             var executionTimes = new List<double>(numberOfExecutions);
             var stopWatch = new Stopwatch();
-            PowerNetSingleVoltageLevel powerNet;
+            PowerNet powerNet;
             bool voltageCollapseDetected;
             Vector<Complex> correctVoltages;
             bool voltageCollapseReal;
