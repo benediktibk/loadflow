@@ -48,9 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CurrentIteration.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NodeVoltageCalculators\CurrentIteration.cs" />
     <Compile Include="NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
     <Compile Include="NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
     <Compile Include="NodeVoltageCalculators\INodeVoltageCalculator.cs" />
