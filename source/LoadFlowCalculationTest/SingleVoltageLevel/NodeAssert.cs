@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation;
 using LoadFlowCalculation.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     public static class NodeAssert
     {

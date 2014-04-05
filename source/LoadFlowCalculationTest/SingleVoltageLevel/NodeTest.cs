@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Runtime.Remoting;
+using System.Numerics;
 using LoadFlowCalculation.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LoadFlowCalculation;
-using System.Numerics;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
     public class NodeTest

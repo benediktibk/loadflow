@@ -1,18 +1,101 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
+﻿using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LoadFlowCalculation;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
-    public class NodePotentialMethodTest : LoadFlowCalculatorTest
+    public class CurrentIterationTest : LoadFlowCalculatorTest
     {
         protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new NodePotentialMethod();
+            return new CurrentIteration(0.00001, 1000);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGivenVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionOne_CorrectResults()
+        {
+            var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.05);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyOneVoltageGivenVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGivenVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNodeVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_CollapsingSystem_VoltageCollapse()
+        {
+            var nodes = CreateTestCollapsingSystem();
+
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsTrue(_voltageCollapse);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_NearlyCollapsingSystem_NoVoltageCollapse()
+        {
+            var nodes = CreateTestNearlyCollapsingSystem();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNodeVersionThree_CorrectResults()
+        {
+            var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionThree();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
@@ -22,7 +105,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 1);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -44,7 +127,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.0001);
         }
 
         [TestMethod]
@@ -55,7 +138,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.001);
         }
 
         [TestMethod]
@@ -66,7 +149,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.0001);
         }
 
         [TestMethod]
@@ -77,7 +160,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 50);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -88,7 +171,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.02, 30);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -99,7 +182,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 30);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -110,7 +193,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.01, 20);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -121,7 +204,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 30);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -143,7 +226,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.2, 20);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -154,7 +237,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 120);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -165,18 +248,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 60);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithTwoPVBuses_CorrectResults()
-        {
-            var nodes = CreateTestFiveNodeProblemWithTwoPVBusses();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.2, 200);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -187,7 +259,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.01, 0.05);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -202,17 +274,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
-        {
-            var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.2, 10);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
@@ -220,7 +281,18 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.01, 0.1);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectResults()
+        {
+            var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -231,29 +303,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.2, 10);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPQBusses_CorrectResults()
-        {
-            var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.05, 10);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
-        {
-            var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
-
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 50);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -264,7 +314,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.1, 100);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -275,7 +325,7 @@ namespace LoadFlowCalculationTest
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.15, 0.5);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
         }
     }
 }

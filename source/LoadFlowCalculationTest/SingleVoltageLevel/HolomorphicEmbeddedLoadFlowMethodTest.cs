@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using LoadFlowCalculation;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestHelper;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
     public abstract class HolomorphicEmbeddedLoadFlowMethodTest : LoadFlowCalculatorTest

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
     public abstract class JacobiMatrixBaseMethodTest : LoadFlowCalculatorTest

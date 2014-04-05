@@ -65,21 +65,21 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="LoadFlowCalculatorTest.cs" />
-    <Compile Include="NewtonRaphsonMethodTest.cs" />
-    <Compile Include="NodeAssert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NodeTest.cs" />
-    <Compile Include="NodePotentialMethodTest.cs" />
-    <Compile Include="CurrentIterationTest.cs" />
-    <Compile Include="FastDecoupledLoadFlowMethodTest.cs" />
-    <Compile Include="PQBusTest.cs" />
-    <Compile Include="PVBusTest.cs" />
-    <Compile Include="PowerNetSingleVoltageLevelTest.cs" />
-    <Compile Include="JacobiMatrixBaseMethodTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\CurrentIterationTest.cs" />
+    <Compile Include="SingleVoltageLevel\FastDecoupledLoadFlowMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
+    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
+    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\JacobiMatrixBaseMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\LoadFlowCalculatorTest.cs" />
+    <Compile Include="SingleVoltageLevel\NewtonRaphsonMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\NodeAssert.cs" />
+    <Compile Include="SingleVoltageLevel\NodePotentialMethodTest.cs" />
+    <Compile Include="SingleVoltageLevel\NodeTest.cs" />
+    <Compile Include="SingleVoltageLevel\PowerNetSingleVoltageLevelTest.cs" />
+    <Compile Include="SingleVoltageLevel\PQBusTest.cs" />
+    <Compile Include="SingleVoltageLevel\PVBusTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">

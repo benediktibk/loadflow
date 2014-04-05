@@ -1,9 +1,8 @@
 ﻿using System;
-using LoadFlowCalculation;
 using LoadFlowCalculation.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest
+namespace LoadFlowCalculationTest.SingleVoltageLevel
 {
     [TestClass]
     public class PVBusTest
