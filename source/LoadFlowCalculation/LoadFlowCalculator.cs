@@ -94,8 +94,9 @@ namespace LoadFlowCalculation
                 allVoltages[index] = nodes[index].Voltage;
             }
 
+            var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
             var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
-            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / inputPowerSum.Magnitude;
+            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / absolutePowerSum;
 
             if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
                 voltageCollapse = true;

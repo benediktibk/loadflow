@@ -13,17 +13,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_OnlyOneIterationAllowed_VoltageCollapse()
-        {
-            var calculator = new LoadFlowCalculator(new CurrentIteration(0.00000001, 1));
-            var nodes = CreateTestFromOneSideSuppliedConnectionWithSmallResistance();
-
-            calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsTrue(_voltageCollapse);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGivenVersionTwo_CorrectResults()
         {
             var nodes = CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo();

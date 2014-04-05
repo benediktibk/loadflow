@@ -81,7 +81,7 @@ namespace LoadFlowCalculation
 
         public double GetMaximumPowerError()
         {
-            return _targetPrecision*100;
+            return 0.1;
         }
 
         private Complex CalculateVoltage(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents, IList<Complex> powers,

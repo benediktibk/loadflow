@@ -11,13 +11,11 @@ namespace LoadFlowCalculation
     {
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
-        private readonly double _maximumPowerError;
 
-        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations, double maximumPowerError)
+        protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
         {
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
-            _maximumPowerError = maximumPowerError;
         }
 
         public abstract Vector<Complex> CalculateImprovedVoltages(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
@@ -72,7 +70,7 @@ namespace LoadFlowCalculation
 
         public double GetMaximumPowerError()
         {
-            return _maximumPowerError;
+            return 0.1;
         }
 
         private static void CalculatePowerDifferences(Matrix<Complex> admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,

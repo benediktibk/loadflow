@@ -130,7 +130,7 @@ namespace LoadFlowCalculation
 
         public double GetMaximumPowerError()
         {
-            return _targetPrecision*100000;
+            return 0.1;
         }
 
         public Vector<Complex> GetCoefficients(int step)
