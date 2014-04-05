@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using DenseVector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
@@ -40,8 +41,7 @@ namespace LoadFlowCalculation
                 pvBusIds.Add(bus.ID);
             }
 
-            foreach (var bus in pqBuses)
-                pqBusIds.Add(bus.ID);
+            pqBusIds.AddRange(pqBuses.Select(bus => bus.ID));
 
             do
             {
@@ -49,20 +49,10 @@ namespace LoadFlowCalculation
                 var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBusIds, pvBusIds, pvBusVoltages);
                 currentVoltages = improvedVoltages;
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
-
-                maximumPowerDifference = 0;
-
-                foreach (var powerDifference in powersRealDifference)
-                {
-                    if (Math.Abs(powerDifference) > maximumPowerDifference)
-                        maximumPowerDifference = Math.Abs(powerDifference);
-                }
-
-                foreach (var powerDifference in powersImaginaryDifference)
-                {
-                    if (Math.Abs(powerDifference) > maximumPowerDifference)
-                        maximumPowerDifference = Math.Abs(powerDifference);
-                }
+                var powersRealDifferenceAbsolute = powersRealDifference.Select(Math.Abs);
+                var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
+                var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
+                maximumPowerDifference = powersDifferenceAbsolute.Max();
             } while (maximumPowerDifference > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
             
             return currentVoltages;
