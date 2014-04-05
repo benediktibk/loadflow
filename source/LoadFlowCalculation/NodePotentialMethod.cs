@@ -70,7 +70,7 @@ namespace LoadFlowCalculation
 
         public double GetMaximumPowerError()
         {
-            return 1E15;
+            return 10;
         }
 
         private Vector<Complex> CalculateUnknownVoltagesInternal(Matrix<Complex> admittances, double nominalVoltage,
