@@ -304,20 +304,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        [TestCategory("Slow")]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
-        {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(1000), true);
-            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
-            var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
-
-            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
