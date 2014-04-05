@@ -2,7 +2,7 @@
 
 namespace LoadFlowCalculationComparison
 {
-    class CalculationResults : ObservableCollection<CalculationResult>
+    public class CalculationResults : ObservableCollection<CalculationResult>
     {
     }
 }

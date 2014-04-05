@@ -2,7 +2,7 @@
 
 namespace LoadFlowCalculationComparison.AlgorithmSettings
 {
-    class IterativeMethodSettings : ChangeAllowable
+    public class IterativeMethodSettings : ChangeAllowable
     {
         private double _targetPrecision = 0.00001;
         private int _maximumIterations = 1000;

@@ -66,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AlgorithmSettings\HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy.cs" />
+    <Compile Include="Calculator.cs" />
     <Compile Include="ProblemSelectionEnum.cs" />
     <Compile Include="CalculationResult.cs" />
     <Compile Include="CalculationResults.cs" />

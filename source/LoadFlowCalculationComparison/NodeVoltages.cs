@@ -2,6 +2,6 @@
 
 namespace LoadFlowCalculationComparison
 {
-    class NodeVoltages : ObservableCollection<NodeVoltage>
+    public class NodeVoltages : ObservableCollection<NodeVoltage>
     { }
 }
