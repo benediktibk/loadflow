@@ -91,6 +91,20 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
+        public void AddUnsymmetricAdmittance_SymmetricValuesAlreadySet_AllValuesAreCorrect()
+        {
+            var powerNet = new PowerNetSingleVoltageLevel(2, 1);
+
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, -2));
+            powerNet.AddUnsymmetricAdmittance(1, 0, new Complex(3, 1));
+
+            ComplexAssert.AreEqual(1, -2, powerNet.GetAdmittance(0, 0), 0.0001);
+            ComplexAssert.AreEqual(1, -2, powerNet.GetAdmittance(1, 1), 0.0001);
+            ComplexAssert.AreEqual(-1, 2, powerNet.GetAdmittance(0, 1), 0.0001);
+            ComplexAssert.AreEqual(2, 3, powerNet.GetAdmittance(1, 0), 0.0001);
+        }
+
+        [TestMethod]
         public void RelativePowerError_StableTwoNodeSystem_0()
         {
             var powerNet = new PowerNetSingleVoltageLevel(2, 1);

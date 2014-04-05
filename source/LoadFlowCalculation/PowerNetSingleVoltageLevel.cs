@@ -62,6 +62,11 @@ namespace LoadFlowCalculation
             _admittances[j, i] -= admittance;
         }
 
+        public void AddUnsymmetricAdmittance(int i, int j, Complex admittance)
+        {
+            _admittances[i, j] += admittance;
+        }
+
         public Complex GetAdmittance(int i, int j)
         {
             return _admittances[i, j];
