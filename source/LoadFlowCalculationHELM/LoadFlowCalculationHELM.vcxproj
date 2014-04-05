@@ -12,7 +12,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{484F301D-5A80-460C-8267-189C879A2FEA}</ProjectGuid>
-    <RootNamespace>LoadFlowCalculationAccuracyImprovement</RootNamespace>
+    <RootNamespace>LoadFlowCalculationHELM</RootNamespace>
+    <ProjectName>LoadFlowCalculationHELM</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,8 +65,8 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,8 +85,8 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprov
     </Link>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationAccuracyImprovement.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

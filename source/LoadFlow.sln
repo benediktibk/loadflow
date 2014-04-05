@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathExtensionsTest", "MathE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadFlowCalculationComparison", "LoadFlowCalculationComparison\LoadFlowCalculationComparison.csproj", "{113F2CBC-7153-49F0-929A-0E3989318DA9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadFlowCalculationAccuracyImprovement", "LoadFlowCalculationAccuracyImprovement\LoadFlowCalculationAccuracyImprovement.vcxproj", "{484F301D-5A80-460C-8267-189C879A2FEA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadFlowCalculationHELM", "LoadFlowCalculationHELM\LoadFlowCalculationHELM.vcxproj", "{484F301D-5A80-460C-8267-189C879A2FEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experiment", "Experiment\Experiment.csproj", "{1284A9F1-2693-4849-AAF1-085E7492CD2F}"
 EndProject
