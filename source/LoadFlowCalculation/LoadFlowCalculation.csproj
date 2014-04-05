@@ -60,7 +60,6 @@
     <Compile Include="NodeVoltageCalculators\Precision.cs" />
     <Compile Include="NodeVoltageCalculators\PrecisionLongDouble.cs" />
     <Compile Include="NodeVoltageCalculators\PrecisionMulti.cs" />
-    <Compile Include="NotConvergingException.cs" />
     <Compile Include="PowerNetSingleVoltageLevel.cs" />
     <Compile Include="PQBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
