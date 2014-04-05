@@ -11,6 +11,9 @@
         ThreeNodeSystemWithTwoPVBusses,
         NearlyCollapsingSystemWithPQBus,
         NearlyCollapsingSystemWithPVBus,
-        ThreeNodeSystemWithOnePQAndOnePVBus
+        ThreeNodeSystemWithOnePQAndOnePVBus,
+        ThreeNodeSystemWithUnsymmetricMatrixAndOnePQAndOnePVBus,
+        ThreeNodeSystemWithUnsymmetricMatrixAndPQBusses,
+        ThreeNodeSystemWithUnsymmetricMatrixAndPVBusses
     }
 }

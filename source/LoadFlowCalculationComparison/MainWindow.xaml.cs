@@ -296,6 +296,45 @@ namespace LoadFlowCalculationComparison
                     helmMultiMaximumNumberOfCoefficients = 100;
                     helmMultiBitPrecision = 300;
                     break;
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndOnePQAndOnePVBus:
+                    currentIterationTargetPrecision = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.001;
+                    newtonRaphsonMaximumIterations = 2;
+                    fdlfTargetPrecision = 0.000001;
+                    fdlfMaximumIterations = 1000;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 50;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
+                    break;
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndPVBusses:
+                    currentIterationTargetPrecision = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.001;
+                    newtonRaphsonMaximumIterations = 2;
+                    fdlfTargetPrecision = 0.000001;
+                    fdlfMaximumIterations = 1000;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 50;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
+                    break;
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndPQBusses:
+                    currentIterationTargetPrecision = 0.00001;
+                    currentIterationMaximumIterations = 1000;
+                    newtonRaphsonTargetPrecision = 0.001;
+                    newtonRaphsonMaximumIterations = 2;
+                    fdlfTargetPrecision = 0.000001;
+                    fdlfMaximumIterations = 1000;
+                    helmLongDoubleTargetPrecision = 0.00001;
+                    helmLongDoubleMaximumNumberOfCoefficients = 50;
+                    helmMultiTargetPrecision = 0.00001;
+                    helmMultiMaximumNumberOfCoefficients = 100;
+                    helmMultiBitPrecision = 300;
+                    break;
             }
 
             _currentIteration.TargetPrecision = currentIterationTargetPrecision;
@@ -477,9 +516,78 @@ namespace LoadFlowCalculationComparison
                     return CreatePowerNetWithPVBusNearlyCollapsing(out correctVoltages, out voltageCollapse);
                 case ProblemSelectionEnum.ThreeNodeSystemWithOnePQAndOnePVBus:
                     return CreatePowerNetWithOnePQAndOnePVBus(out correctVoltages, out voltageCollapse);
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndOnePQAndOnePVBus:
+                    return CreatePowerNetWithUnsymmetricMatrixAndOnePQAndOnePVBus(out correctVoltages, out voltageCollapse);
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndPVBusses:
+                    return CreatePowerNetWithUnsymmetricMatrixAndPVBusses(out correctVoltages, out voltageCollapse);
+                case ProblemSelectionEnum.ThreeNodeSystemWithUnsymmetricMatrixAndPQBusses:
+                    return CreatePowerNetWithUnsymmetricMatrixAndPQBusses(out correctVoltages, out voltageCollapse);
             }
 
             throw new ArgumentOutOfRangeException();
+        }
+
+        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndPQBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        {
+            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
+            powerNet.AddUnsymmetricAdmittance(1, 2, new Complex(4, 1));
+            powerNet.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
+            correctVoltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
+            var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
+            var supplyNode = new Node { Voltage = correctVoltages[0] };
+            var loadNodeOne = new Node() { Power = powers[1] };
+            var loadNodeTwo = new Node() { Power = powers[2] };
+            powerNet.SetNode(0, supplyNode);
+            powerNet.SetNode(1, loadNodeOne);
+            powerNet.SetNode(2, loadNodeTwo);
+
+            voltageCollapse = false;
+            return powerNet;
+        }
+
+        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndPVBusses(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        {
+            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
+            powerNet.AddUnsymmetricAdmittance(1, 2, new Complex(4, 1));
+            powerNet.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
+            correctVoltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
+            var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
+            var supplyNode = new Node { Voltage = correctVoltages[0] };
+            var loadNodeOne = new Node() { RealPower = powers[1].Real, VoltageMagnitude = correctVoltages[1].Magnitude };
+            var loadNodeTwo = new Node() { RealPower = powers[2].Real, VoltageMagnitude = correctVoltages[2].Magnitude };
+            powerNet.SetNode(0, supplyNode);
+            powerNet.SetNode(1, loadNodeOne);
+            powerNet.SetNode(2, loadNodeTwo);
+
+            voltageCollapse = false;
+            return powerNet;
+        }
+
+        private static PowerNetSingleVoltageLevel CreatePowerNetWithUnsymmetricMatrixAndOnePQAndOnePVBus(out Vector<Complex> correctVoltages, out bool voltageCollapse)
+        {
+            var powerNet = new PowerNetSingleVoltageLevel(3, 1);
+            powerNet.AddSymmetricAdmittance(0, 1, new Complex(100, 200));
+            powerNet.AddSymmetricAdmittance(0, 2, new Complex(50, -100));
+            powerNet.AddSymmetricAdmittance(1, 2, new Complex(200, 600));
+            powerNet.AddUnsymmetricAdmittance(1, 2, new Complex(4, 1));
+            powerNet.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
+            correctVoltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
+            var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
+            var supplyNode = new Node { Voltage = correctVoltages[0] };
+            var loadNodeOne = new Node() { RealPower = powers[1].Real, VoltageMagnitude = correctVoltages[1].Magnitude };
+            var loadNodeTwo = new Node() { Power = powers[2] };
+            powerNet.SetNode(0, supplyNode);
+            powerNet.SetNode(1, loadNodeOne);
+            powerNet.SetNode(2, loadNodeTwo);
+
+            voltageCollapse = false;
+            return powerNet;
         }
 
         private static PowerNetSingleVoltageLevel CreatePowerNetWithOnePQAndOnePVBus(
