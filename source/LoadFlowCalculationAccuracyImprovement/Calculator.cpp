@@ -223,7 +223,8 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		rightHandSide[bus.getId()] = (admittanceRowSum[bus.getId()] + _embeddingModification)*ComplexFloating(createFloating(-1));
+		int id = bus.getId();
+		rightHandSide[id] = (admittanceRowSum[id] + _embeddingModification)*ComplexFloating(createFloating(-1));
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -258,8 +259,9 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[bus.getId()];
-		rightHandSide[bus.getId()] = calculateRightHandSide(bus) - admittanceRowSum;
+		int id = bus.getId();
+		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
+		rightHandSide[id] = calculateRightHandSide(bus) - admittanceRowSum;
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
@@ -283,7 +285,8 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	for (size_t i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		rightHandSide[bus.getId()] = calculateRightHandSide(bus);
+		int id = bus.getId();
+		rightHandSide[id] = calculateRightHandSide(bus);
 	}
 	
 	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
