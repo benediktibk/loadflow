@@ -228,7 +228,7 @@ namespace LoadFlowCalculationComparison
                     helmLongDoubleTargetPrecision = 0.00001;
                     helmLongDoubleMaximumNumberOfCoefficients = 60;
                     helmMultiTargetPrecision = 0.00001;
-                    helmMultiMaximumNumberOfCoefficients = 300;
+                    helmMultiMaximumNumberOfCoefficients = 200;
                     helmMultiBitPrecision = 500;
                     break;
                 case ProblemSelectionEnum.TwoNodeSystemWithOnePVBus:
@@ -641,7 +641,7 @@ namespace LoadFlowCalculationComparison
             powerNet.SetAdmittance(2, 3, new Complex(200, -500));
             powerNet.SetAdmittance(2, 4, new Complex(0, 0));
             powerNet.SetAdmittance(3, 4, new Complex(700, 500));
-            correctVoltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
+            correctVoltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.02), new Complex(0.97, -0.15), new Complex(0.8, 0.05) });
             var powers = LoadFlowCalculator.CalculateAllPowers(powerNet.Admittances, correctVoltages);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
             nodes[0].Voltage = correctVoltages.At(0);
