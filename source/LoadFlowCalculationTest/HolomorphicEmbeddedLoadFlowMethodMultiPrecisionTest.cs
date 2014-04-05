@@ -309,18 +309,24 @@ namespace LoadFlowCalculationTest
 
             nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
-            var firstCoefficient = new DenseVector(new[] { new Complex(-1, 0) });
-            var secondCoefficient = new DenseVector(new[] { new Complex(2.08041324631485, 0.0199997871033142) });
-            var thirdCoefficient = new DenseVector(new[] { new Complex(0.063672111981029, 0.0409995635617942) });
-            var firstInverseCoefficient = new DenseVector(new[] { new Complex(-1, 0) });
-            var secondInverseCoefficient = new DenseVector(new[] { new Complex(-2.08041324631485, -0.0199997871033142) });
-            var thirdInverseCoefficient = new DenseVector(new[] { new Complex(-4.39139139593914, -0.124215207588218) });
-            ComplexAssert.AreEqual(firstCoefficient, nodeVoltageCalculator.GetCoefficients(0), 0.0001);
-            ComplexAssert.AreEqual(secondCoefficient, nodeVoltageCalculator.GetCoefficients(1), 0.0001);
-            ComplexAssert.AreEqual(thirdCoefficient, nodeVoltageCalculator.GetCoefficients(2), 0.0001);
-            ComplexAssert.AreEqual(firstInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(0), 0.0001);
-            ComplexAssert.AreEqual(secondInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(1), 0.0001);
-            ComplexAssert.AreEqual(thirdInverseCoefficient, nodeVoltageCalculator.GetInverseCoefficients(2), 0.0001);
+            var firstCoefficientShouldBe = new DenseVector(new[] { new Complex(1.05, 0) });
+            var secondCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0289649928938644, -0.019047619047619) } );
+            var thirdCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0011445548616427, 1.14628982339312E-100) });
+            var firstInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.952380952380952, 0) });
+            var secondInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.0262721023980629, 0.0172767519706295) });
+            var thirdInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.00144946906527004, 0.00095318285344446) });
+            var firstCoefficient = nodeVoltageCalculator.GetCoefficients(0);
+            var secondCoefficient = nodeVoltageCalculator.GetCoefficients(1);
+            var thirdCoefficient = nodeVoltageCalculator.GetCoefficients(2);
+            var firstInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(0);
+            var secondInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(1);
+            var thirdInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(2);
+            ComplexAssert.AreEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
+            ComplexAssert.AreEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
+            ComplexAssert.AreEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
+            ComplexAssert.AreEqual(secondInverseCoefficientShouldBe, secondInverseCoefficient, 0.0001);
+            ComplexAssert.AreEqual(thirdCoefficientShouldBe, thirdCoefficient, 0.0001);
+            ComplexAssert.AreEqual(thirdInverseCoefficientShouldBe, thirdInverseCoefficient, 0.0001);
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
             nodeVoltageCalculator.Dispose();
