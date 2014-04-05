@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation;
-using LoadFlowCalculation.NodeVoltageCalculators;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;

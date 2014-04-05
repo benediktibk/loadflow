@@ -48,22 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoadFlowCalculator.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="NodeVoltageCalculators\CurrentIteration.cs" />
-    <Compile Include="NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
-    <Compile Include="NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
-    <Compile Include="NodeVoltageCalculators\INodeVoltageCalculator.cs" />
-    <Compile Include="NodeVoltageCalculators\JacobiMatrixBasedMethod.cs" />
-    <Compile Include="NodeVoltageCalculators\NewtonRaphsonMethod.cs" />
-    <Compile Include="NodeVoltageCalculators\NodePotentialMethod.cs" />
-    <Compile Include="NodeVoltageCalculators\Precision.cs" />
-    <Compile Include="NodeVoltageCalculators\PrecisionLongDouble.cs" />
-    <Compile Include="NodeVoltageCalculators\PrecisionMulti.cs" />
-    <Compile Include="PowerNetSingleVoltageLevel.cs" />
-    <Compile Include="PQBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PVBus.cs" />
+    <Compile Include="SingleVoltageLevel\LoadFlowCalculator.cs" />
+    <Compile Include="SingleVoltageLevel\Node.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\CurrentIteration.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\INodeVoltageCalculator.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\JacobiMatrixBasedMethod.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethod.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethod.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\Precision.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\PrecisionLongDouble.cs" />
+    <Compile Include="SingleVoltageLevel\NodeVoltageCalculators\PrecisionMulti.cs" />
+    <Compile Include="SingleVoltageLevel\PowerNetSingleVoltageLevel.cs" />
+    <Compile Include="SingleVoltageLevel\PQBus.cs" />
+    <Compile Include="SingleVoltageLevel\PVBus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

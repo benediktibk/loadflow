@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Remoting;
+using LoadFlowCalculation.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoadFlowCalculation;
 using System.Numerics;

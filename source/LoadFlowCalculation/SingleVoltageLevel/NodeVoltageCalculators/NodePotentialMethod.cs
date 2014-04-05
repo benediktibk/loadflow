@@ -3,7 +3,7 @@ using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation.NodeVoltageCalculators
+namespace LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
 using LoadFlowCalculation;
-using LoadFlowCalculation.NodeVoltageCalculators;
+using LoadFlowCalculation.SingleVoltageLevel;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 

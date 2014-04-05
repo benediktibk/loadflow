@@ -4,7 +4,7 @@ using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.SingleVoltageLevel
 {
     public class PowerNetSingleVoltageLevel
     {

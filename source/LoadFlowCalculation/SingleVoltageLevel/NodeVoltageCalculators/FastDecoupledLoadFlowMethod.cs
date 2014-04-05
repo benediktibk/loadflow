@@ -5,7 +5,7 @@ using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation.NodeVoltageCalculators
+namespace LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.SingleVoltageLevel
 {
     public class Node
     {

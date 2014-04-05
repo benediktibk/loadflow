@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.NodeVoltageCalculators;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.SingleVoltageLevel
 {
     public class LoadFlowCalculator
     {
@@ -95,7 +95,7 @@ namespace LoadFlowCalculation
                 allVoltages[index] = nodes[index].Voltage;
             }
 
-            var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
+            var absolutePowerSum = allPowers.Sum(power => Math.Abs((double) power.Real) + Math.Abs((double) power.Imaginary));
             var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
             var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / absolutePowerSum;
 

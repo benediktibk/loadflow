@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.NodeVoltageCalculators;
+using LoadFlowCalculation.SingleVoltageLevel;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra.Complex;

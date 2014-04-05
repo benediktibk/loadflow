@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using LoadFlowCalculation;
+using LoadFlowCalculation.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest
