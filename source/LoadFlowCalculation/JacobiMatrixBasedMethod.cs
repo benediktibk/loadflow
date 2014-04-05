@@ -34,13 +34,8 @@ namespace LoadFlowCalculation
             var pvBusVoltages = new List<double>(pvBuses.Count);
             var pvBusIds = new List<int>(pvBuses.Count);
             var pqBusIds = new List<int>(pqBuses.Count);
-
-            foreach (var bus in pvBuses)
-            {
-                pvBusVoltages.Add(bus.VoltageMagnitude);
-                pvBusIds.Add(bus.ID);
-            }
-
+            pvBusVoltages.AddRange(pvBuses.Select(bus => bus.VoltageMagnitude));
+            pvBusIds.AddRange(pvBuses.Select(bus => bus.ID));
             pqBusIds.AddRange(pqBuses.Select(bus => bus.ID));
 
             do
