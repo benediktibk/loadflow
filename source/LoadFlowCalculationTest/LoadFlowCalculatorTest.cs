@@ -334,7 +334,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-        protected IList<Node> CreateTestThreeNodesWithOnePVAndOnePQBus()
+        protected IList<Node> CreateTestThreeNodeProblemWithOnePVAndOnePQBus()
         {
             CreateThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             var supplyNode = new Node { Voltage = _voltages[0] };
@@ -343,7 +343,7 @@ namespace LoadFlowCalculationTest
             return new[] { supplyNode, pvNode, pqNode };
         }
 
-        protected IList<Node> CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPQBusses()
+        protected IList<Node> CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses()
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
@@ -353,7 +353,7 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-        protected IList<Node> CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPVBusses()
+        protected IList<Node> CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses()
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
@@ -365,9 +365,20 @@ namespace LoadFlowCalculationTest
             return nodes;
         }
 
-        protected IList<Node> CreateTestThreeNodesWithDecoupledPQAndPVBus()
+        protected IList<Node> CreateTestThreeNodeProblemWithDecoupledPQAndPVBus()
         {
             CreateThreeNodeProblemWithTwoDecoupledNodes(out _admittances, out _voltages, out _powers, out _nominalVoltage);
+            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
+            nodes[0].Voltage = _voltages.At(0);
+            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
+            nodes[1].RealPower = _powers.At(1).Real;
+            nodes[2].Power = _powers.At(2);
+            return nodes;
+        }
+
+        protected IList<Node> CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus()
+        {
+            CreateThreeNodeProblemWithRealValues(out _admittances, out _voltages, out _powers, out _nominalVoltage);
             IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
             nodes[0].Voltage = _voltages.At(0);
             nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
@@ -708,6 +719,19 @@ namespace LoadFlowCalculationTest
             voltages[0] = new Complex(1, 0.1);
             voltages[1] = new Complex(0.95, 0.08);
             voltages[2] = new Complex(0.9, 0.12);
+            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            nominalVoltage = 1;
+        }
+
+        private static void CreateThreeNodeProblemWithRealValues(out Matrix<Complex> admittances, out Vector<Complex> voltages, out Vector<Complex> powers,
+            out double nominalVoltage)
+        {
+            admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1, 0), new Complex(1, 0),
+                new Complex(1, 0));
+            voltages = new DenseVector(3);
+            voltages[0] = new Complex(1, 0);
+            voltages[1] = new Complex(0.5, 0);
+            voltages[2] = new Complex(0.5, 0);
             powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }

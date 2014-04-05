@@ -344,7 +344,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPQBusses_CorrectResults()
         {
-            var nodes = CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPQBusses();
+            var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -355,7 +355,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
-            var nodes = CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPVBusses();
+            var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
@@ -366,7 +366,18 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithDecoupledPQAndPVBus_CorrectResults()
         {
-            var nodes = CreateTestThreeNodesWithDecoupledPQAndPVBus();
+            var nodes = CreateTestThreeNodeProblemWithDecoupledPQAndPVBus();
+
+            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+
+            Assert.IsFalse(_voltageCollapse);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
+        {
+            var nodes = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
 
             nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
