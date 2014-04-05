@@ -351,7 +351,7 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(1000), false);
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400), false);
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
