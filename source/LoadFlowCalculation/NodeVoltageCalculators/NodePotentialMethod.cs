@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {

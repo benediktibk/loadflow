@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 using LoadFlowCalculation;
+using LoadFlowCalculation.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 

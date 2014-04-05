@@ -2,7 +2,7 @@
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public interface INodeVoltageCalculator
     {

@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using LoadFlowCalculation;
+using LoadFlowCalculation.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;

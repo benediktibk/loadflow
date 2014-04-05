@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {

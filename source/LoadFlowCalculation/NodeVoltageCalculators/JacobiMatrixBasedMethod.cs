@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
-using DenseVector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {

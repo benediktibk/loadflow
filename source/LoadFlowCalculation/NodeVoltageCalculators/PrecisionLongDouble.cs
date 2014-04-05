@@ -1,4 +1,4 @@
-﻿namespace LoadFlowCalculation
+﻿namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public class PrecisionLongDouble : Precision
     {

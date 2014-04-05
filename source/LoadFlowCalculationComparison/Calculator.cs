@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using LoadFlowCalculation;
+using LoadFlowCalculation.NodeVoltageCalculators;
 using LoadFlowCalculationComparison.AlgorithmSettings;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;

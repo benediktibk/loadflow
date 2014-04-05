@@ -1,4 +1,5 @@
 ﻿using LoadFlowCalculation;
+using LoadFlowCalculation.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LoadFlowCalculationTest

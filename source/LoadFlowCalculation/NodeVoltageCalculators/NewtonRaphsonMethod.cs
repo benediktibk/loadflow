@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
-using DenseVector = MathNet.Numerics.LinearAlgebra.Complex.DenseVector;
+using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
+using ExtensionMethods = MathNet.Numerics.LinearAlgebra.Double.ExtensionMethods;
 
-namespace LoadFlowCalculation
+namespace LoadFlowCalculation.NodeVoltageCalculators
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {
@@ -56,7 +56,7 @@ namespace LoadFlowCalculation
             DenseMatrix changeMatrix)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var factorization = changeMatrix.QR();
+            var factorization = ExtensionMethods.QR(changeMatrix);
             var voltageChanges = factorization.Solve(rightSide);
             return voltageChanges;
         }

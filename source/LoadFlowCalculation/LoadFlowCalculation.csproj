@@ -49,20 +49,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurrentIteration.cs" />
-    <Compile Include="FastDecoupledLoadFlowMethod.cs" />
-    <Compile Include="HolomorphicEmbeddedLoadFlowMethod.cs" />
-    <Compile Include="INodeVoltageCalculator.cs" />
-    <Compile Include="JacobiMatrixBasedMethod.cs" />
     <Compile Include="LoadFlowCalculator.cs" />
-    <Compile Include="NewtonRaphsonMethod.cs" />
-    <Compile Include="NodePotentialMethod.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
+    <Compile Include="NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
+    <Compile Include="NodeVoltageCalculators\INodeVoltageCalculator.cs" />
+    <Compile Include="NodeVoltageCalculators\JacobiMatrixBasedMethod.cs" />
+    <Compile Include="NodeVoltageCalculators\NewtonRaphsonMethod.cs" />
+    <Compile Include="NodeVoltageCalculators\NodePotentialMethod.cs" />
+    <Compile Include="NodeVoltageCalculators\Precision.cs" />
+    <Compile Include="NodeVoltageCalculators\PrecisionLongDouble.cs" />
+    <Compile Include="NodeVoltageCalculators\PrecisionMulti.cs" />
     <Compile Include="NotConvergingException.cs" />
     <Compile Include="PowerNetSingleVoltageLevel.cs" />
     <Compile Include="PQBus.cs" />
-    <Compile Include="Precision.cs" />
-    <Compile Include="PrecisionLongDouble.cs" />
-    <Compile Include="PrecisionMulti.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PVBus.cs" />
   </ItemGroup>
