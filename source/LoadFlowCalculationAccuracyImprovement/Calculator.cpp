@@ -224,7 +224,8 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
-		rightHandSide[id] = (admittanceRowSum[id] + _embeddingModification)*ComplexFloating(createFloating(-1));
+		ComplexFloating const& constantCurrent = _constantCurrents[id];
+		rightHandSide[id] = constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification);
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)
@@ -250,10 +251,9 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient(vector<Co
 	{
 		PQBus const& bus = _pqBuses[i];
 		int id = bus.getId();
-		ComplexFloating const& ownCurrent = createComplexFloating(bus.getPower())*_coefficientStorage->getLastInverseCoefficient(id);
-		ComplexFloating const& constantCurrent = _constantCurrents[id];
-		ComplexFloating const& totalCurrent = conj(ownCurrent) + constantCurrent;
-		rightHandSide[id] = admittanceRowSums[id] + _embeddingModification + totalCurrent;
+		ComplexFloating power = createComplexFloating(bus.getPower());
+		ComplexFloating const& current = conj(power*_coefficientStorage->getLastInverseCoefficient(id));
+		rightHandSide[id] = current + (_totalAdmittanceRowSums[id] + _embeddingModification);
 	}
 
 	for (size_t i = 0; i < _pvBusCount; ++i)

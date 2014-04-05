@@ -270,9 +270,11 @@ namespace LoadFlowCalculationTest
         [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithTwoPVBuses_CorrectResults()
         {
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 150, new PrecisionMulti(1000), true);
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestFiveNodeProblemWithTwoPVBusses();
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
@@ -305,9 +307,11 @@ namespace LoadFlowCalculationTest
         [TestCategory("Slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
         {
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(1000), true);
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
@@ -388,12 +392,14 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(1000), false);
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0002, 0.05);
         }
 
         [TestMethod]
@@ -434,9 +440,11 @@ namespace LoadFlowCalculationTest
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 300, new PrecisionMulti(500), false);
+            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
 
-            nodes = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            nodes = loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
