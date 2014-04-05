@@ -342,26 +342,6 @@ namespace LoadFlowCalculationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectCoefficients()
-        {
-            var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
-            var nodeVoltageCalculator = CreateHELMNodeVoltageCalculator();
-            var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
-
-            loadFlowCalculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
-
-            var firstCoefficients = nodeVoltageCalculator.GetCoefficients(0);
-            var secondCoefficients = nodeVoltageCalculator.GetCoefficients(1);
-            var thirdCoefficients = nodeVoltageCalculator.GetCoefficients(2);
-            ComplexAssert.AreEqual(new Complex(), firstCoefficients[0], 0.0001);
-            ComplexAssert.AreEqual(new Complex(), firstCoefficients[1], 0.0001);
-            ComplexAssert.AreEqual(new Complex(), secondCoefficients[0], 0.0001);
-            ComplexAssert.AreEqual(new Complex(), secondCoefficients[1], 0.0001);
-            ComplexAssert.AreEqual(new Complex(), thirdCoefficients[0], 0.0001);
-            ComplexAssert.AreEqual(new Complex(), thirdCoefficients[1], 0.0001);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPQBusses_CorrectResults()
         {
             var nodes = CreateTestThreeNodesWithAsymmetricAdmittancesAndTwoPQBusses();
