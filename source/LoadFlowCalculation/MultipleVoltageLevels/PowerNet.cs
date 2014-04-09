@@ -8,17 +8,22 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     public class PowerNet
     {
         #region variables
+
         private readonly double _frequency;
+
         #endregion
 
         #region
+
         public PowerNet(double frequency)
         {
             _frequency = frequency;
         }
+
         #endregion
 
         #region public functions
+
         public void AddNode(string name, double nominalVoltage)
         {
             throw new NotImplementedException();
@@ -50,7 +55,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         {
             throw new NotImplementedException();
         }
-        #endregion
 
+        #endregion
     }
 }
