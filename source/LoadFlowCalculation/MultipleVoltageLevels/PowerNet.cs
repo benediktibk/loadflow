@@ -50,11 +50,6 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         {
             throw new NotImplementedException();
         }
-
-        public void Calculate(INodeVoltageCalculator nodeVoltageCalculator)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
     }
