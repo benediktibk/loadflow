@@ -66,6 +66,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
+    <Compile Include="MultipleVoltageLevels\FeedInTest.cs" />
+    <Compile Include="MultipleVoltageLevels\LoadTest.cs" />
+    <Compile Include="MultipleVoltageLevels\GeneratorTest.cs" />
+    <Compile Include="MultipleVoltageLevels\TransformatorTest.cs" />
+    <Compile Include="MultipleVoltageLevels\NodeTest.cs" />
+    <Compile Include="MultipleVoltageLevels\PowerNetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleVoltageLevel\CurrentIterationTest.cs" />
     <Compile Include="SingleVoltageLevel\FastDecoupledLoadFlowMethodTest.cs" />
