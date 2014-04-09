@@ -44,7 +44,7 @@ namespace LoadFlowCalculationTest.SingleVoltageLevel
             c = new Complex(0.0686026762176026, 0.0475978097324825);
         }
 
-        [DllImport("LoadFlowCalculationAccuracyImprovement.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("LoadFlowCalculationHELM.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
         private static extern bool RunTests();
     }
