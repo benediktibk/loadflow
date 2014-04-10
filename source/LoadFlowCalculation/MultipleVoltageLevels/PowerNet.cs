@@ -13,6 +13,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly double _frequency;
         private readonly IList<Load> _loads;
         private readonly IList<Line> _lines;
+        private readonly IList<Transformator> _transformators; 
         private readonly IList<Node> _nodes;
         private readonly IDictionary<string, Node> _nodesByName; 
 
@@ -25,6 +26,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _frequency = frequency;
             _loads = new List<Load>();
             _lines = new List<Line>();
+            _transformators = new List<Transformator>();
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
         }
@@ -64,10 +66,15 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             throw new NotImplementedException();
         }
 
-        public void AddTransformator(string upperSideNode, string lowerSideNode, string name, double nominalPower,
+        public void AddTransformator(string upperSideNodeName, string lowerSideNodeName, string name, double nominalPower,
             double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha)
         {
-            throw new NotImplementedException();
+            var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
+            var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
+            var transformator = new Transformator(name, nominalPower, shortCircuitVoltageInPercentage, copperLosses, ironLosses, alpha, upperSideNode, lowerSideNode);
+            _transformators.Add(transformator);
+            upperSideNode.Connect(transformator);
+            lowerSideNode.Connect(transformator);
         }
 
         public void AddLoad(string node, string name, Complex power)

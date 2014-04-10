@@ -199,5 +199,33 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         {
             Assert.IsTrue(_powerNet.CheckIfFloatingNodesExists());
         }
+
+        [TestMethod]
+        public void AddLine_TwoValidNodes_BothNodesHaveOneConnectedElement()
+        {
+            _powerNet.AddNode("blub", 123);
+            _powerNet.AddNode("blob", 120);
+            var nodeOne = _powerNet.GetNodeByName("blub");
+            var nodeTwo = _powerNet.GetNodeByName("blob");
+
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
+
+            Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
+            Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
+        }
+
+        [TestMethod]
+        public void AddTransformator_TwoValidNodes_BothNodesHaveOneConnectedElement()
+        {
+            _powerNet.AddNode("blub", 123);
+            _powerNet.AddNode("blob", 120);
+            var nodeOne = _powerNet.GetNodeByName("blub");
+            var nodeTwo = _powerNet.GetNodeByName("blob");
+
+            _powerNet.AddTransformator("blub", "blob", "line", 3, 5, 5, 2, 3);
+
+            Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
+            Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
+        }
     }
 }
