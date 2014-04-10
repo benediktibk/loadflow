@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -59,6 +61,50 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void Equals_DifferentObjectWithSameValues_False()
         {
             Assert.AreNotEqual(_node, new Node("heinz", 2));
+        }
+
+        [TestMethod]
+        public void AddConnectedElements_ItselfNotContained_ItselfContained()
+        {
+            var nodes = new HashSet<Node>();
+
+            _node.AddConnectedNodes(nodes);
+
+            Assert.IsTrue(nodes.Contains(_node));
+        }
+
+        [TestMethod]
+        public void AddConnectedElements_ItselfContained_ItselfContained()
+        {
+            var nodes = new HashSet<Node> {_node};
+
+            _node.AddConnectedNodes(nodes);
+
+            Assert.IsTrue(nodes.Contains(_node));
+        }
+
+        [TestMethod]
+        public void AddConnectedElements_ItselfContained_ConnectedElementGetsNoCallToAddConnectedElements()
+        {
+            var nodes = new HashSet<Node> { _node };
+            var otherElement = new Mock<IPowerNetElement>();
+            _node.Connect(otherElement.Object);
+
+            _node.AddConnectedNodes(nodes);
+
+            otherElement.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<Node>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void AddConnectedElements_ItselfNotContained_ConnectedElementGetsCallToAddConnectedElements()
+        {
+            var nodes = new HashSet<Node>();
+            var otherElement = new Mock<IPowerNetElement>();
+            _node.Connect(otherElement.Object);
+
+            _node.AddConnectedNodes(nodes);
+
+            otherElement.Verify(x => x.AddConnectedNodes(new HashSet<Node> { _node }), Times.Once);
         }
     }
 }
