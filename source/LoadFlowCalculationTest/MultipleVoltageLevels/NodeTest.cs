@@ -66,7 +66,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfNotContained_ItselfContained()
         {
-            var nodes = new HashSet<Node>();
+            var nodes = new HashSet<INode>();
 
             _node.AddConnectedNodes(nodes);
 
@@ -76,7 +76,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfContained_ItselfContained()
         {
-            var nodes = new HashSet<Node> {_node};
+            var nodes = new HashSet<INode> { _node };
 
             _node.AddConnectedNodes(nodes);
 
@@ -86,25 +86,25 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfContained_ConnectedElementGetsNoCallToAddConnectedElements()
         {
-            var nodes = new HashSet<Node> { _node };
+            var nodes = new HashSet<INode> { _node };
             var otherElement = new Mock<IPowerNetElement>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
 
-            otherElement.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<Node>>()), Times.Never);
+            otherElement.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Never);
         }
 
         [TestMethod]
         public void AddConnectedElements_ItselfNotContained_ConnectedElementGetsCallToAddConnectedElements()
         {
-            var nodes = new HashSet<Node>();
+            var nodes = new HashSet<INode>();
             var otherElement = new Mock<IPowerNetElement>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
 
-            otherElement.Verify(x => x.AddConnectedNodes(new HashSet<Node> { _node }), Times.Once);
+            otherElement.Verify(x => x.AddConnectedNodes(new HashSet<INode> { _node }), Times.Once);
         }
     }
 }

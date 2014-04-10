@@ -6,9 +6,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     {
         private readonly Complex _load;
         private readonly string _name;
-        private readonly Node _node;
+        private readonly INode _node;
 
-        public Load(string name, Complex load, Node node)
+        public Load(string name, Complex load, INode node)
         {
             _load = load;
             _name = name;

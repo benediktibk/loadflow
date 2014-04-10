@@ -8,10 +8,10 @@
         private readonly double _copperLosses;
         private readonly double _ironLosses;
         private readonly double _alpha;
-        private readonly Node _upperSideNode;
-        private readonly Node _lowerSideNode;
+        private readonly INode _upperSideNode;
+        private readonly INode _lowerSideNode;
 
-        public Transformator(string name, double nominalPower, double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha, Node upperSideNode, Node lowerSideNode)
+        public Transformator(string name, double nominalPower, double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha, INode upperSideNode, INode lowerSideNode)
         {
             _name = name;
             _nominalPower = nominalPower;

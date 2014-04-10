@@ -3,9 +3,9 @@
     public class Generator
     {
         private readonly string _name;
-        private readonly Node _node;
+        private readonly INode _node;
 
-        public Generator(string name, Node node)
+        public Generator(string name, INode node)
         {
             _name = name;
             _node = node;
