@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class PowerNet
+    public class PowerNet : IReadOnlyPowerNet
     {
         #region variables
 
@@ -22,7 +21,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         #endregion
 
-        #region constructor
+        #region public functions
 
         public PowerNet(double frequency)
         {
@@ -37,43 +36,31 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _allNames = new HashSet<string>();
         }
 
-        #endregion
-
-        #region properties
-
-        public int LoadCount
+        public IList<ISet<INode>> GetSetsOfConnectedNodes()
         {
-            get { return _loads.Count; }
-        }
+            var segments = new List<ISet<INode>>();
 
-        public int LineCount
-        {
-            get { return _lines.Count; }
-        }
+            if (_nodes.Count == 0)
+                return segments;
 
-        public int FeedInCount
-        {
-            get { return _feedIns.Count; }
-        }
+            foreach (var node in _nodes)
+            {
+                var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
 
-        public int TransformatorCount
-        {
-            get { return _transformators.Count; }
-        }
+                if (alreadyContained)
+                    continue;
 
-        public int GeneratorCount
-        {
-            get { return _generators.Count; }
-        }
+                var newSegment = new HashSet<INode>();
+                node.AddConnectedNodes(newSegment);
+                segments.Add(newSegment);
+            }
 
-        public int NodeCount
-        {
-            get { return _loads.Count; }
+            return segments;
         }
 
         #endregion
 
-        #region public functions
+        #region add functions
 
         public void AddNode(string name, double nominalVoltage)
         {
@@ -137,27 +124,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             node.Connect(load);
         }
 
-        public IList<ISet<INode>> GetSetsOfConnectedNodes()
-        {
-            var segments = new List<ISet<INode>>();
+        #endregion
 
-            if (_nodes.Count == 0)
-                return segments;
-
-            foreach (var node in _nodes)
-            {
-                var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
-
-                if (alreadyContained)
-                    continue;
-
-                var newSegment = new HashSet<INode>();
-                node.AddConnectedNodes(newSegment);
-                segments.Add(newSegment);
-            }
-
-            return segments;
-        }
+        #region IReadOnlyPowerNet functions
 
         public bool CheckIfFloatingNodesExists()
         {
@@ -172,6 +141,40 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public INode GetNodeByName(string name)
         {
             return GetNodeByNameInternal(name);
+        }
+
+        #endregion
+        
+        #region IReadOnlyPowerNet properties
+
+        public int LoadCount
+        {
+            get { return _loads.Count; }
+        }
+
+        public int LineCount
+        {
+            get { return _lines.Count; }
+        }
+
+        public int FeedInCount
+        {
+            get { return _feedIns.Count; }
+        }
+
+        public int TransformatorCount
+        {
+            get { return _transformators.Count; }
+        }
+
+        public int GeneratorCount
+        {
+            get { return _generators.Count; }
+        }
+
+        public int NodeCount
+        {
+            get { return _loads.Count; }
         }
 
         #endregion

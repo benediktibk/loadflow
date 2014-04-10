@@ -52,6 +52,7 @@
     <Compile Include="MultipleVoltageLevels\Generator.cs" />
     <Compile Include="MultipleVoltageLevels\INode.cs" />
     <Compile Include="MultipleVoltageLevels\IPowerNetElement.cs" />
+    <Compile Include="MultipleVoltageLevels\IReadOnlyPowerNet.cs" />
     <Compile Include="MultipleVoltageLevels\Line.cs" />
     <Compile Include="MultipleVoltageLevels\Load.cs" />
     <Compile Include="MultipleVoltageLevels\LoadFlowCalculator.cs" />

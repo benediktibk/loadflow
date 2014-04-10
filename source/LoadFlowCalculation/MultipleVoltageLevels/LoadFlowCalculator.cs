@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,12 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _scaleBasisPower = scaleBasisPower;
             _scaleBasisCurrent = scaleBasisPower/scaleBasisVoltage;
             _scaleBasisImpedance = _scaleBasisVoltage/_scaleBasisCurrent;
+        }
+
+        public IDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
+        {
+            var nodeVoltages = new Dictionary<string, Complex>();
+            return nodeVoltages;
         }
 
         #endregion
