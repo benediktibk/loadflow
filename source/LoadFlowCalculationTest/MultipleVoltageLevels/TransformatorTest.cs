@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
@@ -63,6 +64,28 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void EnforcesSlackBus_Empty_False()
         {
             Assert.IsFalse(_transformator.EnforcesSlackBus);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CreatePVBus_ValidStuff_ThrowsException()
+        {
+            _transformator.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 1);
+        }
+
+        [TestMethod]
+        public void GetTotalPowerForPQBus_ValidStuff_0()
+        {
+            var result = _transformator.GetTotalPowerForPQBus(3);
+
+            ComplexAssert.AreEqual(0, 0, result, 0.00001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
+        {
+            _transformator.GetSlackVoltage(3);
         }
     }
 }

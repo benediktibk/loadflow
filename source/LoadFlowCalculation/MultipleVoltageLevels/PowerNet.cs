@@ -159,6 +159,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return _lines;
         }
 
+        public IReadOnlyList<Load> GetLoads()
+        {
+            return _loads;
+        }
+
         #endregion
         
         #region IReadOnlyPowerNet properties

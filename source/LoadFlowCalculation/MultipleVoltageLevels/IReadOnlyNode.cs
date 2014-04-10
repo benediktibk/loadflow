@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LoadFlowCalculation.SingleVoltageLevel;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {

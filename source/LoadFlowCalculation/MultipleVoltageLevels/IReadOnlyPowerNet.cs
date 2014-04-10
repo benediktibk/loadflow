@@ -23,6 +23,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         IReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetNodes();
         IReadOnlyList<Line> GetLines();
+        IReadOnlyList<Load> GetLoads();
 
         #endregion
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
@@ -285,6 +287,111 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementTwo.Object);
 
             Assert.IsFalse(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CreatePVBus_NoElementEnforcesPVBus_ThrowsException()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CreatePVBus_BothElementsEnforcesPVBus_ThrowsException()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+        }
+
+        [TestMethod]
+        public void CreatePVBus_OneElementEnforcesPVBus_GotCallToCreatePVBus()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+
+            elementTwo.Verify(x => x.CreatePVBus(It.IsAny<IDictionary<IReadOnlyNode, int>>(), 3, 2), Times.Once);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetSlackVoltage_NoElementEnforcesSlackBus_ThrowsException()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.GetSlackVoltage(3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetSlackVoltage_BothElementsEnforcesSlackBus_ThrowsException()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.GetSlackVoltage(3);
+        }
+
+        [TestMethod]
+        public void GetSlackVoltage_OneElementEnforcesSlackBus_GotCallToGetSlackVoltage()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            _node.GetSlackVoltage(3);
+
+            elementTwo.Verify(x => x.GetSlackVoltage(3), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetTotalPowerForPQBus_OneElementSlackBusAndOnePVBus_CorrectResult()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementOne.Setup(x => x.GetTotalPowerForPQBus(3)).Returns(new Complex(4, 1));
+            elementTwo.Setup(x => x.GetTotalPowerForPQBus(3)).Returns(new Complex(2, 7));
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            var result = _node.GetTotalPowerForPQBus(3);
+
+            elementOne.Verify(x => x.GetTotalPowerForPQBus(3), Times.Once);
+            elementTwo.Verify(x => x.GetTotalPowerForPQBus(3), Times.Once);
+            ComplexAssert.AreEqual(6, 8, result, 0.00001);
         }
     }
 }

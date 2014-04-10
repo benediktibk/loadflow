@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using LoadFlowCalculation.SingleVoltageLevel;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -31,6 +34,21 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public bool EnforcesPVBus
         {
             get { return true; }
+        }
+
+        public PVBus CreatePVBus(IDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisVoltage, double scaleBasisPower)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Complex GetTotalPowerForPQBus(double scaleBasisPower)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public Complex GetSlackVoltage(double scaleBasisVoltage)
+        {
+            throw new InvalidOperationException();
         }
 
         public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
