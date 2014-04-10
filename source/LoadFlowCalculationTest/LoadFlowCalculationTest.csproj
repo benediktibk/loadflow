@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MultipleVoltageLevels\LineTest.cs" />
     <Compile Include="MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
     <Compile Include="MultipleVoltageLevels\FeedInTest.cs" />
     <Compile Include="MultipleVoltageLevels\LoadTest.cs" />
