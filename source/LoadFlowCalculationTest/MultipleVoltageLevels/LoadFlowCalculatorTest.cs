@@ -24,6 +24,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNetMock = new Mock<IReadOnlyPowerNet>();
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
             _powerNetMock.Setup(x => x.CheckIfNominalVoltagesDoNotMatch()).Returns(false);
+            _powerNetMock.Setup(x => x.CheckIfNodeIsOverdetermined()).Returns(false);
         }
 
         [TestMethod]
@@ -82,6 +83,15 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void CalculateNodeVoltages_NominalVoltageMismatch_ThrowsException()
         {
             _powerNetMock.Setup(x => x.CheckIfNominalVoltagesDoNotMatch()).Returns(true);
+
+            _calculator.CalculateNodeVoltages(_powerNetMock.Object);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CalculateNodeVoltages_OneNodeIsOverDetermined_ThrowsException()
+        {
+            _powerNetMock.Setup(x => x.CheckIfNodeIsOverdetermined()).Returns(true);
 
             _calculator.CalculateNodeVoltages(_powerNetMock.Object);
         }

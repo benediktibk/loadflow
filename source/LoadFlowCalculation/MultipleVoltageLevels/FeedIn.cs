@@ -31,6 +31,16 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _voltage; }
         }
 
+        public bool EnforcesSlackBus
+        {
+            get { return true; }
+        }
+
+        public bool EnforcesPVBus
+        {
+            get { return false; }
+        }
+
         public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);

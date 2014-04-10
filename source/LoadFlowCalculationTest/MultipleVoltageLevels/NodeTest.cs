@@ -106,5 +106,185 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
             otherElement.Verify(x => x.AddConnectedNodes(new HashSet<IReadOnlyNode> { _node }), Times.Once);
         }
+
+        [TestMethod]
+        public void EnforcesSlackBus_Empty_False()
+        {
+            Assert.IsFalse(_node.EnforcesSlackBus);
+        }
+
+        [TestMethod]
+        public void EnforcesPVBus_Empty_False()
+        {
+            Assert.IsFalse(_node.EnforcesPVBus);
+        }
+
+        [TestMethod]
+        public void MustBeSlackBus_NoConnectedPowerNetElementEnforcesSlackBus_False()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsFalse(_node.MustBeSlackBus);
+        }
+
+        [TestMethod]
+        public void MustBeSlackBus_OneConnectedPowerNetElementEnforcesSlackBus_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.MustBeSlackBus);
+        }
+
+        [TestMethod]
+        public void MustBeSlackBus_BothConnectedPowerNetElementEnforcesSlackBus_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.MustBeSlackBus);
+        }
+
+        [TestMethod]
+        public void MustBePVBus_NoConnectedPowerNetElementEnforcesPVBus_False()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsFalse(_node.MustBePVBus);
+        }
+
+        [TestMethod]
+        public void MustBePVBus_OneConnectedPowerNetElementEnforcesPVBus_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.MustBePVBus);
+        }
+
+        [TestMethod]
+        public void MustBePVBus_BothConnectedPowerNetElementEnforcesPVBus_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.MustBePVBus);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_NoSlackAndPVBus_False()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsFalse(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_TwoSlackBusses_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_TwoPVBusses_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_OnePVAndSlackBus_True()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsTrue(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_OnePVBus_False()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsFalse(_node.IsOverdetermined);
+        }
+
+        [TestMethod]
+        public void IsOverdetermined_OneSlackBus_False()
+        {
+            var elementOne = new Mock<IPowerNetElement>();
+            var elementTwo = new Mock<IPowerNetElement>();
+            elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
+            elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
+            _node.Connect(elementOne.Object);
+            _node.Connect(elementTwo.Object);
+
+            Assert.IsFalse(_node.IsOverdetermined);
+        }
     }
 }

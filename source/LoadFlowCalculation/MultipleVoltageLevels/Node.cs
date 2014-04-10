@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -36,6 +37,21 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _name; }
         }
 
+        public bool IsOverdetermined
+        {
+            get { return _connectedElements.Count(element => element.EnforcesSlackBus) + _connectedElements.Count(element => element.EnforcesPVBus) > 1; }
+        }
+
+        public bool MustBeSlackBus
+        {
+            get { return _connectedElements.Count(element => element.EnforcesSlackBus) > 0; }
+        }
+
+        public bool MustBePVBus
+        {
+            get { return _connectedElements.Count(element => element.EnforcesPVBus) > 0; }
+        }
+
         public override int GetHashCode()
         {
             return _name.GetHashCode();
@@ -49,6 +65,16 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             visitedNodes.Add(this);
             foreach (var element in _connectedElements)
                 element.AddConnectedNodes(visitedNodes);
+        }
+
+        public bool EnforcesSlackBus
+        {
+            get { return false; }
+        }
+
+        public bool EnforcesPVBus
+        {
+            get { return false; }
         }
 
         public bool Equals(IReadOnlyNode other)

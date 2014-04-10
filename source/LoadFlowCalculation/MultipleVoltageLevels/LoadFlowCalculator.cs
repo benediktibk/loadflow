@@ -39,6 +39,8 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "there must not be a floating node");
             if (powerNet.CheckIfNominalVoltagesDoNotMatch())
                 throw new ArgumentOutOfRangeException("powerNet", "the nominal voltages must match on connected nodes");
+            if (powerNet.CheckIfNodeIsOverdetermined())
+                throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
 
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var nodes = powerNet.GetNodes();

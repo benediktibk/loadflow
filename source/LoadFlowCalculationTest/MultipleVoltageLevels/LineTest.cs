@@ -80,5 +80,17 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             ComplexAssert.AreEqual(-5, 4, admittances[1, 0], 0.00001);
             ComplexAssert.AreEqual(4, 1, admittances[1, 1], 0.00001);
         }
+
+        [TestMethod]
+        public void EnforcesPVBus_Empty_False()
+        {
+            Assert.IsFalse(_lineValid.EnforcesPVBus);
+        }
+
+        [TestMethod]
+        public void EnforcesSlackBus_Empty_False()
+        {
+            Assert.IsFalse(_lineValid.EnforcesSlackBus);
+        }
     }
 }

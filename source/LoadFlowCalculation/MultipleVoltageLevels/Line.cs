@@ -44,6 +44,16 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return Math.Abs((TargetNominalVoltage - SourceNominalVoltage)/TargetNominalVoltage) < 0.0000001; }
         }
 
+        public bool EnforcesSlackBus
+        {
+            get { return false; }
+        }
+
+        public bool EnforcesPVBus
+        {
+            get { return false; }
+        }
+
         public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _sourceNode.AddConnectedNodes(visitedNodes);

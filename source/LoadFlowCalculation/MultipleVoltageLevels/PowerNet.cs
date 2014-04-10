@@ -139,6 +139,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return _lines.Count(line => !line.NominalVoltagesMatch) > 0;
         }
 
+        public bool CheckIfNodeIsOverdetermined()
+        {
+            return _nodes.Count(x => x.IsOverdetermined) > 0;
+        }
+
         public IReadOnlyNode GetNodeByName(string name)
         {
             return GetNodeByNameInternal(name);

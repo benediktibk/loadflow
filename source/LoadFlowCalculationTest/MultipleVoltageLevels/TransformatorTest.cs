@@ -52,5 +52,17 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             upperSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
             lowerSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
         }
+
+        [TestMethod]
+        public void EnforcesPVBus_Empty_False()
+        {
+            Assert.IsFalse(_transformator.EnforcesPVBus);
+        }
+
+        [TestMethod]
+        public void EnforcesSlackBus_Empty_False()
+        {
+            Assert.IsFalse(_transformator.EnforcesSlackBus);
+        }
     }
 }

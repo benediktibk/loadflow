@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -20,6 +19,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         bool CheckIfFloatingNodesExists();
         bool CheckIfNominalVoltagesDoNotMatch();
+        bool CheckIfNodeIsOverdetermined();
         IReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetNodes();
         IReadOnlyList<Line> GetLines();

@@ -32,6 +32,18 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void EnforcesPVBus_Empty_True()
+        {
+            Assert.IsTrue(_generator.EnforcesPVBus);
+        }
+
+        [TestMethod]
+        public void EnforcesSlackBus_Empty_False()
+        {
+            Assert.IsFalse(_generator.EnforcesSlackBus);
+        }
+
+        [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IReadOnlyNode>();

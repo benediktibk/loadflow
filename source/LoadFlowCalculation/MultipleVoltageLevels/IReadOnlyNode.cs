@@ -7,6 +7,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     {
         double NominalVoltage { get; }
         string Name { get; }
+        bool IsOverdetermined { get; }
+        bool MustBeSlackBus { get; }
+        bool MustBePVBus { get; }
         IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
     }
 }
