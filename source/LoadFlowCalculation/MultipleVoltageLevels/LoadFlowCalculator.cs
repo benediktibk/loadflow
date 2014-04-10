@@ -34,6 +34,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public IDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
         {
+            if (powerNet.CheckIfFloatingNodesExists())
+                throw new ArgumentOutOfRangeException("powerNet", "there must not be a floating node");
+            if (powerNet.CheckIfNominalVoltagesDoNotMatch())
+                throw new ArgumentOutOfRangeException("powerNet", "the nominal voltages must match on connected nodes");
+
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var nodeVoltages = new Dictionary<string, Complex>();
             return nodeVoltages;

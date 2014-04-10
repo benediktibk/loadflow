@@ -1,7 +1,9 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
@@ -11,12 +13,14 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
     {
         private LoadFlowCalculator _calculator;
         private PowerNet _powerNet;
+        private Mock<IReadOnlyPowerNet> _powerNetMock;
 
         [TestInitialize]
         public void SetUp()
         {
             _calculator = new LoadFlowCalculator(5, 2, new CurrentIteration(0.00001, 1000));
             _powerNet = new PowerNet(50);
+            _powerNetMock = new Mock<IReadOnlyPowerNet>();
         }
 
         [TestMethod]
@@ -59,6 +63,26 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             Assert.IsTrue(nodeVoltages.ContainsKey("loadNode"));
             ComplexAssert.AreEqual(100, 0, nodeVoltages["feedInNode"], 0.0001);
             ComplexAssert.AreEqual(98.989794855663561963945681494118, 0, nodeVoltages["loadNode"], 0.0001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        public void CalculateNodeVoltages_FloatingNode_ThrowsException()
+        {
+            _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(true);
+            _powerNetMock.Setup(x => x.CheckIfNominalVoltagesDoNotMatch()).Returns(false);
+
+            _calculator.CalculateNodeVoltages(_powerNetMock.Object);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CalculateNodeVoltages_NominalVoltageMismatch_ThrowsException()
+        {
+            _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
+            _powerNetMock.Setup(x => x.CheckIfNominalVoltagesDoNotMatch()).Returns(true);
+
+            _calculator.CalculateNodeVoltages(_powerNetMock.Object);
         }
     }
 }
