@@ -1,5 +1,7 @@
-﻿using LoadFlowCalculation.MultipleVoltageLevels;
+﻿using System.Collections.Generic;
+using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
@@ -34,6 +36,20 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void TargetNominalVoltage_TargetNodeVoltageSetTo12_12()
         {
             Assert.AreEqual(12, _line.TargetNominalVoltage, 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodes_EmptySet_SourceAndTargetGetCallToAddConnectedNodes()
+        {
+            var source = new Mock<INode>();
+            var target = new Mock<INode>();
+            var line = new Line("blub", source.Object, target.Object);
+            var nodes = new HashSet<INode>();
+
+            line.AddConnectedNodes(nodes);
+
+            source.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
+            target.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
         }
     }
 }

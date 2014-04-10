@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
@@ -35,6 +37,20 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void UpperSideNominalVoltage_LowerSideNodeHasNominalVoltage025_025()
         {
             Assert.AreEqual(0.25, _transformator.LowerSideNominalVoltage, 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodes_EmptySet_SourceAndTargetGetCallToAddConnectedNodes()
+        {
+            var upperSideNode = new Mock<INode>();
+            var lowerSideNode = new Mock<INode>();
+            var transformator = new Transformator("blub", 2, 3, 4, 5, 6, upperSideNode.Object, lowerSideNode.Object);
+            var nodes = new HashSet<INode>();
+
+            transformator.AddConnectedNodes(nodes);
+
+            upperSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
+            lowerSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
         }
     }
 }

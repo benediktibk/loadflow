@@ -1,6 +1,8 @@
-﻿namespace LoadFlowCalculation.MultipleVoltageLevels
+﻿using System.Collections.Generic;
+
+namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class Transformator
+    public class Transformator : IPowerNetElement
     {
         private readonly string _name;
         private readonly double _nominalPower;
@@ -36,6 +38,12 @@
         public double LowerSideNominalVoltage
         {
             get { return _lowerSideNode.NominalVoltage; }
+        }
+
+        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        {
+            _upperSideNode.AddConnectedNodes(visitedNodes);
+            _lowerSideNode.AddConnectedNodes(visitedNodes);
         }
     }
 }
