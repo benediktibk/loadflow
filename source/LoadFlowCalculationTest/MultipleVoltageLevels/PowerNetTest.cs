@@ -266,5 +266,25 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             Assert.AreEqual(1, node.ConnectedElements.Count);
             Assert.AreEqual(1, _powerNet.GeneratorCount);
         }
+
+        [TestMethod]
+        public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithDifferentNominalVoltagesConnectedThroughLine_True()
+        {
+            _powerNet.AddNode("blub", 123);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
+
+            Assert.IsTrue(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+        }
+
+        [TestMethod]
+        public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithSameNominalVoltagesConnectedThroughLine_False()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
+
+            Assert.IsFalse(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+        }
     }
 }

@@ -156,6 +156,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return GetSetsOfConnectedNodes().Count != 1;
         }
 
+        public bool CheckIfNominalVoltagesDoNotMatch()
+        {
+            return _lines.Count(line => !line.NominalVoltagesMatch) > 0;
+        }
+
         public INode GetNodeByName(string name)
         {
             return GetNodeByNameInternal(name);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -28,6 +29,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public double TargetNominalVoltage
         {
             get { return _targetNode.NominalVoltage; }
+        }
+
+        public bool NominalVoltagesMatch
+        {
+            get { return Math.Abs((TargetNominalVoltage - SourceNominalVoltage)/TargetNominalVoltage) < 0.0000001; }
         }
 
         public void AddConnectedNodes(ISet<INode> visitedNodes)
