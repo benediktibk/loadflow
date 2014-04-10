@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class Node
+    public class Node : IEquatable<Node>
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
         private readonly List<IPowerNetElement> _connectedElements; 
+
+        public Guid Id { get; private set; }
 
         public Node(string name, double nominalVoltage)
         {
             _name = name;
             _nominalVoltage = nominalVoltage;
             _connectedElements = new List<IPowerNetElement>();
+            Id = Guid.NewGuid();
         }
 
         public void Connect(IPowerNetElement element)
@@ -33,6 +37,16 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public string Name
         {
             get { return _name; }
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public bool Equals(Node other)
+        {
+            return GetHashCode() == other.GetHashCode();
         }
     }
 }
