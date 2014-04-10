@@ -42,12 +42,15 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var nodes = powerNet.GetNodes();
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
+            var lines = powerNet.GetLines();
 
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
             for (var i = 0; i < nodes.Count; ++i)
                 nodeIndexes.Add(nodes[i], i);
 
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
+            foreach (var line in lines)
+                line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasisImpedance);
 
             var nodeVoltages = new Dictionary<string, Complex>();
             return nodeVoltages;

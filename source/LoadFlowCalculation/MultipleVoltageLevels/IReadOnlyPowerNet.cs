@@ -22,6 +22,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         bool CheckIfNominalVoltagesDoNotMatch();
         IReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetNodes();
+        IReadOnlyList<Line> GetLines();
 
         #endregion
     }

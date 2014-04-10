@@ -11,14 +11,14 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         #region variables
 
         private readonly double _frequency;
-        private readonly IList<Load> _loads;
-        private readonly IList<Line> _lines;
-        private readonly IList<Transformator> _transformators;
-        private readonly IList<Generator> _generators;
-        private readonly IList<FeedIn> _feedIns; 
-        private readonly IList<Node> _nodes;
-        private readonly IDictionary<string, Node> _nodesByName;
-        private readonly ISet<string> _allNames; 
+        private readonly List<Load> _loads;
+        private readonly List<Line> _lines;
+        private readonly List<Transformator> _transformators;
+        private readonly List<Generator> _generators;
+        private readonly List<FeedIn> _feedIns; 
+        private readonly List<Node> _nodes;
+        private readonly Dictionary<string, Node> _nodesByName;
+        private readonly HashSet<string> _allNames; 
 
         #endregion
 
@@ -80,7 +80,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             AddName(name);
             var sourceNode = GetNodeByNameInternal(sourceNodeName);
             var targetNode = GetNodeByNameInternal(targetNodeName);
-            var line = new Line(name, sourceNode, targetNode);
+            var line = new Line(name, sourceNode, targetNode, lengthResistance);
             _lines.Add(line);
             sourceNode.Connect(line);
             targetNode.Connect(line);
@@ -147,6 +147,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public IReadOnlyList<IReadOnlyNode> GetNodes()
         {
             return _nodes.Cast<IReadOnlyNode>().ToList();
+        }
+
+        public IReadOnlyList<Line> GetLines()
+        {
+            return _lines;
         }
 
         #endregion

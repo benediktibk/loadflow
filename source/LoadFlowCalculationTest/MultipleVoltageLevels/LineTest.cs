@@ -1,41 +1,56 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
     [TestClass]
     public class LineTest
     {
-        private Line _line;
-        private Node _sourceNode;
-        private Node _targetNode;
+        private Line _lineInvalid;
+        private Node _sourceNodeInvalid;
+        private Node _targetNodeInvalid;
+        private Line _lineValid;
+        private Node _sourceNodeValid;
+        private Node _targetNodeValid;
 
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNode = new Node("source", 102);
-            _targetNode = new Node("target", 12);
-            _line = new Line("connect", _sourceNode, _targetNode);
+            _sourceNodeInvalid = new Node("source", 102);
+            _targetNodeInvalid = new Node("target", 12);
+            _lineInvalid = new Line("connect", _sourceNodeInvalid, _targetNodeInvalid, 5);
+            _sourceNodeValid = new Node("source", 100);
+            _targetNodeValid = new Node("target", 100);
+            _lineValid = new Line("connect", _sourceNodeValid, _targetNodeValid, 5);
         }
 
         [TestMethod]
         public void Constructor_NameSetToconnect_NameIsconnect()
         {
-            Assert.AreEqual("connect", _line.Name);
+            Assert.AreEqual("connect", _lineInvalid.Name);
+        }
+
+        [TestMethod]
+        public void Constructor_LengthResistanceSetTo5_LengthResistanceIs5()
+        {
+            Assert.AreEqual(5, _lineInvalid.LengthResistance, 0.00001);
         }
 
         [TestMethod]
         public void SourceNominalVoltage_SourceNodeVoltageSetTo102_102()
         {
-            Assert.AreEqual(102, _line.SourceNominalVoltage, 0.00001);
+            Assert.AreEqual(102, _lineInvalid.SourceNominalVoltage, 0.00001);
         }
 
         [TestMethod]
         public void TargetNominalVoltage_TargetNodeVoltageSetTo12_12()
         {
-            Assert.AreEqual(12, _line.TargetNominalVoltage, 0.00001);
+            Assert.AreEqual(12, _lineInvalid.TargetNominalVoltage, 0.00001);
         }
 
         [TestMethod]
@@ -43,13 +58,27 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         {
             var source = new Mock<IReadOnlyNode>();
             var target = new Mock<IReadOnlyNode>();
-            var line = new Line("blub", source.Object, target.Object);
+            var line = new Line("blub", source.Object, target.Object, 5);
             var nodes = new HashSet<IReadOnlyNode>();
 
             line.AddConnectedNodes(nodes);
 
             source.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
             target.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_OnlyLengthResistance_CorrectValuesInMatrix()
+        {
+            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int> {{_sourceNodeValid, 0}, {_targetNodeValid, 1}};
+
+            _lineValid.FillInAdmittances(admittances, nodeIndexes, 10);
+
+            ComplexAssert.AreEqual(3, 2, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(-4, 3, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-5, 4, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(4, 1, admittances[1, 1], 0.00001);
         }
     }
 }
