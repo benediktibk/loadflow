@@ -17,7 +17,8 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly IList<Generator> _generators;
         private readonly IList<FeedIn> _feedIns; 
         private readonly IList<Node> _nodes;
-        private readonly IDictionary<string, Node> _nodesByName; 
+        private readonly IDictionary<string, Node> _nodesByName;
+        private readonly ISet<string> _allNames; 
 
         #endregion
 
@@ -33,6 +34,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _feedIns = new List<FeedIn>();
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
+            _allNames = new HashSet<string>();
         }
 
         #endregion
@@ -77,6 +79,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         {
             if (_nodesByName.ContainsKey(name))
                 throw new ArgumentOutOfRangeException("name", "a node with this name already exists");
+            AddName(name);
 
             var node = new Node(name, nominalVoltage);
             _nodes.Add(node);
@@ -86,6 +89,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public void AddLine(string name, string sourceNodeName, string targetNodeName, double lengthResistance, double lengthInductance,
             double shuntConductance, double capacity)
         {
+            AddName(name);
             var sourceNode = GetNodeByNameInternal(sourceNodeName);
             var targetNode = GetNodeByNameInternal(targetNodeName);
             var line = new Line(name, sourceNode, targetNode);
@@ -96,6 +100,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public void AddGenerator(string nodeName, string name, double synchronLengthInductance, double synchronousGeneratedVoltage)
         {
+            AddName(name);
             var node = GetNodeByNameInternal(nodeName);
             var generator = new Generator(name, node);
             _generators.Add(generator);
@@ -104,6 +109,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public void AddFeedIn(string nodeName, string name, Complex voltage)
         {
+            AddName(name);
             var node = GetNodeByNameInternal(nodeName);
             var feedIn = new FeedIn(name, node, voltage);
             _feedIns.Add(feedIn);
@@ -113,6 +119,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public void AddTransformator(string upperSideNodeName, string lowerSideNodeName, string name, double nominalPower,
             double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha)
         {
+            AddName(name);
             var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
             var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
             var transformator = new Transformator(name, nominalPower, shortCircuitVoltageInPercentage, copperLosses, ironLosses, alpha, upperSideNode, lowerSideNode);
@@ -123,6 +130,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public void AddLoad(string nodeName, string name, Complex power)
         {
+            AddName(name);
             var node = GetNodeByNameInternal(nodeName);
             var load = new Load(name, power, node);
             _loads.Add(load);
@@ -170,7 +178,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         #region private functions
 
-        public Node GetNodeByNameInternal(string name)
+        private Node GetNodeByNameInternal(string name)
         {
             Node result;
             _nodesByName.TryGetValue(name, out result);
@@ -179,6 +187,15 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("name", "specified node does not exist");
 
             return result;
+        }
+
+        private void AddName(string name)
+        {
+            if (_allNames.Contains(name))
+                throw new ArgumentOutOfRangeException("name", "the name must be unique throught the all net elements");
+            if (name.Contains('#'))
+                throw new ArgumentOutOfRangeException("name", "the name must not contain a #");
+            _allNames.Add(name);
         }
 
         #endregion

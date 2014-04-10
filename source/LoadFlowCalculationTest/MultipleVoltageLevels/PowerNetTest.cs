@@ -106,8 +106,8 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -122,9 +122,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -140,9 +140,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
             _powerNet.AddNode("hanz", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -156,9 +156,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
             _powerNet.AddNode("hanz", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
 
             Assert.IsTrue(_powerNet.CheckIfFloatingNodesExists());
         }
@@ -188,9 +188,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
 
             Assert.IsFalse(_powerNet.CheckIfFloatingNodesExists());
         }
@@ -285,6 +285,57 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
 
             Assert.IsFalse(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddLoad_SameNameAsNode_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddLoad("blub", "blub", new Complex());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFeedIn_SameNameAsNode_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddFeedIn("blub", "blub", new Complex());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddGenerator_SameNameAsNode_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddGenerator("blub", "blub", 3, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddLine_SameNameAsNode_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddLine("blub", "blub", "blob", 3, 5, 5, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddTransformator_SameNameAsNode_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddTransformator("blub", "blob", "blub", 3, 5, 5, 2, 3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddTransformator_NameContainsHashKey_ThrowsException()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddTransformator("blub", "blob", "heinz#hanz", 3, 5, 5, 2, 3);
         }
     }
 }
