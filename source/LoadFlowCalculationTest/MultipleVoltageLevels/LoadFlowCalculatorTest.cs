@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
@@ -14,7 +15,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _calculator = new LoadFlowCalculator(5, 2);
+            _calculator = new LoadFlowCalculator(5, 2, new CurrentIteration(0.00001, 1000));
             _powerNet = new PowerNet(50);
         }
 

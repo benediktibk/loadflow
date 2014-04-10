@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -14,23 +15,26 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         private readonly double _scaleBasisVoltage;
         private readonly double _scaleBasisPower;
-        private readonly double _scaleBasisCurrent = 0;
-        private readonly double _scaleBasisImpedance = 0;
+        private readonly double _scaleBasisCurrent;
+        private readonly double _scaleBasisImpedance;
+        private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
         #endregion
 
         #region public functions
 
-        public LoadFlowCalculator(double scaleBasisVoltage, double scaleBasisPower)
+        public LoadFlowCalculator(double scaleBasisVoltage, double scaleBasisPower, INodeVoltageCalculator nodeVoltageCalculator)
         {
             _scaleBasisVoltage = scaleBasisVoltage;
             _scaleBasisPower = scaleBasisPower;
             _scaleBasisCurrent = scaleBasisPower/scaleBasisVoltage;
             _scaleBasisImpedance = _scaleBasisVoltage/_scaleBasisCurrent;
+            _nodeVoltageCalculator = nodeVoltageCalculator;
         }
 
         public IDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
         {
+            var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var nodeVoltages = new Dictionary<string, Complex>();
             return nodeVoltages;
         }
