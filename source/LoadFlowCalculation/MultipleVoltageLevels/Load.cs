@@ -7,9 +7,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     {
         private readonly Complex _load;
         private readonly string _name;
-        private readonly INode _node;
+        private readonly IReadOnlyNode _node;
 
-        public Load(string name, Complex load, INode node)
+        public Load(string name, Complex load, IReadOnlyNode node)
         {
             _load = load;
             _name = name;
@@ -31,7 +31,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _node.NominalVoltage; }
         }
 
-        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);
         }

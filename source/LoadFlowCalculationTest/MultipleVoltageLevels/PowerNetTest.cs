@@ -288,6 +288,16 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void CheckIfOneNodeHasTwoFeedIns_TwoNodesWithSameNominalVoltagesConnectedThroughLine_False()
+        {
+            _powerNet.AddNode("blub", 120);
+            _powerNet.AddNode("blob", 120);
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
+
+            Assert.IsFalse(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddLoad_SameNameAsNode_ThrowsException()
         {

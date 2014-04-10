@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public interface INode : IPowerNetElement
+    public interface IReadOnlyNode : IPowerNetElement, IEquatable<IReadOnlyNode>
     {
         double NominalVoltage { get; }
         string Name { get; }

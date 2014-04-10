@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="MultipleVoltageLevels\Generator.cs" />
-    <Compile Include="MultipleVoltageLevels\INode.cs" />
+    <Compile Include="MultipleVoltageLevels\IReadOnlyNode.cs" />
     <Compile Include="MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="MultipleVoltageLevels\IReadOnlyPowerNet.cs" />
     <Compile Include="MultipleVoltageLevels\Line.cs" />

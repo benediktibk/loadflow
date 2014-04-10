@@ -10,10 +10,10 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly double _copperLosses;
         private readonly double _ironLosses;
         private readonly double _alpha;
-        private readonly INode _upperSideNode;
-        private readonly INode _lowerSideNode;
+        private readonly IReadOnlyNode _upperSideNode;
+        private readonly IReadOnlyNode _lowerSideNode;
 
-        public Transformator(string name, double nominalPower, double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha, INode upperSideNode, INode lowerSideNode)
+        public Transformator(string name, double nominalPower, double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha, IReadOnlyNode upperSideNode, IReadOnlyNode lowerSideNode)
         {
             _name = name;
             _nominalPower = nominalPower;
@@ -40,7 +40,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _lowerSideNode.NominalVoltage; }
         }
 
-        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _upperSideNode.AddConnectedNodes(visitedNodes);
             _lowerSideNode.AddConnectedNodes(visitedNodes);

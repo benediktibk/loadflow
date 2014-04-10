@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -36,9 +37,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _allNames = new HashSet<string>();
         }
 
-        public IList<ISet<INode>> GetSetsOfConnectedNodes()
+        public IList<ISet<IReadOnlyNode>> GetSetsOfConnectedNodes()
         {
-            var segments = new List<ISet<INode>>();
+            var segments = new List<ISet<IReadOnlyNode>>();
 
             if (_nodes.Count == 0)
                 return segments;
@@ -50,7 +51,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 if (alreadyContained)
                     continue;
 
-                var newSegment = new HashSet<INode>();
+                var newSegment = new HashSet<IReadOnlyNode>();
                 node.AddConnectedNodes(newSegment);
                 segments.Add(newSegment);
             }
@@ -138,9 +139,14 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return _lines.Count(line => !line.NominalVoltagesMatch) > 0;
         }
 
-        public INode GetNodeByName(string name)
+        public IReadOnlyNode GetNodeByName(string name)
         {
             return GetNodeByNameInternal(name);
+        }
+
+        public IReadOnlyList<IReadOnlyNode> GetNodes()
+        {
+            return _nodes.Cast<IReadOnlyNode>().ToList();
         }
 
         #endregion

@@ -47,13 +47,13 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
-            var node = new Mock<INode>();
+            var node = new Mock<IReadOnlyNode>();
             var load = new Load("feed", new Complex(123, 3), node.Object);
-            var nodes = new HashSet<INode>();
+            var nodes = new HashSet<IReadOnlyNode>();
 
             load.AddConnectedNodes(nodes);
 
-            node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
+            node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 {
     public interface IPowerNetElement
     {
-        void AddConnectedNodes(ISet<INode> visitedNodes);
+        void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes);
     }
 }

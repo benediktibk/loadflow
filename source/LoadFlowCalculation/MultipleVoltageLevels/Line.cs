@@ -6,10 +6,10 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     public class Line : IPowerNetElement
     {
         private readonly string _name;
-        private readonly INode _sourceNode;
-        private readonly INode _targetNode;
+        private readonly IReadOnlyNode _sourceNode;
+        private readonly IReadOnlyNode _targetNode;
 
-        public Line(string name, INode sourceNode, INode targetNode)
+        public Line(string name, IReadOnlyNode sourceNode, IReadOnlyNode targetNode)
         {
             _name = name;
             _sourceNode = sourceNode;
@@ -36,7 +36,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return Math.Abs((TargetNominalVoltage - SourceNominalVoltage)/TargetNominalVoltage) < 0.0000001; }
         }
 
-        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _sourceNode.AddConnectedNodes(visitedNodes);
             _targetNode.AddConnectedNodes(visitedNodes);

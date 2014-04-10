@@ -6,10 +6,10 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     public class FeedIn : IPowerNetElement
     {
         private readonly string _name;
-        private readonly INode _node;
+        private readonly IReadOnlyNode _node;
         private readonly Complex _voltage;
 
-        public FeedIn(string name, INode node, Complex voltage)
+        public FeedIn(string name, IReadOnlyNode node, Complex voltage)
         {
             _name = name;
             _node = node;
@@ -31,7 +31,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _voltage; }
         }
 
-        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);
         }

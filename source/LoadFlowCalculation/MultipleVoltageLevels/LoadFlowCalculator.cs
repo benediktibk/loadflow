@@ -6,6 +6,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
@@ -40,6 +41,14 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "the nominal voltages must match on connected nodes");
 
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
+            var nodes = powerNet.GetNodes();
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
+
+            for (var i = 0; i < nodes.Count; ++i)
+                nodeIndexes.Add(nodes[i], i);
+
+            var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
+
             var nodeVoltages = new Dictionary<string, Complex>();
             return nodeVoltages;
         }

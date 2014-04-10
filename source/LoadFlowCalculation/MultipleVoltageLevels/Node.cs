@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class Node : IEquatable<Node>, INode
+    public class Node : IReadOnlyNode
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
@@ -41,7 +41,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return _name.GetHashCode();
         }
 
-        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
         {
             if (visitedNodes.Contains(this))
                 return;
@@ -51,7 +51,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 element.AddConnectedNodes(visitedNodes);
         }
 
-        public bool Equals(Node other)
+        public bool Equals(IReadOnlyNode other)
         {
             return _name == other.Name;
         }
