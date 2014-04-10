@@ -1,6 +1,8 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
@@ -40,6 +42,18 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void NominalVoltage_NodeHasNominalVoltageOf3_3()
         {
             Assert.AreEqual(3, _load.NominalVoltage, 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
+        {
+            var node = new Mock<INode>();
+            var load = new Load("feed", new Complex(123, 3), node.Object);
+            var nodes = new HashSet<INode>();
+
+            load.AddConnectedNodes(nodes);
+
+            node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
         }
     }
 }

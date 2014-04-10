@@ -1,5 +1,8 @@
-﻿using LoadFlowCalculation.MultipleVoltageLevels;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
@@ -26,6 +29,18 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void NominalVoltage_Empty_103()
         {
             Assert.AreEqual(103, _generator.NominalVoltage, 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
+        {
+            var node = new Mock<INode>();
+            var generator = new Generator("feed", node.Object);
+            var nodes = new HashSet<INode>();
+
+            generator.AddConnectedNodes(nodes);
+
+            node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<INode>>()), Times.Once);
         }
     }
 }

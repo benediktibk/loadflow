@@ -1,8 +1,9 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class Load
+    public class Load : IPowerNetElement
     {
         private readonly Complex _load;
         private readonly string _name;
@@ -28,6 +29,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         public double NominalVoltage
         {
             get { return _node.NominalVoltage; }
+        }
+
+        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        {
+            _node.AddConnectedNodes(visitedNodes);
         }
     }
 }

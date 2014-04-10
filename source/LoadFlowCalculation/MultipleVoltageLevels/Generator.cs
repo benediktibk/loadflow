@@ -1,6 +1,8 @@
-﻿namespace LoadFlowCalculation.MultipleVoltageLevels
+﻿using System.Collections.Generic;
+
+namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class Generator
+    public class Generator : IPowerNetElement
     {
         private readonly string _name;
         private readonly INode _node;
@@ -19,6 +21,11 @@
         public double NominalVoltage
         {
             get { return _node.NominalVoltage; }
+        }
+
+        public void AddConnectedNodes(ISet<INode> visitedNodes)
+        {
+            _node.AddConnectedNodes(visitedNodes);
         }
     }
 }
