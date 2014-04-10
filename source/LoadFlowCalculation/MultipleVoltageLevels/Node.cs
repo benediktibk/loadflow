@@ -9,14 +9,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly double _nominalVoltage;
         private readonly List<IPowerNetElement> _connectedElements; 
 
-        public Guid Id { get; private set; }
-
         public Node(string name, double nominalVoltage)
         {
             _name = name;
             _nominalVoltage = nominalVoltage;
             _connectedElements = new List<IPowerNetElement>();
-            Id = Guid.NewGuid();
         }
 
         public void Connect(IPowerNetElement element)
@@ -41,7 +38,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return _name.GetHashCode();
         }
 
         public void AddConnectedNodes(ISet<INode> visitedNodes)
@@ -56,7 +53,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public bool Equals(Node other)
         {
-            return GetHashCode() == other.GetHashCode();
+            return _name == other.Name;
         }
     }
 }
