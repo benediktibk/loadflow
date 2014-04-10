@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using LoadFlowCalculation.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -212,6 +213,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.LineCount);
         }
 
         [TestMethod]
@@ -226,6 +228,43 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.TransformatorCount);
+        }
+
+        [TestMethod]
+        public void AddLoad_ValidNode_NodeHasOneConnectedElement()
+        {
+            _powerNet.AddNode("blub", 123);
+            var node = _powerNet.GetNodeByName("blub");
+
+            _powerNet.AddLoad("blub", "load", new Complex());
+
+            Assert.AreEqual(1, node.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.LoadCount);
+        }
+
+        [TestMethod]
+        public void AddFeedIn_ValidNode_NodeHasOneConnectedElement()
+        {
+            _powerNet.AddNode("blub", 123);
+            var node = _powerNet.GetNodeByName("blub");
+
+            _powerNet.AddFeedIn("blub", "load", new Complex(123, 3));
+
+            Assert.AreEqual(1, node.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.FeedInCount);
+        }
+
+        [TestMethod]
+        public void AddGenerator_ValidNode_NodeHasOneConnectedElement()
+        {
+            _powerNet.AddNode("blub", 123);
+            var node = _powerNet.GetNodeByName("blub");
+
+            _powerNet.AddGenerator("blub", "load", 5, 3);
+            
+            Assert.AreEqual(1, node.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.GeneratorCount);
         }
     }
 }

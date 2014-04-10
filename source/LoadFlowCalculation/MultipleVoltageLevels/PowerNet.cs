@@ -13,7 +13,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly double _frequency;
         private readonly IList<Load> _loads;
         private readonly IList<Line> _lines;
-        private readonly IList<Transformator> _transformators; 
+        private readonly IList<Transformator> _transformators;
+        private readonly IList<Generator> _generators;
+        private readonly IList<FeedIn> _feedIns; 
         private readonly IList<Node> _nodes;
         private readonly IDictionary<string, Node> _nodesByName; 
 
@@ -27,8 +29,44 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _loads = new List<Load>();
             _lines = new List<Line>();
             _transformators = new List<Transformator>();
+            _generators = new List<Generator>();
+            _feedIns = new List<FeedIn>();
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
+        }
+
+        #endregion
+
+        #region properties
+
+        public int LoadCount
+        {
+            get { return _loads.Count; }
+        }
+
+        public int LineCount
+        {
+            get { return _lines.Count; }
+        }
+
+        public int FeedInCount
+        {
+            get { return _feedIns.Count; }
+        }
+
+        public int TransformatorCount
+        {
+            get { return _transformators.Count; }
+        }
+
+        public int GeneratorCount
+        {
+            get { return _generators.Count; }
+        }
+
+        public int NodeCount
+        {
+            get { return _loads.Count; }
         }
 
         #endregion
@@ -45,25 +83,31 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _nodesByName.Add(name, node);
         }
 
-        public void AddLine(string name, string firstNode, string secondNode, double lengthResistance, double lengthInductance,
+        public void AddLine(string name, string sourceNodeName, string targetNodeName, double lengthResistance, double lengthInductance,
             double shuntConductance, double capacity)
         {
-            var sourceNode = GetNodeByNameInternal(firstNode);
-            var targetNode = GetNodeByNameInternal(secondNode);
+            var sourceNode = GetNodeByNameInternal(sourceNodeName);
+            var targetNode = GetNodeByNameInternal(targetNodeName);
             var line = new Line(name, sourceNode, targetNode);
             _lines.Add(line);
             sourceNode.Connect(line);
             targetNode.Connect(line);
         }
 
-        public void AddGenerator(string node, string name, double synchronLengthInductance, double synchronousGeneratedVoltage)
+        public void AddGenerator(string nodeName, string name, double synchronLengthInductance, double synchronousGeneratedVoltage)
         {
-            throw new NotImplementedException();
+            var node = GetNodeByNameInternal(nodeName);
+            var generator = new Generator(name, node);
+            _generators.Add(generator);
+            node.Connect(generator);
         }
 
-        public void AddFeedIn(string node, string name, double shortCircuitPower)
+        public void AddFeedIn(string nodeName, string name, Complex voltage)
         {
-            throw new NotImplementedException();
+            var node = GetNodeByNameInternal(nodeName);
+            var feedIn = new FeedIn(name, node, voltage);
+            _feedIns.Add(feedIn);
+            node.Connect(feedIn);
         }
 
         public void AddTransformator(string upperSideNodeName, string lowerSideNodeName, string name, double nominalPower,
@@ -77,9 +121,12 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             lowerSideNode.Connect(transformator);
         }
 
-        public void AddLoad(string node, string name, Complex power)
+        public void AddLoad(string nodeName, string name, Complex power)
         {
-            throw new NotImplementedException();
+            var node = GetNodeByNameInternal(nodeName);
+            var load = new Load(name, power, node);
+            _loads.Add(load);
+            node.Connect(load);
         }
 
         public IList<ISet<INode>> GetSetsOfConnectedNodes()
@@ -128,6 +175,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
             return result;
         }
+
         #endregion
     }
 }
