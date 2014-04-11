@@ -55,7 +55,8 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public Complex GetSlackVoltage(double scaleBasisVoltage)
         {
-            return Voltage/NominalVoltage;
+            var scaler = new DimensionSingleLevelScaler(NominalVoltage, 1);
+            return scaler.ScaleVoltage(Voltage);
         }
 
         public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
