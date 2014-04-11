@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
-using LoadFlowCalculation.SingleVoltageLevel;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 
@@ -15,22 +10,16 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
     {
         #region variables
 
-        private readonly double _scaleBasisVoltage;
-        private readonly double _scaleBasisPower;
-        private readonly double _scaleBasisCurrent;
-        private readonly double _scaleBasisImpedance;
+        private readonly double _scaleBasePower;
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
         #endregion
 
         #region public functions
 
-        public LoadFlowCalculator(double scaleBasisVoltage, double scaleBasisPower, INodeVoltageCalculator nodeVoltageCalculator)
+        public LoadFlowCalculator(double scaleBasePower, INodeVoltageCalculator nodeVoltageCalculator)
         {
-            _scaleBasisVoltage = scaleBasisVoltage;
-            _scaleBasisPower = scaleBasisPower;
-            _scaleBasisCurrent = scaleBasisPower/scaleBasisVoltage;
-            _scaleBasisImpedance = _scaleBasisVoltage/_scaleBasisCurrent;
+            _scaleBasePower = scaleBasePower;
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }
 
@@ -52,7 +41,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
             foreach (var line in lines)
-                line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasisImpedance);
+                line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower);
 
             var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
             foreach (var node in nodes)
@@ -60,15 +49,15 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 var singleVoltageNode = new SingleVoltageLevel.Node();
 
                 if (node.MustBeSlackBus)
-                    singleVoltageNode.Voltage = node.GetSlackVoltage();
+                    singleVoltageNode.Voltage = node.GetSlackVoltage(ScaleBasePower);
                 else if (node.MustBePVBus)
                 {
-                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasisPower);
+                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasePower);
                     singleVoltageNode.VoltageMagnitude = data.Item1;
                     singleVoltageNode.RealPower = data.Item2;
                 }
                 else
-                    singleVoltageNode.Power = node.GetTotalPowerForPQBus(ScaleBasisPower);
+                    singleVoltageNode.Power = node.GetTotalPowerForPQBus(ScaleBasePower);
 
                 var nodeIndex = nodeIndexes[node];
                 singleVoltageNodes[nodeIndex] = singleVoltageNode;
@@ -76,7 +65,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             bool voltageCollapse;
-            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittanes, ScaleBasisVoltage,
+            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittanes, 1,
                 singleVoltageNodes, out voltageCollapse);
 
             var nodeVoltages = new Dictionary<string, Complex>();
@@ -96,24 +85,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         #region public properties
 
-        public double ScaleBasisVoltage
+        public double ScaleBasePower
         {
-            get { return _scaleBasisVoltage; }
-        }
-
-        public double ScaleBasisPower
-        {
-            get { return _scaleBasisPower; }
-        }
-
-        public double ScaleBasisCurrent
-        {
-            get { return _scaleBasisCurrent; }
-        }
-
-        public double ScaleBasisImpedance
-        {
-            get { return _scaleBasisImpedance; }
+            get { return _scaleBasePower; }
         }
 
         #endregion

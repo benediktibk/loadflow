@@ -348,7 +348,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.GetSlackVoltage();
+            _node.GetSlackVoltage(45);
         }
 
         [TestMethod]
@@ -362,7 +362,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.GetSlackVoltage();
+            _node.GetSlackVoltage(45);
         }
 
         [TestMethod]
@@ -375,9 +375,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.GetSlackVoltage();
+            _node.GetSlackVoltage(45);
 
-            elementTwo.Verify(x => x.GetSlackVoltage(), Times.Once);
+            elementTwo.Verify(x => x.GetSlackVoltage(45), Times.Once);
         }
 
         [TestMethod]

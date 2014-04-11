@@ -80,7 +80,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void GetSlackVoltage_VoltageSetTo4And3_CorrectResult()
         {
-            var result = _feedIn.GetSlackVoltage();
+            var result = _feedIn.GetSlackVoltage(45);
 
             ComplexAssert.AreEqual(2, 1.5, result, 0.00001);
         }

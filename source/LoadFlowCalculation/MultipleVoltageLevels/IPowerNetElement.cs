@@ -10,8 +10,8 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes);
         bool EnforcesSlackBus { get; }
         bool EnforcesPVBus { get; }
-        Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisPower);
-        Complex GetTotalPowerForPQBus(double scaleBasisPower);
-        Complex GetSlackVoltage();
+        Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);
+        Complex GetTotalPowerForPQBus(double scaleBasePower);
+        Complex GetSlackVoltage(double scaleBasePower);
     }
 }

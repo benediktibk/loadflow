@@ -56,17 +56,17 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return false; }
         }
 
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisPower)
+        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
             throw new InvalidOperationException();
         }
 
-        public Complex GetTotalPowerForPQBus(double scaleBasisPower)
+        public Complex GetTotalPowerForPQBus(double scaleBasePower)
         {
             return new Complex();
         }
 
-        public Complex GetSlackVoltage()
+        public Complex GetSlackVoltage(double scaleBasePower)
         {
             throw new InvalidOperationException();
         }
@@ -77,8 +77,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IDictionary<IReadOnlyNode, int> nodeIndexes,
-            double scaleBasisImpedance)
+        public void FillInAdmittances(Matrix admittances, IDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
             var scaler = new DimensionSingleLevelScaler(TargetNominalVoltage, 1);
             var sourceIndex = nodeIndexes[_sourceNode];

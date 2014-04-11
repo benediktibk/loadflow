@@ -19,7 +19,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _calculator = new LoadFlowCalculator(5, 2, new CurrentIteration(0.00001, 1000));
+            _calculator = new LoadFlowCalculator(2, new CurrentIteration(0.00001, 1000));
             _powerNet = new PowerNet(50);
             _powerNetMock = new Mock<IReadOnlyPowerNet>();
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
@@ -28,27 +28,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void Constructor_5AsScaleBaseForVoltage_ScaleBaseForVoltageIs5()
-        {
-            Assert.AreEqual(5, _calculator.ScaleBasisVoltage, 0.00001);
-        }
-
-        [TestMethod]
         public void Constructor_2AsScaleBaseForPower_ScaleBaseForPowerIs2()
         {
-            Assert.AreEqual(2, _calculator.ScaleBasisPower, 0.00001);
-        }
-
-        [TestMethod]
-        public void Constructor_5And2_ScaleBaseForCurrentIsCorrect()
-        {
-            Assert.AreEqual(_calculator.ScaleBasisPower / _calculator.ScaleBasisVoltage, _calculator.ScaleBasisCurrent, 0.00001);
-        }
-
-        [TestMethod]
-        public void Constructor_5And2_ScaleBaseForImpedanceIsCorrect()
-        {
-            Assert.AreEqual(_calculator.ScaleBasisVoltage / _calculator.ScaleBasisCurrent, _calculator.ScaleBasisImpedance, 0.00001);
+            Assert.AreEqual(2, _calculator.ScaleBasePower, 0.00001);
         }
 
         [TestMethod]

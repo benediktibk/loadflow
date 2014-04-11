@@ -88,7 +88,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
         {
-            _load.GetSlackVoltage();
+            _load.GetSlackVoltage(45);
         }
     }
 }
