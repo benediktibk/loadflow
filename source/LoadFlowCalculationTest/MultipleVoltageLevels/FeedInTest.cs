@@ -17,7 +17,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node("nnnode", 1000);
+            _node = new Node("nnnode", 2);
             _feedIn = new FeedIn("feedIt", _node, new Complex(4, 3));
         }
 
@@ -36,7 +36,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void NominalVoltage_Empty_SameAsNode()
         {
-            Assert.AreEqual(1000, _feedIn.NominalVoltage, 0.00001);
+            Assert.AreEqual(2, _feedIn.NominalVoltage, 0.00001);
         }
 
         [TestMethod]
@@ -82,7 +82,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         {
             var result = _feedIn.GetSlackVoltage(3);
 
-            ComplexAssert.AreEqual(4.0/3, 1, result, 0.00001);
+            ComplexAssert.AreEqual(2, 1.5, result, 0.00001);
         }
     }
 }

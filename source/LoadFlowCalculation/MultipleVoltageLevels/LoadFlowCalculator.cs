@@ -85,7 +85,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             {
                 var index = nodeIndexes[node];
                 var name = node.Name;
-                var voltage = singleVoltageNodesWithResults[index].Voltage;
+                var voltage = singleVoltageNodesWithResults[index].Voltage*node.NominalVoltage;
                 nodeVoltages.Add(name, voltage);
             }
 

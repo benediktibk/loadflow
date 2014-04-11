@@ -81,7 +81,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         {
             var result = _load.GetTotalPowerForPQBus(3);
 
-            ComplexAssert.AreEqual(4.0/3, 1.0/3, result, 0.00001);
+            ComplexAssert.AreEqual(4, 1, result, 0.00001);
         }
 
         [TestMethod]

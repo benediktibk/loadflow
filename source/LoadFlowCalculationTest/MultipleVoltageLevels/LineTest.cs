@@ -76,10 +76,10 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
             _lineValid.FillInAdmittances(admittances, nodeIndexes, 10);
 
-            ComplexAssert.AreEqual(3, 2, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(-4, 3, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-5, 4, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(4, 1, admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(2001, 2, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(-2002, 3, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-2003, 4, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(2002, 1, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]

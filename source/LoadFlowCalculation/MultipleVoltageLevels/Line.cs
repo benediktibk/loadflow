@@ -82,7 +82,8 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         {
             var sourceIndex = nodeIndexes[_sourceNode];
             var targetIndex = nodeIndexes[_targetNode];
-            var lengthResistanceScaled = LengthResistance/scaleBasisImpedance;
+            var nominalVoltage = TargetNominalVoltage;
+            var lengthResistanceScaled = LengthResistance/(nominalVoltage*nominalVoltage);
             var lengthAdmittanceScaled = 1/lengthResistanceScaled;
             admittances[sourceIndex, sourceIndex] += lengthAdmittanceScaled;
             admittances[targetIndex, targetIndex] += lengthAdmittanceScaled;

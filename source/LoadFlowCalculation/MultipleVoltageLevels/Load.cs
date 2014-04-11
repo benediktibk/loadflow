@@ -50,7 +50,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public Complex GetTotalPowerForPQBus(double scaleBasisPower)
         {
-            return Value/scaleBasisPower;
+            return Value;
         }
 
         public Complex GetSlackVoltage(double scaleBasisVoltage)
