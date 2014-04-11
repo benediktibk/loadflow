@@ -86,11 +86,11 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             targetNode.Connect(line);
         }
 
-        public void AddGenerator(string nodeName, string name, double synchronLengthInductance, double synchronousGeneratedVoltage)
+        public void AddGenerator(string nodeName, string name, double voltageMagnitude, double realPower)
         {
             AddName(name);
             var node = GetNodeByNameInternal(nodeName);
-            var generator = new Generator(name, node);
+            var generator = new Generator(name, node, voltageMagnitude, realPower);
             _generators.Add(generator);
             node.Connect(generator);
         }
