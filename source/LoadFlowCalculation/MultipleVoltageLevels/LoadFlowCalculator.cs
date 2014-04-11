@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using LoadFlowCalculation.SingleVoltageLevel;
 using LoadFlowCalculation.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 
@@ -42,7 +43,6 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             if (powerNet.CheckIfNodeIsOverdetermined())
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
 
-            var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var nodes = powerNet.GetNodes();
             var lines = powerNet.GetLines();
 
@@ -54,7 +54,41 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             foreach (var line in lines)
                 line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasisImpedance);
 
+            var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
+            foreach (var node in nodes)
+            {
+                var singleVoltageNode = new SingleVoltageLevel.Node();
+
+                if (node.MustBeSlackBus)
+                    singleVoltageNode.Voltage = node.GetSlackVoltage(ScaleBasisVoltage);
+                else if (node.MustBePVBus)
+                {
+                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasisVoltage, ScaleBasisPower);
+                    singleVoltageNode.VoltageMagnitude = data.Item1;
+                    singleVoltageNode.RealPower = data.Item2;
+                }
+                else
+                    singleVoltageNode.Power = node.GetTotalPowerForPQBus(ScaleBasisPower);
+
+                var nodeIndex = nodeIndexes[node];
+                singleVoltageNodes[nodeIndex] = singleVoltageNode;
+            }
+
+            var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
+            bool voltageCollapse;
+            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittanes, ScaleBasisVoltage,
+                singleVoltageNodes, out voltageCollapse);
+
             var nodeVoltages = new Dictionary<string, Complex>();
+
+            foreach (var node in nodes)
+            {
+                var index = nodeIndexes[node];
+                var name = node.Name;
+                var voltage = singleVoltageNodesWithResults[index].Voltage;
+                nodeVoltages.Add(name, voltage);
+            }
+
             return nodeVoltages;
         }
 

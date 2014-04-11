@@ -68,9 +68,9 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreatePVBus_ValidStuff_ThrowsException()
+        public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
         {
-            _transformator.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 1);
+            _transformator.GetVoltageMagnitudeAndRealPowerForPVBus(3, 1);
         }
 
         [TestMethod]

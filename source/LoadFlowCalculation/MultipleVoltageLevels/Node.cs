@@ -69,7 +69,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 element.AddConnectedNodes(visitedNodes);
         }
 
-        public PVBus CreatePVBus(IDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisVoltage, double scaleBasisPower)
+        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisVoltage, double scaleBasisPower)
         {
             var enforcingElements = _connectedElements.Where(x => x.EnforcesPVBus).ToList();
 
@@ -78,7 +78,14 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                     "can not create a PV-bus for this node as no (or more than one) element enforces the PV-bus");
 
             var enforcingElement = enforcingElements.First();
-            return enforcingElement.CreatePVBus(nodeIndexes, scaleBasisVoltage, scaleBasisPower);
+            var partialResult = enforcingElement.GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasisVoltage, scaleBasisPower);
+
+            var loadElements = _connectedElements.Where(x => !x.EnforcesPVBus && !x.EnforcesSlackBus);
+            var additionalLoad = loadElements.Aggregate(new Complex(),
+                (current, element) => current + element.GetTotalPowerForPQBus(scaleBasisPower));
+            var totalPower = partialResult.Item2 + additionalLoad.Real;
+            var voltageMagnitude = partialResult.Item1;
+            return new Tuple<double, double>(voltageMagnitude, totalPower);
         }
 
         public Complex GetTotalPowerForPQBus(double scaleBasisPower)

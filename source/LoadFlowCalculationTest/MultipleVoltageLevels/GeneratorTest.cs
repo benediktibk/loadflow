@@ -46,9 +46,10 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void CreatePVBus_ValidStuff_CorrectResult()
+        public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_CorrectResult()
         {
-            _generator.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 1);
+            _generator.GetVoltageMagnitudeAndRealPowerForPVBus(3, 1);
+            Assert.Fail();
         }
 
         [TestMethod]

@@ -291,7 +291,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreatePVBus_NoElementEnforcesPVBus_ThrowsException()
+        public void GetVoltageMagnitudeAndRealPowerForPVBus_NoElementEnforcesPVBus_ThrowsException()
         {
             var elementOne = new Mock<IPowerNetElement>();
             var elementTwo = new Mock<IPowerNetElement>();
@@ -300,12 +300,12 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+            _node.GetVoltageMagnitudeAndRealPowerForPVBus(3, 2);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreatePVBus_BothElementsEnforcesPVBus_ThrowsException()
+        public void GetVoltageMagnitudeAndRealPowerForPVBus_BothElementsEnforcesPVBus_ThrowsException()
         {
             var elementOne = new Mock<IPowerNetElement>();
             var elementTwo = new Mock<IPowerNetElement>();
@@ -314,22 +314,27 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+            _node.GetVoltageMagnitudeAndRealPowerForPVBus(3, 2);
         }
 
         [TestMethod]
-        public void CreatePVBus_OneElementEnforcesPVBus_GotCallToCreatePVBus()
+        public void GetVoltageMagnitudeAndRealPowerForPVBus_OneElementEnforcesPVBus_GotCallToCreatePVBus()
         {
             var elementOne = new Mock<IPowerNetElement>();
             var elementTwo = new Mock<IPowerNetElement>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
+            elementOne.Setup(x => x.GetTotalPowerForPQBus(2)).Returns(new Complex(9, 2));
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
+            elementTwo.Setup(x => x.GetVoltageMagnitudeAndRealPowerForPVBus(3, 2))
+                .Returns(new Tuple<double, double>(5, 6));
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
 
-            _node.CreatePVBus(new Dictionary<IReadOnlyNode, int>(), 3, 2);
+            var result = _node.GetVoltageMagnitudeAndRealPowerForPVBus(3, 2);
 
-            elementTwo.Verify(x => x.CreatePVBus(It.IsAny<IDictionary<IReadOnlyNode, int>>(), 3, 2), Times.Once);
+            elementTwo.Verify(x => x.GetVoltageMagnitudeAndRealPowerForPVBus(3, 2), Times.Once);
+            Assert.AreEqual(5, result.Item1, 0.00001);
+            Assert.AreEqual(15, result.Item2, 0.00001);
         }
 
         [TestMethod]
