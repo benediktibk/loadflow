@@ -79,7 +79,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public void FillInAdmittances(Matrix admittances, IDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
-            var scaler = new DimensionSingleLevelScaler(TargetNominalVoltage, 1);
+            var scaler = new DimensionScaler(TargetNominalVoltage, 1);
             var sourceIndex = nodeIndexes[_sourceNode];
             var targetIndex = nodeIndexes[_targetNode];
             var admittance = scaler.ScaleAdmittance(1.0/LengthResistance);

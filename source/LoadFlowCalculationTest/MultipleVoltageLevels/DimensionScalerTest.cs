@@ -6,14 +6,14 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest.MultipleVoltageLevels
 {
     [TestClass]
-    public class DimensionSingleLevelScalerTest
+    public class DimensionScalerTest
     {
-        private DimensionSingleLevelScaler _scaler;
+        private DimensionScaler _scaler;
 
         [TestInitialize]
         public void Setup()
         {
-            _scaler = new DimensionSingleLevelScaler(4, 3);
+            _scaler = new DimensionScaler(4, 3);
         }
 
         [TestMethod]

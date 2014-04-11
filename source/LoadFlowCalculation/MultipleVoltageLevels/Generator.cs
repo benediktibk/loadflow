@@ -51,7 +51,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
-            var scaler = new DimensionSingleLevelScaler(NominalVoltage, scaleBasePower);
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new Tuple<double, double>(scaler.ScaleVoltage(VoltageMagnitude), scaler.ScalePower(RealPower));
         }
 

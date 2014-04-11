@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultipleVoltageLevels\DimensionSingleLevelScaler.cs" />
+    <Compile Include="MultipleVoltageLevels\DimensionScaler.cs" />
     <Compile Include="MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="MultipleVoltageLevels\Generator.cs" />
     <Compile Include="MultipleVoltageLevels\IReadOnlyNode.cs" />

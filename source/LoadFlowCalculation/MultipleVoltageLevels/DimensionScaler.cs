@@ -2,7 +2,7 @@
 
 namespace LoadFlowCalculation.MultipleVoltageLevels
 {
-    public class DimensionSingleLevelScaler
+    public class DimensionScaler
     {
         #region member variables
 
@@ -15,7 +15,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         #region public functions
 
-        public DimensionSingleLevelScaler(double voltageBase, double powerBase)
+        public DimensionScaler(double voltageBase, double powerBase)
         {
             _voltageBase = voltageBase;
             _powerBase = powerBase;
