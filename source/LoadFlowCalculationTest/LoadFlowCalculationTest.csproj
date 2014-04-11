@@ -73,6 +73,7 @@
     <Compile Include="MultipleVoltageLevels\TransformatorTest.cs" />
     <Compile Include="MultipleVoltageLevels\NodeTest.cs" />
     <Compile Include="MultipleVoltageLevels\PowerNetTest.cs" />
+    <Compile Include="MultipleVoltageLevels\DimensionSingleLevelScalerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleVoltageLevel\CurrentIterationTest.cs" />
     <Compile Include="SingleVoltageLevel\FastDecoupledLoadFlowMethodTest.cs" />
