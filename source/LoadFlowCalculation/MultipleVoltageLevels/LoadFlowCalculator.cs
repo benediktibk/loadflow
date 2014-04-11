@@ -60,10 +60,10 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 var singleVoltageNode = new SingleVoltageLevel.Node();
 
                 if (node.MustBeSlackBus)
-                    singleVoltageNode.Voltage = node.GetSlackVoltage(ScaleBasisVoltage);
+                    singleVoltageNode.Voltage = node.GetSlackVoltage();
                 else if (node.MustBePVBus)
                 {
-                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasisVoltage, ScaleBasisPower);
+                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasisPower);
                     singleVoltageNode.VoltageMagnitude = data.Item1;
                     singleVoltageNode.RealPower = data.Item2;
                 }

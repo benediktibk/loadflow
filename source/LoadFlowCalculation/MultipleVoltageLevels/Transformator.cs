@@ -53,7 +53,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return false; }
         }
 
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisVoltage, double scaleBasisPower)
+        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisPower)
         {
             throw new InvalidOperationException();
         }
@@ -63,7 +63,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return new Complex();
         }
 
-        public Complex GetSlackVoltage(double scaleBasisVoltage)
+        public Complex GetSlackVoltage()
         {
             throw new InvalidOperationException();
         }

@@ -69,7 +69,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                 element.AddConnectedNodes(visitedNodes);
         }
 
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisVoltage, double scaleBasisPower)
+        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasisPower)
         {
             var enforcingElements = _connectedElements.Where(x => x.EnforcesPVBus).ToList();
 
@@ -78,7 +78,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                     "can not create a PV-bus for this node as no (or more than one) element enforces the PV-bus");
 
             var enforcingElement = enforcingElements.First();
-            var partialResult = enforcingElement.GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasisVoltage, scaleBasisPower);
+            var partialResult = enforcingElement.GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasisPower);
 
             var loadElements = _connectedElements.Where(x => !x.EnforcesPVBus && !x.EnforcesSlackBus);
             var additionalLoad = loadElements.Aggregate(new Complex(),
@@ -94,7 +94,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             return _connectedElements.Aggregate(totalPower, (current, element) => current + element.GetTotalPowerForPQBus(scaleBasisPower));
         }
 
-        public Complex GetSlackVoltage(double scaleBasisVoltage)
+        public Complex GetSlackVoltage()
         {
             var enforcingElements = _connectedElements.Where(x => x.EnforcesSlackBus).ToList();
 
@@ -103,7 +103,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
                     "can not create a slack bus for this node as no (or more than one) element enforces the slack bus");
 
             var enforcingElement = enforcingElements.First();
-            return enforcingElement.GetSlackVoltage(scaleBasisVoltage);
+            return enforcingElement.GetSlackVoltage();
         }
 
         public bool EnforcesSlackBus

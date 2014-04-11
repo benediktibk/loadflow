@@ -98,7 +98,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
         {
-            _lineValid.GetVoltageMagnitudeAndRealPowerForPVBus(3, 1);
+            _lineValid.GetVoltageMagnitudeAndRealPowerForPVBus(1);
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
         {
-            _lineValid.GetSlackVoltage(3);
+            _lineValid.GetSlackVoltage();
         }
     }
 }
