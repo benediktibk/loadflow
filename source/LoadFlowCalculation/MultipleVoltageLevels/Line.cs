@@ -11,14 +11,14 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
         private readonly string _name;
         private readonly IReadOnlyNode _sourceNode;
         private readonly IReadOnlyNode _targetNode;
-        private readonly double _lengthResistance;
+        private readonly Complex _lengthImpedance;
 
-        public Line(string name, IReadOnlyNode sourceNode, IReadOnlyNode targetNode, double lengthResistance)
+        public Line(string name, IReadOnlyNode sourceNode, IReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double frequency)
         {
             _name = name;
             _sourceNode = sourceNode;
             _targetNode = targetNode;
-            _lengthResistance = lengthResistance;
+            _lengthImpedance = new Complex(lengthResistance, 2*Math.PI*frequency*lengthInductance);
         }
 
         public string Name
@@ -26,9 +26,9 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             get { return _name; }
         }
 
-        public double LengthResistance
+        public Complex LengthImpedance
         {
-            get { return _lengthResistance; }
+            get { return _lengthImpedance; }
         }
 
         public double SourceNominalVoltage
@@ -82,7 +82,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             var scaler = new DimensionScaler(TargetNominalVoltage, 1);
             var sourceIndex = nodeIndexes[_sourceNode];
             var targetIndex = nodeIndexes[_targetNode];
-            var admittance = scaler.ScaleAdmittance(1.0/LengthResistance);
+            var admittance = scaler.ScaleAdmittance(1.0/LengthImpedance);
             admittances[sourceIndex, sourceIndex] += admittance;
             admittances[targetIndex, targetIndex] += admittance;
             admittances[sourceIndex, targetIndex] -= admittance;
