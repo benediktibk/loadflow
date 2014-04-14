@@ -65,30 +65,31 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MultipleVoltageLevels\LineTest.cs" />
-    <Compile Include="MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
-    <Compile Include="MultipleVoltageLevels\FeedInTest.cs" />
-    <Compile Include="MultipleVoltageLevels\LoadTest.cs" />
-    <Compile Include="MultipleVoltageLevels\GeneratorTest.cs" />
-    <Compile Include="MultipleVoltageLevels\TransformatorTest.cs" />
-    <Compile Include="MultipleVoltageLevels\NodeTest.cs" />
-    <Compile Include="MultipleVoltageLevels\PowerNetTest.cs" />
-    <Compile Include="MultipleVoltageLevels\DimensionScalerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingleVoltageLevel\CurrentIterationTest.cs" />
-    <Compile Include="SingleVoltageLevel\FastDecoupledLoadFlowMethodTest.cs" />
-    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
-    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
-    <Compile Include="SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
-    <Compile Include="SingleVoltageLevel\JacobiMatrixBaseMethodTest.cs" />
-    <Compile Include="SingleVoltageLevel\LoadFlowCalculatorTest.cs" />
-    <Compile Include="SingleVoltageLevel\NewtonRaphsonMethodTest.cs" />
-    <Compile Include="SingleVoltageLevel\NodeAssert.cs" />
-    <Compile Include="SingleVoltageLevel\NodePotentialMethodTest.cs" />
-    <Compile Include="SingleVoltageLevel\NodeTest.cs" />
-    <Compile Include="SingleVoltageLevel\PowerNetTest.cs" />
-    <Compile Include="SingleVoltageLevel\PQBusTest.cs" />
-    <Compile Include="SingleVoltageLevel\PVBusTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScalerTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\FeedInTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\GeneratorTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\LineTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\LoadTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\NodeTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNetTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\TransformatorTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\CurrentIterationTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\FastDecoupledLoadFlowMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\JacobiMatrixBaseMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\LoadFlowCalculatorTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NewtonRaphsonMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeAssert.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodePotentialMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PQBusTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PVBusTest.cs" />
+    <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnalyticContinuation\AnalyticContinuation.csproj">
