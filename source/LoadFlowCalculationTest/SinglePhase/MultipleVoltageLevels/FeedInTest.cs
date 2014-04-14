@@ -18,7 +18,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _node = new Node("nnnode", 2);
-            _feedIn = new FeedIn("feedIt", _node, new Complex(4, 3));
+            _feedIn = new FeedIn("feedIt", _node, new Complex(4, 3), 5);
         }
 
         [TestMethod]
@@ -34,16 +34,51 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void Constructor_ShortCircuitPowerSetTo5_ShortCircuitPowerIs5()
+        {
+            Assert.AreEqual(5, _feedIn.ShortCircuitPower, 0.0001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_ShortCircuitPowerSetToNegativeValue_ThrowsException()
+        {
+            new FeedIn("blub", _node, new Complex(4, 3), -4);
+        }
+
+        [TestMethod]
+        public void Constructor_ShortCircuitPowerSetTo0_ThrowsNoException()
+        {
+            var feedIn = new FeedIn("blub", _node, new Complex(4, 3), 0);
+
+            Assert.AreEqual(0, feedIn.ShortCircuitPower);
+        }
+
+        [TestMethod]
         public void NominalVoltage_Empty_SameAsNode()
         {
             Assert.AreEqual(2, _feedIn.NominalVoltage, 0.00001);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InputImpedance_ShortCircuitPowerSetTo0_ThrowsException()
+        {
+            var feedIn = new FeedIn("blub", _node, new Complex(4, 3), 0);
+            var impedance = feedIn.InputImpedance;
+        }
+
+        [TestMethod]
+        public void InputImpedance_ShortCircuitPowerNotZero_CorrectResult()
+        {
+            Assert.AreEqual(1.1*2*2/5, _feedIn.InputImpedance, 0.0001);
+        }
+
+        [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IReadOnlyNode>();
-            var feedIn = new FeedIn("feed", node.Object, new Complex(123, 3));
+            var feedIn = new FeedIn("feed", node.Object, new Complex(123, 3), 6);
             var nodes = new HashSet<IReadOnlyNode>();
 
             feedIn.AddConnectedNodes(nodes);

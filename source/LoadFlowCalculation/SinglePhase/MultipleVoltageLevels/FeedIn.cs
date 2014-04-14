@@ -9,12 +9,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly string _name;
         private readonly IReadOnlyNode _node;
         private readonly Complex _voltage;
+        private readonly double _shortCircuitPower;
 
-        public FeedIn(string name, IReadOnlyNode node, Complex voltage)
+        public FeedIn(string name, IReadOnlyNode node, Complex voltage, double shortCircuitPower)
         {
+            if (shortCircuitPower < 0)
+                throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
+
             _name = name;
             _node = node;
             _voltage = voltage;
+            _shortCircuitPower = shortCircuitPower;
         }
 
         public string Name
@@ -30,6 +35,23 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public Complex Voltage
         {
             get { return _voltage; }
+        }
+
+        public double ShortCircuitPower
+        {
+            get { return _shortCircuitPower; }
+        }
+
+        public double InputImpedance
+        {
+            get
+            {
+                if (_shortCircuitPower == 0)
+                    throw new InvalidOperationException();
+
+                var nominalVoltage = NominalVoltage;
+                return 1.1*nominalVoltage*nominalVoltage/_shortCircuitPower;
+            }
         }
 
         public bool EnforcesSlackBus

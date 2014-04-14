@@ -39,7 +39,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("feedInNode", 100);
             _powerNet.AddNode("loadNode", 100);
-            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(100, 0));
+            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(100, 0), 0);
             _powerNet.AddLoad("loadNode", "load", new Complex(-10, 0));
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 10, 0, 0, 0);
 
@@ -57,7 +57,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("feedInNode", 100);
             _powerNet.AddNode("loadNode", 100);
-            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(100, 0));
+            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(100, 0), 0);
             _powerNet.AddLoad("loadNode", "load", new Complex(-10, 0));
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 10, 0, 0, 0);
 
@@ -102,7 +102,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("feedInNode", 1);
             _powerNet.AddNode("loadNode", 1);
-            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(1.05, 0));
+            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(1.05, 0), 0);
             _powerNet.AddLoad("loadNode", "load", new Complex(-0.6, -1));
             _powerNet.AddGenerator("loadNode", "generator", 1.02, -0.4);
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 0, 0.00006366197723675813, 0, 0);
@@ -121,7 +121,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("feedInNode", 1);
             _powerNet.AddNode("loadNode", 1);
-            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(1.05, 0));
+            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(1.05, 0), 0);
             _powerNet.AddLoad("loadNode", "load", new Complex(-0.6, -1));
             _powerNet.AddGenerator("loadNode", "generator", 1.02, -0.4);
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 0, 0.00006366197723675813, 0, 0);

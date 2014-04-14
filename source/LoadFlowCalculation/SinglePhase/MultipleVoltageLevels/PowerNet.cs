@@ -94,11 +94,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             node.Connect(generator);
         }
 
-        public void AddFeedIn(string nodeName, string name, Complex voltage)
+        public void AddFeedIn(string nodeName, string name, Complex voltage, double shortCircuitPower)
         {
             AddName(name);
             var node = GetNodeByNameInternal(nodeName);
-            var feedIn = new FeedIn(name, node, voltage);
+            var feedIn = new FeedIn(name, node, voltage, shortCircuitPower);
             _feedIns.Add(feedIn);
             node.Connect(feedIn);
         }

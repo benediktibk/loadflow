@@ -249,7 +249,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             var node = _powerNet.GetNodeByName("blub");
 
-            _powerNet.AddFeedIn("blub", "load", new Complex(123, 3));
+            _powerNet.AddFeedIn("blub", "load", new Complex(123, 3), 0);
 
             Assert.AreEqual(1, node.ConnectedElements.Count);
             Assert.AreEqual(1, _powerNet.FeedInCount);
@@ -310,7 +310,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddFeedIn_SameNameAsNode_ThrowsException()
         {
             _powerNet.AddNode("blub", 120);
-            _powerNet.AddFeedIn("blub", "blub", new Complex());
+            _powerNet.AddFeedIn("blub", "blub", new Complex(), 6);
         }
 
         [TestMethod]
