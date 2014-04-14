@@ -50,7 +50,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
 
         public Complex GetTotalPowerForPQBus(double scaleBasePower)
         {
-            var scaler = new DimensionScaler(NominalVoltage, 1);
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return scaler.ScalePower(Value);
         }
 

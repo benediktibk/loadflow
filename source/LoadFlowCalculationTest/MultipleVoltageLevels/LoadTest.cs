@@ -79,7 +79,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         [TestMethod]
         public void GetTotalPowerForPQBus_ValidStuff_CorrectResult()
         {
-            var result = _load.GetTotalPowerForPQBus(3);
+            var result = _load.GetTotalPowerForPQBus(1);
 
             ComplexAssert.AreEqual(4, 1, result, 0.00001);
         }
@@ -89,6 +89,14 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
         {
             _load.GetSlackVoltage(45);
+        }
+
+        [TestMethod]
+        public void GetTotalPowerForPQBus_ScaleBasePowerSetTo2_PowerIsScaled()
+        {
+            var result = _load.GetTotalPowerForPQBus(2);
+
+            ComplexAssert.AreEqual(2, 0.5, result, 0.0001);
         }
     }
 }

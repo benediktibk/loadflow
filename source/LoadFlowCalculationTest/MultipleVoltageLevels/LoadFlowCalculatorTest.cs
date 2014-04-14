@@ -13,6 +13,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
     public class LoadFlowCalculatorTest
     {
         private LoadFlowCalculator _calculator;
+        private LoadFlowCalculator _calculatorWithNoPowerScaling;
         private PowerNet _powerNet;
         private Mock<IReadOnlyPowerNet> _powerNetMock;
 
@@ -20,6 +21,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         public void SetUp()
         {
             _calculator = new LoadFlowCalculator(2, new CurrentIteration(0.00001, 1000));
+            _calculatorWithNoPowerScaling = new LoadFlowCalculator(1, new CurrentIteration(0.00001, 1000));
             _powerNet = new PowerNet(50);
             _powerNetMock = new Mock<IReadOnlyPowerNet>();
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
@@ -34,7 +36,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void CalculateNodeVoltages_OneFeedInAndOneLoad_CorrectResults()
+        public void CalculateNodeVoltages_OneFeedInAndOneLoadWithoutPowerScaling_CorrectResults()
         {
             _powerNet.AddNode("feedInNode", 100);
             _powerNet.AddNode("loadNode", 100);
@@ -42,7 +44,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddLoad("loadNode", "load", new Complex(-10, 0));
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 10, 0, 0, 0);
 
-            var nodeVoltages = _calculator.CalculateNodeVoltages(_powerNet);
+            var nodeVoltages = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
 
             Assert.AreEqual(2, nodeVoltages.Count);
             Assert.IsTrue(nodeVoltages.ContainsKey("feedInNode"));
@@ -79,7 +81,7 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void CalculateNodeVoltages_GeneratorAndLoad_CorrectResults()
+        public void CalculateNodeVoltages_GeneratorAndLoadWithNoPowerScaling_CorrectResults()
         {
             _powerNet.AddNode("feedInNode", 1);
             _powerNet.AddNode("loadNode", 1);
@@ -88,13 +90,13 @@ namespace LoadFlowCalculationTest.MultipleVoltageLevels
             _powerNet.AddGenerator("loadNode", "generator", 1.02, -0.4);
             _powerNet.AddLine("connection", "feedInNode", "loadNode", 0, 0.00006366197723675813, 0, 0);
 
-            var nodeVoltages = _calculator.CalculateNodeVoltages(_powerNet);
+            var nodeVoltages = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
 
             Assert.AreEqual(2, nodeVoltages.Count);
             Assert.IsTrue(nodeVoltages.ContainsKey("feedInNode"));
             Assert.IsTrue(nodeVoltages.ContainsKey("loadNode"));
             ComplexAssert.AreEqual(1.05, 0, nodeVoltages["feedInNode"], 0.001);
-            ComplexAssert.AreEqual(1.0198, 0.019, nodeVoltages["loadNode"], 0.001);
+            ComplexAssert.AreEqual(1.0198, -0.019, nodeVoltages["loadNode"], 0.001);
         }
     }
 }
