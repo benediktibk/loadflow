@@ -77,7 +77,7 @@ namespace LoadFlowCalculation.MultipleVoltageLevels
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
             var scaler = new DimensionScaler(TargetNominalVoltage, 1);
             var sourceIndex = nodeIndexes[_sourceNode];
