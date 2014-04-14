@@ -19,7 +19,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _upperSideNode = new Node("upper", 10);
             _lowerSideNode = new Node("lower", 0.25);
-            _transformator = new Transformator("blub", 2, 3, 4, 5, 6, _upperSideNode, _lowerSideNode);
+            _transformator = new Transformator("blub", _upperSideNode, _lowerSideNode);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IReadOnlyNode>();
             var lowerSideNode = new Mock<IReadOnlyNode>();
-            var transformator = new Transformator("blub", 2, 3, 4, 5, 6, upperSideNode.Object, lowerSideNode.Object);
+            var transformator = new Transformator("blub", upperSideNode.Object, lowerSideNode.Object);
             var nodes = new HashSet<IReadOnlyNode>();
 
             transformator.AddConnectedNodes(nodes);

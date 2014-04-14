@@ -109,7 +109,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             AddName(name);
             var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
             var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
-            var transformator = new Transformator(name, nominalPower, shortCircuitVoltageInPercentage, copperLosses, ironLosses, alpha, upperSideNode, lowerSideNode);
+            var transformator = new Transformator(name, upperSideNode, lowerSideNode);
             _transformators.Add(transformator);
             upperSideNode.Connect(transformator);
             lowerSideNode.Connect(transformator);
