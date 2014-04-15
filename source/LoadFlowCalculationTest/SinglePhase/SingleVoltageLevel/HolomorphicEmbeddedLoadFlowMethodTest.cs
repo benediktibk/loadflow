@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,7 +31,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CppUnitTests()
         {
-            var result = RunTests();
+            var result = HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTests();
             Assert.IsTrue(result);
         }
 
@@ -43,9 +42,5 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             b = new Complex(-0.062673010380623, -0.0403690888119954);
             c = new Complex(0.0686026762176026, 0.0475978097324825);
         }
-
-        [DllImport("LoadFlowCalculationHELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private static extern bool RunTests();
     }
 }

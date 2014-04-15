@@ -80,6 +80,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\JacobiMatrixBaseMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\LoadFlowCalculatorTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NewtonRaphsonMethodTest.cs" />
