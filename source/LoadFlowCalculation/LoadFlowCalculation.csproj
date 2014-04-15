@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalNode.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalPQNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScaler.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Generator.cs" />
