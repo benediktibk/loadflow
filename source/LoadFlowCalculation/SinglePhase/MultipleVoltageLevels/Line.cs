@@ -8,11 +8,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     public class Line : IPowerNetElement
     {
         private readonly string _name;
-        private readonly IReadOnlyNode _sourceNode;
-        private readonly IReadOnlyNode _targetNode;
+        private readonly IExternalReadOnlyNode _sourceNode;
+        private readonly IExternalReadOnlyNode _targetNode;
         private readonly Complex _lengthImpedance;
 
-        public Line(string name, IReadOnlyNode sourceNode, IReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double frequency)
+        public Line(string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double frequency)
         {
             _name = name;
             _sourceNode = sourceNode;
@@ -70,13 +70,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             throw new InvalidOperationException();
         }
 
-        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             _sourceNode.AddConnectedNodes(visitedNodes);
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
             var sourceIndex = nodeIndexes[_sourceNode];
@@ -88,9 +88,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances[targetIndex, sourceIndex] -= admittance;
         }
 
-        public IList<IReadOnlyNode> GetInternalNodes()
+        public IList<IExternalReadOnlyNode> GetInternalNodes()
         {
-            return new List<IReadOnlyNode>();
+            return new List<IExternalReadOnlyNode>();
         }
     }
 }

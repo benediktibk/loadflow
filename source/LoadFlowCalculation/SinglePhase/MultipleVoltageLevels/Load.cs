@@ -9,9 +9,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly Complex _load;
         private readonly string _name;
-        private readonly IReadOnlyNode _node;
+        private readonly IExternalReadOnlyNode _node;
 
-        public Load(string name, Complex load, IReadOnlyNode node)
+        public Load(string name, Complex load, IExternalReadOnlyNode node)
         {
             _load = load;
             _name = name;
@@ -64,19 +64,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             throw new InvalidOperationException();
         }
 
-        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
 
         }
 
-        public IList<IReadOnlyNode> GetInternalNodes()
+        public IList<IExternalReadOnlyNode> GetInternalNodes()
         {
-            return new List<IReadOnlyNode>();
+            return new List<IExternalReadOnlyNode>();
         }
     }
 }

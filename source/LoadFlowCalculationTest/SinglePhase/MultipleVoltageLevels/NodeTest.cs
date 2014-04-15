@@ -68,7 +68,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfNotContained_ItselfContained()
         {
-            var nodes = new HashSet<IReadOnlyNode>();
+            var nodes = new HashSet<IExternalReadOnlyNode>();
 
             _node.AddConnectedNodes(nodes);
 
@@ -78,7 +78,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfContained_ItselfContained()
         {
-            var nodes = new HashSet<IReadOnlyNode> { _node };
+            var nodes = new HashSet<IExternalReadOnlyNode> { _node };
 
             _node.AddConnectedNodes(nodes);
 
@@ -88,25 +88,25 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedElements_ItselfContained_ConnectedElementGetsNoCallToAddConnectedElements()
         {
-            var nodes = new HashSet<IReadOnlyNode> { _node };
+            var nodes = new HashSet<IExternalReadOnlyNode> { _node };
             var otherElement = new Mock<IPowerNetElement>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
 
-            otherElement.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Never);
+            otherElement.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
         }
 
         [TestMethod]
         public void AddConnectedElements_ItselfNotContained_ConnectedElementGetsCallToAddConnectedElements()
         {
-            var nodes = new HashSet<IReadOnlyNode>();
+            var nodes = new HashSet<IExternalReadOnlyNode>();
             var otherElement = new Mock<IPowerNetElement>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
 
-            otherElement.Verify(x => x.AddConnectedNodes(new HashSet<IReadOnlyNode> { _node }), Times.Once);
+            otherElement.Verify(x => x.AddConnectedNodes(new HashSet<IExternalReadOnlyNode> { _node }), Times.Once);
         }
 
         [TestMethod]

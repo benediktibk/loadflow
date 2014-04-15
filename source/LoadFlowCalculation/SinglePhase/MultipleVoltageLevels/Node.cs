@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Node : IReadOnlyNode
+    public class Node : IExternalReadOnlyNode
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
@@ -58,7 +58,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _name.GetHashCode();
         }
 
-        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             if (visitedNodes.Contains(this))
                 return;

@@ -41,7 +41,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return ExtractNodeVoltages(nodes, nodeIndexes, singleVoltageNodesWithResults);
         }
 
-        private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
+        private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes,
             IList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
             var nodeVoltages = new Dictionary<string, Complex>();
@@ -56,7 +56,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyList<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyList<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes)
         {
             var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
             foreach (var node in nodes)
@@ -80,7 +80,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNodes;
         }
 
-        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IEnumerable<IPowerNetElement> elements, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IExternalReadOnlyNode> nodes, IEnumerable<IPowerNetElement> elements, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
             foreach (var line in elements)
@@ -88,9 +88,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return admittanes;
         }
 
-        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
+        private static Dictionary<IExternalReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IExternalReadOnlyNode> nodes)
         {
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
+            var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int>();
             for (var i = 0; i < nodes.Count; ++i)
                 nodeIndexes.Add(nodes[i], i);
             return nodeIndexes;

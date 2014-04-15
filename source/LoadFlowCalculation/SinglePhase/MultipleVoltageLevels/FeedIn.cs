@@ -8,11 +8,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     public class FeedIn : IPowerNetElement
     {
         private readonly string _name;
-        private readonly IReadOnlyNode _node;
+        private readonly IExternalReadOnlyNode _node;
         private readonly Complex _voltage;
         private readonly double _shortCircuitPower;
 
-        public FeedIn(string name, IReadOnlyNode node, Complex voltage, double shortCircuitPower)
+        public FeedIn(string name, IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
@@ -86,19 +86,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return scaler.ScaleVoltage(Voltage);
         }
 
-        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
 
         }
 
-        public IList<IReadOnlyNode> GetInternalNodes()
+        public IList<IExternalReadOnlyNode> GetInternalNodes()
         {
-            return new List<IReadOnlyNode>();
+            return new List<IExternalReadOnlyNode>();
         }
     }
 }

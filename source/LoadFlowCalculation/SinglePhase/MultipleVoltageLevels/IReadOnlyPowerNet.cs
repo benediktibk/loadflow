@@ -20,8 +20,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfFloatingNodesExists();
         bool CheckIfNominalVoltagesDoNotMatch();
         bool CheckIfNodeIsOverdetermined();
-        IReadOnlyNode GetNodeByName(string name);
-        IReadOnlyList<IReadOnlyNode> GetNodes();
+        IExternalReadOnlyNode GetNodeByName(string name);
+        IReadOnlyList<IExternalReadOnlyNode> GetNodes();
         IReadOnlyList<IPowerNetElement> GetElements();
 
         #endregion

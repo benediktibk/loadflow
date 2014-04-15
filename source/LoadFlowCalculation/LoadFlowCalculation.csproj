@@ -49,9 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScaler.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Generator.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\IExternalReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyPowerNet.cs" />

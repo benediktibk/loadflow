@@ -8,11 +8,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     public class Generator : IPowerNetElement
     {
         private readonly string _name;
-        private readonly IReadOnlyNode _node;
+        private readonly IExternalReadOnlyNode _node;
         private readonly double _voltageMagnitude;
         private readonly double _realPower;
 
-        public Generator(string name, IReadOnlyNode node, double voltageMagnitude, double realPower)
+        public Generator(string name, IExternalReadOnlyNode node, double voltageMagnitude, double realPower)
         {
             _name = name;
             _node = node;
@@ -71,19 +71,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             throw new InvalidOperationException();
         }
 
-        public void AddConnectedNodes(ISet<IReadOnlyNode> visitedNodes)
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
 
         }
 
-        public IList<IReadOnlyNode> GetInternalNodes()
+        public IList<IExternalReadOnlyNode> GetInternalNodes()
         {
-            return new List<IReadOnlyNode>();
+            return new List<IExternalReadOnlyNode>();
         }
     }
 }

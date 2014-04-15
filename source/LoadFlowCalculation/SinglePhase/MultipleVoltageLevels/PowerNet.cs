@@ -38,9 +38,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _allNames = new HashSet<string>();
         }
 
-        public IList<ISet<IReadOnlyNode>> GetSetsOfConnectedNodes()
+        public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
         {
-            var segments = new List<ISet<IReadOnlyNode>>();
+            var segments = new List<ISet<IExternalReadOnlyNode>>();
 
             if (_nodes.Count == 0)
                 return segments;
@@ -52,7 +52,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 if (alreadyContained)
                     continue;
 
-                var newSegment = new HashSet<IReadOnlyNode>();
+                var newSegment = new HashSet<IExternalReadOnlyNode>();
                 node.AddConnectedNodes(newSegment);
                 segments.Add(newSegment);
             }
@@ -150,14 +150,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _nodes.Count(x => x.IsOverdetermined) > 0;
         }
 
-        public IReadOnlyNode GetNodeByName(string name)
+        public IExternalReadOnlyNode GetNodeByName(string name)
         {
             return GetNodeByNameInternal(name);
         }
 
-        public IReadOnlyList<IReadOnlyNode> GetNodes()
+        public IReadOnlyList<IExternalReadOnlyNode> GetNodes()
         {
-            return _nodes.Cast<IReadOnlyNode>().ToList();
+            return _nodes.Cast<IExternalReadOnlyNode>().ToList();
         }
 
         public IReadOnlyList<IPowerNetElement> GetElements()

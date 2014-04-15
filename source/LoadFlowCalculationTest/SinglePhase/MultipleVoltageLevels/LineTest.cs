@@ -57,22 +57,22 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddConnectedNodes_EmptySet_SourceAndTargetGetCallToAddConnectedNodes()
         {
-            var source = new Mock<IReadOnlyNode>();
-            var target = new Mock<IReadOnlyNode>();
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
             var line = new Line("blub", source.Object, target.Object, 5, 4, 3);
-            var nodes = new HashSet<IReadOnlyNode>();
+            var nodes = new HashSet<IExternalReadOnlyNode>();
 
             line.AddConnectedNodes(nodes);
 
-            source.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
-            target.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
+            source.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            target.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
 
         [TestMethod]
         public void FillInAdmittances_OnlyLengthImpedanceAndNoScaling_CorrectValuesInMatrix()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int> {{_sourceNodeValid, 0}, {_targetNodeValid, 1}};
+            var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int> {{_sourceNodeValid, 0}, {_targetNodeValid, 1}};
 
             _lineValid.FillInAdmittances(admittances, nodeIndexes, 1);
 
@@ -86,7 +86,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances_OnlyLengthImpedanceAndScaling_CorrectValuesInMatrix()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
+            var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
             _lineValid.FillInAdmittances(admittances, nodeIndexes, 10);
 
