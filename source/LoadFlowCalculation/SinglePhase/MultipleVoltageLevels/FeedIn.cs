@@ -11,6 +11,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly IExternalReadOnlyNode _node;
         private readonly Complex _voltage;
         private readonly double _shortCircuitPower;
+        private readonly DerivedInternalSlackNode _internalNode;
 
         public FeedIn(string name, IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower)
         {
@@ -21,6 +22,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _node = node;
             _voltage = voltage;
             _shortCircuitPower = shortCircuitPower;
+            _internalNode = new DerivedInternalSlackNode(_node, name + "#" + "internal", voltage);
         }
 
         public string Name
@@ -47,12 +49,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             get
             {
-                if (_shortCircuitPower == 0)
+                if (!InternalNodeNecessary)
                     throw new InvalidOperationException();
 
                 var nominalVoltage = NominalVoltage;
                 return 1.1*nominalVoltage*nominalVoltage/_shortCircuitPower;
             }
+        }
+
+        public bool InternalNodeNecessary
+        {
+            get { return _shortCircuitPower > 0; }
         }
 
         public bool EnforcesSlackBus
@@ -96,9 +103,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         }
 
-        public IList<IExternalReadOnlyNode> GetInternalNodes()
+        public IList<IReadOnlyNode> GetInternalNodes()
         {
-            return new List<IExternalReadOnlyNode>();
+            var result = new List<IReadOnlyNode>();
+
+            if (InternalNodeNecessary)
+                result.Add(_internalNode);
+
+            return result;
         }
     }
 }

@@ -74,9 +74,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         }
 
-        public IList<IExternalReadOnlyNode> GetInternalNodes()
+        public IList<IReadOnlyNode> GetInternalNodes()
         {
-            return new List<IExternalReadOnlyNode>();
+            return new List<IReadOnlyNode>();
         }
     }
 }

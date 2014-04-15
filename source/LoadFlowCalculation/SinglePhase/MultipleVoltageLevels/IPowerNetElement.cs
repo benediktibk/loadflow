@@ -13,7 +13,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);
         Complex GetTotalPowerForPQBus(double scaleBasePower);
         Complex GetSlackVoltage(double scaleBasePower);
-        IList<IExternalReadOnlyNode> GetInternalNodes();
+        IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes,
             double scaleBasisPower);
         bool NominalVoltagesMatch { get; }

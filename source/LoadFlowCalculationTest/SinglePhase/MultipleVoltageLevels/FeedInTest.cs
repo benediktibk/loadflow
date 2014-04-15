@@ -125,5 +125,25 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsTrue(_feedIn.NominalVoltagesMatch);
         }
+
+        [TestMethod]
+        public void GetInternalNodes_ShortCircuitPowerSetTo0_EmptyList()
+        {
+            var feedIn = new FeedIn("blub", _node, new Complex(123, 4), 0);
+
+            var result = feedIn.GetInternalNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod]
+        public void GetInternalNodes_ShortCircuitPowerNot0_OneSlackNode()
+        {
+            var result = _feedIn.GetInternalNodes();
+
+            Assert.AreEqual(1, result.Count);
+            var node = result[0];
+            Assert.IsTrue((node as DerivedInternalSlackNode) != null);
+        }
     }
 }
