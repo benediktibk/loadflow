@@ -440,6 +440,7 @@ template<> struct gemv_selector<OnTheRight,ColMajor,true>
     
     RhsScalar compatibleAlpha = get_factor<ResScalar,RhsScalar>::run(actualAlpha);
 
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(ResScalar,actualDestPtr,dest.size(),
                                                   evalToDest ? dest.data() : static_dest.data());
     

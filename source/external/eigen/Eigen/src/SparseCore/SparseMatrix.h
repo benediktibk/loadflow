@@ -482,6 +482,7 @@ class SparseMatrix
       m_innerNonZeros = static_cast<Index*>(std::malloc(m_outerSize * sizeof(Index)));
       for (Index i = 0; i < m_outerSize; i++)
       {
+#pragma warning(suppress: 6011)
         m_innerNonZeros[i] = m_outerIndex[i+1] - m_outerIndex[i]; 
       }
     }

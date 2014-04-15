@@ -68,8 +68,11 @@ EIGEN_DONT_INLINE void triangular_solve_matrix<Scalar,Index,OnTheLeft,Mode,Conju
     std::size_t sizeB = kc*cols;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(Scalar, blockA, sizeA, blocking.blockA());
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(Scalar, blockB, sizeB, blocking.blockB());
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(Scalar, blockW, sizeW, blocking.blockW());
 
     conj_if<Conjugate> conj;

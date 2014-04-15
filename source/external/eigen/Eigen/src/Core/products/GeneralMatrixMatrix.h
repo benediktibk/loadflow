@@ -154,8 +154,11 @@ static void run(Index rows, Index cols, Index depth,
     std::size_t sizeB = kc*cols;
     std::size_t sizeW = kc*Traits::WorkSpaceFactor;
 
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(LhsScalar, blockA, sizeA, blocking.blockA());
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(RhsScalar, blockB, sizeB, blocking.blockB());
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(RhsScalar, blockW, sizeW, blocking.blockW());
 
     // For each horizontal panel of the rhs, and corresponding panel of the lhs...

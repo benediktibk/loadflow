@@ -392,7 +392,9 @@ void SparseLU<MatrixType, OrderingType>::analyzePattern(const MatrixType& mat)
     }
     for (Index i = 0; i < mat.cols(); i++)
     {
+#pragma warning(suppress: 6001)
       m_mat.outerIndexPtr()[m_perm_c.indices()(i)] = outerIndexPtr[i];
+#pragma warning(suppress: 6385)
       m_mat.innerNonZeroPtr()[m_perm_c.indices()(i)] = outerIndexPtr[i+1] - outerIndexPtr[i];
     }
     if(!mat.isCompressed()) delete[] outerIndexPtr;

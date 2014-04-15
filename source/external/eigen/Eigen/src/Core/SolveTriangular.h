@@ -62,6 +62,7 @@ struct triangular_solver_selector<Lhs,Rhs,Side,Mode,NoUnrolling,1>
 
     bool useRhsDirectly = Rhs::InnerStrideAtCompileTime==1 || rhs.innerStride()==1;
 
+#pragma warning(suppress: 6255)
     ei_declare_aligned_stack_constructed_variable(RhsScalar,actualRhs,rhs.size(),
                                                   (useRhsDirectly ? rhs.data() : 0));
                                                   
