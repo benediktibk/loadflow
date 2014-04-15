@@ -36,21 +36,10 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
 
         ~HolomorphicEmbeddedLoadFlowMethod()
         {
-            DisposeInternal();
+            Dispose(false);
         }
 
-        public void Dispose(bool disposeManaged)
-        {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            DisposeInternal();
-            GC.SuppressFinalize(this);
-        }
-
-        private void DisposeInternal()
+        protected virtual void Dispose(bool disposeManaged)
         {
             if (_disposed)
                 return;
@@ -60,6 +49,12 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             _calculator = -1;
 
             _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private static void DebugOutput(string text)
