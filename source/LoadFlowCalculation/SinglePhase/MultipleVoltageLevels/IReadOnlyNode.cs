@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public interface IReadOnlyNode : IPowerNetElement, IEquatable<IReadOnlyNode>
+    public interface IReadOnlyNode : IEquatable<IReadOnlyNode>, IPowerNetElement
     {
         double NominalVoltage { get; }
         string Name { get; }
         bool IsOverdetermined { get; }
         bool MustBeSlackBus { get; }
         bool MustBePVBus { get; }
-        IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
+        IReadOnlyCollection<IPowerNetElementWithInternalNodes> ConnectedElements { get; }
     }
 }

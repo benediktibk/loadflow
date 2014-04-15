@@ -41,8 +41,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Connect_TwoValidObjects_ConnectedElementsIsCorrect()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
 
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
@@ -89,7 +89,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedElements_ItselfContained_ConnectedElementGetsNoCallToAddConnectedElements()
         {
             var nodes = new HashSet<IReadOnlyNode> { _node };
-            var otherElement = new Mock<IPowerNetElement>();
+            var otherElement = new Mock<IPowerNetElementWithInternalNodes>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
@@ -101,7 +101,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedElements_ItselfNotContained_ConnectedElementGetsCallToAddConnectedElements()
         {
             var nodes = new HashSet<IReadOnlyNode>();
-            var otherElement = new Mock<IPowerNetElement>();
+            var otherElement = new Mock<IPowerNetElementWithInternalNodes>();
             _node.Connect(otherElement.Object);
 
             _node.AddConnectedNodes(nodes);
@@ -124,8 +124,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBeSlackBus_NoConnectedPowerNetElementEnforcesSlackBus_False()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
             _node.Connect(elementOne.Object);
@@ -137,8 +137,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBeSlackBus_OneConnectedPowerNetElementEnforcesSlackBus_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -150,8 +150,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBeSlackBus_BothConnectedPowerNetElementEnforcesSlackBus_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -163,8 +163,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBePVBus_NoConnectedPowerNetElementEnforcesPVBus_False()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
             _node.Connect(elementOne.Object);
@@ -176,8 +176,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBePVBus_OneConnectedPowerNetElementEnforcesPVBus_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
             _node.Connect(elementOne.Object);
@@ -189,8 +189,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void MustBePVBus_BothConnectedPowerNetElementEnforcesPVBus_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -202,8 +202,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_NoSlackAndPVBus_False()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
@@ -217,8 +217,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_TwoSlackBusses_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
@@ -232,8 +232,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_TwoPVBusses_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
@@ -247,8 +247,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_OnePVAndSlackBus_True()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
@@ -262,8 +262,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_OnePVBus_False()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
@@ -277,8 +277,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void IsOverdetermined_OneSlackBus_False()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
@@ -293,8 +293,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_NoElementEnforcesPVBus_ThrowsException()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(false);
             _node.Connect(elementOne.Object);
@@ -307,8 +307,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_BothElementsEnforcesPVBus_ThrowsException()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -320,8 +320,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_OneElementEnforcesPVBus_GotCallToCreatePVBus()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(false);
             elementOne.Setup(x => x.GetTotalPowerForPQBus(2)).Returns(new Complex(9, 2));
             elementTwo.Setup(x => x.EnforcesPVBus).Returns(true);
@@ -341,8 +341,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_NoElementEnforcesSlackBus_ThrowsException()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(false);
             _node.Connect(elementOne.Object);
@@ -355,8 +355,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_BothElementsEnforcesSlackBus_ThrowsException()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -368,8 +368,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetSlackVoltage_OneElementEnforcesSlackBus_GotCallToGetSlackVoltage()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesSlackBus).Returns(false);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
             _node.Connect(elementOne.Object);
@@ -383,8 +383,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetTotalPowerForPQBus_OneElementSlackBusAndOnePVBus_CorrectResult()
         {
-            var elementOne = new Mock<IPowerNetElement>();
-            var elementTwo = new Mock<IPowerNetElement>();
+            var elementOne = new Mock<IPowerNetElementWithInternalNodes>();
+            var elementTwo = new Mock<IPowerNetElementWithInternalNodes>();
             elementOne.Setup(x => x.EnforcesPVBus).Returns(true);
             elementTwo.Setup(x => x.EnforcesSlackBus).Returns(true);
             elementOne.Setup(x => x.GetTotalPowerForPQBus(3)).Returns(new Complex(4, 1));

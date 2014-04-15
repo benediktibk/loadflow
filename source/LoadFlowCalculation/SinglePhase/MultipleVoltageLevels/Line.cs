@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Line : IPowerNetElement
+    public class Line : IPowerNetElementWithInternalNodes
     {
         private readonly string _name;
         private readonly IReadOnlyNode _sourceNode;
@@ -86,6 +86,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances[targetIndex, targetIndex] += admittance;
             admittances[sourceIndex, targetIndex] -= admittance;
             admittances[targetIndex, sourceIndex] -= admittance;
+        }
+
+        public IList<IReadOnlyNode> GetInternalNodes()
+        {
+            return new List<IReadOnlyNode>();
         }
     }
 }

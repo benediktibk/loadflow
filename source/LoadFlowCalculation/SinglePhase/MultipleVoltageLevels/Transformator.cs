@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Transformator : IPowerNetElement
+    public class Transformator : IPowerNetElementWithInternalNodes
     {
         private readonly string _name;
         private readonly IReadOnlyNode _upperSideNode;
@@ -61,6 +62,16 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             _upperSideNode.AddConnectedNodes(visitedNodes);
             _lowerSideNode.AddConnectedNodes(visitedNodes);
+        }
+
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        {
+
+        }
+
+        public IList<IReadOnlyNode> GetInternalNodes()
+        {
+            return new List<IReadOnlyNode>();
         }
     }
 }

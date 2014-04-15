@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -9,21 +10,21 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
-        private readonly List<IPowerNetElement> _connectedElements; 
+        private readonly List<IPowerNetElementWithInternalNodes> _connectedElements; 
 
         public Node(string name, double nominalVoltage)
         {
             _name = name;
             _nominalVoltage = nominalVoltage;
-            _connectedElements = new List<IPowerNetElement>();
+            _connectedElements = new List<IPowerNetElementWithInternalNodes>();
         }
 
-        public void Connect(IPowerNetElement element)
+        public void Connect(IPowerNetElementWithInternalNodes element)
         {
             _connectedElements.Add(element);
         }
 
-        public IReadOnlyCollection<IPowerNetElement> ConnectedElements
+        public IReadOnlyCollection<IPowerNetElementWithInternalNodes> ConnectedElements
         {
             get { return _connectedElements; }
         }
