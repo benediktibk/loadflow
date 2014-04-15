@@ -28,5 +28,13 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.AreEqual(234, _node.NominalVoltage, 0.00001);
         }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidScaleBaseForPower_ResultIsEitherSlackPVOrPQBus()
+        {
+            var result = _node.CreateSingleVoltageNode(2);
+
+            Assert.IsTrue(result.IsPQBus || result.IsPVBus || result.IsSlackBus);
+        }
     }
 }
