@@ -14,7 +14,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly List<Line> _lines;
         private readonly List<Transformator> _transformators;
         private readonly List<Generator> _generators;
-        private readonly List<FeedIn> _feedIns; 
+        private readonly List<FeedIn> _feedIns;
+        private readonly List<IPowerNetElementWithInternalNodes> _elements; 
         private readonly List<Node> _nodes;
         private readonly Dictionary<string, Node> _nodesByName;
         private readonly HashSet<string> _allNames; 
@@ -31,6 +32,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _transformators = new List<Transformator>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
+            _elements = new List<IPowerNetElementWithInternalNodes>();
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
             _allNames = new HashSet<string>();
@@ -81,6 +83,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var targetNode = GetNodeByNameInternal(targetNodeName);
             var line = new Line(name, sourceNode, targetNode, lengthResistance, lengthInductance, _frequency);
             _lines.Add(line);
+            _elements.Add(line);
             sourceNode.Connect(line);
             targetNode.Connect(line);
         }
@@ -91,6 +94,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var node = GetNodeByNameInternal(nodeName);
             var generator = new Generator(name, node, voltageMagnitude, realPower);
             _generators.Add(generator);
+            _elements.Add(generator);
             node.Connect(generator);
         }
 
@@ -100,6 +104,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var node = GetNodeByNameInternal(nodeName);
             var feedIn = new FeedIn(name, node, voltage, shortCircuitPower);
             _feedIns.Add(feedIn);
+            _elements.Add(feedIn);
             node.Connect(feedIn);
         }
 
@@ -111,6 +116,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
             var transformator = new Transformator(name, upperSideNode, lowerSideNode);
             _transformators.Add(transformator);
+            _elements.Add(transformator);
             upperSideNode.Connect(transformator);
             lowerSideNode.Connect(transformator);
         }
@@ -121,6 +127,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var node = GetNodeByNameInternal(nodeName);
             var load = new Load(name, power, node);
             _loads.Add(load);
+            _elements.Add(load);
             node.Connect(load);
         }
 
@@ -135,7 +142,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public bool CheckIfNominalVoltagesDoNotMatch()
         {
-            return _lines.Count(line => !line.NominalVoltagesMatch) > 0;
+            return _elements.Count(element => !element.NominalVoltagesMatch) > 0;
         }
 
         public bool CheckIfNodeIsOverdetermined()
@@ -153,14 +160,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _nodes.Cast<IReadOnlyNode>().ToList();
         }
 
-        public IReadOnlyList<Line> GetLines()
+        public IReadOnlyList<IPowerNetElementWithInternalNodes> GetElements()
         {
-            return _lines;
-        }
-
-        public IReadOnlyList<Load> GetLoads()
-        {
-            return _loads;
+            return _elements;
         }
 
         #endregion

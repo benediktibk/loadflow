@@ -119,5 +119,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             ComplexAssert.AreEqual(2, 1.5, result, 0.00001);
         }
+
+        [TestMethod]
+        public void NominalVoltagesMatch_Empty_True()
+        {
+            Assert.IsTrue(_feedIn.NominalVoltagesMatch);
+        }
     }
 }

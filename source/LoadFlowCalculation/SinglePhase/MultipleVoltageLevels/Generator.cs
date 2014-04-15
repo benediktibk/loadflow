@@ -50,6 +50,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return true; }
         }
 
+        public bool NominalVoltagesMatch
+        {
+            get { return true; }
+        }
+
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);

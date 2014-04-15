@@ -22,8 +22,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfNodeIsOverdetermined();
         IReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetNodes();
-        IReadOnlyList<Line> GetLines();
-        IReadOnlyList<Load> GetLoads();
+        IReadOnlyList<IPowerNetElementWithInternalNodes> GetElements();
 
         #endregion
     }

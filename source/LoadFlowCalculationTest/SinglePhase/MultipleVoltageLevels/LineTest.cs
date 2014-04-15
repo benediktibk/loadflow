@@ -129,5 +129,17 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _lineValid.GetSlackVoltage(45);
         }
+
+        [TestMethod]
+        public void NominalVoltagesMatch_ValidLine_True()
+        {
+            Assert.IsTrue(_lineValid.NominalVoltagesMatch);
+        }
+
+        [TestMethod]
+        public void NominalVoltagesMatch_InvalidLine_False()
+        {
+            Assert.IsFalse(_lineInvalid.NominalVoltagesMatch);
+        }
     }
 }

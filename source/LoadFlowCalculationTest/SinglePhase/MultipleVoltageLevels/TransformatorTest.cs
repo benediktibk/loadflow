@@ -87,5 +87,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _transformator.GetSlackVoltage(45);
         }
+
+        [TestMethod]
+        public void NominalVoltagesMatch_Empty_True()
+        {
+            Assert.IsTrue(_transformator.NominalVoltagesMatch);
+        }
     }
 }

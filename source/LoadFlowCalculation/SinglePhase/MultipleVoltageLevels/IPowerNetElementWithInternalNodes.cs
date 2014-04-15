@@ -8,5 +8,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
             double scaleBasisPower);
+        bool NominalVoltagesMatch { get; }
     }
 }

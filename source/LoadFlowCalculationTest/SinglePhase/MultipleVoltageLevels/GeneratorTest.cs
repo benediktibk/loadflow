@@ -89,5 +89,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IReadOnlyNode>>()), Times.Once);
         }
+
+        [TestMethod]
+        public void NominalVoltagesMatch_Empty_True()
+        {
+            Assert.IsTrue(_generator.NominalVoltagesMatch);
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             CheckPowerNet(powerNet);
 
             var nodes = powerNet.GetNodes();
-            var lines = powerNet.GetLines();
+            var lines = powerNet.GetElements();
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittanes = CalculateAdmittanceMatrix(nodes, lines, nodeIndexes);
             var singleVoltageNodes = CreateSingleVoltageNodes(nodes, nodeIndexes);
@@ -80,10 +80,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNodes;
         }
 
-        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IEnumerable<Line> lines, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IEnumerable<IPowerNetElementWithInternalNodes> elements, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
-            foreach (var line in lines)
+            foreach (var line in elements)
                 line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower);
             return admittanes;
         }
