@@ -15,7 +15,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly List<Transformator> _transformators;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
-        private readonly List<IPowerNetElementWithInternalNodes> _elements; 
+        private readonly List<IPowerNetElement> _elements; 
         private readonly List<Node> _nodes;
         private readonly Dictionary<string, Node> _nodesByName;
         private readonly HashSet<string> _allNames; 
@@ -32,7 +32,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _transformators = new List<Transformator>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
-            _elements = new List<IPowerNetElementWithInternalNodes>();
+            _elements = new List<IPowerNetElement>();
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
             _allNames = new HashSet<string>();
@@ -160,7 +160,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _nodes.Cast<IReadOnlyNode>().ToList();
         }
 
-        public IReadOnlyList<IPowerNetElementWithInternalNodes> GetElements()
+        public IReadOnlyList<IPowerNetElement> GetElements()
         {
             return _elements;
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -10,21 +9,21 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
-        private readonly List<IPowerNetElementWithInternalNodes> _connectedElements; 
+        private readonly List<IPowerNetElement> _connectedElements; 
 
         public Node(string name, double nominalVoltage)
         {
             _name = name;
             _nominalVoltage = nominalVoltage;
-            _connectedElements = new List<IPowerNetElementWithInternalNodes>();
+            _connectedElements = new List<IPowerNetElement>();
         }
 
-        public void Connect(IPowerNetElementWithInternalNodes element)
+        public void Connect(IPowerNetElement element)
         {
             _connectedElements.Add(element);
         }
 
-        public IReadOnlyCollection<IPowerNetElementWithInternalNodes> ConnectedElements
+        public IReadOnlyCollection<IPowerNetElement> ConnectedElements
         {
             get { return _connectedElements; }
         }
@@ -104,16 +103,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
             var enforcingElement = enforcingElements.First();
             return enforcingElement.GetSlackVoltage(scaleBasePower);
-        }
-
-        public bool EnforcesSlackBus
-        {
-            get { return false; }
-        }
-
-        public bool EnforcesPVBus
-        {
-            get { return false; }
         }
 
         public bool Equals(IReadOnlyNode other)

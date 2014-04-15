@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Generator : IPowerNetElementWithInternalNodes
+    public class Generator : IPowerNetElement
     {
         private readonly string _name;
         private readonly IReadOnlyNode _node;

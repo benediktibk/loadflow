@@ -80,7 +80,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNodes;
         }
 
-        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IEnumerable<IPowerNetElementWithInternalNodes> elements, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IEnumerable<IPowerNetElement> elements, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
             foreach (var line in elements)
