@@ -81,7 +81,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             AddName(name);
             var sourceNode = GetNodeByNameInternal(sourceNodeName);
             var targetNode = GetNodeByNameInternal(targetNodeName);
-            var line = new Line(name, sourceNode, targetNode, lengthResistance, lengthInductance, _frequency);
+            var line = new Line(name, sourceNode, targetNode, lengthResistance, lengthInductance, shuntConductance, capacity, _frequency);
             _lines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);

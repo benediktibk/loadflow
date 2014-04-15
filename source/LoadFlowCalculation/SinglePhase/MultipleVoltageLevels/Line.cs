@@ -10,14 +10,42 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly string _name;
         private readonly IExternalReadOnlyNode _sourceNode;
         private readonly IExternalReadOnlyNode _targetNode;
-        private readonly Complex _lengthImpedance;
+        private Complex _lengthImpedance;
+        private Complex _shuntAdmittance;
+        private bool _hasShuntAdmittance;
 
-        public Line(string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double frequency)
+        public Line(string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double frequency)
         {
+            if (lengthResistance == 0 && lengthInductance == 0)
+                throw new ArgumentOutOfRangeException();
+
             _name = name;
             _sourceNode = sourceNode;
             _targetNode = targetNode;
-            _lengthImpedance = new Complex(lengthResistance, 2*Math.PI*frequency*lengthInductance);
+            CalculateElectricCharacteristics(lengthResistance, lengthInductance, shuntCapacity, shuntConductance, frequency);
+        }
+
+        private void CalculateElectricCharacteristics(double lengthResistance, double lengthInductance, double shuntCapacity,
+            double shuntConductance, double frequency)
+        {
+            var omega = 2*Math.PI*frequency;
+            var directLengthImpedance = new Complex(lengthResistance, omega*lengthInductance);
+            var directShuntAdmittance = new Complex(shuntConductance, omega*shuntCapacity);
+
+            if (directShuntAdmittance == new Complex())
+            {
+                _hasShuntAdmittance = false;
+                _lengthImpedance = directLengthImpedance;
+                _shuntAdmittance = new Complex();
+            }
+            else
+            {
+                _hasShuntAdmittance = true;
+                var waveImpedance = Complex.Sqrt(directLengthImpedance / directShuntAdmittance);
+                var angle = Complex.Sqrt(directLengthImpedance * directShuntAdmittance);
+                _lengthImpedance = waveImpedance * Complex.Sinh(angle);
+                _shuntAdmittance = Complex.Tanh(angle / 2) / waveImpedance;
+            }
         }
 
         public string Name
@@ -28,6 +56,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public Complex LengthImpedance
         {
             get { return _lengthImpedance; }
+        }
+
+        public Complex ShuntAdmittance
+        {
+            get { return _shuntAdmittance; }
         }
 
         public double SourceNominalVoltage
@@ -81,11 +114,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
             var sourceIndex = nodeIndexes[_sourceNode];
             var targetIndex = nodeIndexes[_targetNode];
-            var admittance = scaler.ScaleAdmittance(1.0/LengthImpedance);
-            admittances[sourceIndex, sourceIndex] += admittance;
-            admittances[targetIndex, targetIndex] += admittance;
-            admittances[sourceIndex, targetIndex] -= admittance;
-            admittances[targetIndex, sourceIndex] -= admittance;
+            var lengthAdmittanceScaled = scaler.ScaleAdmittance(1.0/LengthImpedance);
+            admittances[sourceIndex, sourceIndex] += lengthAdmittanceScaled;
+            admittances[targetIndex, targetIndex] += lengthAdmittanceScaled;
+            admittances[sourceIndex, targetIndex] -= lengthAdmittanceScaled;
+            admittances[targetIndex, sourceIndex] -= lengthAdmittanceScaled;
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()

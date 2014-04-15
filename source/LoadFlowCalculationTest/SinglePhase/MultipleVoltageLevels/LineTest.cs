@@ -15,7 +15,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         private Line _lineInvalid;
         private Node _sourceNodeInvalid;
         private Node _targetNodeInvalid;
-        private Line _lineValid;
+        private Line _lineWithOnlyLengthValues;
+        private Line _lineWithLengthAndShuntValues;
         private Node _sourceNodeValid;
         private Node _targetNodeValid;
 
@@ -24,10 +25,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _sourceNodeInvalid = new Node("source", 102);
             _targetNodeInvalid = new Node("target", 12);
-            _lineInvalid = new Line("connect", _sourceNodeInvalid, _targetNodeInvalid, 5, 4, 10);
+            _lineInvalid = new Line("connect", _sourceNodeInvalid, _targetNodeInvalid, 5, 4, 3, 2, 10);
             _sourceNodeValid = new Node("source", 100);
             _targetNodeValid = new Node("target", 100);
-            _lineValid = new Line("connect", _sourceNodeValid, _targetNodeValid, 5, 4, 10);
+            _lineWithOnlyLengthValues = new Line("connect", _sourceNodeValid, _targetNodeValid, 5, 4, 0, 0, 10);
+            _lineWithLengthAndShuntValues = new Line("connect", _sourceNodeValid, _targetNodeValid, 5, 4, 3, 2, 10);
         }
 
         [TestMethod]
@@ -37,9 +39,16 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void Constructor_ValidValues_LengthImpedanceIsCorrect()
+        public void Constructor_OnlyLengthValues_LengthImpedanceIsCorrect()
         {
-            ComplexAssert.AreEqual(5, 4*2*Math.PI*10, _lineInvalid.LengthImpedance, 0.00001);
+            ComplexAssert.AreEqual(5, 4 * 2 * Math.PI * 10, _lineWithOnlyLengthValues.LengthImpedance, 0.00001);
+        }
+
+        [TestMethod]
+        public void Constructor_LengthAndShuntValues_LengthImpedanceAndShuntAdmittanceIsCorrect()
+        {
+            ComplexAssert.AreEqual(-10.1139581511325, -12.3601714830373, _lineWithLengthAndShuntValues.LengthImpedance, 0.00001);
+            ComplexAssert.AreEqual(0.905151500442966, -0.0466578682016948, _lineWithLengthAndShuntValues.ShuntAdmittance, 0.00001);
         }
 
         [TestMethod]
@@ -59,7 +68,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var source = new Mock<IExternalReadOnlyNode>();
             var target = new Mock<IExternalReadOnlyNode>();
-            var line = new Line("blub", source.Object, target.Object, 5, 4, 3);
+            var line = new Line("blub", source.Object, target.Object, 5, 4, 3, 2, 10);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             line.AddConnectedNodes(nodes);
@@ -74,7 +83,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
-            _lineValid.FillInAdmittances(admittances, nodeIndexes, 1);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 1);
 
             ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, admittances[0, 1], 0.00001);
@@ -88,7 +97,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
-            _lineValid.FillInAdmittances(admittances, nodeIndexes, 10);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 10);
 
             ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, admittances[0, 1], 0.00001);
@@ -99,26 +108,26 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void EnforcesPVBus_Empty_False()
         {
-            Assert.IsFalse(_lineValid.EnforcesPVBus);
+            Assert.IsFalse(_lineWithOnlyLengthValues.EnforcesPVBus);
         }
 
         [TestMethod]
         public void EnforcesSlackBus_Empty_False()
         {
-            Assert.IsFalse(_lineValid.EnforcesSlackBus);
+            Assert.IsFalse(_lineWithOnlyLengthValues.EnforcesSlackBus);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
         {
-            _lineValid.GetVoltageMagnitudeAndRealPowerForPVBus(1);
+            _lineWithOnlyLengthValues.GetVoltageMagnitudeAndRealPowerForPVBus(1);
         }
 
         [TestMethod]
         public void GetTotalPowerForPQBus_ValidStuff_0()
         {
-            var result = _lineValid.GetTotalPowerForPQBus(3);
+            var result = _lineWithOnlyLengthValues.GetTotalPowerForPQBus(3);
 
             ComplexAssert.AreEqual(0, 0, result, 0.00001);
         }
@@ -127,13 +136,13 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
         {
-            _lineValid.GetSlackVoltage(45);
+            _lineWithOnlyLengthValues.GetSlackVoltage(45);
         }
 
         [TestMethod]
         public void NominalVoltagesMatch_ValidLine_True()
         {
-            Assert.IsTrue(_lineValid.NominalVoltagesMatch);
+            Assert.IsTrue(_lineWithOnlyLengthValues.NominalVoltagesMatch);
         }
 
         [TestMethod]
