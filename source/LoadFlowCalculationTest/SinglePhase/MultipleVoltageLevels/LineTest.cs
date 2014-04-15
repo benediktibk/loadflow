@@ -72,7 +72,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances_OnlyLengthImpedanceAndNoScaling_CorrectValuesInMatrix()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
-            var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int> {{_sourceNodeValid, 0}, {_targetNodeValid, 1}};
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
             _lineValid.FillInAdmittances(admittances, nodeIndexes, 1);
 
@@ -86,7 +86,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances_OnlyLengthImpedanceAndScaling_CorrectValuesInMatrix()
         {
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
-            var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
             _lineValid.FillInAdmittances(admittances, nodeIndexes, 10);
 

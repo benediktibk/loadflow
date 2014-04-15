@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using UnitTestHelper;
@@ -144,6 +145,49 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(1, result.Count);
             var node = result[0];
             Assert.IsTrue((node as DerivedInternalSlackNode) != null);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_ShortCircuitPowerSetTo0_NothingChanged()
+        {
+            var feedIn = new FeedIn("blub", _node, new Complex(123, 4), 0);
+            var dictionary = new Dictionary<IReadOnlyNode, int>();
+            var admittances = DenseMatrix.OfArray(
+                new [,]
+                {
+                    {new Complex(2, 4), new Complex(3, 1)}, 
+                    {new Complex(-3, 9), new Complex(0.3, 0.4)}
+                });
+
+            feedIn.FillInAdmittances(admittances, dictionary, 1);
+
+            ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_ShortCircuitPowerNot0_NothingChanged()
+        {
+            var dictionary = new Dictionary<IReadOnlyNode, int>();
+            var internalNodes = _feedIn.GetInternalNodes();
+            var internalNode = internalNodes[0];
+            dictionary[internalNode] = 0;
+            dictionary[_node] = 1;
+            var admittances = DenseMatrix.OfArray(
+                new[,]
+                {
+                    {new Complex(2, 4), new Complex(3, 1)}, 
+                    {new Complex(-3, 9), new Complex(0.3, 0.4)}
+                });
+
+            _feedIn.FillInAdmittances(admittances, dictionary, 3);
+
+            ComplexAssert.AreEqual(3.51515151, 4, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(1.4848484848, 1, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-4.51515151, 9, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(1.81515151, 0.4, admittances[1, 1], 0.00001);
         }
     }
 }

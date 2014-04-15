@@ -98,9 +98,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
         {
+            if (!InternalNodeNecessary)
+                return;
 
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasisPower);
+            var admittanceScaled = scaler.ScaleAdmittance(1/InputImpedance);
+            var internalIndex = nodeIndexes[_internalNode];
+            var externalIndex = nodeIndexes[_node];
+            admittances[internalIndex, internalIndex] += admittanceScaled;
+            admittances[externalIndex, externalIndex] += admittanceScaled;
+            admittances[externalIndex, internalIndex] -= admittanceScaled;
+            admittances[internalIndex, externalIndex] -= admittanceScaled;
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()
