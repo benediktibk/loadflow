@@ -53,46 +53,41 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 var voltage = singleVoltageNodesWithResults[index].Voltage*node.NominalVoltage;
                 nodeVoltages.Add(name, voltage);
             }
+
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyList<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes)
+        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyCollection<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes)
         {
             var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
+
             foreach (var node in nodes)
             {
-                var singleVoltageNode = new SingleVoltageLevel.Node();
-
-                if (node.MustBeSlackBus)
-                    singleVoltageNode.Voltage = node.GetSlackVoltage(ScaleBasePower);
-                else if (node.MustBePVBus)
-                {
-                    var data = node.GetVoltageMagnitudeAndRealPowerForPVBus(ScaleBasePower);
-                    singleVoltageNode.VoltageMagnitude = data.Item1;
-                    singleVoltageNode.RealPower = data.Item2;
-                }
-                else
-                    singleVoltageNode.Power = node.GetTotalPowerForPQBus(ScaleBasePower);
-
+                var singleVoltageNode = node.CreateSingleVoltageNode(ScaleBasePower);
                 var nodeIndex = nodeIndexes[node];
                 singleVoltageNodes[nodeIndex] = singleVoltageNode;
             }
+
             return singleVoltageNodes;
         }
 
         private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IExternalReadOnlyNode> nodes, IEnumerable<IPowerNetElement> elements, IReadOnlyDictionary<IExternalReadOnlyNode, int> nodeIndexes)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
+
             foreach (var line in elements)
                 line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower);
+
             return admittanes;
         }
 
         private static Dictionary<IExternalReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IExternalReadOnlyNode> nodes)
         {
             var nodeIndexes = new Dictionary<IExternalReadOnlyNode, int>();
+
             for (var i = 0; i < nodes.Count; ++i)
                 nodeIndexes.Add(nodes[i], i);
+
             return nodeIndexes;
         }
 

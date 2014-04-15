@@ -1,7 +1,4 @@
-﻿using System;
-using System.Numerics;
-
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+﻿namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public abstract class DerivedInternalNode : IReadOnlyNode
     {
@@ -29,10 +26,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return _name; }
         }
 
-        public abstract bool MustBeSlackBus { get; }
-        public abstract bool MustBePVBus { get; }
-        public abstract Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);
-        public abstract Complex GetTotalPowerForPQBus(double scaleBasePower);
-        public abstract Complex GetSlackVoltage(double scaleBasePower);
+        public abstract SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);
     }
 }

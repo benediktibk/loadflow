@@ -7,10 +7,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         double NominalVoltage { get; }
         string Name { get; }
-        bool MustBeSlackBus { get; }
-        bool MustBePVBus { get; }
-        Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);
-        Complex GetTotalPowerForPQBus(double scaleBasePower);
-        Complex GetSlackVoltage(double scaleBasePower);
+        SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);
     }
 }

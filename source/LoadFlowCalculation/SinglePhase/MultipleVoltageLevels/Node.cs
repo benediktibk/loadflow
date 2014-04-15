@@ -38,6 +38,24 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return _name; }
         }
 
+        public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        {
+            var singleVoltageNode = new SingleVoltageLevel.Node();
+
+            if (MustBeSlackBus)
+                singleVoltageNode.Voltage = GetSlackVoltage(scaleBasePower);
+            else if (MustBePVBus)
+            {
+                var data = GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasePower);
+                singleVoltageNode.VoltageMagnitude = data.Item1;
+                singleVoltageNode.RealPower = data.Item2;
+            }
+            else
+                singleVoltageNode.Power = GetTotalPowerForPQBus(scaleBasePower);
+
+            return singleVoltageNode;
+        }
+
         public bool IsOverdetermined
         {
             get { return _connectedElements.Count(element => element.EnforcesSlackBus) + _connectedElements.Count(element => element.EnforcesPVBus) > 1; }
