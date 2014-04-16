@@ -48,6 +48,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return true; }
         }
 
+        public bool NeedsGroundNode
+        {
+            get { return false; }
+        }
+
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
             throw new InvalidOperationException();

@@ -93,5 +93,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsTrue(_transformator.NominalVoltagesMatch);
         }
+
+        [TestMethod]
+        public void NeedsGroundNode_Empty_True()
+        {
+            Assert.IsTrue(_transformator.NeedsGroundNode);
+        }
     }
 }

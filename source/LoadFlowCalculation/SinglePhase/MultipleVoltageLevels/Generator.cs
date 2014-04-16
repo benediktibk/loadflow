@@ -76,10 +76,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        public bool NeedsGroundNode
         {
-
+            get { return false; }
         }
+
+        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower)
+        { }
 
         public IList<IReadOnlyNode> GetInternalNodes()
         {

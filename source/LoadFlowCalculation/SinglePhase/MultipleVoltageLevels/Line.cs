@@ -78,6 +78,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return Math.Abs((TargetNominalVoltage - SourceNominalVoltage)/TargetNominalVoltage) < 0.0000001; }
         }
 
+        public bool NeedsGroundNode
+        {
+            get { return _hasShuntAdmittance; }
+        }
+
         public bool EnforcesSlackBus
         {
             get { return false; }

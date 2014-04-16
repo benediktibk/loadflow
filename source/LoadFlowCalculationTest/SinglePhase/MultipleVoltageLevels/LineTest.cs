@@ -158,5 +158,17 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(0, result.Count);
         }
+
+        [TestMethod]
+        public void NeedsGroundNode_NoShuntAdmittance_False()
+        {
+            Assert.IsFalse(_lineWithOnlyLengthValues.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void NeedsGroundNode_WithShuntAdmittance_True()
+        {
+            Assert.IsTrue(_lineWithLengthAndShuntValues.NeedsGroundNode);
+        }
     }
 }

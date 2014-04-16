@@ -125,5 +125,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
             ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
         }
+
+        [TestMethod]
+        public void NeedsGroundNode_Empty_False()
+        {
+            Assert.IsFalse(_generator.NeedsGroundNode);
+        }
     }
 }
