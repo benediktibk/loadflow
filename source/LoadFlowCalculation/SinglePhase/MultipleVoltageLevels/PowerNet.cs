@@ -143,12 +143,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public bool CheckIfNominalVoltagesDoNotMatch()
         {
-            return _elements.Count(element => !element.NominalVoltagesMatch) > 0;
+            return _elements.Exists(element => !element.NominalVoltagesMatch);
         }
 
         public bool CheckIfNodeIsOverdetermined()
         {
             return _nodes.Count(x => x.IsOverdetermined) > 0;
+        }
+
+        public bool CheckIfGroundNodeIsNecessary()
+        {
+            return _elements.Exists(x => x.NeedsGroundNode);
         }
 
         public IExternalReadOnlyNode GetNodeByName(string name)

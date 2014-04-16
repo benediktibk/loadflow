@@ -347,5 +347,29 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blob", 120);
             _powerNet.AddTransformator("blub", "blob", "heinz#hanz", 3, 5, 5, 2, 3);
         }
+
+        [TestMethod]
+        public void CheckIfGroundNodeIsNecessary_NoElementNeedsGroundNode_False()
+        {
+            _powerNet.AddNode("sourceNode", 120);
+            _powerNet.AddNode("targetNode", 120);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(), 6);
+            _powerNet.AddLine("line", "sourceNode", "targetNode", 3, 5, 0, 0);
+            _powerNet.AddLoad("targetNode", "load", new Complex(4, 5));
+
+            Assert.IsFalse(_powerNet.CheckIfGroundNodeIsNecessary());
+        }
+
+        [TestMethod]
+        public void CheckIfGroundNodeIsNecessary_OneElementNeedsGroundNode_True()
+        {
+            _powerNet.AddNode("sourceNode", 120);
+            _powerNet.AddNode("targetNode", 120);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(), 6);
+            _powerNet.AddLine("line", "sourceNode", "targetNode", 3, 5, 5, 0);
+            _powerNet.AddLoad("targetNode", "load", new Complex(4, 5));
+
+            Assert.IsTrue(_powerNet.CheckIfGroundNodeIsNecessary());
+        }
     }
 }
