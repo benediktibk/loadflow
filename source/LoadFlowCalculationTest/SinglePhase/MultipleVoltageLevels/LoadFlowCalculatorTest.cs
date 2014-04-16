@@ -134,5 +134,18 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(1.05, 0, nodeVoltages["feedInNode"], 0.001);
             ComplexAssert.AreEqual(1.0198, -0.019, nodeVoltages["loadNode"], 0.001);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CalculateNodeVoltages_OneNodeWithNameOfGroundNode_ThrowsException()
+        {
+            _powerNet.AddNode("sourceNode", 120);
+            _powerNet.AddNode(_calculator.NameOfGroundNode, 120);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(), 6);
+            _powerNet.AddLine("line", "sourceNode", _calculator.NameOfGroundNode, 3, 5, 5, 0);
+            _powerNet.AddLoad(_calculator.NameOfGroundNode, "load", new Complex(4, 5));
+
+            _calculator.CalculateNodeVoltages(_powerNet);
+        }
     }
 }

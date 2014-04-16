@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -27,14 +28,25 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             CheckPowerNet(powerNet);
 
-            var nodes = powerNet.GetAllNodes();
+            var nodes = new List<IReadOnlyNode>(powerNet.GetAllNodes());
+            IReadOnlyNode groundNode = null;
+
+            if (powerNet.CheckIfGroundNodeIsNecessary())
+            {
+                groundNode = new Node(NameOfGroundNode, 0);
+                nodes.Add(groundNode);
+            }
+
+            if (CheckIfNamesAreDuplicated(nodes))
+                throw new ArgumentException("the node names are duplicated");
+
             var nodeIndexes = DetermineNodeIndexes(nodes);
-            var admittanes = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
+            var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet, groundNode);
             var singleVoltageNodes = CreateSingleVoltageNodes(nodes, nodeIndexes);
 
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             bool voltageCollapse;
-            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittanes, 1,
+            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittances, 1,
                 singleVoltageNodes, out voltageCollapse);
 
             return ExtractNodeVoltages(nodes, nodeIndexes, singleVoltageNodesWithResults);
@@ -70,10 +82,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNodes;
         }
 
-        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
+        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet, IReadOnlyNode groundNode)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
-            powerNet.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower, null);
+            powerNet.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower, groundNode);
             return admittanes;
         }
 
@@ -97,6 +109,22 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
         }
 
+        private static bool CheckIfNamesAreDuplicated(IEnumerable<IReadOnlyNode> nodes)
+        {
+            var nodeNameSet = new HashSet<string>();
+            var nodeNameList = nodes.Select(node => node.Name);
+
+            foreach (var name in nodeNameList)
+            {
+                if (nodeNameSet.Contains(name))
+                    return false;
+
+                nodeNameSet.Add(name);
+            }
+
+            return false;
+        }
+
         #endregion
 
         #region public properties
@@ -104,6 +132,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public double ScaleBasePower
         {
             get { return _scaleBasePower; }
+        }
+
+        public string NameOfGroundNode
+        {
+            get { return "GROUND"; }
         }
 
         #endregion
