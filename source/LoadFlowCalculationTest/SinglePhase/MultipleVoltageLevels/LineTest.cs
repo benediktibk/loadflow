@@ -150,5 +150,13 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsFalse(_lineInvalid.NominalVoltagesMatch);
         }
+
+        [TestMethod]
+        public void GetInternalNodes_LengthAndShuntImpedance_EmptyList()
+        {
+            var result = _lineWithLengthAndShuntValues.GetInternalNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }
