@@ -76,7 +76,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
 
             foreach (var line in elements)
-                line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower);
+                line.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower, null);
 
             return admittanes;
         }

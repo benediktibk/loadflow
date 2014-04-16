@@ -83,7 +83,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
-            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 1);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 1, null);
 
             ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, admittances[0, 1], 0.00001);
@@ -97,7 +97,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var admittances = DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } });
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
 
-            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 10);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, nodeIndexes, 10, null);
 
             ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, admittances[0, 1], 0.00001);
