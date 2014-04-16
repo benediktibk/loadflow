@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -163,6 +164,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public IReadOnlyList<IPowerNetElement> GetElements()
         {
             return _elements;
+        }
+
+        public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasePower, IReadOnlyNode groundNode)
+        {
+            foreach (var element in _elements)
+                element.FillInAdmittances(admittances, nodeIndexes, scaleBasePower, groundNode);
         }
 
         #endregion

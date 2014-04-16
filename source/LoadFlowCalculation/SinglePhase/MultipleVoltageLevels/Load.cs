@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -74,7 +74,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower, IReadOnlyNode groundNode)
         {
 
         }
