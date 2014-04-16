@@ -27,7 +27,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             CheckPowerNet(powerNet);
 
-            var nodes = powerNet.GetNodes();
+            var nodes = powerNet.GetAllNodes();
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittanes = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
             var singleVoltageNodes = CreateSingleVoltageNodes(nodes, nodeIndexes);
@@ -40,7 +40,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return ExtractNodeVoltages(nodes, nodeIndexes, singleVoltageNodesWithResults);
         }
 
-        private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
+        private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
             IList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
             var nodeVoltages = new Dictionary<string, Complex>();
@@ -56,7 +56,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyCollection<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
             var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
 
@@ -70,14 +70,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNodes;
         }
 
-        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IExternalReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
+        private SparseMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
         {
             var admittanes = new SparseMatrix(nodes.Count, nodes.Count);
             powerNet.FillInAdmittances(admittanes, nodeIndexes, ScaleBasePower, null);
             return admittanes;
         }
 
-        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IExternalReadOnlyNode> nodes)
+        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
         {
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
 

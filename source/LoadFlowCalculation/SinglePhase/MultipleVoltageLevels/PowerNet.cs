@@ -156,9 +156,15 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return GetNodeByNameInternal(name);
         }
 
-        public IReadOnlyList<IExternalReadOnlyNode> GetNodes()
+        public IReadOnlyList<IReadOnlyNode> GetAllNodes()
         {
-            return _nodes.Cast<IExternalReadOnlyNode>().ToList();
+            var allNodes = new List<IReadOnlyNode>();
+
+            foreach (var element in _elements)
+                allNodes.AddRange(element.GetInternalNodes());
+
+            allNodes.AddRange(_nodes);
+            return allNodes;
         }
 
         public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasePower, IReadOnlyNode groundNode)
