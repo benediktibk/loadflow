@@ -76,7 +76,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower, IReadOnlyNode groundNode)
         {
-
+            throw new NotImplementedException();
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()
