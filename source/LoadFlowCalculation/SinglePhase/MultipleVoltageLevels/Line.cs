@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -14,7 +15,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private Complex _shuntAdmittance;
         private bool _hasShuntAdmittance;
 
-        public Line(string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double frequency)
+        public Line(
+            string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, 
+            double shuntCapacity, double shuntConductance, double frequency)
         {
             if (lengthResistance == 0 && lengthInductance == 0)
                 throw new ArgumentOutOfRangeException();
@@ -116,6 +119,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower, IReadOnlyNode groundNode)
         {
+            Debug.Assert(!NeedsGroundNode || groundNode != null);
+
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
             var sourceIndex = nodeIndexes[_sourceNode];
             var targetIndex = nodeIndexes[_targetNode];
@@ -124,6 +129,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances[targetIndex, targetIndex] += lengthAdmittanceScaled;
             admittances[sourceIndex, targetIndex] -= lengthAdmittanceScaled;
             admittances[targetIndex, sourceIndex] -= lengthAdmittanceScaled;
+
+            if (!NeedsGroundNode)
+                return;
+
+            var shuntAdmittanceScaled = scaler.ScaleAdmittance(ShuntAdmittance);
+            var groundIndex = nodeIndexes[groundNode];
+            admittances[groundIndex, groundIndex] += 2 * shuntAdmittanceScaled;
+            admittances[sourceIndex, sourceIndex] += shuntAdmittanceScaled;
+            admittances[targetIndex, targetIndex] += shuntAdmittanceScaled;
+            admittances[sourceIndex, groundIndex] -= shuntAdmittanceScaled;
+            admittances[groundIndex, sourceIndex] -= shuntAdmittanceScaled;
+            admittances[targetIndex, groundIndex] -= shuntAdmittanceScaled;
+            admittances[groundIndex, targetIndex] -= shuntAdmittanceScaled;
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()
