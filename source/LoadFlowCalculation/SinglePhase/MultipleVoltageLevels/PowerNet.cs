@@ -172,10 +172,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return allNodes;
         }
 
-        public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasePower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode)
         {
             foreach (var element in _elements)
-                element.FillInAdmittances(admittances, nodeIndexes, scaleBasePower, groundNode);
+                element.FillInAdmittances(admittances, scaleBasePower, groundNode);
         }
 
         #endregion

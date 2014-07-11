@@ -152,19 +152,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var feedIn = new FeedIn("blub", _node, new Complex(123, 4), 0);
             var dictionary = new Dictionary<IReadOnlyNode, int>();
-            var admittances = DenseMatrix.OfArray(
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new [,]
                 {
                     {new Complex(2, 4), new Complex(3, 1)}, 
                     {new Complex(-3, 9), new Complex(0.3, 0.4)}
-                });
+                }), dictionary);
 
-            feedIn.FillInAdmittances(admittances, dictionary, 1, null);
+            feedIn.FillInAdmittances(admittances, 1, null);
 
-            ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
+            var values = admittances.GetValues();
+            ComplexAssert.AreEqual(2, 4, values[0, 0], 0.00001);
+            ComplexAssert.AreEqual(3, 1, values[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3, 9, values[1, 0], 0.00001);
+            ComplexAssert.AreEqual(0.3, 0.4, values[1, 1], 0.00001);
         }
 
         [TestMethod]
@@ -175,19 +176,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var internalNode = internalNodes[0];
             dictionary[internalNode] = 0;
             dictionary[_node] = 1;
-            var admittances = DenseMatrix.OfArray(
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new[,]
                 {
                     {new Complex(2, 4), new Complex(3, 1)}, 
                     {new Complex(-3, 9), new Complex(0.3, 0.4)}
-                });
+                }), dictionary);
 
-            _feedIn.FillInAdmittances(admittances, dictionary, 3, null);
+            _feedIn.FillInAdmittances(admittances, 3, null);
 
-            ComplexAssert.AreEqual(3.51515151, 4, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(1.4848484848, 1, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-4.51515151, 9, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(1.81515151, 0.4, admittances[1, 1], 0.00001);
+            var values = admittances.GetValues();
+            ComplexAssert.AreEqual(3.51515151, 4, values[0, 0], 0.00001);
+            ComplexAssert.AreEqual(1.4848484848, 1, values[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-4.51515151, 9, values[1, 0], 0.00001);
+            ComplexAssert.AreEqual(1.81515151, 0.4, values[1, 1], 0.00001);
         }
 
         [TestMethod]

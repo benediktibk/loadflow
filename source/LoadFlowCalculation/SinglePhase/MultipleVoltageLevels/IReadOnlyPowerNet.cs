@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -25,7 +23,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfGroundNodeIsNecessary();
         IExternalReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetAllNodes();
-        void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasePower, IReadOnlyNode groundNode);
+        void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode);
 
         #endregion
     }

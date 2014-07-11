@@ -118,19 +118,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances_ValidNode_NothingChanged()
         {
             var dictionary = new Dictionary<IReadOnlyNode, int>();
-            var admittances = DenseMatrix.OfArray(
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new[,]
                 {
                     {new Complex(2, 4), new Complex(3, 1)}, 
                     {new Complex(-3, 9), new Complex(0.3, 0.4)}
-                });
+                }), dictionary);
 
-            _load.FillInAdmittances(admittances, dictionary, 1, null);
+            _load.FillInAdmittances(admittances, 1, null);
 
-            ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
+            var values = admittances.GetValues();
+            ComplexAssert.AreEqual(2, 4, values[0, 0], 0.00001);
+            ComplexAssert.AreEqual(3, 1, values[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3, 9, values[1, 0], 0.00001);
+            ComplexAssert.AreEqual(0.3, 0.4, values[1, 1], 0.00001);
         }
 
         [TestMethod]

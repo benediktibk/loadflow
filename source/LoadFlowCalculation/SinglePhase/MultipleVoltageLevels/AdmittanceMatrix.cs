@@ -18,6 +18,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _nodeIndexes = nodeIndexes;
         }
 
+        public AdmittanceMatrix(Matrix<Complex> values, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        {
+            _values = values.Clone();
+            _nodeIndexes = nodeIndexes;
+        }
+
         public Matrix<Complex> GetValues()
         {
             return _values.Clone();

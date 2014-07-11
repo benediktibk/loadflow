@@ -117,31 +117,20 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(Matrix<Complex> admittances, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, double scaleBasisPower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
         {
             Debug.Assert(!NeedsGroundNode || groundNode != null);
 
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
-            var sourceIndex = nodeIndexes[_sourceNode];
-            var targetIndex = nodeIndexes[_targetNode];
             var lengthAdmittanceScaled = scaler.ScaleAdmittance(1.0/LengthImpedance);
-            admittances[sourceIndex, sourceIndex] += lengthAdmittanceScaled;
-            admittances[targetIndex, targetIndex] += lengthAdmittanceScaled;
-            admittances[sourceIndex, targetIndex] -= lengthAdmittanceScaled;
-            admittances[targetIndex, sourceIndex] -= lengthAdmittanceScaled;
+            admittances.AddConnection(_sourceNode, _targetNode, lengthAdmittanceScaled);
 
             if (!NeedsGroundNode)
                 return;
 
             var shuntAdmittanceScaled = scaler.ScaleAdmittance(ShuntAdmittance);
-            var groundIndex = nodeIndexes[groundNode];
-            admittances[groundIndex, groundIndex] += 2 * shuntAdmittanceScaled;
-            admittances[sourceIndex, sourceIndex] += shuntAdmittanceScaled;
-            admittances[targetIndex, targetIndex] += shuntAdmittanceScaled;
-            admittances[sourceIndex, groundIndex] -= shuntAdmittanceScaled;
-            admittances[groundIndex, sourceIndex] -= shuntAdmittanceScaled;
-            admittances[targetIndex, groundIndex] -= shuntAdmittanceScaled;
-            admittances[groundIndex, targetIndex] -= shuntAdmittanceScaled;
+            admittances.AddConnection(_sourceNode, groundNode, shuntAdmittanceScaled);
+            admittances.AddConnection(_targetNode, groundNode, shuntAdmittanceScaled);
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()
