@@ -70,6 +70,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\LoadFlowCalculator.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\Node.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIteration.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\DummyMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodNativeMethods.cs" />

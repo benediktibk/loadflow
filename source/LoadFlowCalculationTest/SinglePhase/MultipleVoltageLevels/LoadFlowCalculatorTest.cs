@@ -13,6 +13,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
     {
         private LoadFlowCalculator _calculator;
         private LoadFlowCalculator _calculatorWithNoPowerScaling;
+        private LoadFlowCalculator _calculatorWithDummyMethod;
         private PowerNet _powerNet;
         private Mock<IReadOnlyPowerNet> _powerNetMock;
 
@@ -21,6 +22,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _calculator = new LoadFlowCalculator(2, new CurrentIteration(0.00001, 1000));
             _calculatorWithNoPowerScaling = new LoadFlowCalculator(1, new CurrentIteration(0.00001, 1000));
+            _calculatorWithDummyMethod = new LoadFlowCalculator(1, new DummyMethod());
             _powerNet = new PowerNet(50);
             _powerNetMock = new Mock<IReadOnlyPowerNet>();
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
@@ -146,6 +148,21 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(_calculator.NameOfGroundNode, "load", new Complex(4, 5));
 
             _calculator.CalculateNodeVoltages(_powerNet);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CalculationFails_Null()
+        {
+            _powerNet.AddNode("feedInNode", 1);
+            _powerNet.AddNode("loadNode", 1);
+            _powerNet.AddFeedIn("feedInNode", "feedIn", new Complex(1.05, 0), 0);
+            _powerNet.AddLoad("loadNode", "load", new Complex(-0.6, -1));
+            _powerNet.AddGenerator("loadNode", "generator", 1.02, -0.4);
+            _powerNet.AddLine("connection", "feedInNode", "loadNode", 0, 0.00006366197723675813, 0, 0);
+
+            var nodeVoltages = _calculatorWithDummyMethod.CalculateNodeVoltages(_powerNet);
+
+            Assert.AreEqual(null, nodeVoltages);
         }
     }
 }
