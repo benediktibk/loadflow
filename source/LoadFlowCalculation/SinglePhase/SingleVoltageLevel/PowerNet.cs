@@ -27,10 +27,21 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             _nominalVoltage = nominalVoltage;
             _nodeCount = nodeCount;
             _admittances = new SparseMatrix(_nodeCount, _nodeCount);
-            _nodes = new List<Node>(nodeCount);
+            InitializeNodes();
+        }
 
-            for (var i = 0; i < _nodeCount; ++i)
-                _nodes.Add(new Node());
+        public PowerNet(Matrix<Complex> admittances, double nominalVoltage)
+        {
+            if (admittances.RowCount != admittances.ColumnCount)
+                throw new ArgumentOutOfRangeException("admittances", "must be symmetric");
+
+            if (nominalVoltage <= 0)
+                throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
+
+            _nominalVoltage = nominalVoltage;
+            _nodeCount = admittances.RowCount;
+            _admittances = admittances;
+            InitializeNodes();
         }
 
         public bool CalculateMissingInformation(LoadFlowCalculator calculator)
@@ -71,6 +82,23 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         {
             return _admittances[i, j];
         }
+
+        public IReadOnlyList<Node> GetNodes()
+        {
+            return (IReadOnlyList<Node>) _nodes;
+        }
+        #endregion
+
+        #region private functions
+
+        private void InitializeNodes()
+        {
+            _nodes = new List<Node>(_nodeCount);
+
+            for (var i = 0; i < _nodeCount; ++i)
+                _nodes.Add(new Node());
+        }
+
         #endregion
 
         #region properties

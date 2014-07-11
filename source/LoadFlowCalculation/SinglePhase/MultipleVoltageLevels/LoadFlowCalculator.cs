@@ -42,18 +42,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet, groundNode);
-            var singleVoltageNodes = CreateSingleVoltageNodes(nodes, nodeIndexes);
-
+            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
-            bool voltageCollapse;
-            var singleVoltageNodesWithResults = calculator.CalculateNodeVoltagesAndPowers(admittances.GetValues(), 1,
-                singleVoltageNodes, out voltageCollapse);
-
-            return ExtractNodeVoltages(nodes, nodeIndexes, singleVoltageNodesWithResults);
+            var voltageCollapse = singleVoltagePowerNet.CalculateMissingInformation(calculator);
+            return voltageCollapse ? null : ExtractNodeVoltages(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
         }
 
         private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
-            IList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
+            IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
             var nodeVoltages = new Dictionary<string, Complex>();
 
@@ -68,18 +64,18 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.Node[] CreateSingleVoltageNodes(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, AdmittanceMatrix admittances)
         {
-            var singleVoltageNodes = new SingleVoltageLevel.Node[nodes.Count];
+            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNet(admittances.GetValues(), 1);
 
             foreach (var node in nodes)
             {
                 var singleVoltageNode = node.CreateSingleVoltageNode(ScaleBasePower);
                 var nodeIndex = nodeIndexes[node];
-                singleVoltageNodes[nodeIndex] = singleVoltageNode;
+                singleVoltagePowerNet.SetNode(nodeIndex, singleVoltageNode);
             }
 
-            return singleVoltageNodes;
+            return singleVoltagePowerNet;
         }
 
         private AdmittanceMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet, IReadOnlyNode groundNode)
