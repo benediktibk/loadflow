@@ -1,0 +1,37 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Numerics;
+using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Generic;
+
+namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+{
+    public class AdmittanceMatrix
+    {
+        private readonly Matrix<Complex> _values;
+        private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
+
+        public AdmittanceMatrix(int nodeCount, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        {
+            _values = new SparseMatrix(nodeCount, nodeCount);
+            _nodeIndexes = nodeIndexes;
+        }
+
+        public Matrix<Complex> GetValues()
+        {
+            return _values.Clone();
+        }
+
+        public void AddConnection(IReadOnlyNode sourceNode, IReadOnlyNode targetNode, Complex admittance)
+        {
+            var sourceNodeIndex = _nodeIndexes[sourceNode];
+            var targetNodeIndex = _nodeIndexes[targetNode];
+            Debug.Assert(sourceNodeIndex != targetNodeIndex);
+            _values[sourceNodeIndex, sourceNodeIndex] += admittance;
+            _values[targetNodeIndex, targetNodeIndex] += admittance;
+            _values[sourceNodeIndex, targetNodeIndex] -= admittance;
+            _values[targetNodeIndex, sourceNodeIndex] -= admittance;
+        }
+    }
+}
