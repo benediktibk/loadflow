@@ -453,7 +453,6 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNotNominalRatioAndNoMainImpedance_VoltagesAreCorrect()
         {
-            Assert.Fail();
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1000, 0), 0);
@@ -472,7 +471,6 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNotNominalRatioAndNoMainImpedanceSecondVersion_VoltagesAreCorrect()
         {
-            Assert.Fail();
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1002, 0), 0);
