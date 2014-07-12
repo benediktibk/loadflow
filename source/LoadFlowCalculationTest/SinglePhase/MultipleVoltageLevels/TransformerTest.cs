@@ -258,5 +258,23 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
                 Times.Once);
         }
+
+        [TestMethod]
+        public void FillInAdmittances_NominalRatioAndNoMainImpedance_ResultIsCorrect()
+        {
+            var upperSideNode = new Node("upper", 1000);
+            var lowerSideNode = new Node("lower", 400);
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>() { { upperSideNode, 0 }, { lowerSideNode, 1 } };
+            var admittances = new AdmittanceMatrix(2, nodeIndexes);
+            var transformer = new Transformer("blub", upperSideNode, lowerSideNode, new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5);
+
+            transformer.FillInAdmittances(admittances, 1, null);
+
+            var values = admittances.GetValues();
+            ComplexAssert.AreEqual(162025.45, 0, values[0, 0], 0.1);
+            ComplexAssert.AreEqual(162025.45, 0, values[1, 1], 0.1);
+            ComplexAssert.AreEqual(-162025.45, 0, values[0, 1], 0.1);
+            ComplexAssert.AreEqual(-162025.45, 0, values[1, 0], 0.1);
+        }
     }
 }

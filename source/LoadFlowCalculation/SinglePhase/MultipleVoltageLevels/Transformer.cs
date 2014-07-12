@@ -85,19 +85,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             if (HasMainImpedance)
             {
                 if (HasNotNominalRatio)
-                    FillInAdmittancesWithMainImpedanceAndNotNominalRatio(admittances, scalerLowerSide, scalerLowerSide,
+                    FillInAdmittancesWithMainImpedanceAndNotNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
                         groundNode);
                 else
-                    FillInAdmittancesWithMainImpedanceAndNominalRatio(admittances, scalerLowerSide, scalerUpperSide,
+                    FillInAdmittancesWithMainImpedanceAndNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
                         groundNode);
             }
             else
             {
                 if (HasNotNominalRatio)
-                    FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(admittances, scalerLowerSide, scalerLowerSide,
+                    FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
                         groundNode);
                 else
-                    FillInAdmittancesWithNoInternalNodes(admittances, scalerLowerSide, scalerUpperSide);
+                    FillInAdmittancesWithNoInternalNodes(admittances, scalerUpperSide, scalerLowerSide);
             }
         }
 
