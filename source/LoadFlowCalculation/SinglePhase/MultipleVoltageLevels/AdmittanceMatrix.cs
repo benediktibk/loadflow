@@ -61,5 +61,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, 
                 amplification);
         }
+
+        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
+            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double amplification)
+        {
+            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, 1/amplification);
+            AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, 1);
+        }
     }
 }
