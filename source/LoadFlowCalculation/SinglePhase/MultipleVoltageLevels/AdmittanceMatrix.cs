@@ -39,5 +39,18 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _values[sourceNodeIndex, targetNodeIndex] -= admittance;
             _values[targetNodeIndex, sourceNodeIndex] -= admittance;
         }
+
+        public void AddVoltageControlledCurrentSource(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
+            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double amplification)
+        {
+            var inputSourceNodeIndex = _nodeIndexes[inputSourceNode];
+            var inputTargetNodeIndex = _nodeIndexes[inputTargetNode];
+            var outputSourceNodeIndex = _nodeIndexes[outputSourceNode];
+            var outputTargetNodeIndex = _nodeIndexes[outputTargetNode];
+            _values[outputSourceNodeIndex, inputSourceNodeIndex] += amplification;
+            _values[outputTargetNodeIndex, inputTargetNodeIndex] += amplification;
+            _values[outputSourceNodeIndex, inputTargetNodeIndex] -= amplification;
+            _values[outputTargetNodeIndex, inputSourceNodeIndex] -= amplification;
+        }
     }
 }

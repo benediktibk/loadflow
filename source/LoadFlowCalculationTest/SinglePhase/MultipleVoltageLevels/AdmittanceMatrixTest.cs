@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
@@ -45,6 +46,35 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(-1, -2, values[2, 0], 0.00001);
             ComplexAssert.AreEqual(0, 0, values[2, 1], 0.00001);
             ComplexAssert.AreEqual(1, 2, values[2, 2], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddVoltageControlledCurrentSource_AmplificationOf2_CurrentsAreCorrect()
+        {
+            var firstNode = new Node("first", 1);
+            var secondNode = new Node("second", 1);
+            var thirdNode = new Node("third", 1);
+            var fourthNode = new Node("fourth", 1);
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>
+            {
+                {firstNode, 0},
+                {secondNode, 1},
+                {thirdNode, 2},
+                {fourthNode, 3}
+            };
+            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+
+            matrix.AddVoltageControlledCurrentSource(firstNode, secondNode, thirdNode, fourthNode, 2);
+
+            var values = matrix.GetValues();
+            var voltages =
+                new DenseVector(new[] {new Complex(4, 0), new Complex(1, 0), new Complex(6, 6), new Complex(10, 10)});
+            var currents = values * voltages;
+            Assert.AreEqual(4, currents.Count);
+            ComplexAssert.AreEqual(0, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
+            ComplexAssert.AreEqual(-6, 0, currents[2], 0.00001);
+            ComplexAssert.AreEqual(6, 0, currents[3], 0.00001);
         }
     }
 }
