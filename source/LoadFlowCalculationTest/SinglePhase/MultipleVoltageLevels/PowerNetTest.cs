@@ -230,7 +230,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeOne = _powerNet.GetNodeByName("blub");
             var nodeTwo = _powerNet.GetNodeByName("blob");
 
-            _powerNet.AddTransformer("blub", "blob", "line", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "line", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
@@ -342,7 +342,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformer("blub", "blob", "blub", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "blub", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
         }
 
         [TestMethod]
@@ -351,7 +351,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformer("blub", "blob", "heinz#hanz", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "heinz#hanz", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
         }
 
         [TestMethod]

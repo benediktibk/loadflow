@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -19,7 +20,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _upperSideNode = new Node("upper", 10);
             _lowerSideNode = new Node("lower", 0.25);
-            _transformer = new Transformer("blub", _upperSideNode, _lowerSideNode);
+            _transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2);
         }
 
         [TestMethod]
@@ -45,7 +46,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer("blub", upperSideNode.Object, lowerSideNode.Object);
+            var transformer = new Transformer("blub", upperSideNode.Object, lowerSideNode.Object, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             transformer.AddConnectedNodes(nodes);
@@ -95,9 +96,63 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void NeedsGroundNode_Empty_True()
+        public void NeedsGroundNode_MainImpedanceSet_True()
         {
-            Assert.IsTrue(_transformer.NeedsGroundNode);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+
+            Assert.IsTrue(transformer.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void NeedsGroundNode_RelativeRatioNot1_True()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+
+            Assert.IsTrue(transformer.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void NeedsGroundNode_RelativeRatio1AndNoMainImpedance_False()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+
+            Assert.IsFalse(transformer.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void Ratio_Empty_2()
+        {
+            Assert.AreEqual(2, _transformer.Ratio, 0.000001);
+        }
+
+        [TestMethod]
+        public void NominalRatio_Empty_40()
+        {
+            Assert.AreEqual(40, _transformer.NominalRatio, 0.000001);
+        }
+
+        [TestMethod]
+        public void RelativeRatio_Empty_CorrectResult()
+        {
+            Assert.AreEqual(2.0/40, _transformer.RelativeRatio, 0.000001);
+        }
+
+        [TestMethod]
+        public void UpperSideImpedance_Empty_CorrectResult()
+        {
+            ComplexAssert.AreEqual(1, 2, _transformer.UpperSideImpedance, 0.00001);
+        }
+
+        [TestMethod]
+        public void LowerSideImpedance_Empty_CorrectResult()
+        {
+            ComplexAssert.AreEqual(3, 4, _transformer.LowerSideImpedance, 0.00001);
+        }
+
+        [TestMethod]
+        public void MainImpedance_Empty_CorrectResult()
+        {
+            ComplexAssert.AreEqual(5, 6, _transformer.MainImpedance, 0.00001);
         }
     }
 }
