@@ -166,23 +166,23 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetInternalNodes_NotNominalRatioAndNoMainImpedance_ResultCountIs2()
+        public void GetInternalNodes_NotNominalRatioAndNoMainImpedance_ResultCountIs3()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
 
             var internalNodes = transformer.GetInternalNodes();
 
-            Assert.AreEqual(2, internalNodes.Count);
+            Assert.AreEqual(3, internalNodes.Count);
         }
 
         [TestMethod]
-        public void GetInternalNodes_NotNominalRatioAndMainImpedance_ResultCountIs2()
+        public void GetInternalNodes_NotNominalRatioAndMainImpedance_ResultCountIs3()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
 
             var internalNodes = transformer.GetInternalNodes();
 
-            Assert.AreEqual(2, internalNodes.Count);
+            Assert.AreEqual(3, internalNodes.Count);
         }
 
         [TestMethod]
