@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class AdmittanceMatrix
+    public class AdmittanceMatrix : IAdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
         private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
@@ -40,32 +39,29 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _values[targetNodeIndex, sourceNodeIndex] -= admittance;
         }
 
-        public void AddVoltageControlledCurrentSource(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
-            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double amplification)
+        public void AddVoltageControlledCurrentSource(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double g)
         {
             var inputSourceNodeIndex = _nodeIndexes[inputSourceNode];
             var inputTargetNodeIndex = _nodeIndexes[inputTargetNode];
             var outputSourceNodeIndex = _nodeIndexes[outputSourceNode];
             var outputTargetNodeIndex = _nodeIndexes[outputTargetNode];
-            _values[outputSourceNodeIndex, inputSourceNodeIndex] += amplification;
-            _values[outputTargetNodeIndex, inputTargetNodeIndex] += amplification;
-            _values[outputSourceNodeIndex, inputTargetNodeIndex] -= amplification;
-            _values[outputTargetNodeIndex, inputSourceNodeIndex] -= amplification;
+            _values[outputSourceNodeIndex, inputSourceNodeIndex] += g;
+            _values[outputTargetNodeIndex, inputTargetNodeIndex] += g;
+            _values[outputSourceNodeIndex, inputTargetNodeIndex] -= g;
+            _values[outputTargetNodeIndex, inputSourceNodeIndex] -= g;
         }
 
-        public void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
-            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double amplification)
+        public void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r)
         {
             AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode,
-                (-1) * amplification);
+                (-1) * r);
             AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, 
-                amplification);
+                r);
         }
 
-        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
-            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double amplification)
+        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio)
         {
-            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, 1/amplification);
+            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, 1/ratio);
             AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, 1);
         }
     }

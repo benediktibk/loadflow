@@ -194,5 +194,11 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(1, internalNodes.Count);
         }
+
+        [TestMethod]
+        public void FillInAdmittances_NominalRatioAndNoMainImpedance_ResultIsCorrect()
+        {
+            Assert.Fail();
+        }
     }
 }
