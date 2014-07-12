@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Security.Permissions;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class Transformer : IPowerNetElement
     {
+        #region variables
+
         private readonly string _name;
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
@@ -16,6 +16,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly Complex _mainImpedance;
         private readonly double _ratio;
 
+        #endregion
+
+        #region public functions
+
         public Transformer(
             string name, IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, 
             Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio)
@@ -23,10 +27,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             if (ratio <= 0)
                 throw new ArgumentOutOfRangeException("ratio", "must be positive");
 
-            if (upperSideImpedance.Magnitude == 0)
+            if (upperSideImpedance.Magnitude < 0.00001)
                 throw new ArgumentOutOfRangeException("upperSideImpedance", "upper side impedance can not be zero");
 
-            if (lowerSideImpedance.Magnitude == 0)
+            if (lowerSideImpedance.Magnitude < 0.00001)
                 throw new ArgumentOutOfRangeException("lowerSideImpedance", "upper side impedance can not be zero");
 
             _name = name;
@@ -37,6 +41,41 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _mainImpedance = mainImpedance;
             _ratio = ratio;
         }
+
+        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public Complex GetTotalPowerForPQBus(double scaleBasePower)
+        {
+            return new Complex();
+        }
+
+        public Complex GetSlackVoltage(double scaleBasePower)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
+        {
+            _upperSideNode.AddConnectedNodes(visitedNodes);
+            _lowerSideNode.AddConnectedNodes(visitedNodes);
+        }
+
+        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<IReadOnlyNode> GetInternalNodes()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region properties
 
         public string Name
         {
@@ -103,35 +142,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return MainImpedance.Magnitude > 0 || Math.Abs(RelativeRatio - 1) > 0.001; }
         }
 
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public Complex GetTotalPowerForPQBus(double scaleBasePower)
-        {
-            return new Complex();
-        }
-
-        public Complex GetSlackVoltage(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
-        {
-            _upperSideNode.AddConnectedNodes(visitedNodes);
-            _lowerSideNode.AddConnectedNodes(visitedNodes);
-        }
-
-        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IList<IReadOnlyNode> GetInternalNodes()
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }
