@@ -143,7 +143,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
             admittances.AddConnection(mainImpedanceNode, groundNode, 1 / mainImpedanceScaled);
             admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio);
+                idealTransformerInternalNode, RelativeRatio, 1);
         }
 
         private void FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
@@ -157,7 +157,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
             admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
             admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio);
+                idealTransformerInternalNode, RelativeRatio, 1);
         }
 
         #endregion

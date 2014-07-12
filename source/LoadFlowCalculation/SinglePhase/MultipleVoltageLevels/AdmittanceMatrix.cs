@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -54,15 +55,21 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r)
         {
             AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode,
-                (-1) * r);
+                (-1) / r);
             AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, 
-                r);
+                1 / r);
         }
 
-        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio)
+        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight)
         {
-            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, 1/ratio);
-            AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, 1);
+            if (ratio <= 0)
+                throw new ArgumentOutOfRangeException("ratio", "must be positive");
+
+            if (resistanceWeight <= 0)
+                throw new ArgumentOutOfRangeException("resistanceWeight", "must be positive");
+
+            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, ratio*resistanceWeight);
+            AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
     }
 }

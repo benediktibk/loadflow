@@ -12,7 +12,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, 
             IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r);
 
-        void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, 
-            IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio);
+        void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight);
     }
 }
