@@ -73,8 +73,31 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(4, currents.Count);
             ComplexAssert.AreEqual(0, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
-            ComplexAssert.AreEqual(-6, 0, currents[2], 0.00001);
-            ComplexAssert.AreEqual(6, 0, currents[3], 0.00001);
+            ComplexAssert.AreEqual(6, 0, currents[2], 0.00001);
+            ComplexAssert.AreEqual(-6, 0, currents[3], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnection_1_CurrentsAreCorrect()
+        {
+            var firstNode = new Node("first", 1);
+            var secondNode = new Node("second", 1);
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>
+            {
+                {firstNode, 0},
+                {secondNode, 1},
+            };
+            var matrix = new AdmittanceMatrix(2, nodeIndexes);
+
+            matrix.AddConnection(firstNode, secondNode, new Complex(1, 0));
+
+            var values = matrix.GetValues();
+            var voltages =
+                new DenseVector(new[] { new Complex(2, 0), new Complex(1, 0) });
+            var currents = values * voltages;
+            Assert.AreEqual(2, currents.Count);
+            ComplexAssert.AreEqual(1, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(-1, 0, currents[1], 0.00001);
         }
     }
 }
