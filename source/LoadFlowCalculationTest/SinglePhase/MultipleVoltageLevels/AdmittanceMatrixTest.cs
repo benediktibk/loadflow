@@ -126,8 +126,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             {
                 {input, 0},
                 {output, 1},
-                {ground, 2},
-                {internalNode, 3}
+                {internalNode, 2},
+                {ground, 3}
             };
             var matrix = new AdmittanceMatrix(4, nodeIndexes);
 
@@ -139,10 +139,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
                 new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(2, 0), new Complex(0, 0) });
             var currents = values * voltages;
             Assert.AreEqual(4, currents.Count);
-            ComplexAssert.AreEqual(-0.2, 0, currents[0], 0.00001);
-            ComplexAssert.AreEqual(2, 0, currents[1], 0.00001);
+            ComplexAssert.AreEqual(0.2, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[2], 0.00001);
-            ComplexAssert.AreEqual(-1.8, 0, currents[3], 0.00001); 
+            ComplexAssert.AreEqual(-0.2, 0, currents[3], 0.00001); 
         }
 
         [TestMethod]
@@ -156,8 +156,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             {
                 {input, 0},
                 {output, 1},
-                {ground, 2},
-                {internalNode, 3}
+                {internalNode, 2},
+                {ground, 3}
             };
             var matrix = new AdmittanceMatrix(4, nodeIndexes);
 
@@ -166,13 +166,43 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             var values = matrix.GetValues();
             var voltages =
-                new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(2, 0), new Complex(0, 0) });
+                new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
             var currents = values * voltages;
             Assert.AreEqual(4, currents.Count);
-            ComplexAssert.AreEqual(-0.2, 0, currents[0], 0.00001);
-            ComplexAssert.AreEqual(2, 0, currents[1], 0.00001);
+            ComplexAssert.AreEqual(0.2, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[2], 0.00001);
-            ComplexAssert.AreEqual(-1.8, 0, currents[3], 0.00001);
+            ComplexAssert.AreEqual(-0.2, 0, currents[3], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddIdealTransformer_AmplificationOf1AndResistanceWeightOf100_CurrentsAreCorrect()
+        {
+            var input = new Node("input", 1);
+            var output = new Node("output", 1);
+            var ground = new Node("ground", 1);
+            var internalNode = new Node("internalNode", 1);
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>
+            {
+                {input, 0},
+                {output, 1},
+                {internalNode, 2},
+                {ground, 3}
+            };
+            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+
+            matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 1, 100);
+            matrix.AddConnection(output, ground, 1);
+
+            var values = matrix.GetValues();
+            var voltages =
+                new DenseVector(new[] { new Complex(2, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
+            var currents = values * voltages;
+            Assert.AreEqual(4, currents.Count);
+            ComplexAssert.AreEqual(2, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
+            ComplexAssert.AreEqual(0, 0, currents[2], 0.00001);
+            ComplexAssert.AreEqual(-2, 0, currents[3], 0.00001);
         }
     }
 }
