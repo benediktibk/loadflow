@@ -62,7 +62,13 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
                 var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittances);
 
-                Debug.Assert(admittancesToUnknownVoltages.LU().Determinant.Magnitude > 0.001);
+#if DEBUG
+                var separation = admittancesToUnknownVoltages.LU();
+                var determinant = separation.Determinant;
+                var inverseDeterminant = separation.Inverse().Determinant();
+                var condition = (determinant*inverseDeterminant).Magnitude;
+                Debug.Assert(condition < 1000);
+#endif
 
                 var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
