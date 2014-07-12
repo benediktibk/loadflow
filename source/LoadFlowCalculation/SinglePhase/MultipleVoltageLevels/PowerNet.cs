@@ -12,7 +12,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly double _frequency;
         private readonly List<Load> _loads;
         private readonly List<Line> _lines;
-        private readonly List<Transformator> _transformators;
+        private readonly List<Transformer> _transformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
         private readonly List<IPowerNetElement> _elements; 
@@ -29,7 +29,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _frequency = frequency;
             _loads = new List<Load>();
             _lines = new List<Line>();
-            _transformators = new List<Transformator>();
+            _transformers = new List<Transformer>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
             _elements = new List<IPowerNetElement>();
@@ -121,17 +121,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTransformator(string upperSideNodeName, string lowerSideNodeName, string name, double nominalPower,
+        public void AddTransformer(string upperSideNodeName, string lowerSideNodeName, string name, double nominalPower,
             double shortCircuitVoltageInPercentage, double copperLosses, double ironLosses, double alpha)
         {
             AddName(name);
             var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
             var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
-            var transformator = new Transformator(name, upperSideNode, lowerSideNode);
-            _transformators.Add(transformator);
-            _elements.Add(transformator);
-            upperSideNode.Connect(transformator);
-            lowerSideNode.Connect(transformator);
+            var transformer = new Transformer(name, upperSideNode, lowerSideNode);
+            _transformers.Add(transformer);
+            _elements.Add(transformer);
+            upperSideNode.Connect(transformer);
+            lowerSideNode.Connect(transformer);
         }
 
         public void AddLoad(string nodeName, string name, Complex power)
@@ -209,9 +209,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return _feedIns.Count; }
         }
 
-        public int TransformatorCount
+        public int TransformerCount
         {
-            get { return _transformators.Count; }
+            get { return _transformers.Count; }
         }
 
         public int GeneratorCount

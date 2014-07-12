@@ -5,13 +5,13 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Transformator : IPowerNetElement
+    public class Transformer : IPowerNetElement
     {
         private readonly string _name;
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
 
-        public Transformator(string name, IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode)
+        public Transformer(string name, IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode)
         {
             _name = name;
             _upperSideNode = upperSideNode;

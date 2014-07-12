@@ -223,18 +223,18 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void AddTransformator_TwoValidNodes_BothNodesHaveOneConnectedElement()
+        public void AddTransformer_TwoValidNodes_BothNodesHaveOneConnectedElement()
         {
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             var nodeOne = _powerNet.GetNodeByName("blub");
             var nodeTwo = _powerNet.GetNodeByName("blob");
 
-            _powerNet.AddTransformator("blub", "blob", "line", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "line", 3, 5, 5, 2, 3);
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
-            Assert.AreEqual(1, _powerNet.TransformatorCount);
+            Assert.AreEqual(1, _powerNet.TransformerCount);
         }
 
         [TestMethod]
@@ -338,20 +338,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void AddTransformator_SameNameAsNode_ThrowsException()
+        public void AddTransformer_SameNameAsNode_ThrowsException()
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformator("blub", "blob", "blub", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "blub", 3, 5, 5, 2, 3);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void AddTransformator_NameContainsHashKey_ThrowsException()
+        public void AddTransformer_NameContainsHashKey_ThrowsException()
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformator("blub", "blob", "heinz#hanz", 3, 5, 5, 2, 3);
+            _powerNet.AddTransformer("blub", "blob", "heinz#hanz", 3, 5, 5, 2, 3);
         }
 
         [TestMethod]

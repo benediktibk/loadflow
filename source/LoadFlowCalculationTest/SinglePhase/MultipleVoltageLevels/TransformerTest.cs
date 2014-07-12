@@ -8,36 +8,36 @@ using UnitTestHelper;
 namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
-    public class TransformatorTest
+    public class TransformerTest
     {
         private Node _upperSideNode;
         private Node _lowerSideNode;
-        private Transformator _transformator;
+        private Transformer _transformer;
 
         [TestInitialize]
         public void SetUp()
         {
             _upperSideNode = new Node("upper", 10);
             _lowerSideNode = new Node("lower", 0.25);
-            _transformator = new Transformator("blub", _upperSideNode, _lowerSideNode);
+            _transformer = new Transformer("blub", _upperSideNode, _lowerSideNode);
         }
 
         [TestMethod]
         public void Constructor_blubAsName_NameIsblub()
         {
-            Assert.AreEqual("blub", _transformator.Name);
+            Assert.AreEqual("blub", _transformer.Name);
         }
 
         [TestMethod]
         public void UpperSideNominalVoltage_UpperSideNodeHasNominalVoltage10_10()
         {
-            Assert.AreEqual(10, _transformator.UpperSideNominalVoltage, 0.00001);
+            Assert.AreEqual(10, _transformer.UpperSideNominalVoltage, 0.00001);
         }
 
         [TestMethod]
         public void UpperSideNominalVoltage_LowerSideNodeHasNominalVoltage025_025()
         {
-            Assert.AreEqual(0.25, _transformator.LowerSideNominalVoltage, 0.00001);
+            Assert.AreEqual(0.25, _transformer.LowerSideNominalVoltage, 0.00001);
         }
 
         [TestMethod]
@@ -45,10 +45,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformator = new Transformator("blub", upperSideNode.Object, lowerSideNode.Object);
+            var transformer = new Transformer("blub", upperSideNode.Object, lowerSideNode.Object);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
-            transformator.AddConnectedNodes(nodes);
+            transformer.AddConnectedNodes(nodes);
 
             upperSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
             lowerSideNode.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
@@ -57,26 +57,26 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void EnforcesPVBus_Empty_False()
         {
-            Assert.IsFalse(_transformator.EnforcesPVBus);
+            Assert.IsFalse(_transformer.EnforcesPVBus);
         }
 
         [TestMethod]
         public void EnforcesSlackBus_Empty_False()
         {
-            Assert.IsFalse(_transformator.EnforcesSlackBus);
+            Assert.IsFalse(_transformer.EnforcesSlackBus);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
         {
-            _transformator.GetVoltageMagnitudeAndRealPowerForPVBus(1);
+            _transformer.GetVoltageMagnitudeAndRealPowerForPVBus(1);
         }
 
         [TestMethod]
         public void GetTotalPowerForPQBus_ValidStuff_0()
         {
-            var result = _transformator.GetTotalPowerForPQBus(3);
+            var result = _transformer.GetTotalPowerForPQBus(3);
 
             ComplexAssert.AreEqual(0, 0, result, 0.00001);
         }
@@ -85,19 +85,19 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
         {
-            _transformator.GetSlackVoltage(45);
+            _transformer.GetSlackVoltage(45);
         }
 
         [TestMethod]
         public void NominalVoltagesMatch_Empty_True()
         {
-            Assert.IsTrue(_transformator.NominalVoltagesMatch);
+            Assert.IsTrue(_transformer.NominalVoltagesMatch);
         }
 
         [TestMethod]
         public void NeedsGroundNode_Empty_True()
         {
-            Assert.IsTrue(_transformator.NeedsGroundNode);
+            Assert.IsTrue(_transformer.NeedsGroundNode);
         }
     }
 }

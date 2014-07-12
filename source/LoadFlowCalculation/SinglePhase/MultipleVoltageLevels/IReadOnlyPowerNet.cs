@@ -9,7 +9,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         int LoadCount { get; }
         int LineCount { get; }
         int FeedInCount { get; }
-        int TransformatorCount { get; }
+        int TransformerCount { get; }
         int GeneratorCount { get; }
         int NodeCount { get; }
 
