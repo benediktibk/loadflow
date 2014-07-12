@@ -449,5 +449,23 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
             ComplexAssert.AreEqual(395, 0, targetNode.Voltage, 0.0001);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneTransformerWithNotNominalRatioAndNoMainImpedance_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode("sourceNode", 1000);
+            _powerNet.AddNode("targetNode", 400);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1000, 0), 0);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(1.50407, 0), new Complex(0.5985, 0), new Complex(), 2.48);
+            _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithoutPowerScaling);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeByName("sourceNode");
+            var targetNode = _powerNet.GetNodeByName("targetNode");
+            ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
+            ComplexAssert.AreEqual(399, 0, targetNode.Voltage, 0.0001);
+        }
     }
 }
