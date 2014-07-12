@@ -64,12 +64,12 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
 #if DEBUG
                 var separation = admittancesToUnknownVoltages.LU();
-                var determinant = separation.Determinant;
-                var inverseDeterminant = separation.Inverse().Determinant();
-                var condition = (determinant*inverseDeterminant).Magnitude;
+                var norm = admittancesToUnknownVoltages.L2Norm();
+                var inverse = separation.Inverse();
+                var inverseNorm = inverse.L2Norm();
+                var condition = (norm*inverseNorm).Magnitude;
                 Debug.Assert(condition < 1000);
-                Debug.Assert(determinant.Magnitude > 0.001);
-                Debug.Assert(inverseDeterminant.Magnitude > 0.001);
+                Debug.Assert(condition > 0);
 #endif
 
                 var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
