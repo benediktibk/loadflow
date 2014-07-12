@@ -117,7 +117,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
         {
             Debug.Assert(!NeedsGroundNode || groundNode != null);
 

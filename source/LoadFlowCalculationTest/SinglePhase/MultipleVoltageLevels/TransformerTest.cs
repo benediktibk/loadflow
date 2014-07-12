@@ -198,7 +198,65 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_NominalRatioAndNoMainImpedance_ResultIsCorrect()
         {
-            Assert.Fail();
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+            var admittanceMatrix = new Mock<IAdmittanceMatrix>();
+
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+
+            admittanceMatrix.Verify(x => x.AddConnection(_upperSideNode, _lowerSideNode, It.IsAny<Complex>()),
+                Times.Once);
+            admittanceMatrix.Verify(x => x.AddGyrator(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+            admittanceMatrix.Verify(x => x.AddVoltageControlledCurrentSource(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_NominalRatioAndMainImpedance_ResultIsCorrect()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+            var admittanceMatrix = new Mock<IAdmittanceMatrix>();
+
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+
+            admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Exactly(3));
+            admittanceMatrix.Verify(x => x.AddGyrator(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+            admittanceMatrix.Verify(x => x.AddVoltageControlledCurrentSource(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Never);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_NotNominalRatioAndMainImpedance_ResultIsCorrect()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
+            var admittanceMatrix = new Mock<IAdmittanceMatrix>();
+
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+
+            admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Exactly(3));
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Once);
+        }
+
+        [TestMethod]
+        public void FillInAdmittances_NotNominalRatioAndNoMainImpedance_ResultIsCorrect()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+            var admittanceMatrix = new Mock<IAdmittanceMatrix>();
+
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+
+            admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Exactly(2));
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
+                Times.Once);
         }
     }
 }

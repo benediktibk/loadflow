@@ -77,7 +77,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _lowerSideNode.AddConnectedNodes(visitedNodes);
         }
 
-        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
         {
             var scalerUpperSide = new DimensionScaler(UpperSideNominalVoltage, scaleBasisPower);
             var scalerLowerSide = new DimensionScaler(LowerSideNominalVoltage, scaleBasisPower);
@@ -101,15 +101,24 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
-        public void FillInAdmittancesWithNoInternalNodes(AdmittanceMatrix admittances, DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide)
+        public IList<IReadOnlyNode> GetInternalNodes()
+        {
+            return _internalNodes.Cast<IReadOnlyNode>().ToList();
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void FillInAdmittancesWithNoInternalNodes(IAdmittanceMatrix admittances, DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide)
         {
             var upperSideImpedanceScaled = scalerUpperSide.ScaleImpedance(UpperSideImpedance);
             var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
-            var admittance = 1/(upperSideImpedanceScaled + lowerSideImpedanceScaled);
+            var admittance = 1 / (upperSideImpedanceScaled + lowerSideImpedanceScaled);
             admittances.AddConnection(_upperSideNode, _lowerSideNode, admittance);
         }
 
-        public void FillInAdmittancesWithMainImpedanceAndNominalRatio(AdmittanceMatrix admittances,
+        private void FillInAdmittancesWithMainImpedanceAndNominalRatio(IAdmittanceMatrix admittances,
             DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode)
         {
             var mainImpedanceNode = _internalNodes[0];
@@ -121,7 +130,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(mainImpedanceNode, groundNode, 1 / mainImpedanceScaled);
         }
 
-        public void FillInAdmittancesWithMainImpedanceAndNotNominalRatio(AdmittanceMatrix admittances,
+        private void FillInAdmittancesWithMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
             DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode)
         {
             var mainImpedanceNode = _internalNodes[0];
@@ -137,7 +146,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 idealTransformerInternalNode, RelativeRatio);
         }
 
-        public void FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(AdmittanceMatrix admittances,
+        private void FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
             DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode)
         {
             var mainImpedanceNode = _internalNodes[0];
@@ -149,11 +158,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
             admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
                 idealTransformerInternalNode, RelativeRatio);
-        }
-
-        public IList<IReadOnlyNode> GetInternalNodes()
-        {
-            return _internalNodes.Cast<IReadOnlyNode>().ToList();
         }
 
         #endregion
