@@ -99,5 +99,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(1, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(-1, 0, currents[1], 0.00001);
         }
+
+        [TestMethod]
+        public void AddGyrator_AmplificationOf2_CurrentsAreCorrect()
+        {
+            _matrix.AddGyrator(_firstNode, _thirdNode, _secondNode, _thirdNode, 2);
+
+            var values = _matrix.GetValues();
+            var voltages =
+                new DenseVector(new[] { new Complex(2, 1), new Complex(1, 1), new Complex(0, 1) });
+            var currents = values * voltages;
+            Assert.AreEqual(3, currents.Count);
+            ComplexAssert.AreEqual(2, 0, currents[0], 0.00001);
+            ComplexAssert.AreEqual(-4, 0, currents[1], 0.00001);
+            ComplexAssert.AreEqual(2, 0, currents[2], 0.00001);
+        }
     }
 }

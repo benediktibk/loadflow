@@ -52,5 +52,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _values[outputSourceNodeIndex, inputTargetNodeIndex] -= amplification;
             _values[outputTargetNodeIndex, inputSourceNodeIndex] -= amplification;
         }
+
+        public void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
+            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double amplification)
+        {
+            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode,
+                (-1) * amplification);
+            AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, 
+                amplification);
+        }
     }
 }
