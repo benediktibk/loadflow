@@ -196,7 +196,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_NominalRatioAndNoMainImpedance_ResultIsCorrect()
+        public void FillInAdmittances_NominalRatioAndNoMainImpedance_OneConnection()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
@@ -214,7 +214,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_NominalRatioAndMainImpedance_ResultIsCorrect()
+        public void FillInAdmittances_NominalRatioAndMainImpedance_ThreeConnections()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
@@ -232,7 +232,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_NotNominalRatioAndMainImpedance_ResultIsCorrect()
+        public void FillInAdmittances_NotNominalRatioAndMainImpedance_ThreeConnectionsAndOneIdealTransformer()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
@@ -246,7 +246,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_NotNominalRatioAndNoMainImpedance_ResultIsCorrect()
+        public void FillInAdmittances_NotNominalRatioAndNoMainImpedance_TwoConnectionsAndOneIdealTransformer()
         {
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
