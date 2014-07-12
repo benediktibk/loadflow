@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -7,5 +8,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
         bool IsOverdetermined { get; }
+        Complex Voltage { get; }
     }
 }

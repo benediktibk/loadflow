@@ -24,7 +24,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }
 
-        public IDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
+        public IReadOnlyDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
         {
             CheckPowerNet(powerNet);
 
@@ -57,7 +57,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             {
                 var index = nodeIndexes[node];
                 var name = node.Name;
-                var voltage = singleVoltageNodesWithResults[index].Voltage*node.NominalVoltage;
+                var voltage = singleVoltageNodesWithResults[index].Voltage;
                 nodeVoltages.Add(name, voltage);
             }
 

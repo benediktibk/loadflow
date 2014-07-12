@@ -50,8 +50,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(2, nodeVoltages.Count);
             Assert.IsTrue(nodeVoltages.ContainsKey("feedInNode"));
             Assert.IsTrue(nodeVoltages.ContainsKey("loadNode"));
-            ComplexAssert.AreEqual(100, 0, nodeVoltages["feedInNode"], 0.0001);
-            ComplexAssert.AreEqual(98.989794855663561963945681494118, 0, nodeVoltages["loadNode"], 0.0001);
+            ComplexAssert.AreEqual(1, 0, nodeVoltages["feedInNode"], 0.000001);
+            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeVoltages["loadNode"], 0.000001);
         }
 
         [TestMethod]
@@ -68,8 +68,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(2, nodeVoltages.Count);
             Assert.IsTrue(nodeVoltages.ContainsKey("feedInNode"));
             Assert.IsTrue(nodeVoltages.ContainsKey("loadNode"));
-            ComplexAssert.AreEqual(100, 0, nodeVoltages["feedInNode"], 0.0001);
-            ComplexAssert.AreEqual(98.989794855663561963945681494118, 0, nodeVoltages["loadNode"], 0.0001);
+            ComplexAssert.AreEqual(1, 0, nodeVoltages["feedInNode"], 0.000001);
+            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeVoltages["loadNode"], 0.000001);
         }
 
         [TestMethod]

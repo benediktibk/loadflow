@@ -149,7 +149,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _name == other.Name;
         }
 
-        public void UpdateVoltage(Dictionary<string, Complex> voltages)
+        public void UpdateVoltage(IReadOnlyDictionary<string, Complex> voltages)
         {
             Debug.Assert(voltages.ContainsKey(Name));
             var scaler = new DimensionScaler(_nominalVoltage, 1);

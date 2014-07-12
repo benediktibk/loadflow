@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitTestHelper;
 
 namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 {
@@ -10,11 +12,13 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
     public class PowerNetTest
     {
         private PowerNet _powerNet;
+        private LoadFlowCalculator _loadFlowCalculator;
 
         [TestInitialize]
         public void SetUp()
         {
             _powerNet = new PowerNet(50);
+            _loadFlowCalculator = new LoadFlowCalculator(1000, new CurrentIteration(0.0001, 100));
         }
 
         [TestMethod]
@@ -370,6 +374,24 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad("targetNode", "load", new Complex(4, 5));
 
             Assert.IsTrue(_powerNet.CheckIfGroundNodeIsNecessary());
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_SimpleConnectionFromFeedInToLoad_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode("sourceNode", 1000);
+            _powerNet.AddNode("targetNode", 1000);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1050, 0), 0);
+            _powerNet.AddLine("line", "sourceNode", "targetNode", 50, 700e-6, 0, 0);
+            _powerNet.AddLoad("targetNode", "load", new Complex(18925, -9668));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_loadFlowCalculator);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeByName("sourceNode");
+            var targetNode = _powerNet.GetNodeByName("targetNode");
+            ComplexAssert.AreEqual(1050, 0, sourceNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(950, -50, targetNode.Voltage, 0.01);
         }
     }
 }

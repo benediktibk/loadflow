@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -59,6 +58,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             }
 
             return segments;
+        }
+
+        public bool CalculateNodeVoltages(LoadFlowCalculator calculator)
+        {
+            var voltages = calculator.CalculateNodeVoltages(this);
+
+            if (voltages == null)
+                return true;
+
+            foreach (var node in _nodes)
+                node.UpdateVoltage(voltages);
+
+            return false;
         }
 
         #endregion
