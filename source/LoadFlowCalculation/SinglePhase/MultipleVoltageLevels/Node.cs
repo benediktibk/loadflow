@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 
@@ -146,6 +147,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public bool Equals(IReadOnlyNode other)
         {
             return _name == other.Name;
+        }
+
+        public void UpdateVoltage(Dictionary<string, Complex> voltages)
+        {
+            Debug.Assert(voltages.ContainsKey(Name));
+            var scaler = new DimensionScaler(_nominalVoltage, 1);
+            var value = voltages[Name];
+            Voltage = scaler.UnscaleVoltage(value);
         }
     }
 }

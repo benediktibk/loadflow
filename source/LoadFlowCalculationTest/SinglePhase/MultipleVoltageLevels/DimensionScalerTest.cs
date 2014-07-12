@@ -38,6 +38,16 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void UnscaleVoltage_Complex_CorrectResult()
+        {
+            var source = new Complex(10, 3);
+
+            var result = _scaler.UnscaleVoltage(source);
+
+            ComplexAssert.AreEqual(10*4, 3*4, result, 0.00001);
+        }
+
+        [TestMethod]
         public void ScalePower_Double_CorrectResult()
         {
             Assert.AreEqual(5.0 / 3, _scaler.ScalePower(5), 0.00001);

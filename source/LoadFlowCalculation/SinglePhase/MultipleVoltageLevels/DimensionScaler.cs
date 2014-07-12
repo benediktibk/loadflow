@@ -33,6 +33,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return voltage/VoltageBase;
         }
 
+        public Complex UnscaleVoltage(Complex voltage)
+        {
+            return voltage*VoltageBase;
+        }
+
         public double ScalePower(double power)
         {
             return power / PowerBase;

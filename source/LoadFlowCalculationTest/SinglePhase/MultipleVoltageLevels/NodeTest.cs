@@ -401,5 +401,15 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             ComplexAssert.AreEqual(4, 5, _node.Voltage, 0.00001);
         }
+
+        [TestMethod]
+        public void UpdateVoltage_NominalVoltageSetTo2AndVoltage4And5_VoltageIs8And10()
+        {
+            var voltages = new Dictionary<string, Complex>() {{_node.Name, new Complex(4, 5)}};
+
+            _node.UpdateVoltage(voltages);
+
+            ComplexAssert.AreEqual(8, 10, _node.Voltage, 0.00001);
+        }
     }
 }
