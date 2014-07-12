@@ -139,7 +139,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public bool NeedsGroundNode
         {
-            get { return MainImpedance.Magnitude > 0 || Math.Abs(RelativeRatio - 1) > 0.001; }
+            get { return HasNotNominalRatio || HasMainImpedance; }
+        }
+
+        public bool HasMainImpedance
+        {
+            get { return MainImpedance.Magnitude > 0; }
+        }
+
+        public bool HasNotNominalRatio
+        {
+            get { return Math.Abs(RelativeRatio - 1) > 0.001; } 
         }
 
         #endregion
