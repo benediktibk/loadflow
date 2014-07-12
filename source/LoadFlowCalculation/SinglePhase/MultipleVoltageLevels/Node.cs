@@ -9,13 +9,17 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly string _name;
         private readonly double _nominalVoltage;
-        private readonly List<IPowerNetElement> _connectedElements; 
+        private readonly List<IPowerNetElement> _connectedElements;
+        private Complex _voltage;
+        private bool _voltageSet;
 
         public Node(string name, double nominalVoltage)
         {
             _name = name;
             _nominalVoltage = nominalVoltage;
             _connectedElements = new List<IPowerNetElement>();
+            _voltage = new Complex();
+            _voltageSet = false;
         }
 
         public void Connect(IPowerNetElement element)
@@ -36,6 +40,22 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public string Name
         {
             get { return _name; }
+        }
+
+        public Complex Voltage
+        {
+            get
+            {
+                if (!_voltageSet)
+                    throw new InvalidOperationException("voltage not yet set");
+
+                return _voltage;
+            }
+            set
+            {
+                _voltage = value;
+                _voltageSet = true;
+            }
         }
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)

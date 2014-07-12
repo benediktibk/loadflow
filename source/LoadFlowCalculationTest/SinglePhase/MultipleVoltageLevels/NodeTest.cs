@@ -386,5 +386,20 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             elementTwo.Verify(x => x.GetTotalPowerForPQBus(3), Times.Once);
             ComplexAssert.AreEqual(6, 8, result, 0.00001);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Voltage_NotYetSet_ThrowsException()
+        {
+            var voltage = _node.Voltage;
+        }
+
+        [TestMethod]
+        public void Voltage_SetTo4And5_4And5()
+        {
+            _node.Voltage = new Complex(4, 5);
+
+            ComplexAssert.AreEqual(4, 5, _node.Voltage, 0.00001);
+        }
     }
 }
