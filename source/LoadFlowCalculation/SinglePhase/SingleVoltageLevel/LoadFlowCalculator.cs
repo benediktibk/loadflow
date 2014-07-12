@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -60,6 +61,8 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 Vector<Complex> constantCurrentRightHandSide;
                 ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
                 var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittances);
+
+                Debug.Assert(admittances.LU().Determinant.Magnitude > 0.001);
 
                 var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
