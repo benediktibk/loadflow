@@ -154,5 +154,45 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             ComplexAssert.AreEqual(5, 6, _transformer.MainImpedance, 0.00001);
         }
+
+        [TestMethod]
+        public void GetInternalNodes_NominalRatioAndNoMainImpedance_ResultCountIs0()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+
+            var internalNodes = transformer.GetInternalNodes();
+
+            Assert.AreEqual(0, internalNodes.Count);
+        }
+
+        [TestMethod]
+        public void GetInternalNodes_NotNominalRatioAndNoMainImpedance_ResultCountIs2()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+
+            var internalNodes = transformer.GetInternalNodes();
+
+            Assert.AreEqual(2, internalNodes.Count);
+        }
+
+        [TestMethod]
+        public void GetInternalNodes_NotNominalRatioAndMainImpedance_ResultCountIs2()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
+
+            var internalNodes = transformer.GetInternalNodes();
+
+            Assert.AreEqual(2, internalNodes.Count);
+        }
+
+        [TestMethod]
+        public void GetInternalNodes_NominalRatioAndMainImpedance_ResultCountIs1()
+        {
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+
+            var internalNodes = transformer.GetInternalNodes();
+
+            Assert.AreEqual(1, internalNodes.Count);
+        }
     }
 }

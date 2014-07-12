@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
@@ -15,6 +16,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly Complex _lowerSideImpedance;
         private readonly Complex _mainImpedance;
         private readonly double _ratio;
+        private readonly List<DerivedInternalPQNode> _internalNodes; 
 
         #endregion
 
@@ -40,6 +42,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _lowerSideImpedance = lowerSideImpedance;
             _mainImpedance = mainImpedance;
             _ratio = ratio;
+            _internalNodes = new List<DerivedInternalPQNode>();
+
+            if (HasMainImpedance || HasNotNominalRatio)
+                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, name + "#mainImpedance", new Complex(0, 0)));
+
+            if (HasNotNominalRatio)
+                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, name + "#idealTransformer", new Complex(0, 0)));
         }
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
@@ -70,7 +79,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public IList<IReadOnlyNode> GetInternalNodes()
         {
-            throw new NotImplementedException();
+            return _internalNodes.Cast<IReadOnlyNode>().ToList();
         }
 
         #endregion
