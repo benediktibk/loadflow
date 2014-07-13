@@ -94,6 +94,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public Complex GetSlackVoltage(double scaleBasePower)
         {
+            if (NominalVoltage == 0)
+                return new Complex(0, 0);
+
             var scaler = new DimensionScaler(NominalVoltage, 1);
             return scaler.ScaleVoltage(Voltage);
         }

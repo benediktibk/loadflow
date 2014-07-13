@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -17,6 +18,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public DimensionScaler(double voltageBase, double powerBase)
         {
+            if (voltageBase < 0.001)
+                throw new ArgumentOutOfRangeException("voltageBase", "is too small");
+
+            if (powerBase < 0.001)
+                throw new ArgumentOutOfRangeException("powerBase", "is too small");
+
             _voltageBase = voltageBase;
             _powerBase = powerBase;
             _currentBase = powerBase/voltageBase;
