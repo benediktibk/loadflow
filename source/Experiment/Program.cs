@@ -18,7 +18,7 @@ namespace Experiment
                 powerNet.AddNode("targetNode", 400);
                 powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1002, 0), 0);
                 powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(9.410964912, 0),
-                    new Complex(0.399, 0), new Complex(), 2.49999, Math.Pow(10, j));
+                    new Complex(0.399, 0), new Complex(), 2.0, Math.Pow(10, j));
                 powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
                 var nodes = new List<IReadOnlyNode>(powerNet.GetAllNodes());
