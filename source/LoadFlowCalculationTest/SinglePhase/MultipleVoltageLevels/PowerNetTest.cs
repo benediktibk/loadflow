@@ -97,7 +97,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 0, 0);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -112,8 +112,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 0, 0);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 0, 0);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -128,9 +128,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 0, 0);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 0, 0);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 0, 0);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -146,9 +146,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
             _powerNet.AddNode("hanz", 120);
-            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 0, 0);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 0, 0);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 0, 0);
 
             var sets = _powerNet.GetSetsOfConnectedNodes();
 
@@ -183,6 +183,16 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
+            _powerNet.AddLine("line", "blub", "blob", 3, 5, 0, 0);
+
+            Assert.IsFalse(_powerNet.CheckIfFloatingNodesExists());
+        }
+
+        [TestMethod]
+        public void CheckIfFloatingNodesExists_TwoConnectedNodesWithGround_False()
+        {
+            _powerNet.AddNode("blub", 123);
+            _powerNet.AddNode("blob", 120);
             _powerNet.AddLine("line", "blub", "blob", 3, 5, 5, 2);
 
             Assert.IsFalse(_powerNet.CheckIfFloatingNodesExists());
@@ -194,9 +204,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("blub", 123);
             _powerNet.AddNode("blob", 120);
             _powerNet.AddNode("heinz", 120);
-            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 5, 2);
-            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 5, 2);
-            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 5, 2);
+            _powerNet.AddLine("line1", "blub", "blob", 3, 5, 0, 0);
+            _powerNet.AddLine("line2", "blob", "heinz", 3, 5, 0, 0);
+            _powerNet.AddLine("line3", "blub", "heinz", 3, 5, 0, 0);
 
             Assert.IsFalse(_powerNet.CheckIfFloatingNodesExists());
         }
