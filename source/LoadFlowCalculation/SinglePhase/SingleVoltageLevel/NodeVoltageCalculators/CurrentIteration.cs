@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -91,6 +92,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             var admittance = admittances[i, i];
             var previousVoltage = previousVoltages[i];
             var power = powers[i];
+
+            if (admittance.Magnitude < 0.00001)
+                throw new InvalidDataException("admittance on main diagonal is zero");
 
             var branchCurrentSum = new Complex();
             
