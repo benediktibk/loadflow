@@ -33,7 +33,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
             if (powerNet.CheckIfGroundNodeIsNecessary())
             {
-                groundNode = new Node(NameOfGroundNode, 0) {Voltage = new Complex(0, 0)};
+                groundNode = new Node(NameOfGroundNode, 0);
                 nodes.Add(groundNode);
             }
 
@@ -64,7 +64,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, AdmittanceMatrix admittances)
+        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, AdmittanceMatrix admittances)
         {
             var singleVoltagePowerNet = new SingleVoltageLevel.PowerNet(admittances.GetValues(), 1);
 
