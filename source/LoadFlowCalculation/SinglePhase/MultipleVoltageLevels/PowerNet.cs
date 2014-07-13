@@ -40,6 +40,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _allNames = new HashSet<string>();
             _groundNode = new Node("#GROUNDNODE", 0);
             _groundFeedIn = new FeedIn("#GROUNDFEEDIN", _groundNode, new Complex(0, 0), 0);
+            _groundNode.Connect(_groundFeedIn);
             _allNames.Add(_groundNode.Name);
             _allNames.Add(_groundFeedIn.Name);
             _nodesByName.Add(_groundNode.Name, _groundNode);
