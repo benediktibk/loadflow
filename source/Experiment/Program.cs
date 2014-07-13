@@ -21,7 +21,7 @@ namespace Experiment
                     new Complex(0.399, 0), new Complex(), 2.0, Math.Pow(10, j));
                 powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
-                var nodes = new List<IReadOnlyNode>(powerNet.GetAllNodes());
+                var nodes = new List<IReadOnlyNode>(powerNet.GetAllNecessaryNodes());
                 IReadOnlyNode groundNode = null;
 
                 if (powerNet.CheckIfGroundNodeIsNecessary())
@@ -36,7 +36,7 @@ namespace Experiment
                     nodeIndexes.Add(nodes[i], i);
 
                 var admittances = new AdmittanceMatrix(nodes.Count, nodeIndexes);
-                powerNet.FillInAdmittances(admittances, 1, groundNode);
+                powerNet.FillInAdmittances(admittances, 1);
                 var matrix = admittances.GetValues();
                 var matrixReduced = new DenseMatrix(matrix.RowCount - 1, matrix.ColumnCount - 1);
                 for (var row = 0; row < matrix.RowCount - 1; ++row)

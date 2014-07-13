@@ -16,6 +16,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         private LoadFlowCalculator _calculatorWithDummyMethod;
         private PowerNet _powerNet;
         private Mock<IReadOnlyPowerNet> _powerNetMock;
+        private string _groundNode;
 
         [TestInitialize]
         public void SetUp()
@@ -28,6 +29,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
             _powerNetMock.Setup(x => x.CheckIfNominalVoltagesDoNotMatch()).Returns(false);
             _powerNetMock.Setup(x => x.CheckIfNodeIsOverdetermined()).Returns(false);
+            _groundNode = _powerNet.GroundNode.Name;
         }
 
         [TestMethod]
@@ -138,16 +140,14 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltages_OneNodeWithNameOfGroundNode_ThrowsException()
         {
             _powerNet.AddNode("sourceNode", 120);
-            _powerNet.AddNode(_calculator.NameOfGroundNode, 120);
+            _powerNet.AddNode("loadNode", 120);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(), 6);
-            _powerNet.AddLine("line", "sourceNode", _calculator.NameOfGroundNode, 3, 5, 5, 0);
-            _powerNet.AddLoad(_calculator.NameOfGroundNode, "load", new Complex(4, 5));
-
-            _calculator.CalculateNodeVoltages(_powerNet);
+            _powerNet.AddLine("line", "sourceNode", "loadNode", 3, 5, 5, 0);
+            _powerNet.AddLoad("loadNode", _groundNode, new Complex(4, 5));
         }
 
         [TestMethod]

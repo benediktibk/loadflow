@@ -12,6 +12,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         int TransformerCount { get; }
         int GeneratorCount { get; }
         int NodeCount { get; }
+        IReadOnlyNode GroundNode { get; }
 
         #endregion
 
@@ -22,8 +23,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfNodeIsOverdetermined();
         bool CheckIfGroundNodeIsNecessary();
         IExternalReadOnlyNode GetNodeByName(string name);
-        IReadOnlyList<IReadOnlyNode> GetAllNodes();
-        void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode);
+        IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes();
+        void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower);
 
         #endregion
     }

@@ -18,7 +18,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly List<IPowerNetElement> _elements; 
         private readonly List<Node> _nodes;
         private readonly Dictionary<string, Node> _nodesByName;
-        private readonly HashSet<string> _allNames; 
+        private readonly HashSet<string> _allNames;
+        private readonly Node _groundNode;
+        private readonly FeedIn _groundFeedIn;
 
         #endregion
 
@@ -36,16 +38,25 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _nodes = new List<Node>();
             _nodesByName = new Dictionary<string, Node>();
             _allNames = new HashSet<string>();
+            _groundNode = new Node("#GROUNDNODE", 0);
+            _groundFeedIn = new FeedIn("#GROUNDFEEDIN", _groundNode, new Complex(0, 0), 0);
+            _allNames.Add(_groundNode.Name);
+            _allNames.Add(_groundFeedIn.Name);
+            _nodesByName.Add(_groundNode.Name, _groundNode);
         }
 
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
         {
             var segments = new List<ISet<IExternalReadOnlyNode>>();
+            var nodes = new List<Node>(_nodes);
 
-            if (_nodes.Count == 0)
+            if (CheckIfGroundNodeIsNecessary())
+                nodes.Add(_groundNode);
+
+            if (nodes.Count == 0)
                 return segments;
 
-            foreach (var node in _nodes)
+            foreach (var node in nodes)
             {
                 var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
 
@@ -172,21 +183,27 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return GetNodeByNameInternal(name);
         }
 
-        public IReadOnlyList<IReadOnlyNode> GetAllNodes()
+        public IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes()
         {
             var allNodes = new List<IReadOnlyNode>();
 
             foreach (var element in _elements)
                 allNodes.AddRange(element.GetInternalNodes());
-
             allNodes.AddRange(_nodes);
+
+            if (CheckIfGroundNodeIsNecessary())
+            {
+                allNodes.AddRange(_groundFeedIn.GetInternalNodes());
+                allNodes.Add(_groundNode);
+            }
+
             return allNodes;
         }
 
-        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower)
         {
             foreach (var element in _elements)
-                element.FillInAdmittances(admittances, scaleBasePower, groundNode);
+                element.FillInAdmittances(admittances, scaleBasePower, _groundNode);
         }
 
         #endregion
@@ -223,6 +240,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return _loads.Count; }
         }
 
+        public IReadOnlyNode GroundNode
+        {
+            get { return _groundNode; }
+        }
+
         #endregion
 
         #region private functions
@@ -241,7 +263,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private void AddName(string name)
         {
             if (_allNames.Contains(name))
-                throw new ArgumentOutOfRangeException("name", "the name must be unique throught the all net elements");
+                throw new ArgumentOutOfRangeException("name", "the name must be unique throughout all net elements");
             if (name.Contains('#'))
                 throw new ArgumentOutOfRangeException("name", "the name must not contain a #");
             _allNames.Add(name);

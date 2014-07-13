@@ -28,20 +28,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             CheckPowerNet(powerNet);
 
-            var nodes = new List<IReadOnlyNode>(powerNet.GetAllNodes());
-            Node groundNode = null;
-
-            if (powerNet.CheckIfGroundNodeIsNecessary())
-            {
-                groundNode = new Node(NameOfGroundNode, 0);
-                nodes.Add(groundNode);
-            }
+            var nodes = new List<IReadOnlyNode>(powerNet.GetAllNecessaryNodes());
 
             if (CheckIfNamesAreDuplicated(nodes))
                 throw new ArgumentException("the node names are duplicated");
 
             var nodeIndexes = DetermineNodeIndexes(nodes);
-            var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet, groundNode);
+            var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var voltageCollapse = singleVoltagePowerNet.CalculateMissingInformation(calculator);
@@ -78,10 +71,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return singleVoltagePowerNet;
         }
 
-        private AdmittanceMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet, IReadOnlyNode groundNode)
+        private AdmittanceMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
         {
             var admittances = new AdmittanceMatrix(nodes.Count, nodeIndexes);
-            powerNet.FillInAdmittances(admittances, ScaleBasePower, groundNode);
+            powerNet.FillInAdmittances(admittances, ScaleBasePower);
             return admittances;
         }
 
@@ -128,11 +121,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public double ScaleBasePower
         {
             get { return _scaleBasePower; }
-        }
-
-        public string NameOfGroundNode
-        {
-            get { return "GROUND"; }
         }
 
         #endregion
