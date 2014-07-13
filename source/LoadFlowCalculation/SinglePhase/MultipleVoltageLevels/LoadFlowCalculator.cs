@@ -29,11 +29,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             CheckPowerNet(powerNet);
 
             var nodes = new List<IReadOnlyNode>(powerNet.GetAllNodes());
-            IReadOnlyNode groundNode = null;
+            Node groundNode = null;
 
             if (powerNet.CheckIfGroundNodeIsNecessary())
             {
-                groundNode = new Node(NameOfGroundNode, 0);
+                groundNode = new Node(NameOfGroundNode, 0) {Voltage = new Complex(0, 0)};
                 nodes.Add(groundNode);
             }
 
