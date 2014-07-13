@@ -71,5 +71,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, ratio*resistanceWeight);
             AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
+
+        public int NodeCount
+        {
+            get { return _nodeIndexes.Count; }
+        }
     }
 }

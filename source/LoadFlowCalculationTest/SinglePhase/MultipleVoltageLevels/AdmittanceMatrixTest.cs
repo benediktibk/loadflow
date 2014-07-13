@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -19,12 +20,26 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
         private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix)
         {
-            var values = matrix.GetValues();
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(values.RowCount, values.ColumnCount);
+            var rows = new int[matrix.NodeCount];
+            var columns = new int[matrix.NodeCount];
 
-            for (var row = 0; row < values.RowCount; ++row)
-                for (var column = 0; column < values.ColumnCount; ++column)
-                    result[row, column] = values[row, column].Real;
+            for (var i = 0; i < matrix.NodeCount; ++i)
+            {
+                rows[i] = i;
+                columns[i] = i;
+            }
+
+            return GetRealValues(matrix, rows, columns);
+        }
+
+        private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix, IReadOnlyList<int> rows, IReadOnlyList<int> columns)
+        {
+            var values = matrix.GetValues();
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(rows.Count, columns.Count);
+
+            for (var i = 0; i < rows.Count; ++i)
+                for (var j = 0; j < columns.Count; ++j)
+                    result[i, j] = values[rows[i], columns[j]].Real;
 
             return result;
         }
