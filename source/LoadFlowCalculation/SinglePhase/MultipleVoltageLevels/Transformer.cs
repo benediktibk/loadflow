@@ -25,6 +25,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public Transformer(string name, IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio, double idealTransformerFactor)
         {
+            if (upperSideNode == null)
+                throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
+
+            if (lowerSideNode == null)
+                throw new ArgumentOutOfRangeException("lowerSideNode", "must not be null");
+
             if (ratio <= 0)
                 throw new ArgumentOutOfRangeException("ratio", "must be positive");
 
@@ -49,9 +55,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
             if (HasNotNominalRatio)
             {
-                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, name + "#idealTransformer",
+                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, name + "#idealTransformer",
                     new Complex(0, 0)));
-                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, name + "#idealTransformerInternal",
+                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, name + "#idealTransformerInternal",
                     new Complex(0, 0)));
             }
         }
