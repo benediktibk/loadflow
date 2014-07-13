@@ -511,7 +511,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeByName("sourceNode");
             var targetNode = _powerNet.GetNodeByName("targetNode");
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.01);
-            ComplexAssert.AreEqual(397, 0, targetNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(396.8801, 0, targetNode.Voltage, 0.01);
         }
     }
 }
