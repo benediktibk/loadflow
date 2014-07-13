@@ -230,7 +230,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeOne = _powerNet.GetNodeByName("blub");
             var nodeTwo = _powerNet.GetNodeByName("blob");
 
-            _powerNet.AddTransformer("blub", "blob", "line", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
+            _powerNet.AddTransformer("blub", "blob", "line", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10, 1);
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
@@ -342,7 +342,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformer("blub", "blob", "blub", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
+            _powerNet.AddTransformer("blub", "blob", "blub", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10, 1);
         }
 
         [TestMethod]
@@ -351,7 +351,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode("blub", 120);
             _powerNet.AddNode("blob", 120);
-            _powerNet.AddTransformer("blub", "blob", "heinz#hanz", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10);
+            _powerNet.AddTransformer("blub", "blob", "heinz#hanz", new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 10, 1);
         }
 
         [TestMethod]
@@ -420,7 +420,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1000, 0), 0);
-            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5, 1);
             _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
             var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithPowerScaling);
@@ -438,7 +438,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1000, 0), 0);
-            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5, 1);
             _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
             var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithoutPowerScaling);
@@ -457,7 +457,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1000, 0), 0);
-            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(1.50407, 0), new Complex(0.5985, 0), new Complex(), 2.48);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(1.50407, 0), new Complex(0.5985, 0), new Complex(), 2.48, 1);
             _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
             var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithoutPowerScaling);
@@ -476,7 +476,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode("sourceNode", 1000);
             _powerNet.AddNode("targetNode", 400);
             _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1002, 0), 0);
-            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(9.410964912, 0), new Complex(0.399, 0), new Complex(), 2.495);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(9.410964912, 0), new Complex(0.399, 0), new Complex(), 2.495, 1);
             _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
 
             var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithoutPowerScaling);

@@ -20,7 +20,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _upperSideNode = new Node("upper", 10);
             _lowerSideNode = new Node("lower", 0.25);
-            _transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2);
+            _transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2, 1);
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer("blub", upperSideNode.Object, lowerSideNode.Object, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2);
+            var transformer = new Transformer("blub", upperSideNode.Object, lowerSideNode.Object, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 2, 1);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             transformer.AddConnectedNodes(nodes);
@@ -98,7 +98,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void NeedsGroundNode_MainImpedanceSet_True()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40, 1);
 
             Assert.IsTrue(transformer.NeedsGroundNode);
         }
@@ -106,7 +106,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void NeedsGroundNode_RelativeRatioNot1_True()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41, 1);
 
             Assert.IsTrue(transformer.NeedsGroundNode);
         }
@@ -114,7 +114,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void NeedsGroundNode_RelativeRatio1AndNoMainImpedance_False()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40, 1);
 
             Assert.IsFalse(transformer.NeedsGroundNode);
         }
@@ -158,7 +158,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_NominalRatioAndNoMainImpedance_ResultCountIs0()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40, 1);
 
             var internalNodes = transformer.GetInternalNodes();
 
@@ -168,7 +168,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_NotNominalRatioAndNoMainImpedance_ResultCountIs3()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41, 1);
 
             var internalNodes = transformer.GetInternalNodes();
 
@@ -178,7 +178,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_NotNominalRatioAndMainImpedance_ResultCountIs3()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41, 1);
 
             var internalNodes = transformer.GetInternalNodes();
 
@@ -188,7 +188,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_NominalRatioAndMainImpedance_ResultCountIs1()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40, 1);
 
             var internalNodes = transformer.GetInternalNodes();
 
@@ -198,7 +198,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_NominalRatioAndNoMainImpedance_OneConnection()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40, 1);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
             transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
@@ -216,7 +216,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_NominalRatioAndMainImpedance_ThreeConnections()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40, 1);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
             transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
@@ -234,7 +234,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_NotNominalRatioAndMainImpedance_ThreeConnectionsAndOneIdealTransformer()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41, 1);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
             transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
@@ -248,7 +248,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_NotNominalRatioAndNoMainImpedance_TwoConnectionsAndOneIdealTransformer()
         {
-            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
+            var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41, 1);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
             transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
@@ -266,7 +266,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var lowerSideNode = new Node("lower", 400);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>() { { upperSideNode, 0 }, { lowerSideNode, 1 } };
             var admittances = new AdmittanceMatrix(2, nodeIndexes);
-            var transformer = new Transformer("blub", upperSideNode, lowerSideNode, new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5);
+            var transformer = new Transformer("blub", upperSideNode, lowerSideNode, new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5, 1);
 
             transformer.FillInAdmittances(admittances, 1, null);
 
