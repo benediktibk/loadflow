@@ -68,7 +68,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 var inverse = separation.Inverse();
                 var inverseNorm = inverse.L2Norm();
                 var condition = (norm*inverseNorm).Magnitude;
-                Debug.Assert(condition < 1000);
+                Debug.Assert(condition < 1e5);
                 Debug.Assert(condition > 0);
 #endif
 
