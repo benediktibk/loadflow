@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -15,6 +16,18 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         private IReadOnlyNode _firstNode;
         private IReadOnlyNode _secondNode;
         private IReadOnlyNode _thirdNode;
+
+        private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix)
+        {
+            var values = matrix.GetValues();
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(values.RowCount, values.ColumnCount);
+
+            for (var row = 0; row < values.RowCount; ++row)
+                for (var column = 0; column < values.ColumnCount; ++column)
+                    result[row, column] = values[row, column].Real;
+
+            return result;
+        }
 
         [TestInitialize]
         public void SetUp()
@@ -203,6 +216,43 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[2], 0.00001);
             ComplexAssert.AreEqual(-2, 0, currents[3], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddIdealTransformer_OneConnectionBeforeAndAfter_CurrentsAreCorrect()
+        {
+            var input = new Node("input", 1);
+            var inputTransformer = new Node("inputTransformer", 1);
+            var output = new Node("output", 1);
+            var outputTransformer = new Node("outputTransformer", 1);
+            var ground = new Node("ground", 1);
+            var internalNode = new Node("internalNode", 1);
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>
+            {
+                {input, 0},
+                {inputTransformer, 1},
+                {outputTransformer, 2},
+                {output, 3},
+                {internalNode, 4},
+                {ground, 5}
+            };
+            var matrix = new AdmittanceMatrix(6, nodeIndexes);
+
+            matrix.AddConnection(input, inputTransformer, 0.1);
+            matrix.AddIdealTransformer(inputTransformer, ground, outputTransformer, ground, internalNode, 2, 1);
+            matrix.AddConnection(outputTransformer, output, 0.1);
+
+            var values = GetRealValues(matrix);
+            var voltages =
+                new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 35, 30, 15, 5, 15, 0 });
+            var currents = values * voltages;
+            Assert.AreEqual(6, currents.Count);
+            Assert.AreEqual(0.5, currents[0], 0.00001);
+            Assert.AreEqual(0, currents[1], 0.00001);
+            Assert.AreEqual(0, currents[2], 0.00001);
+            Assert.AreEqual(-1, currents[3], 0.00001);
+            Assert.AreEqual(0, currents[4], 0.00001);
+            Assert.AreEqual(-0.5, currents[5], 0.00001);
         }
     }
 }
