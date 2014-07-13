@@ -48,15 +48,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
         {
             var segments = new List<ISet<IExternalReadOnlyNode>>();
-            var nodes = new List<Node>(_nodes);
 
-            if (CheckIfGroundNodeIsNecessary())
-                nodes.Add(_groundNode);
-
-            if (nodes.Count == 0)
+            if (_nodes.Count == 0)
                 return segments;
 
-            foreach (var node in nodes)
+            foreach (var node in _nodes)
             {
                 var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
 
