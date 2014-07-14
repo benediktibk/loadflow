@@ -267,6 +267,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(0, currents[2], 0.00001);
             Assert.AreEqual(-1, currents[3], 0.00001);
             Assert.AreEqual(0, currents[4], 0.00001);
+            Assert.AreEqual(0.5, currents[5], 0.00001);
         }
     }
 }
