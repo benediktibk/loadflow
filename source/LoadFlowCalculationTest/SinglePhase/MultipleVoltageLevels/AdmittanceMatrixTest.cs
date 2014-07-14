@@ -259,7 +259,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             var values = GetRealValues(matrix);
             var voltages =
-                new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 35, 30, 15, 5, 15, 0 });
+                new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 35, 30, 15, 5, 1, 0 });
             var currents = values * voltages;
             Assert.AreEqual(6, currents.Count);
             Assert.AreEqual(0.5, currents[0], 0.00001);
