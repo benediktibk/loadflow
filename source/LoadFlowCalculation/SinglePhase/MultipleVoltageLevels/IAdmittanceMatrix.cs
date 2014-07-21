@@ -15,5 +15,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         SingleVoltageLevel.AdmittanceMatrix GetSingleVoltageAdmittanceMatrix();
         Matrix<Complex> GetCopyOfValues();
         int NodeCount { get; }
+        Complex this[int row, int column] { get; }
     }
 }

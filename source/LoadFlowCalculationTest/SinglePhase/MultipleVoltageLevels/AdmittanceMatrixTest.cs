@@ -18,28 +18,12 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         private IReadOnlyNode _secondNode;
         private IReadOnlyNode _thirdNode;
 
-        private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix)
+        private static MathNet.Numerics.LinearAlgebra.Double.Vector GetRealValues(IList<Complex> vector)
         {
-            var rows = new int[matrix.NodeCount];
-            var columns = new int[matrix.NodeCount];
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(vector.Count);
 
-            for (var i = 0; i < matrix.NodeCount; ++i)
-            {
-                rows[i] = i;
-                columns[i] = i;
-            }
-
-            return GetRealValues(matrix, rows, columns);
-        }
-
-        private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix, IReadOnlyList<int> rows, IReadOnlyList<int> columns)
-        {
-            var values = matrix.GetCopyOfValues();
-            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(rows.Count, columns.Count);
-
-            for (var i = 0; i < rows.Count; ++i)
-                for (var j = 0; j < columns.Count; ++j)
-                    result[i, j] = values[rows[i], columns[j]].Real;
+            for (var i = 0; i < vector.Count; ++i)
+                result[i] = vector[i].Real;
 
             return result;
         }
@@ -64,16 +48,15 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _matrix.AddConnection(_firstNode, _thirdNode, new Complex(1, 2));
 
-            var values = _matrix.GetCopyOfValues();
-            ComplexAssert.AreEqual(1, 2, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(0, 0, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-1, -2, values[0, 2], 0.00001);
-            ComplexAssert.AreEqual(0, 0, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(0, 0, values[1, 1], 0.00001);
-            ComplexAssert.AreEqual(0, 0, values[1, 2], 0.00001);
-            ComplexAssert.AreEqual(-1, -2, values[2, 0], 0.00001);
-            ComplexAssert.AreEqual(0, 0, values[2, 1], 0.00001);
-            ComplexAssert.AreEqual(1, 2, values[2, 2], 0.00001);
+            ComplexAssert.AreEqual(1, 2, _matrix[0, 0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _matrix[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-1, -2, _matrix[0, 2], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _matrix[1, 0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _matrix[1, 1], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _matrix[1, 2], 0.00001);
+            ComplexAssert.AreEqual(-1, -2, _matrix[2, 0], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _matrix[2, 1], 0.00001);
+            ComplexAssert.AreEqual(1, 2, _matrix[2, 2], 0.00001);
         }
 
         [TestMethod]
@@ -94,10 +77,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             matrix.AddVoltageControlledCurrentSource(firstNode, secondNode, thirdNode, fourthNode, 2);
 
-            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] {new Complex(4, 0), new Complex(1, 0), new Complex(6, 6), new Complex(10, 10)});
-            var currents = values * voltages;
+            var currents = matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(4, currents.Count);
             ComplexAssert.AreEqual(0, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
@@ -119,10 +101,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             matrix.AddConnection(firstNode, secondNode, new Complex(1, 0));
 
-            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 0), new Complex(1, 0) });
-            var currents = values * voltages;
+            var currents = matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(2, currents.Count);
             ComplexAssert.AreEqual(1, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(-1, 0, currents[1], 0.00001);
@@ -133,10 +114,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _matrix.AddGyrator(_firstNode, _thirdNode, _secondNode, _thirdNode, 2);
 
-            var values = _matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 1), new Complex(1, 1), new Complex(0, 1) });
-            var currents = values * voltages;
+            var currents = _matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(3, currents.Count);
             ComplexAssert.AreEqual(0.5, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(-1, 0, currents[1], 0.00001);
@@ -162,10 +142,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 1);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(2, 0), new Complex(0, 0) });
-            var currents = values * voltages;
+            var currents = matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(4, currents.Count);
             ComplexAssert.AreEqual(0.2, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
@@ -192,10 +171,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 100);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
-            var currents = values * voltages;
+            var currents = matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(4, currents.Count);
             ComplexAssert.AreEqual(0.2, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
@@ -222,10 +200,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 1, 100);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
-            var currents = values * voltages;
+            var currents = matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages);
             Assert.AreEqual(4, currents.Count);
             ComplexAssert.AreEqual(2, 0, currents[0], 0.00001);
             ComplexAssert.AreEqual(0, 0, currents[1], 0.00001);
@@ -257,10 +234,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(inputTransformer, ground, outputTransformer, ground, internalNode, 2, 1);
             matrix.AddConnection(outputTransformer, output, 0.1);
 
-            var values = GetRealValues(matrix);
-            var voltages =
-                new MathNet.Numerics.LinearAlgebra.Double.DenseVector(new double[] { 35, 30, 15, 5, 1, 0 });
-            var currents = values * voltages;
+            var voltages = new DenseVector(new [] { new Complex(35, 0), new Complex(30, 0), new Complex(15, 0), new Complex(5, 0), new Complex(1, 0), new Complex(0, 0) });
+            var currents = GetRealValues(matrix.GetSingleVoltageAdmittanceMatrix().CalculateCurrents(voltages));
             Assert.AreEqual(6, currents.Count);
             Assert.AreEqual(0.5, currents[0], 0.00001);
             Assert.AreEqual(0, currents[1], 0.00001);

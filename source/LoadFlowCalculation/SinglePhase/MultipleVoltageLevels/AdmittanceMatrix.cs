@@ -75,5 +75,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         {
             get { return _values.NodeCount; }
         }
+
+        public Complex this[int row, int column]
+        {
+            get { return _values[row, column]; }
+        }
     }
 }
