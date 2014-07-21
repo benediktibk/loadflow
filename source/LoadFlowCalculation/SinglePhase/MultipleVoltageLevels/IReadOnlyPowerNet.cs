@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -25,7 +24,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfGroundNodeIsNecessary();
         IExternalReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes();
-        void FillInAdmittances(AdmittanceMatrix admittances, double scaleBasePower);
+        void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower);
 
         #endregion
     }

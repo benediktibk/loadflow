@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using UnitTestHelper;
 using Node = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.Node;
+using AdmittanceMatrix = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
+using IAdmittanceMatrix = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 
 namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
@@ -11,30 +9,20 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
     public class AdmittanceMatrix : IAdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
-        private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
 
-        public AdmittanceMatrix(int nodeCount, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        public AdmittanceMatrix(int nodeCount)
         {
             _values = new SparseMatrix(nodeCount, nodeCount);
-            _nodeIndexes = nodeIndexes;
         }
 
-        public AdmittanceMatrix(Matrix<Complex> values, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        public AdmittanceMatrix(Matrix<Complex> values)
         {
             _values = values.Clone();
-            _nodeIndexes = nodeIndexes;
         }
 
         public Matrix<Complex> GetValues()
         {
             return _values.Clone();
-        }
-
-        public void AddConnection(IReadOnlyNode sourceNode, IReadOnlyNode targetNode, Complex admittance)
-        {
-            var sourceNodeIndex = _nodeIndexes[sourceNode];
-            var targetNodeIndex = _nodeIndexes[targetNode];
-            AddConnection(sourceNodeIndex, targetNodeIndex, admittance);
         }
 
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
@@ -51,19 +39,15 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             _values[i, j] += admittance;
         }
 
-        public void AddVoltageControlledCurrentSource(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double g)
+        public void AddVoltageControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, double g)
         {
-            var inputSourceNodeIndex = _nodeIndexes[inputSourceNode];
-            var inputTargetNodeIndex = _nodeIndexes[inputTargetNode];
-            var outputSourceNodeIndex = _nodeIndexes[outputSourceNode];
-            var outputTargetNodeIndex = _nodeIndexes[outputTargetNode];
-            _values[outputSourceNodeIndex, inputSourceNodeIndex] += g;
-            _values[outputTargetNodeIndex, inputTargetNodeIndex] += g;
-            _values[outputSourceNodeIndex, inputTargetNodeIndex] -= g;
-            _values[outputTargetNodeIndex, inputSourceNodeIndex] -= g;
+            _values[outputSourceNode, inputSourceNode] += g;
+            _values[outputTargetNode, inputTargetNode] += g;
+            _values[outputSourceNode, inputTargetNode] -= g;
+            _values[outputTargetNode, inputSourceNode] -= g;
         }
 
-        public void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r)
+        public void AddGyrator(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, double r)
         {
             AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode,
                 (-1) / r);
@@ -71,7 +55,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 1 / r);
         }
 
-        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight)
+        public void AddIdealTransformer(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, double ratio, double resistanceWeight)
         {
             if (ratio <= 0)
                 throw new ArgumentOutOfRangeException("ratio", "must be positive");
@@ -85,7 +69,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
         public int NodeCount
         {
-            get { return _nodeIndexes.Count; }
+            get { return _values.ColumnCount; }
         }
     }
 }

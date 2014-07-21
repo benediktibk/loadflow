@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Numerics;
 using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Node = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.Node;
 using PowerNet = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.PowerNet;
+using AdmittanceMatrix = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 
 namespace Experiment
 {
