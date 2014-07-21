@@ -99,7 +99,8 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
             var absolutePowerSum = allPowers.Sum(power => Math.Abs((double) power.Real) + Math.Abs((double) power.Imaginary));
             var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
-            var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / absolutePowerSum;
+            var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
+            var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
 
             if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
                 voltageCollapse = true;
