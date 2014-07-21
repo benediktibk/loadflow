@@ -34,11 +34,21 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         {
             var sourceNodeIndex = _nodeIndexes[sourceNode];
             var targetNodeIndex = _nodeIndexes[targetNode];
-            Debug.Assert(sourceNodeIndex != targetNodeIndex);
-            _values[sourceNodeIndex, sourceNodeIndex] += admittance;
-            _values[targetNodeIndex, targetNodeIndex] += admittance;
-            _values[sourceNodeIndex, targetNodeIndex] -= admittance;
-            _values[targetNodeIndex, sourceNodeIndex] -= admittance;
+            AddConnection(sourceNodeIndex, targetNodeIndex, admittance);
+        }
+
+        public void AddConnection(int sourceNode, int targetNode, Complex admittance)
+        {
+            Debug.Assert(sourceNode != targetNode);
+            _values[sourceNode, sourceNode] += admittance;
+            _values[targetNode, targetNode] += admittance;
+            _values[sourceNode, targetNode] -= admittance;
+            _values[targetNode, sourceNode] -= admittance;
+        }
+
+        public void AddUnsymmetricAdmittance(int i, int j, Complex admittance)
+        {
+            _values[i, j] += admittance;
         }
 
         public void AddVoltageControlledCurrentSource(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double g)
