@@ -75,7 +75,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 Debug.Assert(condition > 0);
 #endif
 
-                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
+                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(new AdmittanceMatrix(admittancesToUnknownVoltages), totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
@@ -194,7 +194,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        public static double CalculatePowerError(Matrix<Complex> admittances, Vector<Complex> voltages,
+        public static double CalculatePowerError(AdmittanceMatrix admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
@@ -224,10 +224,10 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
         }
-        
-        public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+
+        public static Vector<Complex> CalculateAllPowers(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
         {
-            var currents = admittances.Multiply(voltages) - constantCurrents;
+            var currents = admittances.CalculateCurrents(voltages) - constantCurrents;
             var powers = voltages.PointwiseMultiply(currents.Conjugate());
             return powers;
         }

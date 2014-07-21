@@ -62,12 +62,12 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             Debug.WriteLine(text);
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             if (_calculator >= 0)
                 HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
 
-            var nodeCount = admittances.RowCount;
+            var nodeCount = admittances.NodeCount;
 
             switch (_precision.Type)
             {
@@ -86,9 +86,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             if (_calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
 
-            for (var row = 0; row < admittances.RowCount; ++row)
+            for (var row = 0; row < admittances.NodeCount; ++row)
             {
-                for (var column = 0; column < admittances.ColumnCount; ++column)
+                for (var column = 0; column < admittances.NodeCount; ++column)
                 {
                     var admittance = admittances[row, column];
 

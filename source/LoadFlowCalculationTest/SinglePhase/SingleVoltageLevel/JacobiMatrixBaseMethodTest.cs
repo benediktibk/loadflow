@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +14,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateChangeMatrixRealPowerByAngle_OneConnection_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } });
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } }));
             var constantCurrents = new DenseVector(new[] { new Complex(10, 0) });
             var voltages = new DenseVector(new[] { new Complex(1, 0.1) });
             var rows = new List<int>() { 0 };
@@ -28,7 +29,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateChangeMatrixImaginaryPowerByAmplitude_OneConnection_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } });
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(10, 0) } }));
             var constantCurrents = new DenseVector(new[] { new Complex(10, 0) });
             var voltages = new DenseVector(new[] { new Complex(1, 0.1) });
             var rows = new List<int>() { 0 };
@@ -43,7 +44,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateChangeMatrixRealPowerByAngle_TwoConnections_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } }));
             var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
             var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -1) });
             var rows = new List<int>() { 0, 1 };
@@ -67,7 +68,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateChangeMatrixImaginaryPowerByAmplitude_TwoConnections_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } }));
             var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
             var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -1) });
             var rows = new List<int>() { 0, 1 };
@@ -95,7 +96,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateChangeMatrixImaginaryPowerByAmplitude_TwoConnectionsVersionTwo_CorrectResults()
         {
-            var admittances = DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } });
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(0, 100), new Complex(0, -10) }, { new Complex(0, -10), new Complex(0, 200) } }));
             var constantCurrents = new DenseVector(new[] { new Complex(1, 0), new Complex(0, -2) });
             var voltages = new DenseVector(new[] { new Complex(0.5, 0), new Complex(0.25, 0.1) });
             var rows = new List<int>() { 0, 1 };

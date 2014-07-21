@@ -20,11 +20,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             _maximumIterations = maximumIterations;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, double nominalVoltage,
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, double nominalVoltage,
             Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
             Vector<Complex> initialVoltages)
         {
-            var powers = new DenseVector(admittances.RowCount);
+            var powers = new DenseVector(admittances.NodeCount);
             var voltages = initialVoltages;
             IList<PQBus> normalPqBusses;
             IList<PQBus> currentControlledPqBusses;
@@ -88,7 +88,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             return voltages;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var initialVoltageCalculator = new NodePotentialMethod();
             var initialVoltages = initialVoltageCalculator.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
@@ -103,7 +103,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             return 0.1;
         }
 
-        private void ExtractCurrentControlledPqBusses(IEnumerable<PQBus> allBusses, Matrix<Complex> admittances, out IList<PQBus> normalBusses,
+        private void ExtractCurrentControlledPqBusses(IEnumerable<PQBus> allBusses, AdmittanceMatrix admittances, out IList<PQBus> normalBusses,
             out IList<PQBus> currentControlledBusses, out IList<int> rowsForCurrentControlledBusses)
         {
             normalBusses = new List<PQBus>();
@@ -123,7 +123,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
                     var maximumAdmittance = 0.0;
                     var maximumRow = -1;
 
-                    for (var row = 0; row < admittances.RowCount; ++row)
+                    for (var row = 0; row < admittances.NodeCount; ++row)
                     {
                         var currentAdmittance = admittances[row, bus.ID];
                         var magnitude = currentAdmittance.MagnitudeSquared();
@@ -144,7 +144,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             }
         }
 
-        private Complex CalculateVoltage(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents, IList<Complex> powers,
+        private Complex CalculateVoltage(int i, AdmittanceMatrix admittances, IList<Complex> constantCurrents, IList<Complex> powers,
             IList<Complex> previousVoltages)
         {
             var constantCurrent = constantCurrents[i];
@@ -157,7 +157,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
 
             var branchCurrentSum = new Complex();
             
-            for (var k = 0; k < admittances.RowCount; ++k)
+            for (var k = 0; k < admittances.NodeCount; ++k)
                 if (k != i)
                 {
                     var branchAdmittance = admittances[i, k];
@@ -170,7 +170,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             return totalCurrents / admittance;
         }
 
-        private Complex CalculateCurrentControlledVoltage(int i, Matrix<Complex> admittances,
+        private Complex CalculateCurrentControlledVoltage(int i, AdmittanceMatrix admittances,
             IList<Complex> constantCurrents, IList<Complex> powers,
             IList<Complex> previousVoltages, int rowIndex)
         {
@@ -178,7 +178,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             var previousVoltage = previousVoltages[rowIndex];
             var mainAdmittance = admittances[rowIndex, i];
             var power = powers[rowIndex];
-            var row = admittances.Row(rowIndex);
+            var row = admittances.GetRow(rowIndex);
             var branchCurrentSum = new Complex(0, 0);
 
             Debug.Assert(mainAdmittance.MagnitudeSquared() > 0);
@@ -198,12 +198,12 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
             return totalCurrents / mainAdmittance;
         }
 
-        private Complex CalculatePower(int i, Matrix<Complex> admittances, IList<Complex> constantCurrents,
+        private Complex CalculatePower(int i, AdmittanceMatrix admittances, IList<Complex> constantCurrents,
             Vector<Complex> voltages)
         {
             var voltage = voltages[i];
             var constantCurrent = constantCurrents[i];
-            var branchAdmittances = admittances.Row(i);
+            var branchAdmittances = admittances.GetRow(i);
             var branchCurrent = (branchAdmittances.PointwiseMultiply(voltages)).Sum();
             var totalCurrents = branchCurrent - constantCurrent;
             return voltage*totalCurrents.Conjugate();

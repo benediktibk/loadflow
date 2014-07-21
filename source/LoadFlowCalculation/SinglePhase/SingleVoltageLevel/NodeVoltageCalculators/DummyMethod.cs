@@ -7,10 +7,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
 {
     public class DummyMethod : INodeVoltageCalculator
     {
-        public Vector<Complex> CalculateUnknownVoltages(Matrix<Complex> admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage,
-            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            return DenseVector.Create(admittances.RowCount, i => new Complex(0, 0));
+            return DenseVector.Create(admittances.NodeCount, i => new Complex(0, 0));
         }
 
         public double GetMaximumPowerError()

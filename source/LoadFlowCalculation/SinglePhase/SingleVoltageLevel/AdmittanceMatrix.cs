@@ -82,5 +82,15 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             get { return _values[row, column]; }
             set { _values[row, column] = value; }
         }
+
+        public MathNet.Numerics.LinearAlgebra.Complex.Factorization.LU CalculateFactorization()
+        {
+            return _values.LU();
+        }
+
+        public Vector<Complex> GetRow(int row)
+        {
+            return _values.Row(row);
+        }
     }
 }
