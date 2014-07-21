@@ -96,8 +96,8 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
         {
             var admittances =
-                DenseMatrix.OfArray(new[,]
-                {{new Complex(1, 0), new Complex(-1, 0)}, {new Complex(-1, 0), new Complex(1, 0)}});
+                new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
+                {{new Complex(1, 0), new Complex(-1, 0)}, {new Complex(-1, 0), new Complex(1, 0)}}));
             var voltages = new DenseVector(new[] {new Complex(1, 0), new Complex(0.5, 0)});
 
             var powerLoss = LoadFlowCalculator.CalculatePowerLoss(admittances, voltages);
@@ -120,7 +120,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             admittances[2, 1] = new Complex(-0.5, 0);
             admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
 
-            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(admittances, voltages);
+            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }

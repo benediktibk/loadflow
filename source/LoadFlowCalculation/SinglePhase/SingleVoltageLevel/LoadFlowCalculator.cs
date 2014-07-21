@@ -110,7 +110,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             }
 
             var absolutePowerSum = allPowers.Sum(power => Math.Abs((double) power.Real) + Math.Abs((double) power.Imaginary));
-            var lossPowerSum = CalculatePowerLoss(admittanceValues, allVoltages);
+            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
             var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / absolutePowerSum;
 
             if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
@@ -141,14 +141,15 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        public static Complex CalculatePowerLoss(Matrix<Complex> admittances, Vector<Complex> allVoltages)
+        public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var powerLoss = new Complex();
+            var admittanceValues = admittances.GetValues();
 
-            for (var i = 0; i < admittances.RowCount; ++i)
-                for (var j = i + 1; j < admittances.ColumnCount; ++j)
+            for (var i = 0; i < admittanceValues.RowCount; ++i)
+                for (var j = i + 1; j < admittanceValues.ColumnCount; ++j)
                 {
-                    var admittance = admittances[i, j];
+                    var admittance = admittanceValues[i, j];
                     var voltageDifference = allVoltages[i] - allVoltages[j];
                     var branchCurrent = admittance*voltageDifference;
                     var branchPowerLoss = voltageDifference*branchCurrent.Conjugate();

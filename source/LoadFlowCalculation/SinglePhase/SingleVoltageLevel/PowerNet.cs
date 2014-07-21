@@ -88,7 +88,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             get
             {
                 var powerSum = NodePowers.Sum();
-                var powerLoss = LoadFlowCalculator.CalculatePowerLoss(_admittances.GetValues(), NodeVoltages);
+                var powerLoss = LoadFlowCalculator.CalculatePowerLoss(_admittances, NodeVoltages);
                 var absolutePowerError = powerSum - powerLoss;
                 return absolutePowerError.Magnitude/powerSum.Magnitude;
             }
