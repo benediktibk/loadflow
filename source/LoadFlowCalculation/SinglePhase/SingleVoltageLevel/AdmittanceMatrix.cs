@@ -20,7 +20,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             _values = values.Clone();
         }
 
-        public Matrix<Complex> GetValues()
+        public Matrix<Complex> GetCopyOfValues()
         {
             return _values.Clone();
         }

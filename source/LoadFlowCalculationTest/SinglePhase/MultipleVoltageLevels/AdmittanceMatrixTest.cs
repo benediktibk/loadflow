@@ -34,7 +34,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
         private MathNet.Numerics.LinearAlgebra.Double.Matrix GetRealValues(AdmittanceMatrix matrix, IReadOnlyList<int> rows, IReadOnlyList<int> columns)
         {
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(rows.Count, columns.Count);
 
             for (var i = 0; i < rows.Count; ++i)
@@ -64,7 +64,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _matrix.AddConnection(_firstNode, _thirdNode, new Complex(1, 2));
 
-            var values = _matrix.GetValues();
+            var values = _matrix.GetCopyOfValues();
             ComplexAssert.AreEqual(1, 2, values[0, 0], 0.00001);
             ComplexAssert.AreEqual(0, 0, values[0, 1], 0.00001);
             ComplexAssert.AreEqual(-1, -2, values[0, 2], 0.00001);
@@ -94,7 +94,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             matrix.AddVoltageControlledCurrentSource(firstNode, secondNode, thirdNode, fourthNode, 2);
 
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] {new Complex(4, 0), new Complex(1, 0), new Complex(6, 6), new Complex(10, 10)});
             var currents = values * voltages;
@@ -119,7 +119,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             matrix.AddConnection(firstNode, secondNode, new Complex(1, 0));
 
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 0), new Complex(1, 0) });
             var currents = values * voltages;
@@ -133,7 +133,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _matrix.AddGyrator(_firstNode, _thirdNode, _secondNode, _thirdNode, 2);
 
-            var values = _matrix.GetValues();
+            var values = _matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 1), new Complex(1, 1), new Complex(0, 1) });
             var currents = values * voltages;
@@ -162,7 +162,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 1);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(2, 0), new Complex(0, 0) });
             var currents = values * voltages;
@@ -192,7 +192,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 100);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(20, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
             var currents = values * voltages;
@@ -222,7 +222,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 1, 100);
             matrix.AddConnection(output, ground, 1);
 
-            var values = matrix.GetValues();
+            var values = matrix.GetCopyOfValues();
             var voltages =
                 new DenseVector(new[] { new Complex(2, 0), new Complex(2, 0), new Complex(200, 0), new Complex(0, 0) });
             var currents = values * voltages;

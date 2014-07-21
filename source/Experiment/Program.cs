@@ -40,7 +40,7 @@ namespace Experiment
 
                 var admittances = new AdmittanceMatrix(nodes.Count, nodeIndexes);
                 powerNet.FillInAdmittances(admittances, 1);
-                var matrix = admittances.GetValues();
+                var matrix = admittances.GetCopyOfValues();
                 var matrixReduced = new DenseMatrix(matrix.RowCount - 1, matrix.ColumnCount - 1);
                 for (var row = 0; row < matrix.RowCount - 1; ++row)
                     for (var column = 0; column < matrix.ColumnCount - 1; ++column)

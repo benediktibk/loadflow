@@ -163,7 +163,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             feedIn.FillInAdmittances(admittances, 1, null);
 
-            var values = admittances.GetValues();
+            var values = admittances.GetCopyOfValues();
             ComplexAssert.AreEqual(2, 4, values[0, 0], 0.00001);
             ComplexAssert.AreEqual(3, 1, values[0, 1], 0.00001);
             ComplexAssert.AreEqual(-3, 9, values[1, 0], 0.00001);
@@ -187,7 +187,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _feedIn.FillInAdmittances(admittances, 3, null);
 
-            var values = admittances.GetValues();
+            var values = admittances.GetCopyOfValues();
             ComplexAssert.AreEqual(3.51515151, 4, values[0, 0], 0.00001);
             ComplexAssert.AreEqual(1.4848484848, 1, values[0, 1], 0.00001);
             ComplexAssert.AreEqual(-4.51515151, 9, values[1, 0], 0.00001);

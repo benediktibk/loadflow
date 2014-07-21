@@ -122,7 +122,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _generator.FillInAdmittances(admittances, 1, null);
 
-            var values = admittances.GetValues();
+            var values = admittances.GetCopyOfValues();
             ComplexAssert.AreEqual(2, 4, values[0, 0], 0.00001);
             ComplexAssert.AreEqual(3, 1, values[0, 1], 0.00001);
             ComplexAssert.AreEqual(-3, 9, values[1, 0], 0.00001);

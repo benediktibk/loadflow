@@ -66,9 +66,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _values;
         }
 
-        public Matrix<Complex> GetValues()
+        public Matrix<Complex> GetCopyOfValues()
         {
-            return _values.GetValues();
+            return _values.GetCopyOfValues();
         }
 
         public int NodeCount
