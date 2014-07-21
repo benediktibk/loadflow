@@ -6,7 +6,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 {
-    public class AdmittanceMatrix : IAdmittanceMatrix
+    public class AdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
 

@@ -12,7 +12,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
         private readonly int _nodeCount;
         private IList<Node> _nodes;
-        private readonly IAdmittanceMatrix _admittances;
+        private readonly AdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
 
         #endregion
@@ -33,7 +33,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             InitializeNodes();
         }
 
-        public PowerNet(IAdmittanceMatrix admittances, double nominalVoltage)
+        public PowerNet(AdmittanceMatrix admittances, double nominalVoltage)
         {
             if (nominalVoltage <= 0)
                 throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
@@ -120,7 +120,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             }
         }
 
-        public IAdmittanceMatrix Admittances
+        public AdmittanceMatrix Admittances
         {
            get { return _admittances; }
         }

@@ -6,7 +6,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class AdmittanceMatrix : IAdmittanceMatrix
     {
-        private readonly SingleVoltageLevel.IAdmittanceMatrix _values;
+        private readonly SingleVoltageLevel.AdmittanceMatrix _values;
         private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
 
         public AdmittanceMatrix(int nodeCount, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
@@ -61,7 +61,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 outputTargetNodeIndex, internalNodeIndex, ratio, resistanceWeight);
         }
 
-        public SingleVoltageLevel.IAdmittanceMatrix GetSingleVoltageAdmittanceMatrix()
+        public SingleVoltageLevel.AdmittanceMatrix GetSingleVoltageAdmittanceMatrix()
         {
             return _values;
         }

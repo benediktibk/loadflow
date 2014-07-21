@@ -29,7 +29,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         /// <param name="nodes"></param>
         /// <param name="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution did not converge</param>
         /// <returns></returns>
-        public IList<Node> CalculateNodeVoltagesAndPowers(IAdmittanceMatrix admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
+        public IList<Node> CalculateNodeVoltagesAndPowers(AdmittanceMatrix admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
         {
             if (admittances.NodeCount != nodes.Count())
                 throw new ArgumentOutOfRangeException("nodes",
@@ -218,7 +218,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return sum;
         }
 
-        public static Vector<Complex> CalculateAllPowers(IAdmittanceMatrix admittances, Vector<Complex> allVoltages)
+        public static Vector<Complex> CalculateAllPowers(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var currents = admittances.GetValues().Multiply(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
