@@ -47,7 +47,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPQBuses);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPVBuses);
-            var admittanceValues = admittances.GetCopyOfValues();
 
             if (countOfKnownVoltages == 0)
                 throw new ArgumentOutOfRangeException("nodes", "there must be at least one slack bus");
@@ -62,7 +61,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 var pvBuses = ExtractPVBuses(nodes, indexOfPVBuses, pqBuses.Count);
                 Vector<Complex> constantCurrentRightHandSide;
                 var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out constantCurrentRightHandSide);
-                var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittanceValues);
+                var totalAdmittanceRowSums = admittances.CalculateRowSums();
 
                 var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
@@ -106,28 +105,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 voltageCollapse = true;
 
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
-        }
-
-        private Vector<Complex> CalculateTotalAdmittanceRowSums(Matrix<Complex> admittances)
-        {
-            var result = new DenseVector(admittances.RowCount);
-
-            for (var row = 0; row < admittances.RowCount; ++row)
-            {
-                var sum = new Complex();
-
-                for (var column = 0; column < admittances.ColumnCount; ++column)
-                {
-                    var admittance = admittances[row, column];
-
-                    if (admittance != 0)
-                        sum += admittance;
-                }
-
-                result[row] = sum;
-            }
-
-            return result;
         }
 
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)

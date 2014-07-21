@@ -18,6 +18,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
         public AdmittanceMatrix(Matrix<Complex> values)
         {
+            if (values.RowCount != values.ColumnCount)
+                throw new ArgumentOutOfRangeException("values", "must be quadratic");
+
             _values = values.Clone();
         }
 
@@ -123,6 +126,21 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             }
 
             return matrix;
+        }
+
+        public Vector<Complex> CalculateRowSums()
+        {
+            var result = new SparseVector(NodeCount);
+
+            foreach (var row in _values.RowEnumerator())
+            {
+                var rowIndex = row.Item1;
+
+                foreach (var value in row.Item2)
+                    result[rowIndex] += value;
+            }
+
+            return result;
         }
     }
 }
