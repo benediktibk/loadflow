@@ -50,10 +50,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
                 knownVoltages[i] = new Complex(pvBuses[i].VoltageMagnitude, 0);
             }
 
-            Matrix<Complex> admittancesReduced;
             Vector<Complex> additionalConstantCurrents;
-            LoadFlowCalculator.ReduceAdmittancesByKnownVoltages(admittances.GetCopyOfValues(), indexOfNodesWithUnkownVoltage, indexOfNodesWithKnownVoltage,
-                knownVoltages, out admittancesReduced, out additionalConstantCurrents);
+            var admittancesReduced = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnkownVoltage, indexOfNodesWithKnownVoltage,
+                knownVoltages, out additionalConstantCurrents);
             var reducedConstantCurrents = new DenseVector(indexOfNodesWithUnkownVoltage.Count);
 
             for (var i = 0; i < indexOfNodesWithUnkownVoltage.Count; ++i)
@@ -61,7 +60,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculat
 
             var totalConstantCurrents = reducedConstantCurrents.Add(additionalConstantCurrents);
 
-            var unknownVoltages = CalculateUnknownVoltagesInternal(new AdmittanceMatrix(admittancesReduced), nominalVoltage, totalConstantCurrents,
+            var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, nominalVoltage, totalConstantCurrents,
                 knownPowers);
             return LoadFlowCalculator.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);

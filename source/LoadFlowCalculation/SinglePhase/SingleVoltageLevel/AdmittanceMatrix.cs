@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -91,6 +92,37 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         public Vector<Complex> GetRow(int row)
         {
             return _values.Row(row);
+        }
+
+        public AdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
+            IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
+            out Vector<Complex> constantCurrentRightHandSide)
+        {
+            var admittancesToUnknownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithUnknownVoltage);
+            var admittancesToKnownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage);
+            constantCurrentRightHandSide = admittancesToKnownVoltages.Multiply(knownVoltages)*(-1);
+            return new AdmittanceMatrix(admittancesToUnknownVoltages);
+        }
+
+        private Matrix<Complex> Extract(IReadOnlyList<int> rows, IReadOnlyList<int> columns)
+        {
+            var matrix = new SparseMatrix(rows.Count, columns.Count);
+
+            for (var targetRowIndex = 0; targetRowIndex < rows.Count; ++targetRowIndex)
+            {
+                var sourceRowIndex = rows[targetRowIndex];
+
+                for (var targetColumnIndex = 0; targetColumnIndex < columns.Count; ++targetColumnIndex)
+                {
+                    var sourceColumnIndex = columns[targetColumnIndex];
+                    var value = _values[sourceRowIndex, sourceColumnIndex];
+
+                    if (value.Magnitude > 0)
+                        matrix[targetRowIndex, targetColumnIndex] = value;
+                }
+            }
+
+            return matrix;
         }
     }
 }

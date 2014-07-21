@@ -60,22 +60,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 var knownVoltages = ExtractKnownVoltages(nodes, indexOfSlackBuses);
                 var pqBuses = ExtractPQBuses(nodes, indexOfPQBuses);
                 var pvBuses = ExtractPVBuses(nodes, indexOfPVBuses, pqBuses.Count);
-                Matrix<Complex> admittancesToUnknownVoltages;
                 Vector<Complex> constantCurrentRightHandSide;
-                ReduceAdmittancesByKnownVoltages(admittanceValues, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
+                var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out constantCurrentRightHandSide);
                 var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittanceValues);
 
-#if DEBUG
-                var separation = admittancesToUnknownVoltages.LU();
-                var norm = admittancesToUnknownVoltages.L2Norm();
-                var inverse = separation.Inverse();
-                var inverseNorm = inverse.L2Norm();
-                var condition = (norm*inverseNorm).Magnitude;
-                Debug.Assert(condition < countOfUnknownVoltages*1e5);
-                Debug.Assert(condition > 0);
-#endif
-
-                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(new AdmittanceMatrix(admittancesToUnknownVoltages), totalAdmittanceRowSums,
+                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
                     nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
@@ -156,21 +145,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 }
 
             return powerLoss*(-1);
-        }
-
-        public static void ReduceAdmittancesByKnownVoltages(Matrix<Complex> admittances, List<int> indexOfNodesWithUnknownVoltage,
-            List<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages, out Matrix<Complex> admittancesToUnknownVoltages,
-            out Vector<Complex> constantCurrentRightHandSide)
-        {
-            var admittancesReduced = ExtractRowsOfUnknownVoltages(admittances,
-                indexOfNodesWithUnknownVoltage);
-            var admittancesToKnownVoltages = ExtractAdmittancesToKnownVoltages(admittancesReduced,
-                indexOfNodesWithKnownVoltage);
-            admittancesToUnknownVoltages = ExtractAdmittancesToUnknownVoltages(admittancesReduced,
-                indexOfNodesWithUnknownVoltage);
-
-            var constantCurrentsLeftHandSide = admittancesToKnownVoltages.Multiply(knownVoltages);
-            constantCurrentRightHandSide = constantCurrentsLeftHandSide.Multiply(new Complex(-1, 0));
         }
 
         private static Node[] CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
@@ -287,30 +261,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        public static Matrix<Complex> ExtractAdmittancesToUnknownVoltages(Matrix<Complex> admittancesReduced,
-            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
-        {
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var admittancesToUnknownVoltages = new SparseMatrix(countOfUnknownVoltages, countOfUnknownVoltages);
-
-            for (int i = 0; i < countOfUnknownVoltages; ++i)
-                admittancesToUnknownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithUnknownVoltage[i]));
-
-            return admittancesToUnknownVoltages;
-        }
-
-        public static Matrix<Complex> ExtractAdmittancesToKnownVoltages(Matrix<Complex> admittancesReduced,
-            IReadOnlyList<int> indexOfNodesWithKnownVoltage)
-        {
-            var countOfKnownVoltages = indexOfNodesWithKnownVoltage.Count;
-            var admittancesToKnownVoltages = new SparseMatrix(admittancesReduced.RowCount, countOfKnownVoltages);
-
-            for (var i = 0; i < countOfKnownVoltages; ++i)
-                admittancesToKnownVoltages.SetColumn(i, admittancesReduced.Column(indexOfNodesWithKnownVoltage[i]));
-
-            return admittancesToKnownVoltages;
-        }
-
         private static Vector<Complex> ExtractKnownVoltages(IList<Node> nodes,
             IReadOnlyList<int> indexes)
         {
@@ -321,19 +271,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 knownVoltages[i] = nodes[indexes[i]].Voltage;
 
             return knownVoltages;
-        }
-
-        public static Matrix<Complex> ExtractRowsOfUnknownVoltages(Matrix<Complex> admittances,
-            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
-        {
-            var nodeCount = admittances.ColumnCount;
-            var countOfUnknownVoltages = indexOfNodesWithUnknownVoltage.Count;
-            var admittancesReduced = new SparseMatrix(countOfUnknownVoltages, nodeCount);
-
-            for (var i = 0; i < countOfUnknownVoltages; ++i)
-                admittancesReduced.SetRow(i, admittances.Row(indexOfNodesWithUnknownVoltage[i]));
-
-            return admittancesReduced;
         }
 
         private static void SeperateNodesInBusTypes(IList<Node> nodes,
