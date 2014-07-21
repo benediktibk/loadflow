@@ -9,13 +9,16 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
     public class PowerNet
     {
         #region variables
+
         private readonly int _nodeCount;
         private IList<Node> _nodes;
-        private readonly Matrix<Complex> _admittances;
+        private readonly IAdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
+
         #endregion
 
         #region public functions
+
         public PowerNet(int nodeCount, double nominalVoltage)
         {
             if (nodeCount <= 0)
@@ -26,20 +29,17 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
             _nominalVoltage = nominalVoltage;
             _nodeCount = nodeCount;
-            _admittances = new SparseMatrix(_nodeCount, _nodeCount);
+            _admittances = new AdmittanceMatrix(nodeCount);
             InitializeNodes();
         }
 
-        public PowerNet(Matrix<Complex> admittances, double nominalVoltage)
+        public PowerNet(IAdmittanceMatrix admittances, double nominalVoltage)
         {
-            if (admittances.RowCount != admittances.ColumnCount)
-                throw new ArgumentOutOfRangeException("admittances", "must be symmetric");
-
             if (nominalVoltage <= 0)
                 throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
 
             _nominalVoltage = nominalVoltage;
-            _nodeCount = admittances.RowCount;
+            _nodeCount = admittances.NodeCount;
             _admittances = admittances;
             InitializeNodes();
         }
@@ -62,31 +62,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return _nodes[node].VoltageIsKnown;
         }
 
-        public void AddSymmetricAdmittance(int i, int j, Complex admittance)
-        {
-            if (i == j)
-                throw new ArgumentOutOfRangeException();
-
-            _admittances[i, i] += admittance;
-            _admittances[j, j] += admittance;
-            _admittances[i, j] -= admittance;
-            _admittances[j, i] -= admittance;
-        }
-
-        public void AddUnsymmetricAdmittance(int i, int j, Complex admittance)
-        {
-            _admittances[i, j] += admittance;
-        }
-
-        public Complex GetAdmittance(int i, int j)
-        {
-            return _admittances[i, j];
-        }
-
         public IReadOnlyList<Node> GetNodes()
         {
             return (IReadOnlyList<Node>) _nodes;
         }
+
         #endregion
 
         #region private functions
@@ -102,12 +82,13 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         #endregion
 
         #region properties
+
         public double RelativePowerError
         {
             get
             {
                 var powerSum = NodePowers.Sum();
-                var powerLoss = LoadFlowCalculator.CalculatePowerLoss(_admittances, NodeVoltages);
+                var powerLoss = LoadFlowCalculator.CalculatePowerLoss(_admittances.GetValues(), NodeVoltages);
                 var absolutePowerError = powerSum - powerLoss;
                 return absolutePowerError.Magnitude/powerSum.Magnitude;
             }
@@ -139,9 +120,9 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             }
         }
 
-        public Matrix<Complex> Admittances
+        public IAdmittanceMatrix Admittances
         {
-           get { return _admittances.Clone(); }
+           get { return _admittances; }
         }
 
         public int NodeCount
@@ -153,6 +134,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         {
             get { return _nominalVoltage; }
         }
+
         #endregion
     }
 }

@@ -10,6 +10,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         {
             return new NodePotentialMethod();
         }
+
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
         {

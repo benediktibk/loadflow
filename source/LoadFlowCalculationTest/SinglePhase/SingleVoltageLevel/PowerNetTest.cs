@@ -52,7 +52,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             loadNode.Power = new Complex((-1)*load, 0);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(admittance, 0));
+            powerNet.Admittances.AddConnection(0, 1, new Complex(admittance, 0));
 
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
@@ -69,43 +69,6 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void AddSymmetricAdmittance_DiagonalPosition_ThrowsException()
-        {
-            var powerNet = new PowerNet(2, 1);
-
-            powerNet.AddSymmetricAdmittance(1, 1, new Complex());
-        }
-
-        [TestMethod]
-        public void AddSymmetricAdmittance_OnePositionTwiceSet_AllValuesAreCorrect()
-        {
-            var powerNet = new PowerNet(2, 1);
-
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, -2));
-            powerNet.AddSymmetricAdmittance(1, 0, new Complex(3, 1));
-
-            ComplexAssert.AreEqual(4, -1, powerNet.GetAdmittance(0, 0), 0.0001);
-            ComplexAssert.AreEqual(4, -1, powerNet.GetAdmittance(1, 1), 0.0001);
-            ComplexAssert.AreEqual(-4, 1, powerNet.GetAdmittance(1, 0), 0.0001);
-            ComplexAssert.AreEqual(-4, 1, powerNet.GetAdmittance(0, 1), 0.0001);
-        }
-
-        [TestMethod]
-        public void AddUnsymmetricAdmittance_SymmetricValuesAlreadySet_AllValuesAreCorrect()
-        {
-            var powerNet = new PowerNet(2, 1);
-
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, -2));
-            powerNet.AddUnsymmetricAdmittance(1, 0, new Complex(3, 1));
-
-            ComplexAssert.AreEqual(1, -2, powerNet.GetAdmittance(0, 0), 0.0001);
-            ComplexAssert.AreEqual(1, -2, powerNet.GetAdmittance(1, 1), 0.0001);
-            ComplexAssert.AreEqual(-1, 2, powerNet.GetAdmittance(0, 1), 0.0001);
-            ComplexAssert.AreEqual(2, 3, powerNet.GetAdmittance(1, 0), 0.0001);
-        }
-
-        [TestMethod]
         public void RelativePowerError_StableTwoNodeSystem_0()
         {
             var powerNet = new PowerNet(2, 1);
@@ -117,7 +80,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             loadNode.Power = new Complex((-1) * load, 0);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(admittance, 0));
+            powerNet.Admittances.AddConnection(0, 1, new Complex(admittance, 0));
             powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
             var relativePowerError = powerNet.RelativePowerError;
@@ -138,9 +101,9 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNodeOne);
             powerNet.SetNode(2, loadNodeTwo);
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
-            powerNet.AddSymmetricAdmittance(0, 2, new Complex(2, 0));
-            powerNet.AddSymmetricAdmittance(1, 2, new Complex(3, 0));
+            powerNet.Admittances.AddConnection(0, 1, new Complex(1, 0));
+            powerNet.Admittances.AddConnection(0, 2, new Complex(2, 0));
+            powerNet.Admittances.AddConnection(1, 2, new Complex(3, 0));
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 
             var relativePowerError = powerNet.RelativePowerError;
@@ -162,9 +125,9 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNodeOne);
             powerNet.SetNode(2, loadNodeTwo);
-            powerNet.AddSymmetricAdmittance(0, 1, new Complex(1, 0));
-            powerNet.AddSymmetricAdmittance(0, 2, new Complex(2, 0));
-            powerNet.AddSymmetricAdmittance(1, 2, new Complex(3, 0));
+            powerNet.Admittances.AddConnection(0, 1, new Complex(1, 0));
+            powerNet.Admittances.AddConnection(0, 2, new Complex(2, 0));
+            powerNet.Admittances.AddConnection(1, 2, new Complex(3, 0));
 
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 

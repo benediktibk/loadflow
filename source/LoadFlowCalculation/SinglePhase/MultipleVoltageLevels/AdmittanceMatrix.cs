@@ -61,6 +61,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 outputTargetNodeIndex, internalNodeIndex, ratio, resistanceWeight);
         }
 
+        public SingleVoltageLevel.IAdmittanceMatrix GetSingleVoltageAdmittanceMatrix()
+        {
+            return _values;
+        }
+
         public Matrix<Complex> GetValues()
         {
             return _values.GetValues();

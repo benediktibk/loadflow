@@ -58,9 +58,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, AdmittanceMatrix admittances)
+        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances)
         {
-            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNet(admittances.GetValues(), 1);
+            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNet(admittances.GetSingleVoltageAdmittanceMatrix(), 1);
 
             foreach (var node in nodes)
             {

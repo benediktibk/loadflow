@@ -12,6 +12,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r);
         void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, 
             IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight);
+        SingleVoltageLevel.IAdmittanceMatrix GetSingleVoltageAdmittanceMatrix();
         Matrix<Complex> GetValues();
         int NodeCount { get; }
     }

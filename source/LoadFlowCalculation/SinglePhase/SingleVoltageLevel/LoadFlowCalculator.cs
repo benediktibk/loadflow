@@ -29,9 +29,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         /// <param name="nodes"></param>
         /// <param name="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution did not converge</param>
         /// <returns></returns>
-        public IList<Node> CalculateNodeVoltagesAndPowers(Matrix<Complex> admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
+        public IList<Node> CalculateNodeVoltagesAndPowers(IAdmittanceMatrix admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
         {
-            CheckDimensions(admittances, nodes);
+            if (admittances.NodeCount != nodes.Count())
+                throw new ArgumentOutOfRangeException("nodes",
+                    "the count of nodes does not match the dimensions of the admittance matrix");
 
             List<int> indexOfSlackBuses;
             List<int> indexOfPQBuses;
@@ -45,6 +47,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPQBuses);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPVBuses);
+            var admittanceValues = admittances.GetValues();
 
             if (countOfKnownVoltages == 0)
                 throw new ArgumentOutOfRangeException("nodes", "there must be at least one slack bus");
@@ -59,8 +62,8 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                 var pvBuses = ExtractPVBuses(nodes, indexOfPVBuses, pqBuses.Count);
                 Matrix<Complex> admittancesToUnknownVoltages;
                 Vector<Complex> constantCurrentRightHandSide;
-                ReduceAdmittancesByKnownVoltages(admittances, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
-                var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittances);
+                ReduceAdmittancesByKnownVoltages(admittanceValues, indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out admittancesToUnknownVoltages, out constantCurrentRightHandSide);
+                var totalAdmittanceRowSums = CalculateTotalAdmittanceRowSums(admittanceValues);
 
 #if DEBUG
                 var separation = admittancesToUnknownVoltages.LU();
@@ -107,7 +110,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             }
 
             var absolutePowerSum = allPowers.Sum(power => Math.Abs((double) power.Real) + Math.Abs((double) power.Imaginary));
-            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
+            var lossPowerSum = CalculatePowerLoss(admittanceValues, allVoltages);
             var relativePowerError = (lossPowerSum - inputPowerSum).Magnitude / absolutePowerSum;
 
             if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
@@ -215,13 +218,13 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             return sum;
         }
 
-        public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> allVoltages)
+        public static Vector<Complex> CalculateAllPowers(IAdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
-            var currents = admittances.Multiply(allVoltages);
+            var currents = admittances.GetValues().Multiply(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
         }
-
+        
         public static Vector<Complex> CalculateAllPowers(Matrix<Complex> admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
         {
             var currents = admittances.Multiply(voltages) - constantCurrents;
@@ -354,20 +357,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
                     throw new ArgumentOutOfRangeException("nodes",
                         "invalid bus type (neither PV, PQ or slack bus)");
             }
-        }
-
-        private static void CheckDimensions(Matrix<Complex> admittances, IEnumerable<Node> nodes)
-        {
-            var rows = admittances.RowCount;
-            var columns = admittances.ColumnCount;
-            var nodeCount = nodes.Count();
-
-            if (rows != columns)
-                throw new ArgumentOutOfRangeException("admittances", "the admittance matrix must be quadratic");
-
-            if (rows != nodeCount)
-                throw new ArgumentOutOfRangeException("nodes",
-                    "the count of nodes does not match the dimensions of the admittance matrix");
         }
     }
 }
