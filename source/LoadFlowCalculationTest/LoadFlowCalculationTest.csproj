@@ -95,6 +95,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\PQBusTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PVBusTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\AdmittanceMatrixTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrixTest.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />
   </ItemGroup>
   <ItemGroup>
