@@ -144,12 +144,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var powerLoss = new Complex();
-            var admittanceValues = admittances.GetCopyOfValues();
 
-            for (var i = 0; i < admittanceValues.RowCount; ++i)
-                for (var j = i + 1; j < admittanceValues.ColumnCount; ++j)
+            for (var i = 0; i < admittances.NodeCount; ++i)
+                for (var j = i + 1; j < admittances.NodeCount; ++j)
                 {
-                    var admittance = admittanceValues[i, j];
+                    var admittance = admittances[i, j];
                     var voltageDifference = allVoltages[i] - allVoltages[j];
                     var branchCurrent = admittance*voltageDifference;
                     var branchPowerLoss = voltageDifference*branchCurrent.Conjugate();

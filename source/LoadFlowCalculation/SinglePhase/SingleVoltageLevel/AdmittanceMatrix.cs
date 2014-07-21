@@ -76,5 +76,11 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         {
             return _values.Multiply(voltages);
         }
+
+        public Complex this[int row, int column]
+        {
+            get { return _values[row, column]; }
+            set { _values[row, column] = value; }
+        }
     }
 }
