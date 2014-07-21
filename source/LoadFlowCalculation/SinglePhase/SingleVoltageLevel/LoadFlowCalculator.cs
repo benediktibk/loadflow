@@ -47,7 +47,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPQBuses);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPVBuses);
-            var admittanceValues = admittances.GetValues();
+            var admittanceValues = admittances.GetCopyOfValues();
 
             if (countOfKnownVoltages == 0)
                 throw new ArgumentOutOfRangeException("nodes", "there must be at least one slack bus");
@@ -144,7 +144,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var powerLoss = new Complex();
-            var admittanceValues = admittances.GetValues();
+            var admittanceValues = admittances.GetCopyOfValues();
 
             for (var i = 0; i < admittanceValues.RowCount; ++i)
                 for (var j = i + 1; j < admittanceValues.ColumnCount; ++j)
@@ -221,7 +221,7 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 
         public static Vector<Complex> CalculateAllPowers(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
-            var currents = admittances.GetValues().Multiply(allVoltages);
+            var currents = admittances.CalculateCurrents(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
             return allPowers;
         }
