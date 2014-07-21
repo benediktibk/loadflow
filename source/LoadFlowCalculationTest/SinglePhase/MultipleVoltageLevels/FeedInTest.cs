@@ -163,11 +163,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             feedIn.FillInAdmittances(admittances, 1, null);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(2, 4, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(3, 1, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3, 9, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(0.3, 0.4, values[1, 1], 0.00001);
+            ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]
@@ -187,11 +186,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _feedIn.FillInAdmittances(admittances, 3, null);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(3.51515151, 4, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(1.4848484848, 1, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-4.51515151, 9, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(1.81515151, 0.4, values[1, 1], 0.00001);
+            ComplexAssert.AreEqual(3.51515151, 4, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(1.4848484848, 1, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-4.51515151, 9, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(1.81515151, 0.4, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]

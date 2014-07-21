@@ -87,11 +87,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _lineWithOnlyLengthValues.FillInAdmittances(admittances, 1, null);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3.79125857823813, 43.772994183725, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(2.79125857823813, -38.772994183725, values[1, 1], 0.00001);
+            ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3.79125857823813, 43.772994183725, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(2.79125857823813, -38.772994183725, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]
@@ -102,11 +101,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _lineWithOnlyLengthValues.FillInAdmittances(admittances, 10, null);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3.079125857823813, 7.9772994183725, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(2.079125857823813, -2.9772994183725, values[1, 1], 0.00001);
+            ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-3.079125857823813, 7.9772994183725, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(2.079125857823813, -2.9772994183725, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]
@@ -124,16 +122,15 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             _lineWithLengthAndShuntValues.FillInAdmittances(admittances, 10, groundNode);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(866.499180634597, 3.80085243052449, values[0, 0], 0.00001);
-            ComplexAssert.AreEqual(36.6523198083696, -44.4587206322193, values[1, 0], 0.00001);
-            ComplexAssert.AreEqual(-908.151500442966, 47.6578682016948, values[2, 0], 0.00001);
-            ComplexAssert.AreEqual(37.6523198083696, -45.4587206322193, values[0, 1], 0.00001);
-            ComplexAssert.AreEqual(867.499180634597, 2.80085243052449, values[1, 1], 0.00001);
-            ComplexAssert.AreEqual(-895.151500442966, 89.6578682016948, values[2, 1], 0.00001);
-            ComplexAssert.AreEqual(-908.151500442966, 48.6578682016948, values[0, 2], 0.00001);
-            ComplexAssert.AreEqual(-904.151500442966, 50.6578682016948, values[1, 2], 0.00001);
-            ComplexAssert.AreEqual(1807.30300088593, -97.3157364033897, values[2, 2], 0.00001);
+            ComplexAssert.AreEqual(866.499180634597, 3.80085243052449, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(36.6523198083696, -44.4587206322193, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(-908.151500442966, 47.6578682016948, admittances[2, 0], 0.00001);
+            ComplexAssert.AreEqual(37.6523198083696, -45.4587206322193, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(867.499180634597, 2.80085243052449, admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-895.151500442966, 89.6578682016948, admittances[2, 1], 0.00001);
+            ComplexAssert.AreEqual(-908.151500442966, 48.6578682016948, admittances[0, 2], 0.00001);
+            ComplexAssert.AreEqual(-904.151500442966, 50.6578682016948, admittances[1, 2], 0.00001);
+            ComplexAssert.AreEqual(1807.30300088593, -97.3157364033897, admittances[2, 2], 0.00001);
         }
 
         [TestMethod]

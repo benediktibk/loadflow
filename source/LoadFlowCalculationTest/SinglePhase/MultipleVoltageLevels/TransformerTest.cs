@@ -273,11 +273,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
 
             transformer.FillInAdmittances(admittances, 1, null);
 
-            var values = admittances.GetCopyOfValues();
-            ComplexAssert.AreEqual(162025.45, 0, values[0, 0], 0.1);
-            ComplexAssert.AreEqual(162025.45, 0, values[1, 1], 0.1);
-            ComplexAssert.AreEqual(-162025.45, 0, values[0, 1], 0.1);
-            ComplexAssert.AreEqual(-162025.45, 0, values[1, 0], 0.1);
+            ComplexAssert.AreEqual(162025.45, 0, admittances[0, 0], 0.1);
+            ComplexAssert.AreEqual(162025.45, 0, admittances[1, 1], 0.1);
+            ComplexAssert.AreEqual(-162025.45, 0, admittances[0, 1], 0.1);
+            ComplexAssert.AreEqual(-162025.45, 0, admittances[1, 0], 0.1);
         }
     }
 }
