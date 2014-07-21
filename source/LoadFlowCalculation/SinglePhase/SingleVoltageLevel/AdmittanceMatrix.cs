@@ -24,11 +24,6 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
             _values = values.Clone();
         }
 
-        public Matrix<Complex> GetCopyOfValues()
-        {
-            return _values.Clone();
-        }
-
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
         {
             Debug.Assert(sourceNode != targetNode);
