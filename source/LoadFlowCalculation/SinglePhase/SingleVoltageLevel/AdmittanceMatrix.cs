@@ -71,5 +71,10 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         {
             get { return _values.ColumnCount; }
         }
+
+        public Vector<Complex> CalculateCurrents(Vector<Complex> voltages)
+        {
+            return _values.Multiply(voltages);
+        }
     }
 }

@@ -582,7 +582,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(700, 500));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -597,7 +597,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(10, -5));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -612,7 +612,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(1, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.1), new Complex(0.97, -0.15), new Complex(1.01, -0.02) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -647,7 +647,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(0, 500), new Complex(0, 0), new Complex(0, -600));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -660,7 +660,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             admittances.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
             
             voltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -671,7 +671,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
 
             voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }
@@ -682,7 +682,7 @@ namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(5, 500), new Complex(20, -300), new Complex(10, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            var currents = admittances.GetValues().Multiply(voltages);
+            var currents = admittances.CalculateCurrents(voltages);
             powers = voltages.PointwiseMultiply(currents.Conjugate());
             nominalVoltage = 1;
         }

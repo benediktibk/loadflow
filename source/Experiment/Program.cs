@@ -56,7 +56,7 @@ namespace Experiment
                     var condition = (norm*inverseNorm).Magnitude;
                     Console.WriteLine(j + " -> " + condition);
                 }
-                catch (NonConvergenceException exception)
+                catch (NonConvergenceException)
                 {
                     Console.WriteLine(j + " -> not converging");
                 }
