@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 {
     public class AdmittanceMatrix : IAdmittanceMatrix
     {

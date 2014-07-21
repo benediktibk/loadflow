@@ -56,7 +56,6 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScaler.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Generator.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\IAdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IExternalReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
@@ -67,7 +66,8 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\Node.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNet.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Transformer.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\AdmittanceMatrix.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrix.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\IAdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\LoadFlowCalculator.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\Node.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIteration.cs" />

@@ -1,6 +1,7 @@
 using System.Numerics;
+using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
 {
     public interface IAdmittanceMatrix
     {
