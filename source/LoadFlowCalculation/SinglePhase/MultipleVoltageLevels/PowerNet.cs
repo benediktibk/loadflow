@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -68,8 +69,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return segments;
         }
 
-        public bool CalculateNodeVoltages(LoadFlowCalculator calculator)
+        public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
+            var maximumPower = GetMaximumPower();
+            var powerScaling = maximumPower > 0 ? maximumPower : 1;
+            var calculator = new LoadFlowCalculator(powerScaling, nodeVoltageCalculator);
             var voltages = calculator.CalculateNodeVoltages(this);
 
             if (voltages == null)
@@ -278,6 +282,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 return 0;
 
             return absoluteSum/count;
+        }
+
+        private double GetMaximumPower()
+        {
+            var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
+            var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
+            return Math.Max(generatorMaximum, loadMaximum);
         }
 
         #endregion
