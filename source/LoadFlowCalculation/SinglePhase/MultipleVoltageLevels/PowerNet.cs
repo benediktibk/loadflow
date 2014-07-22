@@ -81,6 +81,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return false;
         }
 
+        public IExternalReadOnlyNode GetNodeByName(string name)
+        {
+            return GetNodeByNameInternal(name);
+        }
+
         #endregion
 
         #region add functions
@@ -173,11 +178,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public bool IsGroundNodeNecessary()
         {
             return _elements.Exists(x => x.NeedsGroundNode);
-        }
-
-        public IExternalReadOnlyNode GetNodeByName(string name)
-        {
-            return GetNodeByNameInternal(name);
         }
 
         public IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes()
