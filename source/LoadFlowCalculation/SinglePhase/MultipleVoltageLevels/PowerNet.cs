@@ -130,12 +130,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(string upperSideNodeName, string lowerSideNodeName, string name, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio, double idealTransformerFactor)
+        public void AddTransformer(string upperSideNodeName, string lowerSideNodeName, string name, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio)
         {
             AddName(name);
             var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
             var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
-            var transformer = new Transformer(name, upperSideNode, lowerSideNode, upperSideImpedance, lowerSideImpedance, mainImpedance, ratio, idealTransformerFactor);
+            var transformer = new Transformer(name, upperSideNode, lowerSideNode, upperSideImpedance, lowerSideImpedance, mainImpedance, ratio);
             _transformers.Add(transformer);
             _elements.Add(transformer);
             upperSideNode.Connect(transformer);
