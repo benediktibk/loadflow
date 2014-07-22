@@ -551,5 +551,41 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.01);
             ComplexAssert.AreEqual(396.8801, 0, targetNode.Voltage, 0.01);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneTransformerWithNotNominalRatioAndNoMainImpedanceSecondVersion_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode("sourceNode", 1000);
+            _powerNet.AddNode("targetNode", 400);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1002, 0), 0);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(0.749117512, 0), new Complex(0.399, 0), new Complex(), 2.495);
+            _powerNet.AddLoad("targetNode", "load", new Complex(-2000, 0));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithPowerScaling);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeByName("sourceNode");
+            var targetNode = _powerNet.GetNodeByName("targetNode");
+            ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.0001);
+            ComplexAssert.AreEqual(399, 0, targetNode.Voltage, 0.0001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneTransformerWithNotNominalRatioAndNoMainImpedanceAndNoLoad_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode("sourceNode", 1000);
+            _powerNet.AddNode("targetNode", 400);
+            _powerNet.AddFeedIn("sourceNode", "feedIn", new Complex(1002, 0), 0);
+            _powerNet.AddTransformer("sourceNode", "targetNode", "transformer", new Complex(9.410964912, 0), new Complex(0.399, 0), new Complex(), 2.495);
+            _powerNet.AddLoad("targetNode", "load", new Complex(0, 0));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculatorWithPowerScaling);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeByName("sourceNode");
+            var targetNode = _powerNet.GetNodeByName("targetNode");
+            ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.0001);
+            ComplexAssert.AreEqual(401.6032064, 0, targetNode.Voltage, 0.0001);
+        }
     }
 }
