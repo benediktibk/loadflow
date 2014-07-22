@@ -373,7 +373,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLine("line", "sourceNode", "targetNode", 3, 5, 0, 0);
             _powerNet.AddLoad("targetNode", "load", new Complex(4, 5));
 
-            Assert.IsFalse(_powerNet.CheckIfGroundNodeIsNecessary());
+            Assert.IsFalse(_powerNet.IsGroundNodeNecessary());
         }
 
         [TestMethod]
@@ -385,7 +385,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLine("line", "sourceNode", "targetNode", 3, 5, 5, 0);
             _powerNet.AddLoad("targetNode", "load", new Complex(4, 5));
 
-            Assert.IsTrue(_powerNet.CheckIfGroundNodeIsNecessary());
+            Assert.IsTrue(_powerNet.IsGroundNodeNecessary());
         }
 
         [TestMethod]

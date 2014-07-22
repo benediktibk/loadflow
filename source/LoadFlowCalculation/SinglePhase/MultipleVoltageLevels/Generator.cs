@@ -82,7 +82,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return false; }
         }
 
-        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode)
+        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         { }
 
         public IList<IReadOnlyNode> GetInternalNodes()

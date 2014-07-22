@@ -21,7 +21,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         bool CheckIfFloatingNodesExists();
         bool CheckIfNominalVoltagesDoNotMatch();
         bool CheckIfNodeIsOverdetermined();
-        bool CheckIfGroundNodeIsNecessary();
+        bool IsGroundNodeNecessary();
         IExternalReadOnlyNode GetNodeByName(string name);
         IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes();
         void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower);

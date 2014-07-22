@@ -204,7 +204,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 40);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
-            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null, 1);
 
             admittanceMatrix.Verify(x => x.AddConnection(_upperSideNode, _lowerSideNode, It.IsAny<Complex>()),
                 Times.Once);
@@ -222,7 +222,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 40);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
-            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null, 1);
 
             admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
                 Times.Exactly(3));
@@ -240,7 +240,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(5, 6), 41);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
-            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null, 1);
 
             admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
                 Times.Exactly(3));
@@ -254,7 +254,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var transformer = new Transformer("blub", _upperSideNode, _lowerSideNode, new Complex(1, 2), new Complex(3, 4), new Complex(), 41);
             var admittanceMatrix = new Mock<IAdmittanceMatrix>();
 
-            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null);
+            transformer.FillInAdmittances(admittanceMatrix.Object, 1, null, 1);
 
             admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
                 Times.Exactly(2));
@@ -271,7 +271,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var admittances = new AdmittanceMatrix(2, nodeIndexes);
             var transformer = new Transformer("blub", upperSideNode, lowerSideNode, new Complex(2.46875, 0), new Complex(0.592499, 0), new Complex(), 2.5);
 
-            transformer.FillInAdmittances(admittances, 1, null);
+            transformer.FillInAdmittances(admittances, 1, null, 1);
 
             ComplexAssert.AreEqual(162025.45, 0, admittances[0, 0], 0.1);
             ComplexAssert.AreEqual(162025.45, 0, admittances[1, 1], 0.1);

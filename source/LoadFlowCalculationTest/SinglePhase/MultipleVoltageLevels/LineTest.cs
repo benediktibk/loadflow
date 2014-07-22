@@ -85,7 +85,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } }), nodeIndexes);
 
-            _lineWithOnlyLengthValues.FillInAdmittances(admittances, 1, null);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, 1, null, 1);
 
             ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, admittances[0, 1], 0.00001);
@@ -99,7 +99,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } }), nodeIndexes);
 
-            _lineWithOnlyLengthValues.FillInAdmittances(admittances, 10, null);
+            _lineWithOnlyLengthValues.FillInAdmittances(admittances, 10, null, 1);
 
             ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, admittances[0, 1], 0.00001);
@@ -120,7 +120,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
                     {new Complex(-3, 1), new Complex(10, 43), new Complex(-3, -4) }
                 }), nodeIndexes);
 
-            _lineWithLengthAndShuntValues.FillInAdmittances(admittances, 10, groundNode);
+            _lineWithLengthAndShuntValues.FillInAdmittances(admittances, 10, groundNode, 1);
 
             ComplexAssert.AreEqual(866.499180634597, 3.80085243052449, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(36.6523198083696, -44.4587206322193, admittances[1, 0], 0.00001);

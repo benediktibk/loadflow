@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -171,7 +170,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return _nodes.Count(x => x.IsOverdetermined) > 0;
         }
 
-        public bool CheckIfGroundNodeIsNecessary()
+        public bool IsGroundNodeNecessary()
         {
             return _elements.Exists(x => x.NeedsGroundNode);
         }
@@ -189,19 +188,20 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 allNodes.AddRange(element.GetInternalNodes());
             allNodes.AddRange(_nodes);
 
-            if (CheckIfGroundNodeIsNecessary())
-            {
-                allNodes.AddRange(_groundFeedIn.GetInternalNodes());
-                allNodes.Add(_groundNode);
-            }
+            if (!IsGroundNodeNecessary()) 
+                return allNodes;
+
+            allNodes.AddRange(_groundFeedIn.GetInternalNodes());
+            allNodes.Add(_groundNode);
 
             return allNodes;
         }
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower)
         {
+            var expectedLoadFlow = CalculateAverageLoadFlow();
             foreach (var element in _elements)
-                element.FillInAdmittances(admittances, scaleBasePower, _groundNode);
+                element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
         }
 
         #endregion
@@ -265,6 +265,19 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             if (name.Contains('#'))
                 throw new ArgumentOutOfRangeException("name", "the name must not contain a #");
             _allNames.Add(name);
+        }
+
+        private double CalculateAverageLoadFlow()
+        {
+            var absoluteSum = 
+                _generators.Sum(generator => Math.Abs(generator.RealPower)) + 
+                _loads.Sum(load => Math.Abs(load.Value.Real));
+            var count = _generators.Count + _loads.Count;
+
+            if (count == 0)
+                return 0;
+
+            return absoluteSum/count;
         }
 
         #endregion

@@ -120,7 +120,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
                     {new Complex(-3, 9), new Complex(0.3, 0.4)}
                 }), dictionary);
 
-            _generator.FillInAdmittances(admittances, 1, null);
+            _generator.FillInAdmittances(admittances, 1, null, 1);
 
             ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
