@@ -147,9 +147,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
             admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
             admittances.AddConnection(mainImpedanceNode, groundNode, 1 / mainImpedanceScaled);
-            var meanImpedanceScaled = (lowerSideImpedanceScaled + upperSideImpedanceScaled)/2;
             admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio, meanImpedanceScaled.Magnitude);
+                idealTransformerInternalNode, RelativeRatio, scalerUpperSide.CurrentBase);
         }
 
         private void FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
@@ -162,9 +161,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
             admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
             admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
-            var meanImpedanceScaled = (lowerSideImpedanceScaled + upperSideImpedanceScaled) / 2;
             admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio, meanImpedanceScaled.Magnitude);
+                idealTransformerInternalNode, RelativeRatio, scalerUpperSide.CurrentBase);
         }
 
         #endregion
