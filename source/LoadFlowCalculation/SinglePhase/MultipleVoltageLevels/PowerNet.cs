@@ -83,9 +83,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return false;
         }
 
-        public IExternalReadOnlyNode GetNodeById(long name)
+        public IExternalReadOnlyNode GetNodeById(long id)
         {
-            return GetNodeByIdInternal(name);
+            return GetNodeByIdInternal(id);
         }
 
         #endregion
