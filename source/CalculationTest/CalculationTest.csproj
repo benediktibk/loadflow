@@ -104,7 +104,7 @@
       <Project>{3726D19C-8B14-4BA4-B193-54973A802278}</Project>
       <Name>AnalyticContinuation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LoadFlowCalculation\Calculation.csproj">
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
       <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
       <Name>Calculation</Name>
     </ProjectReference>
