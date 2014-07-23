@@ -11,9 +11,8 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
-        private readonly Complex _upperSideImpedance;
-        private readonly Complex _lowerSideImpedance;
-        private readonly Complex _mainImpedance;
+        private Complex _lengthAdmittance;
+        private Complex _shuntAdmittance;
         private readonly double _ratio;
         private readonly List<DerivedInternalPQNode> _internalNodes;
 
@@ -23,7 +22,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public Transformer(
             IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, 
-            Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, 
+            double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, 
             double ratio, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
@@ -35,27 +34,31 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             if (ratio <= 0)
                 throw new ArgumentOutOfRangeException("ratio", "must be positive");
 
-            if (upperSideImpedance.Magnitude < 0.00001)
-                throw new ArgumentOutOfRangeException("upperSideImpedance", "upper side impedance can not be zero");
+            if (nominalPower <= 0)
+                throw new ArgumentOutOfRangeException("nominalPower", "must be positive");
 
-            if (lowerSideImpedance.Magnitude < 0.00001)
-                throw new ArgumentOutOfRangeException("lowerSideImpedance", "upper side impedance can not be zero");
+            if (relativeShortCircuitVoltage <= 0 || relativeShortCircuitVoltage > 1)
+                throw new ArgumentOutOfRangeException("relativeShortCircuitVoltage", "must be positive and smaller than 1");
+
+            if (copperLosses <= 0)
+                throw new ArgumentOutOfRangeException("copperLosses", "must be positive");
+
+            if (ironLosses <= 0)
+                throw new ArgumentOutOfRangeException("ironLosses", "must be positive");
+
+            if (relativeNoLoadCurrent <= 0 || relativeNoLoadCurrent > 1)
+                throw new ArgumentOutOfRangeException("relativeNoLoadCurrent", "must be positive and smaller than 1");
 
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
-            _upperSideImpedance = upperSideImpedance;
-            _lowerSideImpedance = lowerSideImpedance;
-            _mainImpedance = mainImpedance;
             _ratio = ratio;
             _internalNodes = new List<DerivedInternalPQNode>();
-
-            if (HasMainImpedance || HasNotNominalRatio)
-                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
+            CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
+                relativeNoLoadCurrent);
 
             if (HasNotNominalRatio)
             {
-                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
-                    new Complex(0, 0)));
+                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
                 _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
                     new Complex(0, 0)));
             }
@@ -85,25 +88,27 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
             var scalerUpperSide = new DimensionScaler(UpperSideNominalVoltage, scaleBasisPower);
-            var scalerLowerSide = new DimensionScaler(LowerSideNominalVoltage, scaleBasisPower);
-            var idealTransformerWeight = expectedLoadFlow > 0 ? UpperSideNominalVoltage / expectedLoadFlow : 1;
 
-            if (HasMainImpedance)
+            if (HasNotNominalRatio)
             {
-                if (HasNotNominalRatio)
-                    FillInAdmittancesWithMainImpedanceAndNotNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
-                        groundNode, idealTransformerWeight);
-                else
-                    FillInAdmittancesWithMainImpedanceAndNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
-                        groundNode);
+                var idealTransformerWeight = expectedLoadFlow > 0 ? UpperSideNominalVoltage / expectedLoadFlow : 1;
+                var idealTransformerUpperSideNode = _internalNodes[0];
+                var idealTransformerInternalNode = _internalNodes[1];
+                var lengthAdmittanceScaled = scalerUpperSide.ScaleAdmittance(LengthAdmittance);
+                var shuntAdmittanceScaled = scalerUpperSide.ScaleAdmittance(ShuntAdmittance);
+                admittances.AddConnection(_upperSideNode, groundNode, shuntAdmittanceScaled);
+                admittances.AddConnection(idealTransformerUpperSideNode, groundNode, shuntAdmittanceScaled);
+                admittances.AddConnection(_upperSideNode, idealTransformerUpperSideNode, lengthAdmittanceScaled);
+                admittances.AddIdealTransformer(idealTransformerUpperSideNode, groundNode, _lowerSideNode, groundNode,
+                    idealTransformerInternalNode, RelativeRatio, idealTransformerWeight);
             }
             else
             {
-                if (HasNotNominalRatio)
-                    FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(admittances, scalerUpperSide, scalerLowerSide,
-                        groundNode, idealTransformerWeight);
-                else
-                    FillInAdmittancesWithNoInternalNodes(admittances, scalerUpperSide, scalerLowerSide);
+                var lengthAdmittanceScaled = scalerUpperSide.ScaleAdmittance(LengthAdmittance);
+                var shuntAdmittanceScaled = scalerUpperSide.ScaleAdmittance(ShuntAdmittance);
+                admittances.AddConnection(_upperSideNode, groundNode, shuntAdmittanceScaled);
+                admittances.AddConnection(_lowerSideNode, groundNode, shuntAdmittanceScaled);
+                admittances.AddConnection(_upperSideNode, _lowerSideNode, lengthAdmittanceScaled);
             }
         }
 
@@ -116,54 +121,21 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         #region private functions
 
-        private void FillInAdmittancesWithNoInternalNodes(IAdmittanceMatrix admittances, DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide)
+        private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent)
         {
-            var upperSideImpedanceScaled = scalerUpperSide.ScaleImpedance(UpperSideImpedance);
-            var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
-            var admittance = 1 / (upperSideImpedanceScaled + lowerSideImpedanceScaled);
-            admittances.AddConnection(_upperSideNode, _lowerSideNode, admittance);
-        }
+            var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
+            if (relativeShortCircuitVoltageReal >= relativeShortCircuitVoltage)
+                throw new ArgumentException("the copper losses are too high compare to the nominal power");
 
-        private void FillInAdmittancesWithMainImpedanceAndNominalRatio(IAdmittanceMatrix admittances,
-            DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode)
-        {
-            var mainImpedanceNode = _internalNodes[0];
-            var upperSideImpedanceScaled = scalerUpperSide.ScaleImpedance(UpperSideImpedance);
-            var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
-            var mainImpedanceScaled = scalerUpperSide.ScaleImpedance(MainImpedance);
-            admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
-            admittances.AddConnection(mainImpedanceNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
-            admittances.AddConnection(mainImpedanceNode, groundNode, 1 / mainImpedanceScaled);
-        }
-
-        private void FillInAdmittancesWithMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
-            DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode, double idealTransformerWeight)
-        {
-            var mainImpedanceNode = _internalNodes[0];
-            var idealTransformerNode = _internalNodes[1];
-            var idealTransformerInternalNode = _internalNodes[2];
-            var upperSideImpedanceScaled = scalerUpperSide.ScaleImpedance(UpperSideImpedance);
-            var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
-            var mainImpedanceScaled = scalerUpperSide.ScaleImpedance(MainImpedance);
-            admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
-            admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
-            admittances.AddConnection(mainImpedanceNode, groundNode, 1 / mainImpedanceScaled);
-            admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio, idealTransformerWeight);
-        }
-
-        private void FillInAdmittancesWithNoMainImpedanceAndNotNominalRatio(IAdmittanceMatrix admittances,
-            DimensionScaler scalerUpperSide, DimensionScaler scalerLowerSide, IReadOnlyNode groundNode, double idealTransformerWeight)
-        {
-            var mainImpedanceNode = _internalNodes[0];
-            var idealTransformerNode = _internalNodes[1];
-            var idealTransformerInternalNode = _internalNodes[2];
-            var upperSideImpedanceScaled = scalerUpperSide.ScaleImpedance(UpperSideImpedance);
-            var lowerSideImpedanceScaled = scalerLowerSide.ScaleImpedance(LowerSideImpedance);
-            admittances.AddConnection(_upperSideNode, mainImpedanceNode, 1 / upperSideImpedanceScaled);
-            admittances.AddConnection(idealTransformerNode, _lowerSideNode, 1 / lowerSideImpedanceScaled);
-            admittances.AddIdealTransformer(mainImpedanceNode, groundNode, idealTransformerNode, groundNode,
-                idealTransformerInternalNode, RelativeRatio, idealTransformerWeight);
+            var relativeShortCircuitVoltageImaginary =
+                Math.Sqrt(relativeShortCircuitVoltage * relativeShortCircuitVoltage -
+                          relativeShortCircuitVoltageReal * relativeShortCircuitVoltageReal);
+            var relativeShortCircuitVoltageComplex = new Complex(relativeShortCircuitVoltageReal,
+                relativeShortCircuitVoltageImaginary);
+            _lengthAdmittance = new Complex(nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage), 0) /
+                                relativeShortCircuitVoltageComplex;
+            _shuntAdmittance = new Complex(1 / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage), 0) *
+                               new Complex(ironLosses, (-1) * relativeNoLoadCurrent * nominalPower);
         }
 
         #endregion
@@ -195,19 +167,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return Ratio/NominalRatio; }
         }
 
-        public Complex UpperSideImpedance
+        public Complex LengthAdmittance
         {
-            get { return _upperSideImpedance; }
+            get { return _lengthAdmittance; }
         }
 
-        public Complex LowerSideImpedance
+        public Complex ShuntAdmittance
         {
-            get { return _lowerSideImpedance; }
-        }
-
-        public Complex MainImpedance
-        {
-            get { return _mainImpedance; }
+            get { return _shuntAdmittance; }
         }
 
         public bool EnforcesSlackBus
@@ -227,12 +194,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public bool NeedsGroundNode
         {
-            get { return HasNotNominalRatio || HasMainImpedance; }
-        }
-
-        public bool HasMainImpedance
-        {
-            get { return MainImpedance.Magnitude > 0; }
+            get { return true; }
         }
 
         public bool HasNotNominalRatio
