@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class Load : IPowerNetElement
     {
         private readonly Complex _load;
-        private readonly string _name;
         private readonly IExternalReadOnlyNode _node;
 
-        public Load(string name, Complex load, IExternalReadOnlyNode node)
+        public Load(Complex load, IExternalReadOnlyNode node)
         {
             _load = load;
-            _name = name;
             _node = node;
         }
 
         public Complex Value
         {
             get { return _load; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
         }
 
         public double NominalVoltage

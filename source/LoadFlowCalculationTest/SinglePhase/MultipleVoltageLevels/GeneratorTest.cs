@@ -20,14 +20,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node("ultimateNode", 103);
-            _generator = new Generator("dada", _node, 5, 7);
-        }
-
-        [TestMethod]
-        public void Constructor_NameSetTodada_NameIsdada()
-        {
-            Assert.AreEqual("dada", _generator.Name);
+            _node = new Node(0, 103);
+            _generator = new Generator(_node, 5, 7);
         }
 
         [TestMethod]
@@ -87,7 +81,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var generator = new Generator("feed", node.Object, 67, 3);
+            var generator = new Generator(node.Object, 67, 3);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             generator.AddConnectedNodes(nodes);

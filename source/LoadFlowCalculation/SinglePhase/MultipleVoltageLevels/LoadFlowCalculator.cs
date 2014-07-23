@@ -23,15 +23,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }
 
-        public IReadOnlyDictionary<string, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
+        public IReadOnlyDictionary<long, Complex> CalculateNodeVoltages(IReadOnlyPowerNet powerNet)
         {
             CheckPowerNet(powerNet);
 
             var nodes = new List<IReadOnlyNode>(powerNet.GetAllNecessaryNodes());
-
-            if (CheckIfNamesAreDuplicated(nodes))
-                throw new ArgumentException("the node names are duplicated");
-
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
@@ -40,15 +36,15 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return voltageCollapse ? null : ExtractNodeVoltages(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
         }
 
-        private static Dictionary<string, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
+        private static Dictionary<long, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
             IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
-            var nodeVoltages = new Dictionary<string, Complex>();
+            var nodeVoltages = new Dictionary<long, Complex>();
 
             foreach (var node in nodes)
             {
                 var index = nodeIndexes[node];
-                var name = node.Name;
+                var name = node.Id;
                 var voltage = singleVoltageNodesWithResults[index].Voltage;
                 nodeVoltages.Add(name, voltage);
             }
@@ -95,22 +91,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "the nominal voltages must match on connected nodes");
             if (powerNet.CheckIfNodeIsOverdetermined())
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
-        }
-
-        private static bool CheckIfNamesAreDuplicated(IEnumerable<IReadOnlyNode> nodes)
-        {
-            var nodeNameSet = new HashSet<string>();
-            var nodeNameList = nodes.Select(node => node.Name);
-
-            foreach (var name in nodeNameList)
-            {
-                if (nodeNameSet.Contains(name))
-                    return false;
-
-                nodeNameSet.Add(name);
-            }
-
-            return false;
         }
 
         #endregion

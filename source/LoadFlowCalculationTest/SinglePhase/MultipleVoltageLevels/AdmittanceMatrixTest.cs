@@ -31,9 +31,9 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _firstNode = new Node("first", 1);
-            _secondNode = new Node("second", 1);
-            _thirdNode = new Node("third", 1);
+            _firstNode = new Node(0, 1);
+            _secondNode = new Node(1, 1);
+            _thirdNode = new Node(2, 1);
             _nodeIndexes = new Dictionary<IReadOnlyNode, int>()
             {
                 {_firstNode, 0},
@@ -62,10 +62,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddVoltageControlledCurrentSource_AmplificationOf2_CurrentsAreCorrect()
         {
-            var firstNode = new Node("first", 1);
-            var secondNode = new Node("second", 1);
-            var thirdNode = new Node("third", 1);
-            var fourthNode = new Node("fourth", 1);
+            var firstNode = new Node(0, 1);
+            var secondNode = new Node(1, 1);
+            var thirdNode = new Node(2, 1);
+            var fourthNode = new Node(3, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {firstNode, 0},
@@ -90,8 +90,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddConnection_1_CurrentsAreCorrect()
         {
-            var firstNode = new Node("first", 1);
-            var secondNode = new Node("second", 1);
+            var firstNode = new Node(0, 1);
+            var secondNode = new Node(1, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {firstNode, 0},
@@ -126,10 +126,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf10_CurrentsAreCorrect()
         {
-            var input = new Node("input", 1);
-            var output = new Node("output", 1);
-            var ground = new Node("ground", 1);
-            var internalNode = new Node("internalNode", 1);
+            var input = new Node(0, 1);
+            var output = new Node(1, 1);
+            var ground = new Node(-1, 1);
+            var internalNode = new Node(-2, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -155,10 +155,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf10AndResistanceWeightOf100_CurrentsAreCorrect()
         {
-            var input = new Node("input", 1);
-            var output = new Node("output", 1);
-            var ground = new Node("ground", 1);
-            var internalNode = new Node("internalNode", 1);
+            var input = new Node(0, 1);
+            var output = new Node(1, 1);
+            var ground = new Node(-1, 1);
+            var internalNode = new Node(-2, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -184,10 +184,10 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf1AndResistanceWeightOf100_CurrentsAreCorrect()
         {
-            var input = new Node("input", 1);
-            var output = new Node("output", 1);
-            var ground = new Node("ground", 1);
-            var internalNode = new Node("internalNode", 1);
+            var input = new Node(0, 1);
+            var output = new Node(1, 1);
+            var ground = new Node(-1, 1);
+            var internalNode = new Node(-2, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -213,12 +213,12 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddIdealTransformer_OneConnectionBeforeAndAfter_CurrentsAreCorrect()
         {
-            var input = new Node("input", 1);
-            var inputTransformer = new Node("inputTransformer", 1);
-            var output = new Node("output", 1);
-            var outputTransformer = new Node("outputTransformer", 1);
-            var ground = new Node("ground", 1);
-            var internalNode = new Node("internalNode", 1);
+            var input = new Node(0, 1);
+            var inputTransformer = new Node(10, 1);
+            var output = new Node(1, 1);
+            var outputTransformer = new Node(11, 1);
+            var ground = new Node(-1, 1);
+            var internalNode = new Node(-2, 1);
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},

@@ -20,14 +20,8 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node("heinz", 3);
-            _load = new Load("hanz", new Complex(4, 1), _node);
-        }
-
-        [TestMethod]
-        public void Constructor_hanzAsName_NameIshanz()
-        {
-            Assert.AreEqual("hanz", _load.Name);
+            _node = new Node(0, 3);
+            _load = new Load(new Complex(4, 1), _node);
         }
 
         [TestMethod]
@@ -52,7 +46,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var load = new Load("feed", new Complex(123, 3), node.Object);
+            var load = new Load(new Complex(123, 3), node.Object);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             load.AddConnectedNodes(nodes);

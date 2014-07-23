@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -10,7 +9,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         #region variables
 
-        private readonly string _name;
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
         private readonly Complex _upperSideImpedance;
@@ -23,7 +21,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         #region public functions
 
-        public Transformer(string name, IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio)
+        public Transformer(
+            IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, 
+            Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, 
+            double ratio, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
@@ -40,7 +41,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             if (lowerSideImpedance.Magnitude < 0.00001)
                 throw new ArgumentOutOfRangeException("lowerSideImpedance", "upper side impedance can not be zero");
 
-            _name = name;
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
             _upperSideImpedance = upperSideImpedance;
@@ -50,13 +50,13 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _internalNodes = new List<DerivedInternalPQNode>();
 
             if (HasMainImpedance || HasNotNominalRatio)
-                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, name + "#mainImpedance", new Complex(0, 0)));
+                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
 
             if (HasNotNominalRatio)
             {
-                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, name + "#idealTransformer",
+                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
                     new Complex(0, 0)));
-                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, name + "#idealTransformerInternal",
+                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
                     new Complex(0, 0)));
             }
         }
@@ -169,11 +169,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         #endregion
 
         #region properties
-
-        public string Name
-        {
-            get { return _name; }
-        }
 
         public double UpperSideNominalVoltage
         {

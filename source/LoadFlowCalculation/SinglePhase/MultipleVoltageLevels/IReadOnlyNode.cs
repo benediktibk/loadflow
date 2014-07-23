@@ -5,7 +5,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     public interface IReadOnlyNode : IEquatable<IReadOnlyNode>
     {
         double NominalVoltage { get; }
-        string Name { get; }
+        long Id { get; }
         SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);
     }
 }

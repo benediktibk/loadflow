@@ -8,16 +8,16 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class DerivedInternalPQNodeTest : DerivedInternalNodeTest
     {
-        protected override DerivedInternalNode CreateNode(Node sourceNode, string name)
+        protected override DerivedInternalNode CreateNode(Node sourceNode, long id)
         {
-            return new DerivedInternalPQNode(sourceNode, name, new Complex(4, -2));
+            return new DerivedInternalPQNode(sourceNode, id, new Complex(4, -2));
         }
 
         [TestMethod]
         public void CreateSingleVoltageNode_2AsScaleBaseForPower_PowerOfPQBusIsCorrectScaled()
         {
-            var sourceNode = new Node("source", 3);
-            var node = CreateNode(sourceNode, "pqbus");
+            var sourceNode = new Node(0, 3);
+            var node = CreateNode(sourceNode, 1);
 
             var result = node.CreateSingleVoltageNode(2);
 

@@ -8,15 +8,15 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class Node : IExternalReadOnlyNode
     {
-        private readonly string _name;
+        private readonly long _id;
         private readonly double _nominalVoltage;
         private readonly List<IPowerNetElement> _connectedElements;
         private Complex _voltage;
         private bool _voltageSet;
 
-        public Node(string name, double nominalVoltage)
+        public Node(long id, double nominalVoltage)
         {
-            _name = name;
+            _id = id;
             _nominalVoltage = nominalVoltage;
             _connectedElements = new List<IPowerNetElement>();
             _voltage = new Complex();
@@ -38,9 +38,9 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             get { return _nominalVoltage; }
         }
 
-        public string Name
+        public long Id
         {
-            get { return _name; }
+            get { return _id; }
         }
 
         public Complex Voltage
@@ -94,7 +94,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public override int GetHashCode()
         {
-            return _name.GetHashCode();
+            return _id.GetHashCode();
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
@@ -146,14 +146,14 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         public bool Equals(IReadOnlyNode other)
         {
-            return _name == other.Name;
+            return _id == other.Id;
         }
 
-        public void UpdateVoltage(IReadOnlyDictionary<string, Complex> voltages)
+        public void UpdateVoltage(IReadOnlyDictionary<long, Complex> voltages)
         {
-            Debug.Assert(voltages.ContainsKey(Name));
+            Debug.Assert(voltages.ContainsKey(Id));
             var scaler = new DimensionScaler(_nominalVoltage, 1);
-            var value = voltages[Name];
+            var value = voltages[Id];
             Voltage = scaler.UnscaleVoltage(value);
         }
     }

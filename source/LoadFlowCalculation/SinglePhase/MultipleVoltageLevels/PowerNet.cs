@@ -18,10 +18,10 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private readonly List<FeedIn> _feedIns;
         private readonly List<IPowerNetElement> _elements; 
         private readonly List<Node> _nodes;
-        private readonly Dictionary<string, Node> _nodesByName;
-        private readonly HashSet<string> _allNames;
+        private readonly Dictionary<long, Node> _nodesById;
         private readonly Node _groundNode;
         private readonly FeedIn _groundFeedIn;
+        private readonly IdGenerator _idGeneratorNodes;
 
         #endregion
 
@@ -37,14 +37,12 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _feedIns = new List<FeedIn>();
             _elements = new List<IPowerNetElement>();
             _nodes = new List<Node>();
-            _nodesByName = new Dictionary<string, Node>();
-            _allNames = new HashSet<string>();
-            _groundNode = new Node("#GROUNDNODE", 0);
-            _groundFeedIn = new FeedIn("#GROUNDFEEDIN", _groundNode, new Complex(0, 0), 0);
+            _nodesById = new Dictionary<long, Node>();
+            _idGeneratorNodes = new IdGenerator();
+            _groundNode = new Node(_idGeneratorNodes.Generate(), 0);
+            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
-            _allNames.Add(_groundNode.Name);
-            _allNames.Add(_groundFeedIn.Name);
-            _nodesByName.Add(_groundNode.Name, _groundNode);
+            _nodesById.Add(_groundNode.Id, _groundNode);
         }
 
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
@@ -85,76 +83,67 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             return false;
         }
 
-        public IExternalReadOnlyNode GetNodeByName(string name)
+        public IExternalReadOnlyNode GetNodeById(long name)
         {
-            return GetNodeByNameInternal(name);
+            return GetNodeByIdInternal(name);
         }
 
         #endregion
 
         #region add functions
 
-        public void AddNode(string name, double nominalVoltage)
+        public void AddNode(long id, double nominalVoltage)
         {
-            if (_nodesByName.ContainsKey(name))
-                throw new ArgumentOutOfRangeException("name", "a node with this name already exists");
-            AddName(name);
-
-            var node = new Node(name, nominalVoltage);
+            _idGeneratorNodes.Add(id);
+            var node = new Node(id, nominalVoltage);
             _nodes.Add(node);
-            _nodesByName.Add(name, node);
+            _nodesById.Add(id, node);
         }
 
-        public void AddLine(string name, string sourceNodeName, string targetNodeName, double lengthResistance, double lengthInductance,
-            double shuntConductance, double capacity)
+        public void AddLine(long sourceNodeId, long targetNodeId, double lengthResistance, double lengthInductance, double shuntConductance, double capacity)
         {
-            AddName(name);
-            var sourceNode = GetNodeByNameInternal(sourceNodeName);
-            var targetNode = GetNodeByNameInternal(targetNodeName);
-            var line = new Line(name, sourceNode, targetNode, lengthResistance, lengthInductance, shuntConductance, capacity, _frequency);
+            var sourceNode = GetNodeByIdInternal(sourceNodeId);
+            var targetNode = GetNodeByIdInternal(targetNodeId);
+            var line = new Line(sourceNode, targetNode, lengthResistance, lengthInductance, shuntConductance, capacity, _frequency);
             _lines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);
             targetNode.Connect(line);
         }
 
-        public void AddGenerator(string nodeName, string name, double voltageMagnitude, double realPower)
+        public void AddGenerator(long nodeId, double voltageMagnitude, double realPower)
         {
-            AddName(name);
-            var node = GetNodeByNameInternal(nodeName);
-            var generator = new Generator(name, node, voltageMagnitude, realPower);
+            var node = GetNodeByIdInternal(nodeId);
+            var generator = new Generator(node, voltageMagnitude, realPower);
             _generators.Add(generator);
             _elements.Add(generator);
             node.Connect(generator);
         }
 
-        public void AddFeedIn(string nodeName, string name, Complex voltage, double shortCircuitPower)
+        public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower)
         {
-            AddName(name);
-            var node = GetNodeByNameInternal(nodeName);
-            var feedIn = new FeedIn(name, node, voltage, shortCircuitPower);
+            var node = GetNodeByIdInternal(nodeId);
+            var feedIn = new FeedIn(node, voltage, shortCircuitPower, _idGeneratorNodes);
             _feedIns.Add(feedIn);
             _elements.Add(feedIn);
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(string upperSideNodeName, string lowerSideNodeName, string name, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio)
+        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, Complex upperSideImpedance, Complex lowerSideImpedance, Complex mainImpedance, double ratio)
         {
-            AddName(name);
-            var upperSideNode = GetNodeByNameInternal(upperSideNodeName);
-            var lowerSideNode = GetNodeByNameInternal(lowerSideNodeName);
-            var transformer = new Transformer(name, upperSideNode, lowerSideNode, upperSideImpedance, lowerSideImpedance, mainImpedance, ratio);
+            var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
+            var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);
+            var transformer = new Transformer(upperSideNode, lowerSideNode, upperSideImpedance, lowerSideImpedance, mainImpedance, ratio, _idGeneratorNodes);
             _transformers.Add(transformer);
             _elements.Add(transformer);
             upperSideNode.Connect(transformer);
             lowerSideNode.Connect(transformer);
         }
 
-        public void AddLoad(string nodeName, string name, Complex power)
+        public void AddLoad(long nodeId, Complex power)
         {
-            AddName(name);
-            var node = GetNodeByNameInternal(nodeName);
-            var load = new Load(name, power, node);
+            var node = GetNodeByIdInternal(nodeId);
+            var load = new Load(power, node);
             _loads.Add(load);
             _elements.Add(load);
             node.Connect(load);
@@ -251,24 +240,15 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 
         #region private functions
 
-        private Node GetNodeByNameInternal(string name)
+        private Node GetNodeByIdInternal(long name)
         {
             Node result;
-            _nodesByName.TryGetValue(name, out result);
+            _nodesById.TryGetValue(name, out result);
 
             if (result == default(Node))
                 throw new ArgumentOutOfRangeException("name", "specified node does not exist");
 
             return result;
-        }
-
-        private void AddName(string name)
-        {
-            if (_allNames.Contains(name))
-                throw new ArgumentOutOfRangeException("name", "the name must be unique throughout all net elements");
-            if (name.Contains('#'))
-                throw new ArgumentOutOfRangeException("name", "the name must not contain a #");
-            _allNames.Add(name);
         }
 
         private double CalculateAverageLoadFlow()

@@ -3,17 +3,17 @@
     public abstract class DerivedInternalNode : IReadOnlyNode
     {
         private readonly IExternalReadOnlyNode _sourceNode;
-        private readonly string _name;
+        private readonly long _id;
 
-        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, string name)
+        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, long id)
         {
             _sourceNode = sourceNode;
-            _name = name;
+            _id = id;
         }
 
         public bool Equals(IReadOnlyNode other)
         {
-            return Name == other.Name;
+            return Id == other.Id;
         }
 
         public double NominalVoltage 
@@ -21,9 +21,9 @@
             get { return _sourceNode.NominalVoltage; }
         }
 
-        public string Name
+        public long Id
         {
-            get { return _name; }
+            get { return _id; }
         }
 
         public abstract SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);

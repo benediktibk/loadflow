@@ -6,7 +6,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly Complex _power;
 
-        public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, string name, Complex power) : base(sourceNode, name)
+        public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, long id, Complex power) : base(sourceNode, id)
         {
             _power = power;
         }

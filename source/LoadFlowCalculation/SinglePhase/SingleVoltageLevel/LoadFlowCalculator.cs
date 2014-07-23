@@ -24,10 +24,10 @@ namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
         /// <summary>
         /// calculates the missing node voltages and powers
         /// </summary>
-        /// <param name="admittances"></param>
-        /// <param name="nominalVoltage"></param>
-        /// <param name="nodes"></param>
-        /// <param name="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution did not converge</param>
+        /// <param id="admittances"></param>
+        /// <param id="nominalVoltage"></param>
+        /// <param id="nodes"></param>
+        /// <param id="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution did not converge</param>
         /// <returns></returns>
         public IList<Node> CalculateNodeVoltagesAndPowers(AdmittanceMatrix admittances, double nominalVoltage, IList<Node> nodes, out bool voltageCollapse)
         {

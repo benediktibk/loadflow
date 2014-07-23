@@ -2,28 +2,22 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class Line : IPowerNetElement
     {
-        private readonly string _name;
         private readonly IExternalReadOnlyNode _sourceNode;
         private readonly IExternalReadOnlyNode _targetNode;
         private Complex _lengthImpedance;
         private Complex _shuntAdmittance;
         private bool _hasShuntAdmittance;
 
-        public Line(
-            string name, IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, 
-            double shuntCapacity, double shuntConductance, double frequency)
+        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double frequency)
         {
             if (lengthResistance == 0 && lengthInductance == 0)
                 throw new ArgumentOutOfRangeException();
 
-            _name = name;
             _sourceNode = sourceNode;
             _targetNode = targetNode;
             CalculateElectricCharacteristics(lengthResistance, lengthInductance, shuntCapacity, shuntConductance, frequency);
@@ -50,11 +44,6 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
                 _lengthImpedance = waveImpedance * Complex.Sinh(angle);
                 _shuntAdmittance = Complex.Tanh(angle / 2) / waveImpedance;
             }
-        }
-
-        public string Name
-        {
-            get { return _name; }
         }
 
         public Complex LengthImpedance

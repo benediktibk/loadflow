@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class Generator : IPowerNetElement
     {
-        private readonly string _name;
         private readonly IExternalReadOnlyNode _node;
         private readonly double _voltageMagnitude;
         private readonly double _realPower;
 
-        public Generator(string name, IExternalReadOnlyNode node, double voltageMagnitude, double realPower)
+        public Generator(IExternalReadOnlyNode node, double voltageMagnitude, double realPower)
         {
-            _name = name;
             _node = node;
             _voltageMagnitude = voltageMagnitude;
             _realPower = realPower;
-        }
-
-        public string Name 
-        {
-            get { return _name; }
         }
 
         public double NominalVoltage

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
@@ -7,7 +6,7 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly Complex _voltage;
 
-        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, string name, Complex voltage) : base(sourceNode, name)
+        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, long id, Complex voltage) : base(sourceNode, id)
         {
             _voltage = voltage;
         }

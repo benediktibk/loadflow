@@ -6,27 +6,20 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
 {
     public class FeedIn : IPowerNetElement
     {
-        private readonly string _name;
         private readonly IExternalReadOnlyNode _node;
         private readonly Complex _voltage;
         private readonly double _shortCircuitPower;
         private readonly DerivedInternalSlackNode _internalNode;
 
-        public FeedIn(string name, IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, IdGenerator idGenerator)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
 
-            _name = name;
             _node = node;
             _voltage = voltage;
             _shortCircuitPower = shortCircuitPower;
-            _internalNode = new DerivedInternalSlackNode(_node, name + "#" + "internal", voltage);
-        }
-
-        public string Name
-        {
-            get { return _name; }
+            _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage);
         }
 
         public double NominalVoltage

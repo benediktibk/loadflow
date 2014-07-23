@@ -8,19 +8,19 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         private Node _sourceNode;
         private DerivedInternalNode _node;
 
-        protected abstract DerivedInternalNode CreateNode(Node sourceNode, string name);
+        protected abstract DerivedInternalNode CreateNode(Node sourceNode, long id);
 
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNode = new Node("mainNode", 234);
-            _node = CreateNode(_sourceNode, "derivedNode");
+            _sourceNode = new Node(0, 234);
+            _node = CreateNode(_sourceNode, 1);
         }
 
         [TestMethod]
-        public void Constructor_NameSetToValidString_NameIsCorrect()
+        public void Constructor_IdSetTo1_IdIs1()
         {
-            Assert.AreEqual("derivedNode", _node.Name);
+            Assert.AreEqual(1, _node.Id);
         }
 
         [TestMethod]

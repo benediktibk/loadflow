@@ -17,17 +17,17 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node("heinz", 2);
+            _node = new Node(0, 2);
         }
 
         [TestMethod]
-        public void Constructor_heinzAnd2_NameIsheinz()
+        public void Constructor_0And2_IdIs0()
         {
-            Assert.AreEqual("heinz", _node.Name);
+            Assert.AreEqual(0, _node.Id);
         }
 
         [TestMethod]
-        public void Constructor_heinzAnd2_NominalVoltageIs2()
+        public void Constructor_0And2_NominalVoltageIs2()
         {
             Assert.AreEqual(2, _node.NominalVoltage, 0.00001);
         }
@@ -62,7 +62,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Equals_DifferentObjectWithSameValues_False()
         {
-            Assert.AreNotEqual(_node, new Node("heinz", 2));
+            Assert.AreNotEqual(_node, new Node(0, 2));
         }
 
         [TestMethod]
@@ -405,7 +405,7 @@ namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void UpdateVoltage_NominalVoltageSetTo2AndVoltage4And5_VoltageIs8And10()
         {
-            var voltages = new Dictionary<string, Complex>() {{_node.Name, new Complex(4, 5)}};
+            var voltages = new Dictionary<long, Complex>() {{_node.Id, new Complex(4, 5)}};
 
             _node.UpdateVoltage(voltages);
 
