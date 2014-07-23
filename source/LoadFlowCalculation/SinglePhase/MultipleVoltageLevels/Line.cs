@@ -13,22 +13,26 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
         private Complex _shuntAdmittance;
         private bool _hasShuntAdmittance;
 
-        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double frequency)
+        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency)
         {
-            if (lengthResistance == 0 && lengthInductance == 0)
+            if (seriesResistancePerUnitLength <= 0 && seriesInductancePerUnitLength <= 0)
                 throw new ArgumentOutOfRangeException();
+
+            if (length <= 0)
+                throw new ArgumentOutOfRangeException("length", "must be positive");
 
             _sourceNode = sourceNode;
             _targetNode = targetNode;
-            CalculateElectricCharacteristics(lengthResistance, lengthInductance, shuntCapacity, shuntConductance, frequency);
+            CalculateElectricCharacteristics
+                (seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, length, frequency);
         }
 
         private void CalculateElectricCharacteristics(double lengthResistance, double lengthInductance, double shuntCapacity,
-            double shuntConductance, double frequency)
+            double shuntConductance, double length, double frequency)
         {
             var omega = 2*Math.PI*frequency;
-            var directLengthImpedance = new Complex(lengthResistance, omega*lengthInductance);
-            var directShuntAdmittance = new Complex(shuntConductance, omega*shuntCapacity);
+            var directLengthImpedance = new Complex(lengthResistance * length, omega * lengthInductance * length);
+            var directShuntAdmittance = new Complex(shuntConductance * length, omega * shuntCapacity * length);
 
             if (directShuntAdmittance == new Complex())
             {

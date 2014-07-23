@@ -100,11 +100,11 @@ namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
             _nodesById.Add(id, node);
         }
 
-        public void AddLine(long sourceNodeId, long targetNodeId, double lengthResistance, double lengthInductance, double shuntConductance, double capacity)
+        public void AddLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length)
         {
             var sourceNode = GetNodeByIdInternal(sourceNodeId);
             var targetNode = GetNodeByIdInternal(targetNodeId);
-            var line = new Line(sourceNode, targetNode, lengthResistance, lengthInductance, shuntConductance, capacity, _frequency);
+            var line = new Line(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntConductancePerUnitLength, shuntCapacityPerUnitLength, length, _frequency);
             _lines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);
