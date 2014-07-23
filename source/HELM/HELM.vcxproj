@@ -65,8 +65,8 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,8 +85,8 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(Sol
     </Link>
     <PostBuildEvent>
       <Command>call $(SolutionDir)killvstest.bat
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\LoadFlowCalculationHELM.dll $(SolutionDir)LoadFlowCalculationComparison\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationComparison\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
