@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Controls;
 
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     class NotNegativeValidationRule : ValidationRule
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace LoadFlowCalculationComparison.AlgorithmSettings
+namespace CalculationComparison.AlgorithmSettings
 {
     public class GeneralSettings : NotifyPropertyChanged
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace LoadFlowCalculationComparison.AlgorithmSettings
+namespace CalculationComparison.AlgorithmSettings
 {
     public class ChangeAllowable : NotifyPropertyChanged
     {

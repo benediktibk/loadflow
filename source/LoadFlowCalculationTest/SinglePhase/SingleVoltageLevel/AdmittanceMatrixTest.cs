@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
     public class AdmittanceMatrixTest

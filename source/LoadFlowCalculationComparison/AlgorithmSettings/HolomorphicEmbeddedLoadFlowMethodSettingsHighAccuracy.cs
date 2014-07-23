@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoadFlowCalculationComparison.AlgorithmSettings
+namespace CalculationComparison.AlgorithmSettings
 {
     public class HolomorphicEmbeddedLoadFlowMethodSettingsHighAccuracy : HolomorphicEmbeddedLoadFlowMethodSettings
     {

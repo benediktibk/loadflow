@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public interface IReadOnlyNode : IEquatable<IReadOnlyNode>
     {

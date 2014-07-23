@@ -1,7 +1,7 @@
-﻿using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+﻿using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
+namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     public abstract class DerivedInternalNodeTest
     {

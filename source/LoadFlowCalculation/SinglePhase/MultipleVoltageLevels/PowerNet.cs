@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class PowerNet : IReadOnlyPowerNet
     {

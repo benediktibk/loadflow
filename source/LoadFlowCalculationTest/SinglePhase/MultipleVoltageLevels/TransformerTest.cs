@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using UnitTestHelper;
-using Node = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.Node;
-using IAdmittanceMatrix = LoadFlowCalculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
+using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
+using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 
-namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
+namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class TransformerTest

@@ -1,5 +1,5 @@
 ﻿
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     public class CalculationResult
     {

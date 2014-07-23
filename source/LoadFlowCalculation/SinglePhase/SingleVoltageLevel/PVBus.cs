@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
+namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PVBus
     {

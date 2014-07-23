@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest.ThreePhase
+namespace CalculationTest.ThreePhase
 {
     [TestClass]
     public class SymmetricPowerNetTest

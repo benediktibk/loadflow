@@ -9,11 +9,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using LoadFlowCalculationComparison.AlgorithmSettings;
+using CalculationComparison.AlgorithmSettings;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.Statistics;
 
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     public partial class MainWindow
     {

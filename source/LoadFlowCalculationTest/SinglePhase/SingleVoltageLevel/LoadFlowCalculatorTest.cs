@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
     abstract public class LoadFlowCalculatorTest

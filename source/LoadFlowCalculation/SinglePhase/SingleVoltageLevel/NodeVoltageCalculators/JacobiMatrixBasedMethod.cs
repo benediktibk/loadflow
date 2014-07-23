@@ -6,7 +6,7 @@ using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
+namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {

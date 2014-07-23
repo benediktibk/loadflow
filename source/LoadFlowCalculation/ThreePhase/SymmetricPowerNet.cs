@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
-namespace LoadFlowCalculation.ThreePhase
+namespace Calculation.ThreePhase
 {
     public class SymmetricPowerNet
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class DimensionScaler
     {

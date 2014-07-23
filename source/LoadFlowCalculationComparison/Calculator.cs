@@ -5,14 +5,14 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using LoadFlowCalculationComparison.AlgorithmSettings;
+using CalculationComparison.AlgorithmSettings;
+using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.Statistics;
 
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     public class Calculator
     {

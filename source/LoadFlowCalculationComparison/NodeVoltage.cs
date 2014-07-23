@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     public class NodeVoltage
     {

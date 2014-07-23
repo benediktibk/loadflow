@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public interface IAdmittanceMatrix
     {

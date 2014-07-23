@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
     public class HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest : HolomorphicEmbeddedLoadFlowMethodTest

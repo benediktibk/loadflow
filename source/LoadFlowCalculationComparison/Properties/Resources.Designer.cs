@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LoadFlowCalculationComparison.Properties
+namespace CalculationComparison.Properties
 {
 
 

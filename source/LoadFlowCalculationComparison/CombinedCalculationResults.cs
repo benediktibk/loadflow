@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace LoadFlowCalculationComparison
+namespace CalculationComparison
 {
     public class CombinedCalculationResults : ObservableCollection<CombinedCalculationResult>
     { }

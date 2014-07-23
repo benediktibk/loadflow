@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
-using LoadFlowCalculation.SinglePhase.MultipleVoltageLevels;
-using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
-namespace LoadFlowCalculationTest.SinglePhase.MultipleVoltageLevels
+namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class PowerNetTest

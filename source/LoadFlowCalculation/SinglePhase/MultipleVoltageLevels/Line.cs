@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 
-namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Line : IPowerNetElement
     {

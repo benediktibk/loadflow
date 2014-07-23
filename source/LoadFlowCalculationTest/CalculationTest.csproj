@@ -104,9 +104,9 @@
       <Project>{3726D19C-8B14-4BA4-B193-54973A802278}</Project>
       <Name>AnalyticContinuation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LoadFlowCalculation\LoadFlowCalculation.csproj">
+    <ProjectReference Include="..\LoadFlowCalculation\Calculation.csproj">
       <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
-      <Name>LoadFlowCalculation</Name>
+      <Name>Calculation</Name>
     </ProjectReference>
     <ProjectReference Include="..\MathExtensions\MathExtensions.csproj">
       <Project>{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}</Project>

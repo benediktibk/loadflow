@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace LoadFlowCalculationComparison.AlgorithmSettings
+namespace CalculationComparison.AlgorithmSettings
 {
     public class NotifyPropertyChanged : INotifyPropertyChanged
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
+namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public enum DataType
     {

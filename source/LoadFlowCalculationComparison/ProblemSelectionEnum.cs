@@ -1,4 +1,4 @@
-﻿namespace LoadFlowCalculationComparison
+﻿namespace CalculationComparison
 {
     public enum ProblemSelectionEnum
     {

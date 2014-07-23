@@ -6,7 +6,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 using ExtensionMethods = MathNet.Numerics.LinearAlgebra.Double.ExtensionMethods;
 
-namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
+namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {

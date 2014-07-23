@@ -1,7 +1,7 @@
-﻿using LoadFlowCalculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LoadFlowCalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
     public class CurrentIterationTest : LoadFlowCalculatorTest

@@ -1,4 +1,4 @@
-﻿namespace LoadFlowCalculation.SinglePhase.MultipleVoltageLevels
+﻿namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public abstract class DerivedInternalNode : IReadOnlyNode
     {

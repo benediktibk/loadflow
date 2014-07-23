@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace LoadFlowCalculation.SinglePhase.SingleVoltageLevel
+namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PQBus
     {
