@@ -59,6 +59,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedIn.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Generator.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IAdmittanceMatrix.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\IDGenerator.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IExternalReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
