@@ -7,8 +7,8 @@
     <ProjectGuid>{D019F54A-FB70-4BBC-AB53-102C78E54880}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoadFlowCalculation</RootNamespace>
-    <AssemblyName>LoadFlowCalculation</AssemblyName>
+    <RootNamespace>Calculation</RootNamespace>
+    <AssemblyName>Calculation</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

@@ -7,8 +7,8 @@
     <ProjectGuid>{113F2CBC-7153-49F0-929A-0E3989318DA9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoadFlowCalculationComparison</RootNamespace>
-    <AssemblyName>LoadFlowCalculationComparison</AssemblyName>
+    <RootNamespace>CalculationComparison</RootNamespace>
+    <AssemblyName>CalculationComparison</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
