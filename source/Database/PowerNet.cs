@@ -38,7 +38,12 @@ namespace Database
         public IList<Node> Nodes
         {
             get { return _nodes; }
-        } 
+        }
+
+        public int NetElementCount
+        {
+            get { return Lines.Count + Loads.Count + FeedIns.Count + Generators.Count; }
+        }
 
         public IList<Line> Lines
         {

@@ -30,14 +30,10 @@
                 </Grid>
                 <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{StaticResource PowerNets}" Width="396" Margin="2,2,2,2">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Frequency, StringFormat={}{0:0}}" Header="frequency"/>
                         <DataGridTextColumn Binding="{Binding Nodes.Count, StringFormat={}{0:0}}" Header="nodes"/>
-                        <DataGridTextColumn Binding="{Binding Lines.Count, StringFormat={}{0:0}}" Header="lines"/>
-                        <DataGridTextColumn Binding="{Binding Loads.Count, StringFormat={}{0:0}}" Header="loads"/>
-                        <DataGridTextColumn Binding="{Binding FeedIns.Count, StringFormat={}{0:0}}" Header="feed ins"/>
-                        <DataGridTextColumn Binding="{Binding Generators.Count, StringFormat={}{0:0}}" Header="generators"/>
-                        <DataGridTextColumn Binding="{Binding Transformers.Count, StringFormat={}{0:0}}" Header="transformers"/>
+                        <DataGridTextColumn Binding="{Binding NetElementCount, StringFormat={}{0:0}}" Header="net elements"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <TextBox Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"/>
