@@ -9,5 +9,6 @@
 
         public long Id { get; set; }
         public double NominalVoltage { get; set; }
+        public string Name { get; set; }
     }
 }
