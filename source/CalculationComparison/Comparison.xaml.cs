@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CalculationComparison.AlgorithmSettings;
-using MathNet.Numerics.LinearAlgebra.Generic;
-using MathNet.Numerics.Statistics;
 
 namespace CalculationComparison
 {
     public partial class MainWindow
     {
         #region variables
+
         private readonly GeneralSettings _generalSettings;
         private readonly IterativeMethodSettings _currentIteration;
         private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
@@ -28,9 +20,11 @@ namespace CalculationComparison
         private readonly CalculationResults _calculationResults;
         private readonly NodeVoltages _nodeVoltages;
         private readonly Calculator _calculator;
+
         #endregion
 
         #region constructor
+
         public MainWindow()
         {
             _generalSettings = new GeneralSettings();
@@ -56,9 +50,11 @@ namespace CalculationComparison
                 _generalSettings, _currentIteration, _fastDecoupledLoadFlow, _newtonRaphson, _holomorphicEmbeddedLoadFlow, _holomorphicEmbeddedLoadFlowHighAccuracy, 
                 _combinedCalculationResults, _calculationResults, _nodeVoltages, Dispatcher.CurrentDispatcher);
         }
+
         #endregion
 
         #region automatic gui update
+
         private void ScrollResultDataGridToEnd()
         {
             if (ResultDataGrid.Items.Count <= 0)
@@ -278,15 +274,18 @@ namespace CalculationComparison
             CalculateProgressBar.Value = _calculationResults.Count;
             ScrollResultDataGridToEnd();
         }
+
         #endregion
 
         #region result calculation
+
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
             CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
             CalculateProgressBar.Value = 0;
             _calculator.Calculate();
         }
+
         #endregion
     }
 }
