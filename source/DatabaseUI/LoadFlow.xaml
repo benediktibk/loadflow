@@ -41,15 +41,27 @@
         </ScrollViewer>
         <TabControl Grid.Column="1">
             <TabItem Header="Nodes">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" Width="396" Margin="2,2,2,2" Name="NodesDataGrid">
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" Margin="2,2,2,2" Name="NodesDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridTextColumn Binding="{Binding NominalVoltage, StringFormat={}{0:0}}" Header="nominal voltage"/>
+                        <DataGridTextColumn Binding="{Binding Voltage.Magnitude, StringFormat={}{0:0}}" Header="voltage magnitude"/>
+                        <DataGridTextColumn Binding="{Binding Voltage.Real, StringFormat={}{0:0}}" Header="voltage, real"/>
+                        <DataGridTextColumn Binding="{Binding Voltage.Imaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
             <TabItem Header="Lines">
-
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" Margin="2,2,2,2" Name="LinesDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridTextColumn Binding="{Binding SeriesResistancePerUnitLength, StringFormat={}{0:0}}" Header="series resistance per unit length"/>
+                        <DataGridTextColumn Binding="{Binding SeriesInductancePerUnitLength, StringFormat={}{0:0}}" Header="series inductance per unit length"/>
+                        <DataGridTextColumn Binding="{Binding ShuntConductancePerUnitLength, StringFormat={}{0:0}}" Header="shunt conductance per unit length"/>
+                        <DataGridTextColumn Binding="{Binding ShuntCapacityPerUnitLength, StringFormat={}{0:0}}" Header="shunt capacity per unit length"/>
+                        <DataGridTextColumn Binding="{Binding Length, StringFormat={}{0:0}}" Header="length"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="Loads">
 
