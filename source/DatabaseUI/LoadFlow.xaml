@@ -15,20 +15,20 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition MinHeight="100" MaxHeight="200"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition MinHeight="100" MaxHeight="200"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
+                <TextBox Grid.Row="0" Text="database connection string" Margin="2,2,2,2"/>
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-
-                    <TextBox Grid.Column="0" Text="database connection string" Margin="2,2,2,2"/>
-                    <Button Grid.Column="1" Content="connect" Name="ConnectButton" Margin="2,2,2,2"/>
+                    <Button Grid.Column="0" Content="connect" Name="ConnectButton" Margin="2,2,2,2"/>
+                    <Button Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" Margin="2,2,2,2"/>
                 </Grid>
-                <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{StaticResource PowerNets}" Width="396" Margin="2,2,2,2">
+                <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{StaticResource PowerNets}" Width="396" Margin="2,2,2,2">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="100"/>
                         <DataGridTextColumn Binding="{Binding Frequency, StringFormat={}{0:e3}}" Header="frequency"/>
@@ -40,13 +40,6 @@
                         <DataGridTextColumn Binding="{Binding Transformers.Count, StringFormat={}{0:e3}}" Header="transformers"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" Margin="2,2,2,2"/>
-                </Grid>
                 <TextBox Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"/>
             </Grid>
         </ScrollViewer>
