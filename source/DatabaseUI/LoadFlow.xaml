@@ -70,7 +70,14 @@
 
             </TabItem>
             <TabItem Header="Feed-ins">
-
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" Margin="2,2,2,2" Name="FeedInsDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridTextColumn Binding="{Binding Voltage.Real, StringFormat={}{0:0}}" Header="voltage, real"/>
+                        <DataGridTextColumn Binding="{Binding Voltage.Imaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat={}{0:0}}" Header="short circuit power"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="Transformers">
 
