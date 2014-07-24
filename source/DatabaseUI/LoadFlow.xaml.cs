@@ -29,6 +29,7 @@ namespace DatabaseUI
 
             _powerNets.Add(powerNetOne);
             _powerNets.Add(powerNetTwo);
+            LoggingOutput.Text = "blub\nblob";
         }
     }
 }

@@ -11,13 +11,12 @@
             <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition MinHeight="100" MaxHeight="200"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -25,11 +24,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBox Grid.Column="0" Text="database connection string"/>
-                    <Button Grid.Column="1" Content="connect" Name="ConnectButton"/>
+
+                    <TextBox Grid.Column="0" Text="database connection string" Margin="2,2,2,2"/>
+                    <Button Grid.Column="1" Content="connect" Name="ConnectButton" Margin="2,2,2,2"/>
                 </Grid>
-                <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{StaticResource PowerNets}" Width="400">
+                <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{StaticResource PowerNets}" Width="396" Margin="2,2,2,2">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="100"/>
                         <DataGridTextColumn Binding="{Binding Frequency, StringFormat={}{0:e3}}" Header="frequency"/>
@@ -42,22 +41,16 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="50*"/>
-                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Row="0" Grid.Column="0" Name="AddPowerNetButton" Content="add new net"/>
-                    <Button Grid.Row="0" Grid.Column="1" Name="DeletePowerNetButton" Content="delete current net"/>
-                    <Button Grid.Row="0" Grid.Column="2" Name="CalculateButton" Content="calculate node voltages"/>
-                    <Button Grid.Row="1" Grid.Column="0" Name="AddItemButton" Content="add new item"/>
-                    <Button Grid.Row="1" Grid.Column="1" Name="DeleteItemButton" Content="delete current item"/>
+                    <Button Grid.Column="0" Name="DeletePowerNetButton" Content="delete current net" Margin="2,2,2,2"/>
+                    <Button Grid.Column="1" Name="DeleteItemButton" Content="delete current item" Margin="2,2,2,2"/>
+                    <Button Grid.Column="2" Name="CalculateButton" Content="calculate voltages" Margin="2,2,2,2"/>
                 </Grid>
-                <TextBlock Grid.Row="3" Name="LoggingOutput"/>
+                <TextBox Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"/>
             </Grid>
         </ScrollViewer>
         <TabControl Grid.Column="1">
