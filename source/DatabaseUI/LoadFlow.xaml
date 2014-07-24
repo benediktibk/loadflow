@@ -44,11 +44,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Name="DeletePowerNetButton" Content="delete current net" Margin="2,2,2,2"/>
-                    <Button Grid.Column="1" Name="DeleteItemButton" Content="delete current item" Margin="2,2,2,2"/>
-                    <Button Grid.Column="2" Name="CalculateButton" Content="calculate voltages" Margin="2,2,2,2"/>
+                    <Button Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" Margin="2,2,2,2"/>
                 </Grid>
                 <TextBox Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"/>
             </Grid>
