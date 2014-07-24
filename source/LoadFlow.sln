@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HELM", "HELM\HELM.vcxproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experiment", "Experiment\Experiment.csproj", "{1284A9F1-2693-4849-AAF1-085E7492CD2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,16 @@ Global
 		{1284A9F1-2693-4849-AAF1-085E7492CD2F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1284A9F1-2693-4849-AAF1-085E7492CD2F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1284A9F1-2693-4849-AAF1-085E7492CD2F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D63C041C-9D67-4A95-9089-B7BD6F4F30FA}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
