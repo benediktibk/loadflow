@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Database.Annotations;
 
 namespace Database
 {
@@ -9,12 +9,12 @@ namespace Database
     {
         #region variables
 
-        private Nodes _nodes; 
-        private Lines _lines;
-        private Loads _loads;
-        private FeedIns _feedIns;
-        private Generators _generators;
-        private Transformers _transformers;
+        private ObservableCollection<Node> _nodes; 
+        private ObservableCollection<Line> _lines;
+        private ObservableCollection<Load> _loads;
+        private ObservableCollection<FeedIn> _feedIns;
+        private ObservableCollection<Generator> _generators;
+        private ObservableCollection<Transformer> _transformers;
 
         #endregion
 
@@ -23,12 +23,12 @@ namespace Database
         public PowerNet()
         {
             Frequency = 50;
-            _nodes = new Nodes();
-            _lines = new Lines();
-            _loads = new Loads();
-            _feedIns = new FeedIns();
-            _generators = new Generators();
-            _transformers = new Transformers();
+            _nodes = new ObservableCollection<Node>();
+            _lines = new ObservableCollection<Line>();
+            _loads = new ObservableCollection<Load>();
+            _feedIns = new ObservableCollection<FeedIn>();
+            _generators = new ObservableCollection<Generator>();
+            _transformers = new ObservableCollection<Transformer>();
         }
 
         #endregion
@@ -43,7 +43,7 @@ namespace Database
             get { return Lines.Count + Loads.Count + FeedIns.Count + Generators.Count; }
         }
 
-        public Nodes Nodes
+        public ObservableCollection<Node> Nodes
         {
             get { return _nodes; }
             set
@@ -55,7 +55,7 @@ namespace Database
             }
         }
 
-        public Lines Lines
+        public ObservableCollection<Line> Lines
         {
             get { return _lines; }
             set
@@ -67,7 +67,7 @@ namespace Database
             }
         }
 
-        public Loads Loads
+        public ObservableCollection<Load> Loads
         {
             get { return _loads; }
             set
@@ -79,7 +79,7 @@ namespace Database
             }
         }
 
-        public FeedIns FeedIns
+        public ObservableCollection<FeedIn> FeedIns
         {
             get { return _feedIns; }
             set
@@ -91,7 +91,7 @@ namespace Database
             }
         }
 
-        public Generators Generators
+        public ObservableCollection<Generator> Generators
         {
             get { return _generators; }
             set
@@ -103,7 +103,7 @@ namespace Database
             }
         }
 
-        public Transformers Transformers
+        public ObservableCollection<Transformer> Transformers
         {
             get { return _transformers; }
             set

@@ -40,11 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FeedIns.cs" />
-    <Compile Include="Generators.cs" />
-    <Compile Include="Lines.cs" />
-    <Compile Include="Loads.cs" />
-    <Compile Include="Nodes.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
@@ -55,7 +50,6 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transformer.cs" />
-    <Compile Include="Transformers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
