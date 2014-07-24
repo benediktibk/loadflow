@@ -67,7 +67,13 @@
 
             </TabItem>
             <TabItem Header="Generators">
-
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" Margin="2,2,2,2" Name="GeneratorsDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridTextColumn Binding="{Binding VoltageMagnitude, StringFormat={}{0:0}}" Header="voltage magnitude"/>
+                        <DataGridTextColumn Binding="{Binding RealPower, StringFormat={}{0:0}}" Header="real power"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="Feed-ins">
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" Margin="2,2,2,2" Name="FeedInsDataGrid">
