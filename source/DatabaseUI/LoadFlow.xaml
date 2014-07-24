@@ -64,7 +64,13 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Loads">
-
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" Margin="2,2,2,2" Name="LoadsDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridTextColumn Binding="{Binding Value.Real, StringFormat={}{0:0}}" Header="load, real"/>
+                        <DataGridTextColumn Binding="{Binding Value.Imaginary, StringFormat={}{0:0}}" Header="load, imaginary"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="Generators">
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" Margin="2,2,2,2" Name="GeneratorsDataGrid">
