@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -15,6 +18,10 @@ namespace Database
         private ObservableCollection<FeedIn> _feedIns;
         private ObservableCollection<Generator> _generators;
         private ObservableCollection<Transformer> _transformers;
+        private double _frequency;
+        private string _name;
+        private int _netElementCount;
+        private Dictionary<Node, string> _nodeNames;
 
         #endregion
 
@@ -29,18 +36,54 @@ namespace Database
             _feedIns = new ObservableCollection<FeedIn>();
             _generators = new ObservableCollection<Generator>();
             _transformers = new ObservableCollection<Transformer>();
+            _nodes.CollectionChanged += NodesChanged;
+            _lines.CollectionChanged += NetElementCountChanged;
+            _loads.CollectionChanged += NetElementCountChanged;
+            _feedIns.CollectionChanged += NetElementCountChanged;
+            _generators.CollectionChanged += NetElementCountChanged;
+            _transformers.CollectionChanged += NetElementCountChanged;
+            _netElementCount = 0;
+            _nodeNames = new Dictionary<Node, string>();
         }
 
         #endregion
 
         #region properties
 
-        public double Frequency { get; set; }
-        public string Name { get; set; }
+        public double Frequency
+        {
+            get { return _frequency; }
+            set
+            {
+                if (_frequency == value) return;
+
+                _frequency = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name == value) return;
+
+                _name = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public int NetElementCount
         {
-            get { return Lines.Count + Loads.Count + FeedIns.Count + Generators.Count; }
+            get { return _netElementCount; }
+            private set
+            {
+                if (_netElementCount == value) return;
+
+                _netElementCount = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public ObservableCollection<Node> Nodes
@@ -115,6 +158,18 @@ namespace Database
             }
         }
 
+        public Dictionary<Node, string> NodeNames
+        {
+            get { return _nodeNames; }
+            set
+            {
+                if (_nodeNames == value) return;
+
+                _nodeNames = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -127,6 +182,20 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void NodesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            NodeNames = Nodes.ToDictionary(node => node, node => node.Name);
+        }
+
+        private void NetElementCountChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            NetElementCount = _lines.Count + _loads.Count + _feedIns.Count + _generators.Count + _transformers.Count;
         }
 
         #endregion

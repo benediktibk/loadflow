@@ -22,11 +22,11 @@ namespace DatabaseUI
 
             var powerNetOne = new PowerNet();
             var powerNetTwo = new PowerNet();
-            powerNetOne.Nodes.Add(new Node());
-            powerNetOne.Nodes.Add(new Node());
-            powerNetTwo.Nodes.Add(new Node());
-            powerNetTwo.Nodes.Add(new Node());
-            powerNetTwo.Nodes.Add(new Node());
+            powerNetOne.Nodes.Add(new Node { Name = "blub" });
+            powerNetOne.Nodes.Add(new Node { Name = "blob" });
+            powerNetTwo.Nodes.Add(new Node { Name = "heinz" });
+            powerNetTwo.Nodes.Add(new Node { Name = "hanz" });
+            powerNetTwo.Nodes.Add(new Node { Name = "kunz" });
 
             _database.PowerNets.Add(powerNetOne);
             _database.PowerNets.Add(powerNetTwo);

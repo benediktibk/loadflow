@@ -76,6 +76,7 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" Margin="2,2,2,2" Name="GeneratorsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn ItemsSource="{Binding Path=SelectedPowerNet.NodeNames}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValueBinding="{Binding Node}" Header="node"/>
                         <DataGridTextColumn Binding="{Binding VoltageMagnitude, StringFormat={}{0:0}}" Header="voltage magnitude"/>
                         <DataGridTextColumn Binding="{Binding RealPower, StringFormat={}{0:0}}" Header="real power"/>
                     </DataGrid.Columns>
