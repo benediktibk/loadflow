@@ -33,6 +33,7 @@ namespace Database
         #region properties
 
         public double Frequency { get; set; }
+        public string Name { get; set; }
 
         public IList<Node> Nodes
         {

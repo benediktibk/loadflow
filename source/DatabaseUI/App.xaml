@@ -1,7 +1,7 @@
-﻿<Application x:Class="CalculationComparison.App"
+﻿<Application x:Class="DatabaseUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Comparison.xaml">
+             StartupUri="LoadFlow.xaml">
     <Application.Resources>
          
     </Application.Resources>
