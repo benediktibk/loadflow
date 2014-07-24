@@ -12,4 +12,5 @@ documents/~$*.xlsx
 *.suo
 *.sdf
 *.opensdf
+*.sln.DotSettings
 Thumbs.db
