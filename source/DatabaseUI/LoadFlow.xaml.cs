@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using Database;
 
 namespace DatabaseUI
@@ -9,14 +10,14 @@ namespace DatabaseUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly PowerNets _powerNets;
+        private readonly Database.Database _database;
 
         public MainWindow()
         {
             InitializeComponent();
-            _powerNets = FindResource("PowerNets") as PowerNets;
+            _database = FindResource("Database") as Database.Database;
 
-            if (_powerNets == null)
+            if (_database == null)
                 throw new Exception("resource is missing");
 
             var powerNetOne = new PowerNet();
@@ -27,9 +28,19 @@ namespace DatabaseUI
             powerNetTwo.Nodes.Add(new Node());
             powerNetTwo.Nodes.Add(new Node());
 
-            _powerNets.Add(powerNetOne);
-            _powerNets.Add(powerNetTwo);
+            _database.PowerNets.Add(powerNetOne);
+            _database.PowerNets.Add(powerNetTwo);
             LoggingOutput.Text = "blub\nblob";
+        }
+
+        private void Connect(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CalculateNodeVoltages(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

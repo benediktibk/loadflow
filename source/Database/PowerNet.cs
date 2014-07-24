@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Database.Annotations;
 
 namespace Database
 {
-    public class PowerNet
+    public class PowerNet : INotifyPropertyChanged
     {
         #region variables
 
-        private readonly List<Node> _nodes; 
-        private readonly List<Line> _lines;
-        private readonly List<Load> _loads;
-        private readonly List<FeedIn> _feedIns;
-        private readonly List<Generator> _generators;
-        private readonly List<Transformer> _transformers;
+        private Nodes _nodes; 
+        private Lines _lines;
+        private Loads _loads;
+        private FeedIns _feedIns;
+        private Generators _generators;
+        private Transformers _transformers;
 
         #endregion
 
@@ -20,12 +23,12 @@ namespace Database
         public PowerNet()
         {
             Frequency = 50;
-            _nodes = new List<Node>();
-            _lines = new List<Line>();
-            _loads = new List<Load>();
-            _feedIns = new List<FeedIn>();
-            _generators = new List<Generator>();
-            _transformers = new List<Transformer>();
+            _nodes = new Nodes();
+            _lines = new Lines();
+            _loads = new Loads();
+            _feedIns = new FeedIns();
+            _generators = new Generators();
+            _transformers = new Transformers();
         }
 
         #endregion
@@ -35,39 +38,95 @@ namespace Database
         public double Frequency { get; set; }
         public string Name { get; set; }
 
-        public IList<Node> Nodes
-        {
-            get { return _nodes; }
-        }
-
         public int NetElementCount
         {
             get { return Lines.Count + Loads.Count + FeedIns.Count + Generators.Count; }
         }
 
-        public IList<Line> Lines
+        public Nodes Nodes
+        {
+            get { return _nodes; }
+            set
+            {
+                if (_nodes == value) return;
+
+                _nodes = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public Lines Lines
         {
             get { return _lines; }
+            set
+            {
+                if (_lines == value) return;
+
+                _lines = value;
+                NotifyPropertyChanged();
+            }
         }
 
-        public IList<Load> Loads
+        public Loads Loads
         {
             get { return _loads; }
+            set
+            {
+                if (_loads == value) return;
+
+                _loads = value;
+                NotifyPropertyChanged();
+            }
         }
 
-        public IList<FeedIn> FeedIns
+        public FeedIns FeedIns
         {
             get { return _feedIns; }
+            set
+            {
+                if (_feedIns == value) return;
+
+                _feedIns = value;
+                NotifyPropertyChanged();
+            }
         }
 
-        public IList<Generator> Generators
+        public Generators Generators
         {
             get { return _generators; }
+            set
+            {
+                if (_generators == value) return;
+
+                _generators = value;
+                NotifyPropertyChanged();
+            }
         }
 
-        public IList<Transformer> Transformers
+        public Transformers Transformers
         {
             get { return _transformers; }
+            set
+            {
+                if (_transformers == value) return;
+
+                _transformers = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         #endregion
