@@ -92,7 +92,17 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Transformers">
-
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Transformers, Mode=TwoWay}" Margin="2,2,2,2" Name="TransformersDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridTextColumn Binding="{Binding NominalPower, StringFormat={}{0:0}}" Header="nominal power"/>
+                        <DataGridTextColumn Binding="{Binding RelativeShortCircuitVoltage, StringFormat={}{0:0}}" Header="relative short circuit voltage"/>
+                        <DataGridTextColumn Binding="{Binding CopperLosses, StringFormat={}{0:0}}" Header="copper losses"/>
+                        <DataGridTextColumn Binding="{Binding IronLosses, StringFormat={}{0:0}}" Header="iron losses"/>
+                        <DataGridTextColumn Binding="{Binding RelativeNoLoadCurrent, StringFormat={}{0:0}}" Header="relative no load current"/>
+                        <DataGridTextColumn Binding="{Binding Ratio, StringFormat={}{0:0}}" Header="ratio"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
         </TabControl>
     </Grid>
