@@ -45,9 +45,8 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridTextColumn Binding="{Binding NominalVoltage, StringFormat={}{0:0}}" Header="nominal voltage"/>
-                        <DataGridTextColumn Binding="{Binding Voltage.Magnitude, StringFormat={}{0:0}}" Header="voltage magnitude"/>
-                        <DataGridTextColumn Binding="{Binding Voltage.Real, StringFormat={}{0:0}}" Header="voltage, real"/>
-                        <DataGridTextColumn Binding="{Binding Voltage.Imaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat={}{0:0}}" Header="voltage, real"/>
+                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -67,8 +66,8 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" Margin="2,2,2,2" Name="LoadsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
-                        <DataGridTextColumn Binding="{Binding Value.Real, StringFormat={}{0:0}}" Header="load, real"/>
-                        <DataGridTextColumn Binding="{Binding Value.Imaginary, StringFormat={}{0:0}}" Header="load, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding Real, StringFormat={}{0:0}}" Header="load, real"/>
+                        <DataGridTextColumn Binding="{Binding Imaginary, StringFormat={}{0:0}}" Header="load, imaginary"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -86,8 +85,8 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" Margin="2,2,2,2" Name="FeedInsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
-                        <DataGridTextColumn Binding="{Binding Voltage.Real, StringFormat={}{0:0}}" Header="voltage, real"/>
-                        <DataGridTextColumn Binding="{Binding Voltage.Imaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat={}{0:0}}" Header="voltage, real"/>
+                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
                         <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat={}{0:0}}" Header="short circuit power"/>
                     </DataGrid.Columns>
                 </DataGrid>

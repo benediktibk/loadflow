@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -20,8 +18,7 @@ namespace Database
         private ObservableCollection<Transformer> _transformers;
         private double _frequency;
         private string _name;
-        private int _netElementCount;
-        private Dictionary<Node, string> _nodeNames;
+        private long _netElementCount;
 
         #endregion
 
@@ -36,14 +33,12 @@ namespace Database
             _feedIns = new ObservableCollection<FeedIn>();
             _generators = new ObservableCollection<Generator>();
             _transformers = new ObservableCollection<Transformer>();
-            _nodes.CollectionChanged += NodesChanged;
             _lines.CollectionChanged += NetElementCountChanged;
             _loads.CollectionChanged += NetElementCountChanged;
             _feedIns.CollectionChanged += NetElementCountChanged;
             _generators.CollectionChanged += NetElementCountChanged;
             _transformers.CollectionChanged += NetElementCountChanged;
             _netElementCount = 0;
-            _nodeNames = new Dictionary<Node, string>();
         }
 
         #endregion
@@ -74,7 +69,7 @@ namespace Database
             }
         }
 
-        public int NetElementCount
+        public long NetElementCount
         {
             get { return _netElementCount; }
             private set
@@ -158,18 +153,6 @@ namespace Database
             }
         }
 
-        public Dictionary<Node, string> NodeNames
-        {
-            get { return _nodeNames; }
-            set
-            {
-                if (_nodeNames == value) return;
-
-                _nodeNames = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         #endregion
 
         #region INotifyPropertyChanged
@@ -187,11 +170,6 @@ namespace Database
         #endregion
 
         #region private functions
-
-        private void NodesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            NodeNames = Nodes.ToDictionary(node => node, node => node.Name);
-        }
 
         private void NetElementCountChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

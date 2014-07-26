@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -11,7 +10,8 @@ namespace Database
 
         private string _name;
         private Node _node;
-        private Complex _value;
+        private double _real;
+        private double _imaginary;
 
         #endregion
 
@@ -19,7 +19,8 @@ namespace Database
 
         public Load()
         {
-            Value = new Complex();
+            Real = 0;
+            Imaginary = 0;
         }
 
         #endregion
@@ -50,15 +51,26 @@ namespace Database
             }
         }
 
-
-        public Complex Value
+        public double Real
         {
-            get { return _value; }
+            get { return _real; }
             set
             {
-                if (_value == value) return;
+                if (_real == value) return;
 
-                _value = value;
+                _real = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public double Imaginary
+        {
+            get { return _imaginary; }
+            set
+            {
+                if (_imaginary == value) return;
+
+                _imaginary = value;
                 NotifyPropertyChanged();
             }
         }

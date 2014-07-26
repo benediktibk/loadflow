@@ -11,7 +11,8 @@ namespace Database
 
         private string _name;
         private Node _node;
-        private Complex _voltage;
+        private double _voltageReal;
+        private double _voltageImaginary;
         private double _shortCircuitPower;
 
         #endregion
@@ -20,7 +21,8 @@ namespace Database
 
         public FeedIn()
         {
-            Voltage = new Complex(1, 0);
+            VoltageReal = 1;
+            VoltageImaginary = 0;
         }
 
         #endregion
@@ -51,14 +53,26 @@ namespace Database
             }
         }
 
-        public Complex Voltage
+        public double VoltageReal
         {
-            get { return _voltage; }
+            get { return _voltageReal; }
             set
             {
-                if (_voltage == value) return;
+                if (_voltageReal == value) return;
 
-                _voltage = value;
+                _voltageReal = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public double VoltageImaginary
+        {
+            get { return _voltageImaginary; }
+            set
+            {
+                if (_voltageImaginary == value) return;
+
+                _voltageImaginary = value;
                 NotifyPropertyChanged();
             }
         }
