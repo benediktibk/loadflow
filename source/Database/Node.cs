@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -8,7 +9,6 @@ namespace Database
     {
         #region variables
 
-        private long _id;
         private string _name;
         private double _nominalVoltage;
         private double _voltageReal;
@@ -29,6 +29,9 @@ namespace Database
 
         #region properties
 
+        [Key]
+        public int Id { get; set; }
+
         public string Name
         {
             get { return _name; }
@@ -37,18 +40,6 @@ namespace Database
                 if (_name == value) return;
 
                 _name = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public long Id
-        {
-            get { return _id; }
-            set
-            {
-                if (_id == value) return;
-
-                _id = value;
                 NotifyPropertyChanged();
             }
         }

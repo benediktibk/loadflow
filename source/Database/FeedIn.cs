@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Numerics;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -28,6 +28,9 @@ namespace Database
         #endregion
 
         #region properties
+
+        [Key]
+        public int Id { get; set; }
 
         public string Name
         {
