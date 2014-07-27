@@ -38,6 +38,7 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -50,12 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Load.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NodeToNodeNameConverter.cs" />
     <Compile Include="PowerNet.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

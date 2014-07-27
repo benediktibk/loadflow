@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -20,6 +23,7 @@ namespace Database
         private double _frequency;
         private string _name;
         private long _netElementCount;
+        private readonly List<string> _nodeNames; 
 
         #endregion
 
@@ -40,6 +44,8 @@ namespace Database
             _generators.CollectionChanged += NetElementCountChanged;
             _transformers.CollectionChanged += NetElementCountChanged;
             _netElementCount = 0;
+            _nodeNames = new List<string>();
+            _nodes.CollectionChanged += NodeCollectionChanged;
         }
 
         #endregion
@@ -73,6 +79,7 @@ namespace Database
             }
         }
 
+        [NotMapped]
         public long NetElementCount
         {
             get { return _netElementCount; }
@@ -157,6 +164,12 @@ namespace Database
             }
         }
 
+        [NotMapped]
+        public IReadOnlyList<string> NodeNames
+        {
+            get { return _nodeNames; }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -165,10 +178,13 @@ namespace Database
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
+            NotifyPropertyChangedInternal(propertyName);
+        }
+
+        private void NotifyPropertyChangedInternal(String propertyName)
+        {
             if (PropertyChanged != null)
-            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         #endregion
@@ -178,6 +194,32 @@ namespace Database
         private void NetElementCountChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             NetElementCount = _lines.Count + _loads.Count + _feedIns.Count + _generators.Count + _transformers.Count;
+        }
+
+        void NodeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateNodeNames();
+
+            foreach (var node in _nodes)
+                node.PropertyChanged += NodePropertyChanged;
+        }
+
+        void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "Name" && e.PropertyName != "Id")
+                return;
+
+            UpdateNodeNames();
+        }
+
+        void UpdateNodeNames()
+        {
+            _nodeNames.Clear();
+
+            foreach (var node in _nodes)
+                _nodeNames.Add(NodeToNodeNameConverter.Convert(node));
+
+            NotifyPropertyChangedInternal("NodeNames");
         }
 
         #endregion

@@ -4,7 +4,7 @@
         xmlns:database="clr-namespace:Database;assembly=Database"
         Title="LoadFlow" Height="600" Width="800">
     <Window.Resources>
-        <database:Database x:Key="Database"/>
+        <database:Data x:Key="Database"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource Database}">
         <Grid.ColumnDefinitions>
@@ -54,6 +54,8 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" Margin="2,2,2,2" Name="LinesDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" Header="first node"/>
+                        <DataGridComboBoxColumn ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" Header="second node"/>
                         <DataGridTextColumn Binding="{Binding SeriesResistancePerUnitLength, StringFormat={}{0:0}}" Header="series resistance per unit length"/>
                         <DataGridTextColumn Binding="{Binding SeriesInductancePerUnitLength, StringFormat={}{0:0}}" Header="series inductance per unit length"/>
                         <DataGridTextColumn Binding="{Binding ShuntConductancePerUnitLength, StringFormat={}{0:0}}" Header="shunt conductance per unit length"/>

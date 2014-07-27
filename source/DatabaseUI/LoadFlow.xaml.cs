@@ -9,14 +9,14 @@ namespace DatabaseUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Database.Database _database;
+        private readonly Data _data;
 
         public MainWindow()
         {
             InitializeComponent();
-            _database = FindResource("Database") as Database.Database;
+            _data = FindResource("Database") as Data;
 
-            if (_database == null)
+            if (_data == null)
                 throw new Exception("resource is missing");
 
             var powerNetOne = new PowerNet();
@@ -27,8 +27,8 @@ namespace DatabaseUI
             powerNetTwo.Nodes.Add(new Node { Name = "hanz" });
             powerNetTwo.Nodes.Add(new Node { Name = "kunz" });
 
-            _database.PowerNets.Add(powerNetOne);
-            _database.PowerNets.Add(powerNetTwo);
+            _data.PowerNets.Add(powerNetOne);
+            _data.PowerNets.Add(powerNetTwo);
             LoggingOutput.Text = "blub\nblob";
         }
 

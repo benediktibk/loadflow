@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Database : DbContext, INotifyPropertyChanged
+    public class Data : INotifyPropertyChanged
     {
         #region variables
 
@@ -15,14 +17,16 @@ namespace Database
 
         #region constructor
 
-        public Database()
+        public Data()
         {
+            PowerNets = new ObservableCollection<PowerNet>();
         }
 
         #endregion
 
         #region properties
 
+        [NotMapped]
         public PowerNet SelectedPowerNet 
         { 
             get { return _selectedPowerNet; }
@@ -35,7 +39,7 @@ namespace Database
             }
         }
 
-        public DbSet<PowerNet> PowerNets { get; set; }
+        public ObservableCollection<PowerNet> PowerNets { get; set; }
 
         #endregion
 
