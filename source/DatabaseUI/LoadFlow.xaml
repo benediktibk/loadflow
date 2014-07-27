@@ -14,13 +14,13 @@
             <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
-                    <RowDefinition MinHeight="100" MaxHeight="200"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition MinHeight="100" MaxHeight="200"/>
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0" Text="database connection string" Margin="2,2,2,2"/>
                 <Grid Grid.Row="1">
@@ -57,7 +57,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <TextBox 
-                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"
+                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
+                    HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                     Text="{Binding SelectedPowerNet.LogMessages, Mode=OneWay}"/>
             </Grid>
         </ScrollViewer>
