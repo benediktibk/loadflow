@@ -26,10 +26,23 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="connect" Name="ConnectButton" Margin="2,2,2,2" Click="Connect"/>
-                    <Button Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" Margin="2,2,2,2" Click="CalculateNodeVoltages"/>
+                    <Button 
+                        Grid.Column="0" Content="connect" Name="ConnectButton" 
+                        Margin="2,2,2,2" Click="Connect" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
+                    <Button 
+                        Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" 
+                        Margin="2,2,2,2" Click="CalculateNodeVoltages" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 </Grid>
-                <DataGrid Grid.Row="2" ItemsSource="{Binding PowerNets, Mode=TwoWay}" AutoGenerateColumns="False" Width="396" Margin="2,2,2,2" Name="PowerNetsDataGrid" SelectionMode="Single" SelectedItem="{Binding SelectedPowerNet, Mode=TwoWay}">
+                <DataGrid 
+                    Grid.Row="2" 
+                    ItemsSource="{Binding PowerNets, Mode=TwoWay}" 
+                    AutoGenerateColumns="False" 
+                    Width="396" 
+                    Margin="2,2,2,2" 
+                    Name="PowerNetsDataGrid" 
+                    SelectionMode="Single" 
+                    SelectedItem="{Binding SelectedPowerNet, Mode=TwoWay}"
+                    IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Frequency, StringFormat={}{0:0}}" Header="frequency"/>
@@ -42,7 +55,12 @@
         </ScrollViewer>
         <TabControl Grid.Column="1">
             <TabItem Header="Nodes">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" Margin="2,2,2,2" Name="NodesDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="NodesDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Id, StringFormat={}{0:0}}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
@@ -53,7 +71,12 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Lines">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" Margin="2,2,2,2" Name="LinesDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="LinesDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -73,7 +96,12 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Loads">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" Margin="2,2,2,2" Name="LoadsDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="LoadsDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -86,7 +114,12 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Generators">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" Margin="2,2,2,2" Name="GeneratorsDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="GeneratorsDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -99,7 +132,12 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Feed-ins">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" Margin="2,2,2,2" Name="FeedInsDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="FeedInsDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -113,7 +151,12 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Transformers">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Transformers, Mode=TwoWay}" Margin="2,2,2,2" Name="TransformersDataGrid">
+                <DataGrid 
+                    AutoGenerateColumns="False" 
+                    ItemsSource="{Binding SelectedPowerNet.Transformers, Mode=TwoWay}" 
+                    Margin="2,2,2,2" 
+                    Name="TransformersDataGrid"
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 

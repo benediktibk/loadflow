@@ -57,7 +57,10 @@ namespace DatabaseUI
 
         private void CalculateNodeVoltages(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (_model.SelectedPowerNet == null)
+                return;
+
+            _model.SelectedPowerNet.IsCalculationRunning = true;
         }
     }
 }

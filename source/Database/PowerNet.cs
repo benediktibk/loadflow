@@ -24,6 +24,7 @@ namespace Database
         private string _name;
         private long _netElementCount;
         private readonly List<string> _nodeNames;
+        private bool _isCalculationRunning;
 
         #endregion
 
@@ -46,6 +47,7 @@ namespace Database
             _netElementCount = 0;
             _nodeNames = new List<string>();
             _nodes.CollectionChanged += NodeCollectionChanged;
+            _isCalculationRunning = false;
         }
 
         #endregion
@@ -168,6 +170,26 @@ namespace Database
         public IReadOnlyList<string> NodeNames
         {
             get { return _nodeNames; }
+        }
+
+        [NotMapped]
+        public bool IsCalculationNotRunning
+        {
+            get { return !_isCalculationRunning; }
+        }
+
+        [NotMapped]
+        public bool IsCalculationRunning
+        {
+            get { return _isCalculationRunning; }
+            set
+            {
+                if (_isCalculationRunning == value) return;
+
+                _isCalculationRunning = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChangedInternal("IsCalculationNotRunning");
+            }
         }
 
         #endregion
