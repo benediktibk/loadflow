@@ -47,13 +47,13 @@
                     IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
-                        <DataGridTextColumn Binding="{Binding Frequency, StringFormat={}{0:0}}" Header="frequency"/>
+                        <DataGridTextColumn Binding="{Binding Frequency}" Header="frequency"/>
                         <DataGridComboBoxColumn 
                             ItemsSource="{Binding Source={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, Path=AllPossibleStrings}" 
                             SelectedItemBinding="{Binding CalculatorSelection, Converter={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
                             Header="node voltage calculator"/>
-                        <DataGridTextColumn Binding="{Binding Nodes.Count, StringFormat={}{0:0}}" Header="nodes"/>
-                        <DataGridTextColumn Binding="{Binding NetElementCount, StringFormat={}{0:0}}" Header="net elements"/>
+                        <DataGridTextColumn Binding="{Binding Nodes.Count, Mode=OneWay}" Header="nodes"/>
+                        <DataGridTextColumn Binding="{Binding NetElementCount, Mode=OneWay}" Header="net elements"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <TextBox 
