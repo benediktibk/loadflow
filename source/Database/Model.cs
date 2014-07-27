@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Database
@@ -26,7 +25,6 @@ namespace Database
 
         #region properties
 
-        [NotMapped]
         public PowerNet SelectedPowerNet 
         { 
             get { return _selectedPowerNet; }
