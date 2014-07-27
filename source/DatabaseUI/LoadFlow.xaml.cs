@@ -9,15 +9,24 @@ namespace DatabaseUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Data _data;
+        private readonly Model _model;
+        private readonly NodeToNodeNameConverter _converter;
 
         public MainWindow()
         {
             InitializeComponent();
-            _data = FindResource("Database") as Data;
+            _model = FindResource("Database") as Model;
 
-            if (_data == null)
+            if (_model == null)
                 throw new Exception("resource is missing");
+
+            _converter = FindResource("NodeToNodeNameConverter") as NodeToNodeNameConverter;
+
+            if (_converter == null)
+                throw new Exception("resource is missing");
+
+            _model.SelectedPowerNetChanged += UpdateNodeToNodeNameConverter;
+            _model.SelectedPowerNetChanged += UpdateSubscriptionOfNodesChanged;
 
             var powerNetOne = new PowerNet();
             var powerNetTwo = new PowerNet();
@@ -27,9 +36,18 @@ namespace DatabaseUI
             powerNetTwo.Nodes.Add(new Node { Name = "hanz" });
             powerNetTwo.Nodes.Add(new Node { Name = "kunz" });
 
-            _data.PowerNets.Add(powerNetOne);
-            _data.PowerNets.Add(powerNetTwo);
-            LoggingOutput.Text = "blub\nblob";
+            _model.PowerNets.Add(powerNetOne);
+            _model.PowerNets.Add(powerNetTwo);
+        }
+
+        private void UpdateSubscriptionOfNodesChanged()
+        {
+            _model.SelectedPowerNet.NodesChanged += UpdateNodeToNodeNameConverter;
+        }
+
+        void UpdateNodeToNodeNameConverter()
+        {
+            _converter.UpdateMapping(_model.SelectedPowerNet.Nodes);
         }
 
         private void Connect(object sender, RoutedEventArgs e)

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace Database
 {
@@ -41,6 +42,8 @@ namespace Database
 
                 _name = value;
                 NotifyPropertyChanged();
+                if (_nameChanged != null)
+                    _nameChanged();
             }
         }
 
@@ -77,6 +80,26 @@ namespace Database
 
                 _voltageImaginary = value;
                 NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region events
+
+        public delegate void NameChangedEventHandler();
+
+        private NameChangedEventHandler _nameChanged;
+        public event NameChangedEventHandler NameChanged
+        {
+            add
+            {
+                if (_nameChanged == null || !_nameChanged.GetInvocationList().Contains(value))
+                    _nameChanged += value;
+            }
+            remove
+            {
+                _nameChanged -= value;
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -23,7 +23,7 @@ namespace Database
         private double _frequency;
         private string _name;
         private long _netElementCount;
-        private readonly List<string> _nodeNames; 
+        private readonly List<string> _nodeNames;
 
         #endregion
 
@@ -172,8 +172,28 @@ namespace Database
 
         #endregion
 
+        #region events
+
+        public delegate void NodesChangedEventHandler();
+
+        private NodesChangedEventHandler _nodesChanged;
+        public event NodesChangedEventHandler NodesChanged
+        {
+            add
+            {
+                if (_nodesChanged == null || !_nodesChanged.GetInvocationList().Contains(value))
+                    _nodesChanged += value;
+            }
+            remove
+            {
+                _nodesChanged -= value;
+            }
+        }
+
+        #endregion
+
         #region INotifyPropertyChanged
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -201,15 +221,13 @@ namespace Database
             UpdateNodeNames();
 
             foreach (var node in _nodes)
-                node.PropertyChanged += NodePropertyChanged;
-        }
+            {
+                node.NameChanged += UpdateNodeNames;
+                node.NameChanged += NodeNameChanged;
+            }
 
-        void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != "Name" && e.PropertyName != "Id")
-                return;
-
-            UpdateNodeNames();
+            if (_nodesChanged != null)
+                _nodesChanged();
         }
 
         void UpdateNodeNames()
@@ -220,6 +238,12 @@ namespace Database
                 _nodeNames.Add(NodeToNodeNameConverter.Convert(node));
 
             NotifyPropertyChangedInternal("NodeNames");
+        }
+
+        void NodeNameChanged()
+        {
+            if (_nodesChanged != null)
+                _nodesChanged();
         }
 
         #endregion
