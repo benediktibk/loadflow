@@ -76,6 +76,10 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" Margin="2,2,2,2" Name="LoadsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn 
+                            ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
+                            SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
+                            Header="node"/>
                         <DataGridTextColumn Binding="{Binding Real, StringFormat={}{0:0}}" Header="load, real"/>
                         <DataGridTextColumn Binding="{Binding Imaginary, StringFormat={}{0:0}}" Header="load, imaginary"/>
                     </DataGrid.Columns>
@@ -85,6 +89,10 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" Margin="2,2,2,2" Name="GeneratorsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn 
+                            ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
+                            SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
+                            Header="node"/>
                         <DataGridTextColumn Binding="{Binding VoltageMagnitude, StringFormat={}{0:0}}" Header="voltage magnitude"/>
                         <DataGridTextColumn Binding="{Binding RealPower, StringFormat={}{0:0}}" Header="real power"/>
                     </DataGrid.Columns>
@@ -94,6 +102,10 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" Margin="2,2,2,2" Name="FeedInsDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn 
+                            ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
+                            SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
+                            Header="node"/>
                         <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat={}{0:0}}" Header="voltage, real"/>
                         <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat={}{0:0}}" Header="voltage, imaginary"/>
                         <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat={}{0:0}}" Header="short circuit power"/>
@@ -104,6 +116,14 @@
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Transformers, Mode=TwoWay}" Margin="2,2,2,2" Name="TransformersDataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
+                        <DataGridComboBoxColumn 
+                            ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
+                            SelectedItemBinding="{Binding UpperSideNode, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
+                            Header="upper side node"/>
+                        <DataGridComboBoxColumn 
+                            ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
+                            SelectedItemBinding="{Binding LowerSideNode, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
+                            Header="lower side node"/>
                         <DataGridTextColumn Binding="{Binding NominalPower, StringFormat={}{0:0}}" Header="nominal power"/>
                         <DataGridTextColumn Binding="{Binding RelativeShortCircuitVoltage, StringFormat={}{0:0}}" Header="relative short circuit voltage"/>
                         <DataGridTextColumn Binding="{Binding CopperLosses, StringFormat={}{0:0}}" Header="copper losses"/>
