@@ -44,6 +44,7 @@
             <TabItem Header="Nodes">
                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" Margin="2,2,2,2" Name="NodesDataGrid">
                     <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Id, StringFormat={}{0:0}}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridTextColumn Binding="{Binding NominalVoltage, StringFormat={}{0:0}}" Header="nominal voltage"/>
                         <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat={}{0:0}}" IsReadOnly="True" Header="voltage, real"/>
