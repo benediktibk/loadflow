@@ -58,6 +58,8 @@
     <Compile Include="Load.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeToNodeNameConverter.cs" />
+    <Compile Include="NodeVoltageCalculatorFactory.cs" />
+    <Compile Include="NodeVoltageCalculatorSelection.cs" />
     <Compile Include="PowerNet.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

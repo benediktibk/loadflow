@@ -34,6 +34,7 @@ namespace Database
         private SymmetricPowerNet _calculationPowerNet;
         private INodeVoltageCalculator _nodeVoltageCalculator;
         private string _logMessages;
+        private NodeVoltageCalculatorSelection _calculatorSelection;
 
         #endregion
 
@@ -61,6 +62,7 @@ namespace Database
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.DoWork += CalculateNodeVoltages;
             _backgroundWorker.RunWorkerCompleted += CalculationFinished;
+            _calculatorSelection = NodeVoltageCalculatorSelection.CurrentIteration;
         }
 
         #endregion
@@ -82,7 +84,7 @@ namespace Database
             Log("creating symmetric power net");
 
             _calculationPowerNet = new SymmetricPowerNet(Frequency);
-            _nodeVoltageCalculator = new CurrentIteration(0.0001, 100);
+            _nodeVoltageCalculator = NodeVoltageCalculatorFactory.Create(CalculatorSelection);
 
             foreach (var node in Nodes)
                 _calculationPowerNet.AddNode(node.Id, node.NominalVoltage);
@@ -138,6 +140,18 @@ namespace Database
                 if (_name == value) return;
 
                 _name = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public NodeVoltageCalculatorSelection CalculatorSelection
+        {
+            get { return _calculatorSelection; }
+            set
+            {
+                if (_calculatorSelection == value) return;
+
+                _calculatorSelection = value;
                 NotifyPropertyChanged();
             }
         }
