@@ -6,7 +6,11 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.ThreePhase;
 
 namespace Database
 {
@@ -25,6 +29,11 @@ namespace Database
         private long _netElementCount;
         private readonly List<string> _nodeNames;
         private bool _isCalculationRunning;
+        private readonly Mutex _isCalculationRunningMutex;
+        private readonly BackgroundWorker _backgroundWorker;
+        private SymmetricPowerNet _calculationPowerNet;
+        private INodeVoltageCalculator _nodeVoltageCalculator;
+        private string _logMessages;
 
         #endregion
 
@@ -48,6 +57,58 @@ namespace Database
             _nodeNames = new List<string>();
             _nodes.CollectionChanged += NodeCollectionChanged;
             _isCalculationRunning = false;
+            _isCalculationRunningMutex = new Mutex();
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.DoWork += CalculateNodeVoltages;
+            _backgroundWorker.RunWorkerCompleted += CalculationFinished;
+        }
+
+        #endregion
+
+        #region public functions
+
+        public void CalculateNodeVoltagesInBackground()
+        {
+            _isCalculationRunningMutex.WaitOne();
+            if (_isCalculationRunning)
+            {
+                _isCalculationRunningMutex.ReleaseMutex();
+                Log("calculation already running");
+                return;
+            }
+            _isCalculationRunning = true;
+            _isCalculationRunningMutex.ReleaseMutex();
+
+            Log("creating symmetric power net");
+
+            _calculationPowerNet = new SymmetricPowerNet(Frequency);
+            _nodeVoltageCalculator = new CurrentIteration(0.0001, 100);
+
+            foreach (var node in Nodes)
+                _calculationPowerNet.AddNode(node.Id, node.NominalVoltage);
+
+            foreach (var line in Lines)
+                _calculationPowerNet.AddLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
+                    line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
+                    line.ShuntCapacityPerUnitLength, line.Length);
+
+            foreach (var feedIn in FeedIns)
+                _calculationPowerNet.AddFeedIn(feedIn.Node.Id, new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
+                    feedIn.ShortCircuitPower);
+
+            foreach (var generator in Generators)
+                _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
+
+            foreach (var load in Loads)
+                _calculationPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
+
+            foreach (var transformer in Transformers)
+                _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
+                    transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
+                    transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio);
+
+            Log("starting with calculation of node voltages");
+            _backgroundWorker.RunWorkerAsync();
         }
 
         #endregion
@@ -175,18 +236,45 @@ namespace Database
         [NotMapped]
         public bool IsCalculationNotRunning
         {
-            get { return !_isCalculationRunning; }
+            get { return !IsCalculationRunning; }
+        }
+
+        [NotMapped]
+        public string LogMessages
+        {
+            get { return _logMessages; }
+            private set
+            {
+                if (_logMessages == value) return;
+
+                _logMessages = value;
+                NotifyPropertyChanged();
+            }
         }
 
         [NotMapped]
         public bool IsCalculationRunning
         {
-            get { return _isCalculationRunning; }
+            get
+            {
+                _isCalculationRunningMutex.WaitOne();
+                var isCalculationRunning = _isCalculationRunning;
+                _isCalculationRunningMutex.ReleaseMutex();
+                return isCalculationRunning;
+            }
             set
             {
-                if (_isCalculationRunning == value) return;
+                var changed = false;
 
-                _isCalculationRunning = value;
+                _isCalculationRunningMutex.WaitOne();
+                if (_isCalculationRunning != value)
+                {
+                    _isCalculationRunning = value;
+                    changed = true;
+                }
+                _isCalculationRunningMutex.ReleaseMutex();
+
+                if (!changed) return;
                 NotifyPropertyChanged();
                 NotifyPropertyChangedInternal("IsCalculationNotRunning");
             }
@@ -266,6 +354,40 @@ namespace Database
         {
             if (_nodesChanged != null)
                 _nodesChanged();
+        }
+
+        private void CalculationFinished(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_calculationPowerNet != null)
+            {
+                foreach (var node in Nodes)
+                {
+                    var voltage = _calculationPowerNet.GetNodeVoltage(node.Id);
+                    node.VoltageReal = voltage.Real;
+                    node.VoltageImaginary = voltage.Imaginary;
+                }
+            }
+
+            Log("finished calculation");
+            IsCalculationRunning = false;
+        }
+
+        private void CalculateNodeVoltages(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                _calculationPowerNet.CalculateNodeVoltages(_nodeVoltageCalculator);
+            }
+            catch (Exception exception)
+            {
+                Log("an error occurred: " + exception.Message);
+                _calculationPowerNet = null;
+            }
+        }
+
+        private void Log(string message)
+        {
+            LogMessages += message + "\r\n";
         }
 
         #endregion

@@ -50,7 +50,9 @@
                         <DataGridTextColumn Binding="{Binding NetElementCount, StringFormat={}{0:0}}" Header="net elements"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <TextBox Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"/>
+                <TextBox 
+                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True"
+                    Text="{Binding SelectedPowerNet.LogMessages, Mode=OneWay}"/>
             </Grid>
         </ScrollViewer>
         <TabControl Grid.Column="1">

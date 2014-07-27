@@ -25,7 +25,7 @@ namespace Database
         public Line()
         {
             SeriesResistancePerUnitLength = 1;
-            SeriesInductancePerUnitLength = 1;
+            SeriesInductancePerUnitLength = 0;
             Length = 1;
             ShuntCapacityPerUnitLength = 0;
             ShuntConductancePerUnitLength = 0;
