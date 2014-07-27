@@ -1,17 +1,19 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using Database;
 
 namespace DatabaseUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
+        #region variables
+
         private readonly Model _model;
         private readonly NodeToNodeNameConverter _converter;
+
+        #endregion
+
+        #region constructor
 
         public MainWindow()
         {
@@ -24,7 +26,17 @@ namespace DatabaseUI
 
             _model.SelectedPowerNetChanged += UpdateNodeToNodeNameConverter;
             _model.SelectedPowerNetChanged += UpdateSubscriptionOfNodesChanged;
+            LoggingOutput.TextChanged += ScrollLoggingOutputToEnd;
 
+            CreateDefaultPowerNets();
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void CreateDefaultPowerNets()
+        {
             var powerNetOne = new PowerNet();
             var powerNetTwo = new PowerNet();
             var powerNetThree = new PowerNet();
@@ -42,7 +54,7 @@ namespace DatabaseUI
                 VoltageReal = 400,
                 VoltageImaginary = 0
             });
-            powerNetThree.Loads.Add(new Load {Node = powerNetThree.Nodes[1], Real = -2000, Imaginary = 0});
+            powerNetThree.Loads.Add(new Load { Node = powerNetThree.Nodes[1], Real = -2000, Imaginary = 0 });
             powerNetThree.Lines.Add(new Line
             {
                 Length = 1,
@@ -61,7 +73,7 @@ namespace DatabaseUI
             _model.SelectedPowerNet.NodesChanged += UpdateNodeToNodeNameConverter;
         }
 
-        void UpdateNodeToNodeNameConverter()
+        private void UpdateNodeToNodeNameConverter()
         {
             _converter.UpdateMapping(_model.SelectedPowerNet.Nodes);
         }
@@ -78,5 +90,12 @@ namespace DatabaseUI
 
             _model.SelectedPowerNet.CalculateNodeVoltagesInBackground();
         }
+
+        private void ScrollLoggingOutputToEnd(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            LoggingOutput.ScrollToEnd();
+        }
+
+        #endregion
     }
 }

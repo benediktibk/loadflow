@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:database="clr-namespace:Database;assembly=Database"
         xmlns:databaseUi="clr-namespace:DatabaseUI"
-        Title="LoadFlow" Height="600" Width="800">
+        Title="LoadFlow" Height="600" Width="1000">
     <Window.Resources>
         <database:Model x:Key="Database"/>
         <database:NodeToNodeNameConverter x:Key="NodeToNodeNameConverter"/>
@@ -22,7 +22,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition MinHeight="100" MaxHeight="200"/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" Text="database connection string" Margin="2,2,2,2"/>
+                <TextBox Grid.Row="0" Text="database connection string" Margin="2,2,2,2" Name="DatabaseConnectionString"/>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
