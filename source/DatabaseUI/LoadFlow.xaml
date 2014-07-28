@@ -8,6 +8,7 @@
         <database:Model x:Key="Database"/>
         <database:NodeToNodeNameConverter x:Key="NodeToNodeNameConverter"/>
         <databaseUi:NodeVoltageCalculatorSelectionToStringConverter x:Key="NodeVoltageCalculatorSelectionToStringConverter"/>
+        <databaseUi:ConnectedToButtonLabelConverter x:Key="ConnectedToButtonLabelConverter"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource Database}">
         <Grid.ColumnDefinitions>
@@ -17,32 +18,59 @@
         <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="150"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition MinHeight="100" MaxHeight="200"/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" Text="database connection string" Margin="2,2,2,2" Name="DatabaseConnectionString"/>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Label
+                        Grid.Row="0" Grid.Column="0"
+                        Content="server"/>
+                    <TextBox 
+                        Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Connection.Server}" Margin="2,2,2,2" 
+                        Name="ServerTextBox" IsReadOnly="{Binding Connection.Connected}"/>
+                    <Label
+                        Grid.Row="1" Grid.Column="0"
+                        Content="user"/>
+                    <TextBox 
+                        Grid.Row="1" Grid.Column="1"
+                        Text="{Binding Connection.User}" Margin="2,2,2,2" 
+                        Name="UserTextBox" IsReadOnly="{Binding Connection.Connected}"/>
+                    <Label
+                        Grid.Row="2" Grid.Column="0"
+                        Content="password"/>
+                    <TextBox 
+                        Grid.Row="2" Grid.Column="1"
+                        Text="{Binding Connection.Password}" Margin="2,2,2,2" 
+                        Name="PasswordTextBox" IsReadOnly="{Binding Connection.Connected}"/>
+                    <Label
+                        Grid.Row="3" Grid.Column="0"
+                        Content="database"/>
+                    <TextBox 
+                        Grid.Row="3" Grid.Column="1"
+                        Text="{Binding Connection.Database}" Margin="2,2,2,2" 
+                        Name="DatabaseTextBox" IsReadOnly="{Binding Connection.Connected}"/>
                     <Button 
-                        Grid.Column="0" Content="load"
-                        Margin="2,2,2,2" Click="Load" 
-                        IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
-                    <Button 
-                        Grid.Column="1" Content="save"
-                        Margin="2,2,2,2" Click="Save" 
+                        Grid.Row="4" Grid.Column="1" 
+                        Content="{Binding Connection.Connected, Converter={StaticResource ConnectedToButtonLabelConverter}, UpdateSourceTrigger=PropertyChanged}"
+                        Margin="2,2,2,2" Click="ToggleConnect"
                         IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 </Grid>
-                <Button 
-                        Grid.Row="2" Name="CalculateButton" Content="calculate node voltages" 
-                        Margin="2,2,2,2" Click="CalculateNodeVoltages" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 <DataGrid 
-                    Grid.Row="3" 
+                    Grid.Row="1" 
                     ItemsSource="{Binding PowerNets, Mode=TwoWay}" 
                     AutoGenerateColumns="False" 
                     Width="396" 
@@ -50,7 +78,8 @@
                     Name="PowerNetsDataGrid" 
                     SelectionMode="Single" 
                     SelectedItem="{Binding SelectedPowerNet, Mode=TwoWay}"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Frequency}" Header="frequency"/>
@@ -62,8 +91,13 @@
                         <DataGridTextColumn Binding="{Binding NetElementCount, Mode=OneWay}" Header="net elements"/>
                     </DataGrid.Columns>
                 </DataGrid>
+                <Button 
+                        Grid.Row="2"
+                        Name="CalculateButton" Content="calculate node voltages" 
+                        Margin="2,2,2,2" Click="CalculateNodeVoltages" 
+                        IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 <TextBox 
-                    Grid.Row="4" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
+                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                     Text="{Binding SelectedPowerNet.LogMessages, Mode=OneWay}"/>
             </Grid>
@@ -75,7 +109,8 @@
                     ItemsSource="{Binding SelectedPowerNet.Nodes, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="NodesDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Id}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
@@ -91,7 +126,8 @@
                     ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="LinesDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -116,7 +152,8 @@
                     ItemsSource="{Binding SelectedPowerNet.Loads, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="LoadsDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -134,7 +171,8 @@
                     ItemsSource="{Binding SelectedPowerNet.Generators, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="GeneratorsDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -152,7 +190,8 @@
                     ItemsSource="{Binding SelectedPowerNet.FeedIns, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="FeedInsDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 
@@ -171,7 +210,8 @@
                     ItemsSource="{Binding SelectedPowerNet.Transformers, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="TransformersDataGrid"
-                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}">
+                    IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
+                    IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
                         <DataGridComboBoxColumn 

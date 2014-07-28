@@ -11,6 +11,7 @@ namespace Database
         #region variables
 
         private PowerNet _selectedPowerNet;
+        private Connection _connection;
 
         #endregion
 
@@ -19,6 +20,7 @@ namespace Database
         public Model()
         {
             PowerNets = new ObservableCollection<PowerNet>();
+            Connection = new Connection();
         }
 
         #endregion
@@ -36,6 +38,18 @@ namespace Database
                 NotifyPropertyChanged();
                 if (_selectedPowerNetChanged != null)
                     _selectedPowerNetChanged();
+            }
+        }
+
+        public Connection Connection
+        {
+            get { return _connection; }
+            set
+            {
+                if (_connection == value) return;
+
+                _connection = value;
+                NotifyPropertyChanged();
             }
         }
 

@@ -78,23 +78,9 @@ namespace DatabaseUI
             _converter.UpdateMapping(_model.SelectedPowerNet.Nodes);
         }
 
-        private void Load(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Save(object sender, RoutedEventArgs e)
-        {
-            using (var database = new DatabaseContext(DatabaseConnectionString.Text))
-            {
-                database.PowerNets.AddRange(_model.PowerNets);
-                database.SaveChanges();
-            }
-        }
-
         private void CalculateNodeVoltages(object sender, RoutedEventArgs e)
         {
-            if (_model.SelectedPowerNet == null)
+            if (_model.SelectedPowerNet == null || _model.Connection.NotConnected)
                 return;
 
             _model.SelectedPowerNet.CalculateNodeVoltagesInBackground();
@@ -103,6 +89,34 @@ namespace DatabaseUI
         private void ScrollLoggingOutputToEnd(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             LoggingOutput.ScrollToEnd();
+        }
+
+        private void ToggleConnect(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _model.Connection.ToggleConnect();
+            }
+            catch (Exception connectException)
+            {
+                var dialogResult = MessageBox.Show("An error occured: " + connectException.Message + "\r\n\r\nTry to create database?", "error", MessageBoxButton.YesNo);
+
+                if (dialogResult != MessageBoxResult.Yes)
+                    return;
+
+                try
+                {
+                    _model.Connection.CreateDatabase();
+                }
+                catch (Exception creationException)
+                {
+                    MessageBox.Show("creating the database failed: " + creationException.Message);
+                    return;
+                }
+
+                System.Threading.Thread.Sleep(5000);
+                ToggleConnect(null, null);
+            }
         }
 
         #endregion
