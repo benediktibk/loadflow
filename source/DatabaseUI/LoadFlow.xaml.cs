@@ -78,9 +78,18 @@ namespace DatabaseUI
             _converter.UpdateMapping(_model.SelectedPowerNet.Nodes);
         }
 
-        private void Connect(object sender, RoutedEventArgs e)
+        private void Load(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            using (var database = new DatabaseContext(DatabaseConnectionString.Text))
+            {
+                database.PowerNets.AddRange(_model.PowerNets);
+                database.SaveChanges();
+            }
         }
 
         private void CalculateNodeVoltages(object sender, RoutedEventArgs e)

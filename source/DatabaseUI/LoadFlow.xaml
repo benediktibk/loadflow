@@ -19,6 +19,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition MinHeight="100" MaxHeight="200"/>
                 </Grid.RowDefinitions>
@@ -29,14 +30,19 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Button 
-                        Grid.Column="0" Content="connect" Name="ConnectButton" 
-                        Margin="2,2,2,2" Click="Connect" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
+                        Grid.Column="0" Content="load"
+                        Margin="2,2,2,2" Click="Load" 
+                        IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                     <Button 
-                        Grid.Column="1" Name="CalculateButton" Content="calculate node voltages" 
-                        Margin="2,2,2,2" Click="CalculateNodeVoltages" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
+                        Grid.Column="1" Content="save"
+                        Margin="2,2,2,2" Click="Save" 
+                        IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 </Grid>
+                <Button 
+                        Grid.Row="2" Name="CalculateButton" Content="calculate node voltages" 
+                        Margin="2,2,2,2" Click="CalculateNodeVoltages" IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
                 <DataGrid 
-                    Grid.Row="2" 
+                    Grid.Row="3" 
                     ItemsSource="{Binding PowerNets, Mode=TwoWay}" 
                     AutoGenerateColumns="False" 
                     Width="396" 
@@ -57,7 +63,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <TextBox 
-                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
+                    Grid.Row="4" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                     Text="{Binding SelectedPowerNet.LogMessages, Mode=OneWay}"/>
             </Grid>

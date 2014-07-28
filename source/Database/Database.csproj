@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseContext.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
