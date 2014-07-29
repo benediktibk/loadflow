@@ -142,7 +142,24 @@ namespace Database
 
         public void Remove(PowerNet powerNet)
         {
-            throw new NotImplementedException();
+            var idParam = new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id };
+            var command = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;", _sqlConnection);
+            command.Parameters.Add(idParam);
+
+            using (var transaction = _sqlConnection.BeginTransaction())
+            {
+                try
+                {
+                    command.Transaction = transaction;
+                    command.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         public void ReadPowerNets(ObservableCollection<PowerNet> powerNets)
