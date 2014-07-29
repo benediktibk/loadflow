@@ -369,6 +369,10 @@ namespace Database
             reader.Close();
         }
 
+        #endregion
+
+        #region reading from single records
+
         private static FeedIn ReadFeedInFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
         {
             var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
