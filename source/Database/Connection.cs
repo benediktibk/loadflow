@@ -142,16 +142,6 @@ namespace Database
             ReadNetElements(powerNets);
         }
 
-        private void ReadNetElements(IEnumerable<PowerNet> powerNets)
-        {
-            foreach (var powerNet in powerNets)
-            {
-                var nodeIds = ReadNodes(powerNet);
-                ReadLoads(powerNet, nodeIds);
-                ReadLines(powerNet, nodeIds);
-            }
-        }
-
         #endregion
 
         #region properties
@@ -310,6 +300,17 @@ namespace Database
             return nodeIds;
         }
 
+        private void ReadNetElements(IEnumerable<PowerNet> powerNets)
+        {
+            foreach (var powerNet in powerNets)
+            {
+                var nodeIds = ReadNodes(powerNet);
+                ReadLoads(powerNet, nodeIds);
+                ReadLines(powerNet, nodeIds);
+                ReadFeedIns(powerNet, nodeIds);
+            }
+        }
+
         private void ReadLoads(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Loads.Clear();
@@ -346,6 +347,41 @@ namespace Database
             }
 
             reader.Close();
+        }
+
+        private void ReadFeedIns(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
+        {
+            powerNet.FeedIns.Clear();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command = 
+                new SqlCommand(
+                    "SELECT FeedInId, NodeId, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower " +
+                    "FROM feedins INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var feedIn = ReadFeedInFromRecord(nodeIds, reader);
+                powerNet.FeedIns.Add(feedIn);
+            }
+
+            reader.Close();
+        }
+
+        private static FeedIn ReadFeedInFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
+        {
+            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var node = nodeIds[nodeId];
+            return new FeedIn
+            {
+                Id = Convert.ToInt32(reader["FeedInId"].ToString()),
+                Name = reader["FeedInName"].ToString(),
+                Node = node,
+                VoltageReal = Convert.ToDouble(reader["VoltageReal"].ToString()),
+                VoltageImaginary = Convert.ToDouble(reader["VoltageImaginary"].ToString()),
+                ShortCircuitPower = Convert.ToDouble(reader["ShortCircuitPower"].ToString())
+            };
         }
 
         private static Line ReadLineFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
