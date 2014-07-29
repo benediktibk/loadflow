@@ -25,6 +25,15 @@ namespace Database
 
         #endregion
 
+        #region public functions
+
+        public void ReadFromDatabase()
+        {
+            Connection.ReadPowerNets(PowerNets);
+        }
+
+        #endregion
+
         #region properties
 
         public PowerNet SelectedPowerNet 

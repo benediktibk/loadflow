@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -51,9 +53,102 @@ namespace Database
 
             _sqlConnection = new SqlConnection(ConnectionStringWithoutDatabase);
             _sqlConnection.Open();
-            var createCommand = new SqlCommand("CREATE DATABASE " + Database + ";", _sqlConnection);
-            createCommand.ExecuteNonQuery();
+            var createDatabaseCommand = new SqlCommand("CREATE DATABASE " + Database + ";", _sqlConnection);
+            var selectDatabaseCommand = new SqlCommand("USE " + Database + ";", _sqlConnection);
+            var createPowerNetTable = 
+                new SqlCommand(
+                    "CREATE TABLE powernets " +
+                    "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL, PowerNetName TEXT, CalculatorSelection INTEGER, " +
+                    "PRIMARY KEY(PowerNetId));", _sqlConnection);
+            var createNodeTable = 
+                new SqlCommand(
+                    "CREATE TABLE nodes " +
+                    "(NodeId INTEGER NOT NULL IDENTITY, PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), NodeName TEXT, NominalVoltage REAL, " +
+                    "NodeVoltageReal REAL, NodeVoltageImaginary REAL, " +
+                    "PRIMARY KEY(NodeId));", _sqlConnection);
+            var createLoadTable = 
+                new SqlCommand(
+                    "CREATE TABLE loads " +
+                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), LoadName TEXT, LoadReal REAL, LoadImaginary REAL, " +
+                    "PRIMARY KEY(LoadId));", _sqlConnection);
+            var createFeedInTable = 
+                new SqlCommand(
+                    "CREATE TABLE feedins " +
+                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), FeedInName TEXT, VoltageReal REAL, VoltageImaginary REAL, ShortCircuitPower REAL, " +
+                    "PRIMARY KEY(FeedInId));", _sqlConnection);
+            var createGeneratorTable = 
+                new SqlCommand(
+                    "CREATE TABLE generators " +
+                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), GeneratorName TEXT, VoltageMagnitude REAL, RealPower REAL, " +
+                    "PRIMARY KEY(GeneratorId));", _sqlConnection);
+            var createTransformerTable = 
+                new SqlCommand(
+                    "CREATE TABLE transformers " +
+                    "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), LowerSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), " +
+                    "TransformerName TEXT, NominalPower REAL, RelativeShortCircuitVoltage REAL, CopperLosses REAL, IronLosses REAL, RelativeNoLoadCurrent REAL, Ratio REAL, " +
+                    "PRIMARY KEY(TransformerId));", _sqlConnection);
+            var createLineTable = 
+                new SqlCommand(
+                    "CREATE TABLE lines " +
+                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER NOT NULL REFERENCES nodes (NodeId), NodeTwo INTEGER NOT NULL REFERENCES nodes (NodeId), " +
+                    "LineName TEXT, SeriesResistancePerUnitLength REAL, SeriesInductancePerUnitLength REAL, ShuntConductancePerUnitLength REAL, " +
+                    "ShuntCapacityPerUnitLength REAL, Length REAL, " +
+                    "PRIMARY KEY(LineId));", _sqlConnection);
+
+            createDatabaseCommand.ExecuteNonQuery();
+            selectDatabaseCommand.ExecuteNonQuery();
+            createPowerNetTable.ExecuteNonQuery();
+            createNodeTable.ExecuteNonQuery();
+            createLoadTable.ExecuteNonQuery();
+            createFeedInTable.ExecuteNonQuery();
+            createGeneratorTable.ExecuteNonQuery();
+            createTransformerTable.ExecuteNonQuery();
+            createLineTable.ExecuteNonQuery();
+
             Disconnect();
+        }
+
+        public void Add(PowerNet powerNet)
+        {
+            if (!Connected)
+                throw new InvalidOperationException("connection to database not open");
+
+            var nameParam = new SqlParameter("Name", SqlDbType.Text) { Value = powerNet.Name };
+            var frequencyParam = new SqlParameter("Frequency", SqlDbType.Real) { Value = powerNet.Frequency };
+            var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
+            var command =
+                new SqlCommand(
+                    "INSERT INTO powernets (Name, Frequency, CalculatorSelection) VALUES(@Name, @Frequency, @CalculatorSelection);",
+                    _sqlConnection);
+            command.Parameters.Add(nameParam);
+            command.Parameters.Add(frequencyParam);
+            command.Parameters.Add(calculatorSelectionParam);
+            command.ExecuteNonQuery();
+        }
+
+        public void ReadPowerNets(ObservableCollection<PowerNet> powerNets)
+        {
+            if (!Connected)
+                throw new InvalidOperationException("connection to database not open");
+
+            powerNets.Clear();
+            var command = new SqlCommand("SELECT * FROM powernets;", _sqlConnection);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+                powerNets.Add(ReadPowerNetFromRecord(reader));
+
+            reader.Close();
+            ReadNetElements(powerNets);
+        }
+
+        private void ReadNetElements(IEnumerable<PowerNet> powerNets)
+        {
+            foreach (var powerNet in powerNets)
+            {
+                var nodeIds = ReadNodes(powerNet);
+                ReadLoads(powerNet, nodeIds);
+            }
         }
 
         #endregion
@@ -192,6 +287,84 @@ namespace Database
         {
             NotifyPropertyChangedInternal("Connected");
             NotifyPropertyChangedInternal("NotConnected");
+        }
+
+        private IReadOnlyDictionary<int, Node> ReadNodes(PowerNet powerNet)
+        {
+            powerNet.Nodes.Clear();
+            var nodeIds = new Dictionary<int, Node>();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command = new SqlCommand("SELECT * FROM nodes WHERE PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var node = ReadNodeFromRecord(reader);
+                nodeIds.Add(node.Id, node);
+                powerNet.Nodes.Add(node);
+            }
+
+            reader.Close();
+            return nodeIds;
+        }
+
+        private void ReadLoads(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
+        {
+            powerNet.Loads.Clear();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command = new SqlCommand("SELECT LoadId, NodeId, LoadName, LoadReal, LoadImaginary FROM loads INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var load = ReadLoadFromRecord(nodeIds, reader);
+                powerNet.Loads.Add(load);
+            }
+
+            reader.Close();
+        }
+
+        private static PowerNet ReadPowerNetFromRecord(IDataRecord record)
+        {
+            var powerNet = new PowerNet
+            {
+                Id = Convert.ToInt32(record["PowerNetId"].ToString()),
+                Name = record["PowerNetName"].ToString(),
+                Frequency = Convert.ToDouble(record["Frequency"]),
+                CalculatorSelection =
+                    (NodeVoltageCalculatorSelection)Convert.ToInt32(record["CalculatorSelection"].ToString())
+            };
+
+            return powerNet;
+        }
+
+        private static Node ReadNodeFromRecord(IDataRecord reader)
+        {
+            return new Node
+            {
+                Id = Convert.ToInt32(reader["NodeId"].ToString()),
+                Name = reader["NodeName"].ToString(),
+                NominalVoltage = Convert.ToDouble(reader["NominalVoltage"].ToString()),
+                VoltageReal = Convert.ToDouble(reader["NodeVoltageReal"].ToString()),
+                VoltageImaginary = Convert.ToDouble(reader["NodeVoltageImaginary"].ToString())
+            };
+        }
+
+        private static Load ReadLoadFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
+        {
+            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var node = nodeIds[nodeId];
+            var load = new Load
+            {
+                Id = Convert.ToInt32(reader["LoadId"].ToString()),
+                Name = reader["LoadName"].ToString(),
+                Real = Convert.ToDouble(reader["LoadReal"].ToString()),
+                Imaginary = Convert.ToDouble(reader["LoadImaginary"].ToString()),
+                Node = node
+            };
+            return load;
         }
 
         #endregion
