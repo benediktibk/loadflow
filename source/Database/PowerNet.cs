@@ -48,14 +48,14 @@ namespace Database
             _feedIns = new ObservableCollection<FeedIn>();
             _generators = new ObservableCollection<Generator>();
             _transformers = new ObservableCollection<Transformer>();
-            _lines.CollectionChanged += NetElementCountChanged;
-            _loads.CollectionChanged += NetElementCountChanged;
-            _feedIns.CollectionChanged += NetElementCountChanged;
-            _generators.CollectionChanged += NetElementCountChanged;
-            _transformers.CollectionChanged += NetElementCountChanged;
+            _lines.CollectionChanged += UpdateNetElementCount;
+            _loads.CollectionChanged += UpdateNetElementCount;
+            _feedIns.CollectionChanged += UpdateNetElementCount;
+            _generators.CollectionChanged += UpdateNetElementCount;
+            _transformers.CollectionChanged += UpdateNetElementCount;
+            _nodes.CollectionChanged += UpdateNodeAbonnements;
             _netElementCount = 0;
             _nodeNames = new List<string>();
-            _nodes.CollectionChanged += NodeCollectionChanged;
             _isCalculationRunning = false;
             _isCalculationRunningMutex = new Mutex();
             _backgroundWorker = new BackgroundWorker();
@@ -326,12 +326,12 @@ namespace Database
 
         #region private functions
 
-        private void NetElementCountChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void UpdateNetElementCount(object sender, NotifyCollectionChangedEventArgs e)
         {
             NetElementCount = _lines.Count + _loads.Count + _feedIns.Count + _generators.Count + _transformers.Count;
         }
 
-        void NodeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void UpdateNodeAbonnements(object sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateNodeNames();
 

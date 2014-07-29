@@ -23,7 +23,7 @@ namespace Database
         {
             PowerNets = new ObservableCollection<PowerNet>();
             Connection = new Connection();
-            PowerNets.CollectionChanged += PowerNetsCollectionChanged;
+            PowerNets.CollectionChanged += UpdateDatabaseWithChangedPowerNets;
             _reactToChanges = true;
         }
 
@@ -119,7 +119,7 @@ namespace Database
 
         #region private functions
 
-        private void PowerNetsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void UpdateDatabaseWithChangedPowerNets(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!_reactToChanges)
                 return;
