@@ -21,6 +21,7 @@ namespace Database
         {
             VoltageMagnitude = 1;
             RealPower = 0;
+            Name = "";
         }
 
         #endregion

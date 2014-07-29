@@ -23,6 +23,7 @@ namespace Database
             NominalVoltage = 1;
             VoltageReal = 0;
             VoltageImaginary = 0;
+            Name = "";
         }
 
         #endregion

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Database
 {
-    public class Connection : INotifyPropertyChanged
+    public class Connection : INotifyPropertyChanged, IConnectionNetElements
     {
         #region variables
 
@@ -357,12 +357,14 @@ namespace Database
         {
             foreach (var powerNet in powerNets)
             {
+                powerNet.ReactToChangesWithDatabaseUpdate = false;
                 var nodeIds = ReadNodes(powerNet);
                 ReadLoads(powerNet, nodeIds);
                 ReadLines(powerNet, nodeIds);
                 ReadFeedIns(powerNet, nodeIds);
                 ReadGenerators(powerNet, nodeIds);
                 ReadTransformers(powerNet, nodeIds);
+                powerNet.ReactToChangesWithDatabaseUpdate = true;
             }
         }
 
@@ -503,7 +505,7 @@ namespace Database
             };
         }
 
-        private static PowerNet ReadPowerNetFromRecord(IDataRecord record)
+        private PowerNet ReadPowerNetFromRecord(IDataRecord record)
         {
             var powerNet = new PowerNet
             {
@@ -511,7 +513,8 @@ namespace Database
                 Name = record["PowerNetName"].ToString(),
                 Frequency = Convert.ToDouble(record["Frequency"]),
                 CalculatorSelection =
-                    (NodeVoltageCalculatorSelection)Convert.ToInt32(record["CalculatorSelection"].ToString())
+                    (NodeVoltageCalculatorSelection)Convert.ToInt32(record["CalculatorSelection"].ToString()),
+                Connection = this
             };
 
             return powerNet;
@@ -576,6 +579,168 @@ namespace Database
                 UpperSideNode =  upperSideNode,
                 LowerSideNode = lowerSideNode
             };
+        }
+
+        #endregion
+
+        #region IConnectionNetElements
+
+        public void Add(Node node, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO nodes (NodeName, PowerNet, NominalVoltage, NodeVoltageReal, NodeVoltageImaginary) OUTPUT INSERTED.NodeId VALUES(@Name, @PowerNet, @NominalVoltage, @VoltageReal, @VoltageImaginary);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = node.Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) {Value = powerNet.Id});
+            command.Parameters.Add(new SqlParameter("NominalVoltage", SqlDbType.Real) { Value = node.NominalVoltage });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = node.VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) {Value = node.VoltageImaginary});
+            node.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Add(FeedIn feedIn, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO feedins (FeedInName, Node, PowerNet, VoltageReal, VoltageImaginary, ShortCircuitPower) OUTPUT INSERTED.FeedInId VALUES(@Name, @Node, @PowerNet, @VoltageReal, @VoltageImaginary, @ShortCircuitPower);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = feedIn.Name });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = feedIn.Node.Id });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = feedIn.VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = feedIn.VoltageImaginary });
+            command.Parameters.Add(new SqlParameter("ShortCircuitPower", SqlDbType.Real) { Value = feedIn.ShortCircuitPower });
+            feedIn.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Add(Generator generator, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO generators (GeneratorName, Node, PowerNet, VoltageMagnitude, RealPower) OUTPUT INSERTED.GeneratorId VALUES(@Name, @Node, @PowerNet, @VoltageMagnitude, @RealPower);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = generator.Name });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = generator.Node.Id });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
+            command.Parameters.Add(new SqlParameter("VoltageMagnitude", SqlDbType.Real) { Value = generator.VoltageMagnitude });
+            command.Parameters.Add(new SqlParameter("RealPower", SqlDbType.Real) { Value = generator.RealPower });
+            generator.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Add(Load load, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO loads (LoadName, Node, PowerNet, LoadReal, LoadImaginary) OUTPUT INSERTED.LoadId VALUES(@Name, @Node, @PowerNet, @LoadReal, @LoadImaginary);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = load.Name });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = load.Node.Id });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
+            command.Parameters.Add(new SqlParameter("LoadReal", SqlDbType.Real) { Value = load.Real });
+            command.Parameters.Add(new SqlParameter("LoadImaginary", SqlDbType.Real) { Value = load.Imaginary });
+            load.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Add(Line line, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO lines (LineName, NodeOne, NodeTwo, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength) " +
+                    "OUTPUT INSERTED.LineId " +
+                    "VALUES(@Name, @NodeOne, @NodeTwo, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = line.Name });
+            command.Parameters.Add(new SqlParameter("NodeOne", SqlDbType.Int) { Value = line.NodeOne.Id });
+            command.Parameters.Add(new SqlParameter("NodeTwo", SqlDbType.Int) { Value = line.NodeTwo.Id });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
+            command.Parameters.Add(new SqlParameter("Length", SqlDbType.Real) { Value = line.Length });
+            command.Parameters.Add(new SqlParameter("SeriesResistancePerUnitLength", SqlDbType.Real) { Value = line.SeriesResistancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("SeriesInductancePerUnitLength", SqlDbType.Real) { Value = line.SeriesInductancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("ShuntConductancePerUnitLength", SqlDbType.Real) { Value = line.ShuntConductancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("ShuntCapacityPerUnitLength", SqlDbType.Real) { Value = line.ShuntCapacityPerUnitLength });
+            line.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Add(Transformer transformer, PowerNet powerNet)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO transformers (TransformerName, UpperSideNode, LowerSideNode, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio) " +
+                    "OUTPUT INSERTED.TransformerId " +
+                    "VALUES(@Name, @UpperSideNode, @LowerSideNode, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio);",
+                    _sqlConnection);
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = transformer.Name });
+            command.Parameters.Add(new SqlParameter("UpperSideNode", SqlDbType.Int) { Value = transformer.UpperSideNode.Id });
+            command.Parameters.Add(new SqlParameter("LowerSideNode", SqlDbType.Int) { Value = transformer.LowerSideNode.Id });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
+            command.Parameters.Add(new SqlParameter("NominalPower", SqlDbType.Real) { Value = transformer.NominalPower });
+            command.Parameters.Add(new SqlParameter("RelativeShortCircuitVoltage", SqlDbType.Real) { Value = transformer.RelativeShortCircuitVoltage });
+            command.Parameters.Add(new SqlParameter("CopperLosses", SqlDbType.Real) { Value = transformer.CopperLosses });
+            command.Parameters.Add(new SqlParameter("IronLosses", SqlDbType.Real) { Value = transformer.IronLosses });
+            command.Parameters.Add(new SqlParameter("RelativeNoLoadCurrent", SqlDbType.Real) { Value = transformer.RelativeNoLoadCurrent });
+            command.Parameters.Add(new SqlParameter("Ratio", SqlDbType.Real) { Value = transformer.Ratio });
+            transformer.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Update(Node node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(FeedIn feedIn)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Generator generator)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Load load)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Line line)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Transformer transformer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Node node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(FeedIn feedIn)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Generator generator)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Load load)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Line line)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Transformer transformer)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

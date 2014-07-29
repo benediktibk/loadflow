@@ -22,6 +22,7 @@ namespace Database
         {
             VoltageReal = 1;
             VoltageImaginary = 0;
+            Name = "";
         }
 
         #endregion

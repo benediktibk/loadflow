@@ -28,6 +28,7 @@ namespace Database
             Length = 1;
             ShuntCapacityPerUnitLength = 0;
             ShuntConductancePerUnitLength = 0;
+            Name = "";
         }
 
         #endregion

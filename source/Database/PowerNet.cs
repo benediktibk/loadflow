@@ -42,6 +42,7 @@ namespace Database
         {
             Frequency = 50;
             Name = "";
+            ReactToChangesWithDatabaseUpdate = true;
             _nodes = new ObservableCollection<Node>();
             _lines = new ObservableCollection<Line>();
             _loads = new ObservableCollection<Load>();
@@ -49,11 +50,17 @@ namespace Database
             _generators = new ObservableCollection<Generator>();
             _transformers = new ObservableCollection<Transformer>();
             _lines.CollectionChanged += UpdateNetElementCount;
+            _lines.CollectionChanged += UpdateDatabaseWithChangedLines;
             _loads.CollectionChanged += UpdateNetElementCount;
+            _loads.CollectionChanged += UpdateDataBaseWithChangedLoads;
             _feedIns.CollectionChanged += UpdateNetElementCount;
+            _feedIns.CollectionChanged += UpdateDatabaseWithChangedFeedIns;
             _generators.CollectionChanged += UpdateNetElementCount;
+            _generators.CollectionChanged += UpdateDatabaseWithChangedGenerators;
             _transformers.CollectionChanged += UpdateNetElementCount;
+            _transformers.CollectionChanged += UpdateDatabaseWithChangedTransformers;
             _nodes.CollectionChanged += UpdateNodeAbonnements;
+            _nodes.CollectionChanged += UpdateDatabaseWithChangedNodes;
             _netElementCount = 0;
             _nodeNames = new List<string>();
             _isCalculationRunning = false;
@@ -297,6 +304,10 @@ namespace Database
             }
         }
 
+        public bool ReactToChangesWithDatabaseUpdate { get; set; }
+
+        public IConnectionNetElements Connection { get; set; }
+
         #endregion
 
         #region events
@@ -342,7 +353,7 @@ namespace Database
                     foreach (var node in newNodes)
                     {
                         node.NameChanged += UpdateNodeNames;
-                        node.NameChanged += NodeNameChanged;
+                        node.NameChanged += TriggerNodesChanged;
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -368,7 +379,7 @@ namespace Database
             NotifyPropertyChangedInternal("NodeNames");
         }
 
-        void NodeNameChanged()
+        void TriggerNodesChanged()
         {
             if (NodesChanged != null)
                 NodesChanged();
@@ -406,6 +417,256 @@ namespace Database
         private void Log(string message)
         {
             LogMessages += message + "\r\n";
+        }
+
+        #endregion
+
+        #region database update
+
+        private void UpdateDatabaseWithChangedNodes(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newNodes = e.NewItems.Cast<Node>();
+                    foreach (var node in newNodes)
+                    {
+                        Connection.Add(node, this);
+                        node.PropertyChanged += UpdateDatabaseWithChangedNode;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldNodes = e.OldItems.Cast<Node>();
+                    foreach (var node in oldNodes)
+                        Connection.Remove(node);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedNode(object sender, PropertyChangedEventArgs e)
+        {
+            var node = sender as Node;
+
+            if (node == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(node);
+        }
+
+        private void UpdateDatabaseWithChangedLines(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newLines = e.NewItems.Cast<Line>();
+                    foreach (var line in newLines)
+                    {
+                        Connection.Add(line, this);
+                        line.PropertyChanged += UpdateDatabaseWithChangedLine;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldLines = e.OldItems.Cast<Line>();
+                    foreach (var line in oldLines)
+                        Connection.Remove(line);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedLine(object sender, PropertyChangedEventArgs e)
+        {
+            var line = sender as Line;
+
+            if (line == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(line);
+        }
+
+        private void UpdateDataBaseWithChangedLoads(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newLoads = e.NewItems.Cast<Load>();
+                    foreach (var load in newLoads)
+                    {
+                        Connection.Add(load, this);
+                        load.PropertyChanged += UpdateDatabaseWithChangedLoad;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldLoads = e.OldItems.Cast<Load>();
+                    foreach (var load in oldLoads)
+                        Connection.Remove(load);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedLoad(object sender, PropertyChangedEventArgs e)
+        {
+            var load = sender as Load;
+
+            if (load == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(load);
+        }
+
+        private void UpdateDatabaseWithChangedFeedIns(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newFeedIns = e.NewItems.Cast<FeedIn>();
+                    foreach (var feedIn in newFeedIns)
+                    {
+                        Connection.Add(feedIn, this);
+                        feedIn.PropertyChanged += UpdateDatabaseWithChangedFeedIn;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldFeedIns = e.OldItems.Cast<FeedIn>();
+                    foreach (var feedIn in oldFeedIns)
+                        Connection.Remove(feedIn);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedFeedIn(object sender, PropertyChangedEventArgs e)
+        {
+            var feedIn = sender as FeedIn;
+
+            if (feedIn == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(feedIn);
+        }
+
+        private void UpdateDatabaseWithChangedGenerators(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newGenerators = e.NewItems.Cast<Generator>();
+                    foreach (var generator in newGenerators)
+                    {
+                        Connection.Add(generator, this);
+                        generator.PropertyChanged += UpdateDatabaseWithChangedGenerator;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldGenerators = e.OldItems.Cast<Generator>();
+                    foreach (var generator in oldGenerators)
+                        Connection.Remove(generator);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedGenerator(object sender, PropertyChangedEventArgs e)
+        {
+            var generator = sender as Generator;
+
+            if (generator == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(generator);
+        }
+
+        private void UpdateDatabaseWithChangedTransformers(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReactToChangesWithDatabaseUpdate)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newTransformers = e.NewItems.Cast<Transformer>();
+                    foreach (var transformer in newTransformers)
+                    {
+                        Connection.Add(transformer, this);
+                        transformer.PropertyChanged += UpdateDatabaseWithChangedTransformer;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldTransformers = e.OldItems.Cast<Transformer>();
+                    foreach (var transformer in oldTransformers)
+                        Connection.Remove(transformer);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdateDatabaseWithChangedTransformer(object sender, PropertyChangedEventArgs e)
+        {
+            var transformer = sender as Transformer;
+
+            if (transformer == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(transformer);
         }
 
         #endregion

@@ -21,6 +21,7 @@ namespace Database
         {
             Real = 0;
             Imaginary = 0;
+            Name = "";
         }
 
         #endregion

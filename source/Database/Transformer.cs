@@ -30,6 +30,7 @@ namespace Database
             IronLosses = 0.01;
             RelativeNoLoadCurrent = 0.01;
             Ratio = 1;
+            Name = "";
         }
 
         #endregion
