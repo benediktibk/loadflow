@@ -118,12 +118,17 @@ namespace Database
             var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
             var command =
                 new SqlCommand(
-                    "INSERT INTO powernets (Name, Frequency, CalculatorSelection) VALUES(@Name, @Frequency, @CalculatorSelection);",
+                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);",
                     _sqlConnection);
             command.Parameters.Add(nameParam);
             command.Parameters.Add(frequencyParam);
             command.Parameters.Add(calculatorSelectionParam);
-            command.ExecuteNonQuery();
+            powerNet.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
+        }
+
+        public void Remove(PowerNet powerNet)
+        {
+            throw new NotImplementedException();
         }
 
         public void ReadPowerNets(ObservableCollection<PowerNet> powerNets)

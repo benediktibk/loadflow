@@ -35,11 +35,17 @@ namespace DatabaseUI
 
         private void UpdateSubscriptionOfNodesChanged()
         {
+            if (_model.SelectedPowerNet == null)
+                return;
+
             _model.SelectedPowerNet.NodesChanged += UpdateNodeToNodeNameConverter;
         }
 
         private void UpdateNodeToNodeNameConverter()
         {
+            if (_model.SelectedPowerNet == null)
+                return;
+
             _converter.UpdateMapping(_model.SelectedPowerNet.Nodes);
         }
 

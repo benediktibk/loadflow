@@ -81,6 +81,7 @@
                     IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
                     IsEnabled="{Binding Connection.Connected}">
                     <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Frequency}" Header="frequency"/>
                         <DataGridComboBoxColumn 

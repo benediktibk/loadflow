@@ -43,6 +43,7 @@ namespace Database
         public PowerNet()
         {
             Frequency = 50;
+            Name = "";
             _nodes = new ObservableCollection<Node>();
             _lines = new ObservableCollection<Line>();
             _loads = new ObservableCollection<Load>();
@@ -127,7 +128,6 @@ namespace Database
 
         #region properties
 
-        [Key]
         public int Id { get; set; }
 
         public double Frequency
@@ -166,7 +166,6 @@ namespace Database
             }
         }
 
-        [NotMapped]
         public long NetElementCount
         {
             get { return _netElementCount; }
@@ -251,19 +250,16 @@ namespace Database
             }
         }
 
-        [NotMapped]
         public IReadOnlyList<string> NodeNames
         {
             get { return _nodeNames; }
         }
 
-        [NotMapped]
         public bool IsCalculationNotRunning
         {
             get { return !IsCalculationRunning; }
         }
 
-        [NotMapped]
         public string LogMessages
         {
             get { return _logMessages; }
@@ -276,7 +272,6 @@ namespace Database
             }
         }
 
-        [NotMapped]
         public bool IsCalculationRunning
         {
             get

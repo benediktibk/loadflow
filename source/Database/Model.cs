@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -12,6 +13,7 @@ namespace Database
 
         private PowerNet _selectedPowerNet;
         private Connection _connection;
+        private bool _reactToChanges;
 
         #endregion
 
@@ -21,6 +23,36 @@ namespace Database
         {
             PowerNets = new ObservableCollection<PowerNet>();
             Connection = new Connection();
+            PowerNets.CollectionChanged += PowerNetsCollectionChanged;
+            _reactToChanges = true;
+        }
+
+        void PowerNetsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!_reactToChanges)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newPowerNets = e.NewItems.Cast<PowerNet>();
+                    foreach (var powerNet in newPowerNets)
+                        Connection.Add(powerNet);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldPowerNets = e.OldItems.Cast<PowerNet>();
+                    foreach (var powerNet in oldPowerNets)
+                        Connection.Remove(powerNet);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         #endregion
@@ -29,7 +61,9 @@ namespace Database
 
         public void ReadFromDatabase()
         {
+            _reactToChanges = false;
             Connection.ReadPowerNets(PowerNets);
+            _reactToChanges = true;
         }
 
         #endregion
