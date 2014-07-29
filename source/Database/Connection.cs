@@ -85,28 +85,31 @@ namespace Database
             var createLoadTable = 
                 new SqlCommand(
                     "CREATE TABLE loads " +
-                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), LoadName TEXT, LoadReal REAL, LoadImaginary REAL, " +
+                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "LoadName TEXT, LoadReal REAL, LoadImaginary REAL, " +
                     "PRIMARY KEY(LoadId));", _sqlConnection);
             var createFeedInTable = 
                 new SqlCommand(
                     "CREATE TABLE feedins " +
-                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), FeedInName TEXT, VoltageReal REAL, VoltageImaginary REAL, ShortCircuitPower REAL, " +
+                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "FeedInName TEXT, VoltageReal REAL, VoltageImaginary REAL, ShortCircuitPower REAL, " +
                     "PRIMARY KEY(FeedInId));", _sqlConnection);
             var createGeneratorTable = 
                 new SqlCommand(
                     "CREATE TABLE generators " +
-                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), GeneratorName TEXT, VoltageMagnitude REAL, RealPower REAL, " +
+                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "GeneratorName TEXT, VoltageMagnitude REAL, RealPower REAL, " +
                     "PRIMARY KEY(GeneratorId));", _sqlConnection);
             var createTransformerTable = 
                 new SqlCommand(
                     "CREATE TABLE transformers " +
                     "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), LowerSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), " +
-                    "TransformerName TEXT, NominalPower REAL, RelativeShortCircuitVoltage REAL, CopperLosses REAL, IronLosses REAL, RelativeNoLoadCurrent REAL, Ratio REAL, " +
+                    "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT, NominalPower REAL, RelativeShortCircuitVoltage REAL, CopperLosses REAL, IronLosses REAL, RelativeNoLoadCurrent REAL, Ratio REAL, " +
                     "PRIMARY KEY(TransformerId));", _sqlConnection);
             var createLineTable = 
                 new SqlCommand(
                     "CREATE TABLE lines " +
-                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER NOT NULL REFERENCES nodes (NodeId), NodeTwo INTEGER NOT NULL REFERENCES nodes (NodeId), " +
+                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER NOT NULL REFERENCES nodes (NodeId), NodeTwo INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
                     "LineName TEXT, SeriesResistancePerUnitLength REAL, SeriesInductancePerUnitLength REAL, ShuntConductancePerUnitLength REAL, " +
                     "ShuntCapacityPerUnitLength REAL, Length REAL, " +
                     "PRIMARY KEY(LineId));", _sqlConnection);
@@ -367,7 +370,7 @@ namespace Database
         {
             powerNet.Loads.Clear();
             var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command = new SqlCommand("SELECT LoadId, NodeId, LoadName, LoadReal, LoadImaginary FROM loads INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            var command = new SqlCommand("SELECT LoadId, Node, LoadName, LoadReal, LoadImaginary FROM loads WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             var reader = command.ExecuteReader();
 
@@ -388,7 +391,7 @@ namespace Database
                 new SqlCommand(
                     "SELECT " +
                     "LineId, NodeOne, NodeTwo, LineName, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length " +
-                    "FROM lines INNER JOIN nodes ON NodeOne=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+                    "FROM lines WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             var reader = command.ExecuteReader();
 
@@ -407,8 +410,8 @@ namespace Database
             var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
             var command = 
                 new SqlCommand(
-                    "SELECT FeedInId, NodeId, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower " +
-                    "FROM feedins INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+                    "SELECT FeedInId, Node, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower " +
+                    "FROM feedins WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             var reader = command.ExecuteReader();
 
@@ -427,8 +430,8 @@ namespace Database
             var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
             var command =
                 new SqlCommand(
-                    "SELECT GeneratorId, NodeId, GeneratorName, VoltageMagnitude, RealPower " +
-                    "FROM generators INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+                    "SELECT GeneratorId, Node, GeneratorName, VoltageMagnitude, RealPower " +
+                    "FROM generators WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             var reader = command.ExecuteReader();
 
@@ -448,7 +451,7 @@ namespace Database
             var command =
                 new SqlCommand(
                     "SELECT TransformerId, UpperSideNode, LowerSideNode, TransformerName, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio " +
-                    "FROM transformers INNER JOIN nodes ON UpperSideNode=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+                    "FROM transformers WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             var reader = command.ExecuteReader();
 
@@ -467,7 +470,7 @@ namespace Database
 
         private static FeedIn ReadFeedInFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
         {
-            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var nodeId = Convert.ToInt32(reader["Node"].ToString());
             var node = nodeIds[nodeId];
             return new FeedIn
             {
@@ -528,7 +531,7 @@ namespace Database
 
         private static Load ReadLoadFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
         {
-            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var nodeId = Convert.ToInt32(reader["Node"].ToString());
             var node = nodeIds[nodeId];
             return new Load
             {
@@ -542,7 +545,7 @@ namespace Database
 
         private static Generator ReadGeneratorFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
         {
-            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var nodeId = Convert.ToInt32(reader["Node"].ToString());
             var node = nodeIds[nodeId];
             return new Generator
             {
