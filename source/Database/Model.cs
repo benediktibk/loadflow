@@ -27,34 +27,6 @@ namespace Database
             _reactToChanges = true;
         }
 
-        void PowerNetsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!_reactToChanges)
-                return;
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    var newPowerNets = e.NewItems.Cast<PowerNet>();
-                    foreach (var powerNet in newPowerNets)
-                        Connection.Add(powerNet);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    var oldPowerNets = e.OldItems.Cast<PowerNet>();
-                    foreach (var powerNet in oldPowerNets)
-                        Connection.Remove(powerNet);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    throw new NotImplementedException();
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    throw new NotImplementedException();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         #endregion
 
         #region public functions
@@ -63,6 +35,9 @@ namespace Database
         {
             _reactToChanges = false;
             Connection.ReadPowerNets(PowerNets);
+
+            foreach (var powerNet in PowerNets)
+                powerNet.PropertyChanged += UpdatePowerNetInDatabase;
             _reactToChanges = true;
         }
 
@@ -130,6 +105,51 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void PowerNetsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!_reactToChanges)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newPowerNets = e.NewItems.Cast<PowerNet>();
+                    foreach (var powerNet in newPowerNets)
+                    {
+                        Connection.Add(powerNet);
+                        powerNet.PropertyChanged += UpdatePowerNetInDatabase;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldPowerNets = e.OldItems.Cast<PowerNet>();
+                    foreach (var powerNet in oldPowerNets)
+                        Connection.Remove(powerNet);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    throw new NotImplementedException();
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void UpdatePowerNetInDatabase(object sender, PropertyChangedEventArgs e)
+        {
+            var powerNet = sender as PowerNet;
+
+            if (powerNet == null)
+                throw new ArgumentNullException("sender");
+
+            Connection.Update(powerNet);
         }
 
         #endregion

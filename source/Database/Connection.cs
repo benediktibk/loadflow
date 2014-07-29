@@ -110,9 +110,6 @@ namespace Database
 
         public void Add(PowerNet powerNet)
         {
-            if (!Connected)
-                throw new InvalidOperationException("connection to database not open");
-
             var nameParam = new SqlParameter("Name", SqlDbType.Text) { Value = powerNet.Name };
             var frequencyParam = new SqlParameter("Frequency", SqlDbType.Real) { Value = powerNet.Frequency };
             var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
@@ -126,6 +123,23 @@ namespace Database
             powerNet.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
         }
 
+        public void Update(PowerNet powerNet)
+        {
+            var nameParam = new SqlParameter("Name", SqlDbType.Text) { Value = powerNet.Name };
+            var frequencyParam = new SqlParameter("Frequency", SqlDbType.Real) { Value = powerNet.Frequency };
+            var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
+            var idParam = new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id };
+            var command =
+                new SqlCommand(
+                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;",
+                    _sqlConnection);
+            command.Parameters.Add(nameParam);
+            command.Parameters.Add(frequencyParam);
+            command.Parameters.Add(calculatorSelectionParam);
+            command.Parameters.Add(idParam);
+            command.ExecuteNonQuery();
+        }
+
         public void Remove(PowerNet powerNet)
         {
             throw new NotImplementedException();
@@ -133,9 +147,6 @@ namespace Database
 
         public void ReadPowerNets(ObservableCollection<PowerNet> powerNets)
         {
-            if (!Connected)
-                throw new InvalidOperationException("connection to database not open");
-
             powerNets.Clear();
             var command = new SqlCommand("SELECT * FROM powernets;", _sqlConnection);
             var reader = command.ExecuteReader();
