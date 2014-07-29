@@ -148,6 +148,7 @@ namespace Database
             {
                 var nodeIds = ReadNodes(powerNet);
                 ReadLoads(powerNet, nodeIds);
+                ReadLines(powerNet, nodeIds);
             }
         }
 
@@ -326,6 +327,47 @@ namespace Database
             reader.Close();
         }
 
+        private void ReadLines(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
+        {
+            powerNet.Lines.Clear();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command = 
+                new SqlCommand(
+                    "SELECT " +
+                    "LineId, NodeOne, NodeTwo, LineName, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length " +
+                    "FROM lines INNER JOIN nodes ON NodeOne=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var line = ReadLineFromRecord(nodeIds, reader);
+                powerNet.Lines.Add(line);
+            }
+
+            reader.Close();
+        }
+
+        private static Line ReadLineFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
+        {
+            var nodeOneId = Convert.ToInt32(reader["NodeOne"].ToString());
+            var nodeOne = nodeIds[nodeOneId];
+            var nodeTwoId = Convert.ToInt32(reader["NodeTwo"].ToString());
+            var nodeTwo = nodeIds[nodeTwoId];
+            return new Line
+            {
+                Id = Convert.ToInt32(reader["LineId"].ToString()),
+                Name = reader["LineName"].ToString(),
+                SeriesResistancePerUnitLength = Convert.ToDouble(reader["SeriesResistancePerUnitLength"].ToString()),
+                SeriesInductancePerUnitLength = Convert.ToDouble(reader["SeriesInductancePerUnitLength"].ToString()),
+                ShuntConductancePerUnitLength = Convert.ToDouble(reader["ShuntConductancePerUnitLength"].ToString()),
+                ShuntCapacityPerUnitLength = Convert.ToDouble(reader["ShuntCapacityPerUnitLength"].ToString()),
+                Length = Convert.ToDouble(reader["Length"].ToString()),
+                NodeOne = nodeOne,
+                NodeTwo = nodeTwo
+            };
+        }
+
         private static PowerNet ReadPowerNetFromRecord(IDataRecord record)
         {
             var powerNet = new PowerNet
@@ -356,7 +398,7 @@ namespace Database
         {
             var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
             var node = nodeIds[nodeId];
-            var load = new Load
+            return new Load
             {
                 Id = Convert.ToInt32(reader["LoadId"].ToString()),
                 Name = reader["LoadName"].ToString(),
@@ -364,7 +406,6 @@ namespace Database
                 Imaginary = Convert.ToDouble(reader["LoadImaginary"].ToString()),
                 Node = node
             };
-            return load;
         }
 
         #endregion
