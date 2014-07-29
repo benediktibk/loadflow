@@ -74,44 +74,45 @@ namespace Database
             var createPowerNetTable = 
                 new SqlCommand(
                     "CREATE TABLE powernets " +
-                    "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL, PowerNetName TEXT, CalculatorSelection INTEGER, " +
+                    "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL NOT NULL, PowerNetName TEXT NOT NULL, CalculatorSelection INTEGER NOT NULL, " +
                     "PRIMARY KEY(PowerNetId));", _sqlConnection);
             var createNodeTable = 
                 new SqlCommand(
                     "CREATE TABLE nodes " +
-                    "(NodeId INTEGER NOT NULL IDENTITY, PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), NodeName TEXT, NominalVoltage REAL, " +
-                    "NodeVoltageReal REAL, NodeVoltageImaginary REAL, " +
+                    "(NodeId INTEGER NOT NULL IDENTITY, PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), NodeName TEXT NOT NULL, NominalVoltage REAL NOT NULL, " +
+                    "NodeVoltageReal REAL NOT NULL, NodeVoltageImaginary REAL NOT NULL, " +
                     "PRIMARY KEY(NodeId));", _sqlConnection);
             var createLoadTable = 
                 new SqlCommand(
                     "CREATE TABLE loads " +
-                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "LoadName TEXT, LoadReal REAL, LoadImaginary REAL, " +
+                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "LoadName TEXT NOT NULL, LoadReal REAL NOT NULL, LoadImaginary REAL NOT NULL, " +
                     "PRIMARY KEY(LoadId));", _sqlConnection);
             var createFeedInTable = 
                 new SqlCommand(
                     "CREATE TABLE feedins " +
-                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "FeedInName TEXT, VoltageReal REAL, VoltageImaginary REAL, ShortCircuitPower REAL, " +
+                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "FeedInName TEXT NOT NULL, VoltageReal REAL NOT NULL, VoltageImaginary REAL NOT NULL, ShortCircuitPower REAL NOT NULL, " +
                     "PRIMARY KEY(FeedInId));", _sqlConnection);
             var createGeneratorTable = 
                 new SqlCommand(
                     "CREATE TABLE generators " +
-                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "GeneratorName TEXT, VoltageMagnitude REAL, RealPower REAL, " +
+                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "GeneratorName TEXT NOT NULL, VoltageMagnitude REAL NOT NULL, RealPower REAL NOT NULL, " +
                     "PRIMARY KEY(GeneratorId));", _sqlConnection);
             var createTransformerTable = 
                 new SqlCommand(
                     "CREATE TABLE transformers " +
-                    "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), LowerSideNode INTEGER NOT NULL REFERENCES nodes (NodeId), " +
-                    "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT, NominalPower REAL, RelativeShortCircuitVoltage REAL, CopperLosses REAL, IronLosses REAL, RelativeNoLoadCurrent REAL, Ratio REAL, " +
+                    "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER REFERENCES nodes (NodeId), LowerSideNode INTEGER REFERENCES nodes (NodeId), " +
+                    "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT NOT NULL, NominalPower REAL NOT NULL, " +
+                    "RelativeShortCircuitVoltage REAL NOT NULL, CopperLosses REAL NOT NULL, IronLosses REAL NOT NULL, RelativeNoLoadCurrent REAL NOT NULL, Ratio REAL NOT NULL, " +
                     "PRIMARY KEY(TransformerId));", _sqlConnection);
             var createLineTable = 
                 new SqlCommand(
                     "CREATE TABLE lines " +
-                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER NOT NULL REFERENCES nodes (NodeId), NodeTwo INTEGER NOT NULL REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "LineName TEXT, SeriesResistancePerUnitLength REAL, SeriesInductancePerUnitLength REAL, ShuntConductancePerUnitLength REAL, " +
-                    "ShuntCapacityPerUnitLength REAL, Length REAL, " +
+                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                    "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
+                    "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, " +
                     "PRIMARY KEY(LineId));", _sqlConnection);
 
             createDatabaseCommand.ExecuteNonQuery();
@@ -603,10 +604,9 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO feedins (FeedInName, Node, PowerNet, VoltageReal, VoltageImaginary, ShortCircuitPower) OUTPUT INSERTED.FeedInId VALUES(@Name, @Node, @PowerNet, @VoltageReal, @VoltageImaginary, @ShortCircuitPower);",
+                    "INSERT INTO feedins (FeedInName, PowerNet, VoltageReal, VoltageImaginary, ShortCircuitPower) OUTPUT INSERTED.FeedInId VALUES(@Name, @PowerNet, @VoltageReal, @VoltageImaginary, @ShortCircuitPower);",
                     _sqlConnection);
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = feedIn.Name });
-            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = feedIn.Node.Id });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
             command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = feedIn.VoltageReal });
             command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = feedIn.VoltageImaginary });
@@ -618,10 +618,9 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO generators (GeneratorName, Node, PowerNet, VoltageMagnitude, RealPower) OUTPUT INSERTED.GeneratorId VALUES(@Name, @Node, @PowerNet, @VoltageMagnitude, @RealPower);",
+                    "INSERT INTO generators (GeneratorName, PowerNet, VoltageMagnitude, RealPower) OUTPUT INSERTED.GeneratorId VALUES(@Name, @PowerNet, @VoltageMagnitude, @RealPower);",
                     _sqlConnection);
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = generator.Name });
-            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = generator.Node.Id });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
             command.Parameters.Add(new SqlParameter("VoltageMagnitude", SqlDbType.Real) { Value = generator.VoltageMagnitude });
             command.Parameters.Add(new SqlParameter("RealPower", SqlDbType.Real) { Value = generator.RealPower });
@@ -632,10 +631,9 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO loads (LoadName, Node, PowerNet, LoadReal, LoadImaginary) OUTPUT INSERTED.LoadId VALUES(@Name, @Node, @PowerNet, @LoadReal, @LoadImaginary);",
+                    "INSERT INTO loads (LoadName, PowerNet, LoadReal, LoadImaginary) OUTPUT INSERTED.LoadId VALUES(@Name, @PowerNet, @LoadReal, @LoadImaginary);",
                     _sqlConnection);
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = load.Name });
-            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = load.Node.Id });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
             command.Parameters.Add(new SqlParameter("LoadReal", SqlDbType.Real) { Value = load.Real });
             command.Parameters.Add(new SqlParameter("LoadImaginary", SqlDbType.Real) { Value = load.Imaginary });
@@ -646,13 +644,11 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO lines (LineName, NodeOne, NodeTwo, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength) " +
+                    "INSERT INTO lines (LineName, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength) " +
                     "OUTPUT INSERTED.LineId " +
-                    "VALUES(@Name, @NodeOne, @NodeTwo, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength);",
+                    "VALUES(@Name, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength);",
                     _sqlConnection);
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = line.Name });
-            command.Parameters.Add(new SqlParameter("NodeOne", SqlDbType.Int) { Value = line.NodeOne.Id });
-            command.Parameters.Add(new SqlParameter("NodeTwo", SqlDbType.Int) { Value = line.NodeTwo.Id });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
             command.Parameters.Add(new SqlParameter("Length", SqlDbType.Real) { Value = line.Length });
             command.Parameters.Add(new SqlParameter("SeriesResistancePerUnitLength", SqlDbType.Real) { Value = line.SeriesResistancePerUnitLength });
@@ -666,13 +662,11 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO transformers (TransformerName, UpperSideNode, LowerSideNode, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio) " +
+                    "INSERT INTO transformers (TransformerName, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio) " +
                     "OUTPUT INSERTED.TransformerId " +
-                    "VALUES(@Name, @UpperSideNode, @LowerSideNode, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio);",
+                    "VALUES(@Name, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio);",
                     _sqlConnection);
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = transformer.Name });
-            command.Parameters.Add(new SqlParameter("UpperSideNode", SqlDbType.Int) { Value = transformer.UpperSideNode.Id });
-            command.Parameters.Add(new SqlParameter("LowerSideNode", SqlDbType.Int) { Value = transformer.LowerSideNode.Id });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id });
             command.Parameters.Add(new SqlParameter("NominalPower", SqlDbType.Real) { Value = transformer.NominalPower });
             command.Parameters.Add(new SqlParameter("RelativeShortCircuitVoltage", SqlDbType.Real) { Value = transformer.RelativeShortCircuitVoltage });
