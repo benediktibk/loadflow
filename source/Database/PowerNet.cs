@@ -303,19 +303,7 @@ namespace Database
 
         public delegate void NodesChangedEventHandler();
 
-        private NodesChangedEventHandler _nodesChanged;
-        public event NodesChangedEventHandler NodesChanged
-        {
-            add
-            {
-                if (_nodesChanged == null || !_nodesChanged.GetInvocationList().Contains(value))
-                    _nodesChanged += value;
-            }
-            remove
-            {
-                _nodesChanged -= value;
-            }
-        }
+        public event NodesChangedEventHandler NodesChanged;
 
         #endregion
 
@@ -347,14 +335,27 @@ namespace Database
         {
             UpdateNodeNames();
 
-            foreach (var node in _nodes)
+            switch (e.Action)
             {
-                node.NameChanged += UpdateNodeNames;
-                node.NameChanged += NodeNameChanged;
+                case NotifyCollectionChangedAction.Add:
+                    var newNodes = e.NewItems.Cast<Node>();
+                    foreach (var node in newNodes)
+                    {
+                        node.NameChanged += UpdateNodeNames;
+                        node.NameChanged += NodeNameChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            if (_nodesChanged != null)
-                _nodesChanged();
+            if (NodesChanged != null)
+                NodesChanged();
         }
 
         void UpdateNodeNames()
@@ -369,8 +370,8 @@ namespace Database
 
         void NodeNameChanged()
         {
-            if (_nodesChanged != null)
-                _nodesChanged();
+            if (NodesChanged != null)
+                NodesChanged();
         }
 
         private void CalculationFinished(object sender, RunWorkerCompletedEventArgs e)

@@ -40,8 +40,8 @@ namespace Database
 
                 _name = value;
                 NotifyPropertyChanged();
-                if (_nameChanged != null)
-                    _nameChanged();
+                if (NameChanged != null)
+                    NameChanged();
             }
         }
 
@@ -87,19 +87,7 @@ namespace Database
 
         public delegate void NameChangedEventHandler();
 
-        private NameChangedEventHandler _nameChanged;
-        public event NameChangedEventHandler NameChanged
-        {
-            add
-            {
-                if (_nameChanged == null || !_nameChanged.GetInvocationList().Contains(value))
-                    _nameChanged += value;
-            }
-            remove
-            {
-                _nameChanged -= value;
-            }
-        }
+        public event NameChangedEventHandler NameChanged;
 
         #endregion
 

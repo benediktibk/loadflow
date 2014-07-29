@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using Database;
 
 namespace DatabaseUI
@@ -57,7 +58,7 @@ namespace DatabaseUI
             _model.SelectedPowerNet.CalculateNodeVoltagesInBackground();
         }
 
-        private void ScrollLoggingOutputToEnd(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void ScrollLoggingOutputToEnd(object sender, TextChangedEventArgs e)
         {
             LoggingOutput.ScrollToEnd();
         }
