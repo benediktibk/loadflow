@@ -64,13 +64,29 @@ namespace DatabaseUI
 
         private void ToggleConnect(object sender, RoutedEventArgs e)
         {
+            if (_model.Connection.Connected)
+                DisconnectAndClear();
+            else
+                TryToConnect();
+        }
+
+        private void DisconnectAndClear()
+        {
+            _model.Connection.Disconnect();
+            _model.Clear();
+        }
+
+        private void TryToConnect()
+        {
             try
             {
-                _model.Connection.ToggleConnect();
+                _model.Connection.Connect();
             }
             catch (Exception connectException)
             {
-                var dialogResult = MessageBox.Show("An error occured: " + connectException.Message + "\r\n\r\nTry to create database?", "error", MessageBoxButton.YesNo);
+                var dialogResult =
+                    MessageBox.Show("An error occured: " + connectException.Message + "\r\n\r\nTry to create database?", "error",
+                        MessageBoxButton.YesNo);
 
                 if (dialogResult != MessageBoxResult.Yes)
                     return;
@@ -86,7 +102,7 @@ namespace DatabaseUI
                 }
 
                 System.Threading.Thread.Sleep(5000);
-                ToggleConnect(null, null);
+                _model.Connection.Connect();
             }
 
             _model.ReadFromDatabase();

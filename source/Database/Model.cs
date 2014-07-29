@@ -41,6 +41,14 @@ namespace Database
             _reactToChanges = true;
         }
 
+        public void Clear()
+        {
+            _reactToChanges = false;
+            PowerNets.Clear();
+            SelectedPowerNet = null;
+            _reactToChanges = true;
+        }
+
         #endregion
 
         #region properties

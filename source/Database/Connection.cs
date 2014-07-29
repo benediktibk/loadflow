@@ -33,13 +33,29 @@ namespace Database
 
         #region public functions
 
-        public void ToggleConnect()
+        public void Connect()
         {
-            if (Connected)
-                Disconnect();
-            else
-                Connect();
+            _sqlConnection = new SqlConnection(ConnectionString);
 
+            try
+            {
+                _sqlConnection.Open();
+            }
+            catch (Exception e)
+            {
+                _sqlConnection.Dispose();
+                _sqlConnection = null;
+                throw;
+            }
+
+            NotifyConnectedChanged();
+        }
+
+        public void Disconnect()
+        {
+            _sqlConnection.Close();
+            _sqlConnection.Dispose();
+            _sqlConnection = null;
             NotifyConnectedChanged();
         }
 
@@ -307,29 +323,6 @@ namespace Database
         #endregion
 
         #region private functions
-
-        private void Connect()
-        {
-            _sqlConnection = new SqlConnection(ConnectionString);
-
-            try
-            {
-                _sqlConnection.Open();
-            }
-            catch (Exception e)
-            {
-                _sqlConnection.Dispose();
-                _sqlConnection = null;
-                throw;
-            }
-        }
-
-        private void Disconnect()
-        {
-            _sqlConnection.Close();
-            _sqlConnection.Dispose();
-            _sqlConnection = null;
-        }
 
         private void NotifyConnectedChanged()
         {
