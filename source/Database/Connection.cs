@@ -358,6 +358,8 @@ namespace Database
                 ReadLoads(powerNet, nodeIds);
                 ReadLines(powerNet, nodeIds);
                 ReadFeedIns(powerNet, nodeIds);
+                ReadGenerators(powerNet, nodeIds);
+                ReadTransformers(powerNet, nodeIds);
             }
         }
 
@@ -414,6 +416,46 @@ namespace Database
             {
                 var feedIn = ReadFeedInFromRecord(nodeIds, reader);
                 powerNet.FeedIns.Add(feedIn);
+            }
+
+            reader.Close();
+        }
+
+        private void ReadGenerators(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
+        {
+            powerNet.Generators.Clear();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command =
+                new SqlCommand(
+                    "SELECT GeneratorId, NodeId, GeneratorName, VoltageMagnitude, RealPower " +
+                    "FROM generators INNER JOIN nodes ON Node=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var generator = ReadGeneratorFromRecord(nodeIds, reader);
+                powerNet.Generators.Add(generator);
+            }
+
+            reader.Close();
+        }
+
+        private void ReadTransformers(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
+        {
+            powerNet.Transformers.Clear();
+            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
+            var command =
+                new SqlCommand(
+                    "SELECT TransformerId, UpperSideNode, LowerSideNode, TransformerName, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio " +
+                    "FROM transformers INNER JOIN nodes ON UpperSideNode=NodeId WHERE nodes.PowerNet=@PowerNet;", _sqlConnection);
+            command.Parameters.Add(powerNetParam);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var transformer = ReadTransformerFromRecord(nodeIds, reader);
+                powerNet.Transformers.Add(transformer);
             }
 
             reader.Close();
@@ -495,6 +537,41 @@ namespace Database
                 Real = Convert.ToDouble(reader["LoadReal"].ToString()),
                 Imaginary = Convert.ToDouble(reader["LoadImaginary"].ToString()),
                 Node = node
+            };
+        }
+
+        private static Generator ReadGeneratorFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
+        {
+            var nodeId = Convert.ToInt32(reader["NodeId"].ToString());
+            var node = nodeIds[nodeId];
+            return new Generator
+            {
+                Id = Convert.ToInt32(reader["GeneratorId"].ToString()),
+                Name = reader["GeneratorName"].ToString(),
+                VoltageMagnitude = Convert.ToDouble(reader["VoltageMagnitude"].ToString()),
+                RealPower = Convert.ToDouble(reader["RealPower"].ToString()),
+                Node = node
+            };
+        }
+
+        private static Transformer ReadTransformerFromRecord(IReadOnlyDictionary<int, Node> nodeIds, IDataRecord reader)
+        {
+            var upperSideNodeId = Convert.ToInt32(reader["UpperSideNode"].ToString());
+            var upperSideNode = nodeIds[upperSideNodeId];
+            var lowerSideNodeId = Convert.ToInt32(reader["LowerSideNode"].ToString());
+            var lowerSideNode = nodeIds[lowerSideNodeId];
+            return new Transformer
+            {
+                Id = Convert.ToInt32(reader["TransformerId"].ToString()),
+                Name = reader["TransformerName"].ToString(),
+                NominalPower = Convert.ToDouble(reader["NominalPower"].ToString()),
+                RelativeShortCircuitVoltage = Convert.ToDouble(reader["RelativeShortCircuitVoltage"].ToString()),
+                CopperLosses = Convert.ToDouble(reader["CopperLosses"].ToString()),
+                IronLosses = Convert.ToDouble(reader["IronLosses"].ToString()),
+                RelativeNoLoadCurrent = Convert.ToDouble(reader["RelativeNoLoadCurrent"].ToString()),
+                Ratio = Convert.ToDouble(reader["Ratio"].ToString()),
+                UpperSideNode =  upperSideNode,
+                LowerSideNode = lowerSideNode
             };
         }
 
