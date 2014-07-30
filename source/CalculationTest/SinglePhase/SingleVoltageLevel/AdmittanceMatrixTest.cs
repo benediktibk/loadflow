@@ -86,22 +86,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void AddCurrentControlledCurrentSource_ValidVoltages_CurrentsAreCorrect()
         {
-            _admittances = new AdmittanceMatrix(6);
+            _admittances = new AdmittanceMatrix(5);
 
-            _admittances.AddCurrentControlledCurrentSource(1, 2, 3, 4, 5, 0, 3, 10);
+            _admittances.AddCurrentControlledCurrentSource(0, 1, 2, 3, 4, 3, 10);
 
             var voltages = new DenseVector(new[]
             {
-                new Complex(1, 0), new Complex(5, 0), new Complex(5, 0), new Complex(7, 0), new Complex(3, 0),
-                new Complex(21, 0)
+                new Complex(5, 0), new Complex(5, 0), new Complex(7, 0), new Complex(3, 0), new Complex(25, 0)
             });
             var currents = _admittances.CalculateCurrents(voltages);
-            ComplexAssert.AreEqual(2, 0, currents[1], 0.0001);
-            ComplexAssert.AreEqual(-2, 0, currents[2], 0.0001);
-            ComplexAssert.AreEqual(6, 0, currents[3], 0.0001);
-            ComplexAssert.AreEqual(-6, 0, currents[4], 0.0001);
-            ComplexAssert.AreEqual(0, 0, currents[5], 0.0001);
-            ComplexAssert.AreEqual(0, 0, currents[0], 0.0001);
+            ComplexAssert.AreEqual(2, 0, currents[0], 0.0001);
+            ComplexAssert.AreEqual(-2, 0, currents[1], 0.0001);
+            ComplexAssert.AreEqual(6, 0, currents[2], 0.0001);
+            ComplexAssert.AreEqual(-6, 0, currents[3], 0.0001);
+            ComplexAssert.AreEqual(0, 0, currents[4], 0.0001);
         }
     }
 }

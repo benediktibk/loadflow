@@ -76,11 +76,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
 
-        public void AddCurrentControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode,
-            int outputTargetNode, int internalNode, int groundNode, double amplification, double resistanceWeight)
+        public void AddCurrentControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, double amplification, double resistanceWeight)
         {
-            AddGyrator(inputSourceNode, inputTargetNode, internalNode, groundNode, resistanceWeight);
-            AddVoltageControlledCurrentSource(internalNode, groundNode, outputSourceNode, outputTargetNode,
+            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, resistanceWeight);
+            AddVoltageControlledCurrentSource(internalNode, inputTargetNode, outputSourceNode, outputTargetNode,
                 amplification/resistanceWeight);
         }
 
