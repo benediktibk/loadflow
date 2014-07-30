@@ -9,5 +9,6 @@ namespace Database
         SqlCommand CreateCommandToUpdateInDatabase();
         SqlCommand CreateCommandToRemoveFromDatabase();
         int Id { get; set; }
+        bool UsesNode(Node node);
     }
 }

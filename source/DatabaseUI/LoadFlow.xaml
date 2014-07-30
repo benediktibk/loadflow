@@ -111,7 +111,8 @@
                     Margin="2,2,2,2" 
                     Name="NodesDataGrid"
                     IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"
-                    IsEnabled="{Binding Connection.Connected}">
+                    IsEnabled="{Binding Connection.Connected}"
+                    CommandManager.PreviewExecuted="CheckIfNodeCanBeDeleted">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Id}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>

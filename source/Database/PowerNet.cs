@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -179,6 +178,16 @@ namespace Database
                 command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
 
             return commands;
+        }
+
+        public bool IsNodeInUse(Node node)
+        {
+            var inUse = FeedIns.Aggregate(false, (current, element) => current || element.UsesNode(node));
+            inUse = Generators.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = Loads.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = Lines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = Transformers.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            return inUse;
         }
 
         #endregion

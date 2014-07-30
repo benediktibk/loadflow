@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Database;
 
 namespace DatabaseUI
@@ -110,5 +112,24 @@ namespace DatabaseUI
         }
 
         #endregion
+
+        private void CheckIfNodeCanBeDeleted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Command != DataGrid.DeleteCommand)
+                return;
+
+            var nodes = NodesDataGrid.SelectedItems.Cast<Node>();
+
+            foreach (var node in nodes)
+            {
+                if (!_model.SelectedPowerNet.IsNodeInUse(node)) 
+                    continue;
+
+                MessageBox.Show("The node " + node.Name + " can not be deleted as it is still in use.",
+                    "deleting node", MessageBoxButton.OK);
+                e.Handled = true;
+                return;
+            }
+        }
     }
 }

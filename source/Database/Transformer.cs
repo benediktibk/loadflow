@@ -232,6 +232,11 @@ namespace Database
             return command;
         }
 
+        public bool UsesNode(Node node)
+        {
+            return node == UpperSideNode || node == LowerSideNode;
+        }
+
         #endregion
     }
 }
