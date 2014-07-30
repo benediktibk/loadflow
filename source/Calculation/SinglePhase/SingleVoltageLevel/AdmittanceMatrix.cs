@@ -48,12 +48,26 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _values[i, j] += admittance;
         }
 
-        public void AddVoltageControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, double g)
+        public void AddVoltageControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, Complex g)
         {
             _values[outputSourceNode, inputSourceNode] += g;
             _values[outputTargetNode, inputTargetNode] += g;
             _values[outputSourceNode, inputTargetNode] -= g;
             _values[outputTargetNode, inputSourceNode] -= g;
+        }
+
+        public void AddCurrentControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, Complex amplification, double resistanceWeight)
+        {
+            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, resistanceWeight);
+            AddVoltageControlledCurrentSource(internalNode, inputTargetNode, outputSourceNode, outputTargetNode,
+                amplification / resistanceWeight);
+        }
+
+        public void AddVoltageControlledVoltageSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, Complex amplification, double resistanceWeight)
+        {
+            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, internalNode, outputTargetNode,
+                (-1) * amplification / resistanceWeight);
+            AddGyrator(internalNode, outputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
 
         public void AddGyrator(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, double r)
@@ -74,21 +88,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, ratio*resistanceWeight);
             AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
-        }
-
-        public void AddCurrentControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, double amplification, double resistanceWeight)
-        {
-            AddGyrator(inputSourceNode, inputTargetNode, internalNode, inputTargetNode, resistanceWeight);
-            AddVoltageControlledCurrentSource(internalNode, inputTargetNode, outputSourceNode, outputTargetNode,
-                amplification/resistanceWeight);
-        }
-
-        public void AddVoltageControlledVoltageSource(int inputSourceNode, int inputTargetNode, int outputSourceNode,
-            int outputTargetNode, int internalNode, double amplification, double resistanceWeight)
-        {
-            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, internalNode, outputTargetNode,
-                (-1)*amplification/resistanceWeight);
-            AddGyrator(internalNode, outputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
 
         #endregion
