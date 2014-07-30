@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Generator: INotifyPropertyChanged
+    public class Generator: INotifyPropertyChanged, INetElement
     {
         #region variables
 
@@ -90,6 +92,32 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region INetElement
+
+        public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO generators (GeneratorName, PowerNet, VoltageMagnitude, RealPower) OUTPUT INSERTED.GeneratorId VALUES(@Name, @PowerNet, @VoltageMagnitude, @RealPower);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            command.Parameters.Add(new SqlParameter("VoltageMagnitude", SqlDbType.Real) { Value = VoltageMagnitude });
+            command.Parameters.Add(new SqlParameter("RealPower", SqlDbType.Real) { Value = RealPower });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqlCommand CreateCommandToRemoveFromDatabase()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

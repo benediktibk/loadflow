@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Connection.cs" />
     <Compile Include="IConnectionNetElements.cs" />
+    <Compile Include="INetElement.cs" />
     <Compile Include="ISafeDataRecord.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
-using System.Linq;
 
 namespace Database
 {
-    public class Node : INotifyPropertyChanged
+    public class Node : INotifyPropertyChanged, INetElement
     {
         #region variables
 
@@ -102,6 +103,41 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region INetElement
+
+        public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO nodes (NodeName, PowerNet, NominalVoltage, NodeVoltageReal, NodeVoltageImaginary) OUTPUT INSERTED.NodeId VALUES(@Name, @PowerNet, @NominalVoltage, @VoltageReal, @VoltageImaginary);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            command.Parameters.Add(new SqlParameter("NominalVoltage", SqlDbType.Real) { Value = NominalVoltage });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = VoltageImaginary });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            var command =
+                new SqlCommand(
+                    "UPDATE nodes SET NodeName=@Name, NominalVoltage=@NominalVoltage, NodeVoltageReal=@VoltageReal, NodeVoltageImaginary=@VoltageImaginary WHERE NodeId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("NominalVoltage", SqlDbType.Real) { Value = NominalVoltage });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = VoltageImaginary });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToRemoveFromDatabase()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

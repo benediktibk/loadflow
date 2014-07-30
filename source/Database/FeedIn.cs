@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class FeedIn : INotifyPropertyChanged
+    public class FeedIn : INotifyPropertyChanged, INetElement
     {
         #region variables
 
@@ -103,6 +105,33 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region INetElement
+
+        public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO feedins (FeedInName, PowerNet, VoltageReal, VoltageImaginary, ShortCircuitPower) OUTPUT INSERTED.FeedInId VALUES(@Name, @PowerNet, @VoltageReal, @VoltageImaginary, @ShortCircuitPower);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = VoltageImaginary });
+            command.Parameters.Add(new SqlParameter("ShortCircuitPower", SqlDbType.Real) { Value = ShortCircuitPower });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqlCommand CreateCommandToRemoveFromDatabase()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

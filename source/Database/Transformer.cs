@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Transformer : INotifyPropertyChanged
+    public class Transformer : INetElement
     {
         #region variables
 
@@ -159,6 +161,38 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region INetElement
+
+        public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO transformers (TransformerName, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio) " +
+                    "OUTPUT INSERTED.TransformerId " +
+                    "VALUES(@Name, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            command.Parameters.Add(new SqlParameter("NominalPower", SqlDbType.Real) { Value = NominalPower });
+            command.Parameters.Add(new SqlParameter("RelativeShortCircuitVoltage", SqlDbType.Real) { Value = RelativeShortCircuitVoltage });
+            command.Parameters.Add(new SqlParameter("CopperLosses", SqlDbType.Real) { Value = CopperLosses });
+            command.Parameters.Add(new SqlParameter("IronLosses", SqlDbType.Real) { Value = IronLosses });
+            command.Parameters.Add(new SqlParameter("RelativeNoLoadCurrent", SqlDbType.Real) { Value = RelativeNoLoadCurrent });
+            command.Parameters.Add(new SqlParameter("Ratio", SqlDbType.Real) { Value = Ratio });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqlCommand CreateCommandToRemoveFromDatabase()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -1,26 +1,17 @@
-﻿namespace Database
+﻿using System.Collections;
+
+namespace Database
 {
     public interface IConnectionNetElements
     {
-        void Add(Node node, PowerNet powerNet);
-        void Add(FeedIn feedIn, PowerNet powerNet);
-        void Add(Generator generator, PowerNet powerNet);
-        void Add(Load load, PowerNet powerNet);
-        void Add(Line line, PowerNet powerNet);
-        void Add(Transformer transformer, PowerNet powerNet);
+        void Add(INetElement element, int powerNetId);
 
-        void Update(Node node);
-        void Update(FeedIn feedIn);
-        void Update(Generator generator);
-        void Update(Load load);
-        void Update(Line line);
-        void Update(Transformer transformer);
+        void AddList(IList elements, int powerNetId);
 
-        void Remove(Node node);
-        void Remove(FeedIn feedIn);
-        void Remove(Generator generator);
-        void Remove(Load load);
-        void Remove(Line line);
-        void Remove(Transformer transformer);
+        void Update(INetElement element);
+
+        void Remove(INetElement element);
+
+        void RemoveList(IList elements);
     }
 }

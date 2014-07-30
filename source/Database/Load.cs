@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Load : INotifyPropertyChanged
+    public class Load : INotifyPropertyChanged, INetElement
     {
         #region variables
 
@@ -90,6 +92,32 @@ namespace Database
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        #endregion
+
+        #region INetElement
+
+        public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO loads (LoadName, PowerNet, LoadReal, LoadImaginary) OUTPUT INSERTED.LoadId VALUES(@Name, @PowerNet, @LoadReal, @LoadImaginary);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            command.Parameters.Add(new SqlParameter("LoadReal", SqlDbType.Real) { Value = Real });
+            command.Parameters.Add(new SqlParameter("LoadImaginary", SqlDbType.Real) { Value = Imaginary });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqlCommand CreateCommandToRemoveFromDatabase()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
