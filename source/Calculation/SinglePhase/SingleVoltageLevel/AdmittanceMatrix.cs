@@ -70,17 +70,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             AddGyrator(internalNode, outputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
 
-        public void AddGyrator(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, double r)
+        public void AddGyrator(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, Complex r)
         {
-            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode,
-                (-1) / r);
-            AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, 
-                1 / r);
+            var g = 1/r;
+            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, outputSourceNode, outputTargetNode, (-1) * g);
+            AddVoltageControlledCurrentSource(outputSourceNode, outputTargetNode, inputSourceNode, inputTargetNode, g);
         }
 
-        public void AddIdealTransformer(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, double ratio, double resistanceWeight)
+        public void AddIdealTransformer(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, int internalNode, Complex ratio, double resistanceWeight)
         {
-            if (ratio <= 0)
+            if (ratio.Magnitude <= 0)
                 throw new ArgumentOutOfRangeException("ratio", "must be positive");
 
             if (resistanceWeight <= 0)

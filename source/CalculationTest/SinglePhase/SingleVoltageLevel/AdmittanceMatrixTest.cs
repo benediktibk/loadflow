@@ -120,5 +120,25 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             ComplexAssert.AreEqual(1, 0, currents[3], 0.0001);
             ComplexAssert.AreEqual(-1, 0, currents[4], 0.0001);
         }
+
+        [TestMethod]
+        public void AddIdealTransformer_RotationOnly_CurrentsAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(5);
+
+            _admittances.AddIdealTransformer(0, 1, 2, 3, 4, Complex.FromPolarCoordinates(1, -0.5), 10);
+
+            var voltages = new DenseVector(new[]
+            {
+                new Complex(12, 0), new Complex(10, 0), new Complex(11.75516512, -1.041148923), new Complex(10, -2), new Complex(20, -3)
+            });
+            var currents = _admittances.CalculateCurrents(voltages);
+            var inputCurrent = currents[0];
+            var outputCurrent = currents[2];
+            var currentRatio = (-1)*inputCurrent/outputCurrent;
+            ComplexAssert.AreEqual((-1) * inputCurrent, currents[1], 0.0001);
+            ComplexAssert.AreEqual((-1) * outputCurrent, currents[3], 0.0001);
+            ComplexAssert.AreEqual(Complex.FromPolarCoordinates(1, 0.5), currentRatio, 0.0001);
+        }
     }
 }
