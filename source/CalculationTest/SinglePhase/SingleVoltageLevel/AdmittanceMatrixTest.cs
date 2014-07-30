@@ -101,5 +101,24 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             ComplexAssert.AreEqual(-6, 0, currents[3], 0.0001);
             ComplexAssert.AreEqual(0, 0, currents[4], 0.0001);
         }
+
+        [TestMethod]
+        public void AddVoltageControlledVoltageSource_ValidVoltages_CurrentsAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(5);
+
+            _admittances.AddVoltageControlledVoltageSource(0, 1, 3, 4, 2, 4, 10);
+
+            var voltages = new DenseVector(new[]
+            {
+                new Complex(12, 0), new Complex(9, 0), new Complex(-8, 0), new Complex(14, 0), new Complex(2, 0)
+            });
+            var currents = _admittances.CalculateCurrents(voltages);
+            ComplexAssert.AreEqual(0, 0, currents[0], 0.0001);
+            ComplexAssert.AreEqual(0, 0, currents[1], 0.0001);
+            ComplexAssert.AreEqual(0, 0, currents[2], 0.0001);
+            ComplexAssert.AreEqual(1, 0, currents[3], 0.0001);
+            ComplexAssert.AreEqual(-1, 0, currents[4], 0.0001);
+        }
     }
 }

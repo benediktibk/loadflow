@@ -83,6 +83,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 amplification/resistanceWeight);
         }
 
+        public void AddVoltageControlledVoltageSource(int inputSourceNode, int inputTargetNode, int outputSourceNode,
+            int outputTargetNode, int internalNode, double amplification, double resistanceWeight)
+        {
+            AddVoltageControlledCurrentSource(inputSourceNode, inputTargetNode, internalNode, outputTargetNode,
+                (-1)*amplification/resistanceWeight);
+            AddGyrator(internalNode, outputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
+        }
+
         #endregion
 
         #region properties
