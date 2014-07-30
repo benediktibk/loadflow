@@ -30,6 +30,7 @@ namespace DatabaseUI
             _model.SelectedPowerNetChanged += UpdateNodeToNodeNameConverter;
             _model.SelectedPowerNetChanged += UpdateSubscriptionOfNodesChanged;
             LoggingOutput.TextChanged += ScrollLoggingOutputToEnd;
+            Closed += DisposeConnection;
         }
 
         #endregion
@@ -111,8 +112,6 @@ namespace DatabaseUI
             _model.ReadFromDatabase();
         }
 
-        #endregion
-
         private void CheckIfNodeCanBeDeleted(object sender, ExecutedRoutedEventArgs e)
         {
             if (e.Command != DataGrid.DeleteCommand)
@@ -122,7 +121,7 @@ namespace DatabaseUI
 
             foreach (var node in nodes)
             {
-                if (!_model.SelectedPowerNet.IsNodeInUse(node)) 
+                if (!_model.SelectedPowerNet.IsNodeInUse(node))
                     continue;
 
                 MessageBox.Show("The node " + node.Name + " can not be deleted as it is still in use.",
@@ -131,5 +130,12 @@ namespace DatabaseUI
                 return;
             }
         }
+
+        private void DisposeConnection(object sender, EventArgs e)
+        {
+            _model.Connection.Dispose();
+        }
+
+        #endregion
     }
 }

@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace Database
 {
-    public class Connection : INotifyPropertyChanged, IConnectionNetElements
+    public class Connection : INotifyPropertyChanged, IConnectionNetElements, IDisposable
     {
         #region variables
 
@@ -179,6 +179,16 @@ namespace Database
                     powerNets.Add(ReadPowerNetFromRecord(reader));
 
             ReadNetElements(powerNets);
+        }
+
+        public void Dispose()
+        {
+            if (_sqlConnection == null)
+                return;
+
+            _sqlConnection.Close();
+            _sqlConnection.Dispose();
+            _sqlConnection = null;
         }
 
         #endregion
