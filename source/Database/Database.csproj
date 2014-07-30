@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Connection.cs" />
     <Compile Include="IConnectionNetElements.cs" />
+    <Compile Include="ISafeDataRecord.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="PowerNet.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SafeSqlDataReader.cs" />
     <Compile Include="Transformer.cs" />
   </ItemGroup>
   <ItemGroup>
