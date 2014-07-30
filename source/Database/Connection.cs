@@ -132,75 +132,36 @@ namespace Database
 
         public void Add(PowerNet powerNet)
         {
-            var nameParam = new SqlParameter("Name", SqlDbType.Text) { Value = powerNet.Name };
-            var frequencyParam = new SqlParameter("Frequency", SqlDbType.Real) { Value = powerNet.Frequency };
-            var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
-            var command =
-                new SqlCommand(
-                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);",
-                    _sqlConnection);
-            command.Parameters.Add(nameParam);
-            command.Parameters.Add(frequencyParam);
-            command.Parameters.Add(calculatorSelectionParam);
+            var command = powerNet.CreateCommandToAddToDatabase();
+            command.Connection = _sqlConnection;
             powerNet.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
         }
 
         public void Update(PowerNet powerNet)
         {
-            var nameParam = new SqlParameter("Name", SqlDbType.Text) { Value = powerNet.Name };
-            var frequencyParam = new SqlParameter("Frequency", SqlDbType.Real) { Value = powerNet.Frequency };
-            var calculatorSelectionParam = new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = powerNet.CalculatorSelection };
-            var idParam = new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id };
-            var command =
-                new SqlCommand(
-                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;",
-                    _sqlConnection);
-            command.Parameters.Add(nameParam);
-            command.Parameters.Add(frequencyParam);
-            command.Parameters.Add(calculatorSelectionParam);
-            command.Parameters.Add(idParam);
+            var command = powerNet.CreateCommandToAddToDatabase();
+            command.Connection = _sqlConnection;
             command.ExecuteNonQuery();
         }
 
         public void Remove(PowerNet powerNet)
         {
-            var deletePowerNetCommand = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;", _sqlConnection);
-            var deleteNodesCommand = new SqlCommand("DELETE FROM nodes WHERE PowerNet=@Id;", _sqlConnection);
-            var deleteLoadsCommand = new SqlCommand("DELETE load FROM loads load INNER JOIN nodes node ON Node=NodeId WHERE PowerNet=@Id;", _sqlConnection);
-            var deleteFeedInsCommand = new SqlCommand("DELETE feedin FROM feedins feedin INNER JOIN nodes node ON Node=NodeId WHERE PowerNet=@Id;", _sqlConnection);
-            var deleteGeneratorsCommand = new SqlCommand("DELETE generator FROM generators generator INNER JOIN nodes node ON Node=NodeId WHERE PowerNet=@Id;", _sqlConnection);
-            var deleteTransformersCommand = new SqlCommand("DELETE transformer FROM transformers transformer INNER JOIN nodes node ON UpperSideNode=NodeId WHERE PowerNet=@Id;", _sqlConnection);
-            var deleteLinesCommand = new SqlCommand("DELETE line FROM lines line INNER JOIN nodes node ON NodeOne=NodeId WHERE PowerNet=@Id;", _sqlConnection);
-            deletePowerNetCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteNodesCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteLoadsCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteFeedInsCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteGeneratorsCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteTransformersCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
-            deleteLinesCommand.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = powerNet.Id });
+            var commands = powerNet.CreateCommandsToRemoveFromDatabase();
 
             using (var transaction = _sqlConnection.BeginTransaction())
             {
-                deletePowerNetCommand.Transaction = transaction;
-                deleteNodesCommand.Transaction = transaction;
-                deleteLoadsCommand.Transaction = transaction;
-                deleteFeedInsCommand.Transaction = transaction;
-                deleteGeneratorsCommand.Transaction = transaction;
-                deleteTransformersCommand.Transaction = transaction;
-                deleteLinesCommand.Transaction = transaction;
+                foreach (var command in commands)
+                {
+                    command.Connection = _sqlConnection;
+                    command.Transaction = transaction;
+                    command.ExecuteNonQuery();
+                }
 
                 try
                 {
-                    deleteFeedInsCommand.ExecuteNonQuery();
-                    deleteGeneratorsCommand.ExecuteNonQuery();
-                    deleteTransformersCommand.ExecuteNonQuery();
-                    deleteLinesCommand.ExecuteNonQuery();
-                    deleteLoadsCommand.ExecuteNonQuery();
-                    deleteNodesCommand.ExecuteNonQuery();
-                    deletePowerNetCommand.ExecuteNonQuery();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch
                 {
                     transaction.Rollback();
                     throw;

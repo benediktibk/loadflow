@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -128,6 +130,55 @@ namespace Database
 
             Log("starting with calculation of node voltages");
             _backgroundWorker.RunWorkerAsync();
+        }
+
+        public SqlCommand CreateCommandToAddToDatabase()
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
+            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            var command =
+                new SqlCommand(
+                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
+            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
+        }
+
+        public IEnumerable<SqlCommand> CreateCommandsToRemoveFromDatabase()
+        {
+            var deletePowerNetCommand = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;");
+            var deleteNodesCommand = new SqlCommand("DELETE FROM nodes WHERE PowerNet=@Id;");
+            var deleteLoadsCommand = new SqlCommand("DELETE FROM loads WHERE PowerNet=@Id;");
+            var deleteFeedInsCommand = new SqlCommand("DELETE FROM feedins WHERE PowerNet=@Id;");
+            var deleteGeneratorsCommand = new SqlCommand("DELETE FROM generators WHERE PowerNet=@Id;");
+            var deleteTransformersCommand = new SqlCommand("DELETE FROM transformers WHERE PowerNet=@Id;");
+            var deleteLinesCommand = new SqlCommand("DELETE FROM lines WHERE PowerNet=@Id;");
+            var commands = new List<SqlCommand>
+            {
+                deleteFeedInsCommand,
+                deleteGeneratorsCommand,
+                deleteTransformersCommand,
+                deleteLinesCommand,
+                deleteLoadsCommand,
+                deleteNodesCommand,
+                deletePowerNetCommand
+            };
+
+            foreach (var command in commands)
+                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+
+            return commands;
         }
 
         #endregion
@@ -413,7 +464,7 @@ namespace Database
 
         #endregion
 
-        #region database update
+        #region database update event handler
 
         private void UpdateDatabaseWithChangedNetElements(object sender, NotifyCollectionChangedEventArgs e)
         {

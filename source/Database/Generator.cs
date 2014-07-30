@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Generator: INotifyPropertyChanged, INetElement
+    public class Generator: INetElement
     {
         #region variables
 

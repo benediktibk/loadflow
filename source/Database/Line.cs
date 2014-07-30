@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Line : INotifyPropertyChanged, INetElement
+    public class Line : INetElement
     {
         #region variables
 
