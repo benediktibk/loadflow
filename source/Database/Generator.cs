@@ -80,6 +80,17 @@ namespace Database
             }
         }
 
+        public object NodeForeignKey
+        {
+            get
+            {
+                if (Node == null)
+                    return DBNull.Value;
+
+                return Node.Id;
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -112,12 +123,22 @@ namespace Database
 
         public SqlCommand CreateCommandToUpdateInDatabase()
         {
-            throw new NotImplementedException();
+            var command =
+                new SqlCommand(
+                    "UPDATE generators SET Node=@Node, GeneratorName=@Name, VoltageMagnitude=@VoltageMagnitude, RealPower=@RealPower WHERE GeneratorId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = NodeForeignKey });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("VoltageMagnitude", SqlDbType.Real) { Value = VoltageMagnitude });
+            command.Parameters.Add(new SqlParameter("RealPower", SqlDbType.Real) { Value = RealPower });
+            return command;
         }
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM generators WHERE GeneratorId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion

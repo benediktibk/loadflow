@@ -137,7 +137,9 @@ namespace Database
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM nodes WHERE NodeId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion

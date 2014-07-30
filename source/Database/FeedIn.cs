@@ -93,6 +93,17 @@ namespace Database
             }
         }
 
+        public object NodeForeignKey
+        {
+            get
+            {
+                if (Node == null)
+                    return DBNull.Value;
+
+                return Node.Id;
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -126,12 +137,23 @@ namespace Database
 
         public SqlCommand CreateCommandToUpdateInDatabase()
         {
-            throw new NotImplementedException();
+            var command =
+                new SqlCommand(
+                    "UPDATE feedins SET Node=@Node, FeedInName=@Name, VoltageReal=@VoltageReal, VoltageImaginary=@VoltageImaginary, ShortCircuitPower=@ShortCircuitPower WHERE FeedInId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = NodeForeignKey });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("VoltageReal", SqlDbType.Real) { Value = VoltageReal });
+            command.Parameters.Add(new SqlParameter("VoltageImaginary", SqlDbType.Real) { Value = VoltageImaginary });
+            command.Parameters.Add(new SqlParameter("ShortCircuitPower", SqlDbType.Real) { Value = ShortCircuitPower });
+            return command;
         }
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM feedins WHERE FeedInId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion

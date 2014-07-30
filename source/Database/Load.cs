@@ -80,6 +80,17 @@ namespace Database
             }
         }
 
+        public object NodeForeignKey
+        {
+            get
+            {
+                if (Node == null)
+                    return DBNull.Value;
+               
+                return Node.Id;
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -112,12 +123,22 @@ namespace Database
 
         public SqlCommand CreateCommandToUpdateInDatabase()
         {
-            throw new NotImplementedException();
+            var command =
+                new SqlCommand(
+                    "UPDATE loads SET Node=@Node, LoadName=@Name, LoadReal=@LoadReal, LoadImaginary=@LoadImaginary WHERE LoadId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("Node", SqlDbType.Int) { Value = NodeForeignKey });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("LoadReal", SqlDbType.Real) { Value = Real });
+            command.Parameters.Add(new SqlParameter("LoadImaginary", SqlDbType.Real) { Value = Imaginary });
+            return command;
         }
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM loads WHERE LoadId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion

@@ -139,7 +139,7 @@ namespace Database
 
         public void Update(PowerNet powerNet)
         {
-            var command = powerNet.CreateCommandToAddToDatabase();
+            var command = powerNet.CreateCommandToUpdateInDatabase();
             command.Connection = _sqlConnection;
             command.ExecuteNonQuery();
         }

@@ -135,6 +135,28 @@ namespace Database
             }
         }
 
+        public object NodeOneForeignKey
+        {
+            get
+            {
+                if (NodeOne == null)
+                    return DBNull.Value;
+
+                return NodeOne.Id;
+            }
+        }
+
+        public object NodeTwoForeignKey
+        {
+            get
+            {
+                if (NodeTwo == null)
+                    return DBNull.Value;
+
+                return NodeTwo.Id;
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -172,12 +194,26 @@ namespace Database
 
         public SqlCommand CreateCommandToUpdateInDatabase()
         {
-            throw new NotImplementedException();
+            var command =
+                new SqlCommand(
+                    "UPDATE lines SET NodeOne=@NodeOne, NodeTwo=@NodeTwo, LineName=@Name, Length=@Length, SeriesResistancePerUnitLength=@SeriesResistancePerUnitLength, SeriesInductancePerUnitLength=@SeriesInductancePerUnitLength, ShuntConductancePerUnitLength=@ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength=@ShuntCapacityPerUnitLength WHERE LineId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("NodeOne", SqlDbType.Int) { Value = NodeOneForeignKey });
+            command.Parameters.Add(new SqlParameter("NodeTwo", SqlDbType.Int) { Value = NodeTwoForeignKey });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("Length", SqlDbType.Real) { Value = Length });
+            command.Parameters.Add(new SqlParameter("SeriesResistancePerUnitLength", SqlDbType.Real) { Value = SeriesResistancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("SeriesInductancePerUnitLength", SqlDbType.Real) { Value = SeriesInductancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("ShuntConductancePerUnitLength", SqlDbType.Real) { Value = ShuntConductancePerUnitLength });
+            command.Parameters.Add(new SqlParameter("ShuntCapacityPerUnitLength", SqlDbType.Real) { Value = ShuntCapacityPerUnitLength });
+            return command;
         }
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM lines WHERE LineId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion

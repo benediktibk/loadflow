@@ -149,6 +149,28 @@ namespace Database
             }
         }
 
+        public object UpperSideNodeForeignKey
+        {
+            get
+            {
+                if (UpperSideNode == null)
+                    return DBNull.Value;
+
+                return UpperSideNode.Id;
+            }
+        }
+
+        public object LowerSideNodeForeignKey
+        {
+            get
+            {
+                if (LowerSideNode == null)
+                    return DBNull.Value;
+
+                return LowerSideNode.Id;
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged
@@ -187,12 +209,27 @@ namespace Database
 
         public SqlCommand CreateCommandToUpdateInDatabase()
         {
-            throw new NotImplementedException();
+            var command =
+                new SqlCommand(
+                    "UPDATE transformers SET UpperSideNode=@UpperSideNode, LowerSideNode=@LowerSideNode, TransformerName=@Name, NominalPower=@NominalPower, RelativeShortCircuitVoltage=@RelativeShortCircuitVoltage, CopperLosses=@CopperLosses, IronLosses=@IronLosses, RelativeNoLoadCurrent=@RelativeNoLoadCurrent, Ratio=@Ratio WHERE TransformerId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            command.Parameters.Add(new SqlParameter("UpperSideNode", SqlDbType.Int) { Value = UpperSideNodeForeignKey });
+            command.Parameters.Add(new SqlParameter("LowerSideNode", SqlDbType.Int) { Value = LowerSideNodeForeignKey });
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("NominalPower", SqlDbType.Real) { Value = NominalPower });
+            command.Parameters.Add(new SqlParameter("RelativeShortCircuitVoltage", SqlDbType.Real) { Value = RelativeShortCircuitVoltage });
+            command.Parameters.Add(new SqlParameter("CopperLosses", SqlDbType.Real) { Value = CopperLosses });
+            command.Parameters.Add(new SqlParameter("IronLosses", SqlDbType.Real) { Value = IronLosses });
+            command.Parameters.Add(new SqlParameter("RelativeNoLoadCurrent", SqlDbType.Real) { Value = RelativeNoLoadCurrent });
+            command.Parameters.Add(new SqlParameter("Ratio", SqlDbType.Real) { Value = Ratio });
+            return command;
         }
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            throw new NotImplementedException();
+            var command = new SqlCommand("DELETE FROM transformers WHERE TransformerId=@Id;");
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
         }
 
         #endregion
