@@ -47,7 +47,7 @@ namespace Calculation.ThreePhase
         public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio)
         {
             _singlePhasePowerNet.AddTransformer(upperSideNodeId, lowerSideNodeId, nominalPower/3,
-                relativeShortCircuitVoltage, copperLosses/3, ironLosses/3, relativeNoLoadCurrent, ratio);
+                relativeShortCircuitVoltage, copperLosses/3, ironLosses/3, relativeNoLoadCurrent, ratio, 0);
         }
 
         public void AddLoad(long nodeId, Complex power)

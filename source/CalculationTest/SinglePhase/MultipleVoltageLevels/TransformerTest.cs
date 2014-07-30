@@ -27,8 +27,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _upperSideNode = new Node(0, 10);
             _lowerSideNode = new Node(1, 0.25);
             _groundNode = new Node(2, 0);
-            _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, _idGenerator);
-            _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, _idGenerator);
+            _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, 0, _idGenerator);
+            _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, 0, _idGenerator);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, _idGenerator);
+            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, 0, _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             transformer.AddConnectedNodes(nodes);
@@ -118,7 +118,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void RelativeRatio_Empty_CorrectResult()
         {
-            Assert.AreEqual(2.0/40, _transformerWithNotNominalRatio.RelativeRatio, 0.000001);
+            ComplexAssert.AreEqual(2.0/40, 0, _transformerWithNotNominalRatio.RelativeRatio, 0.000001);
         }
 
         [TestMethod]
@@ -162,7 +162,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 Times.Never);
             admittanceMatrix.Verify(x => x.AddVoltageControlledCurrentSource(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>()),
                 Times.Never);
-            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>(), 1),
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>(), 1),
                 Times.Never);
         }
 
@@ -175,7 +175,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             admittanceMatrix.Verify(x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
                 Times.Exactly(3));
-            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<double>(), It.IsAny<double>()),
+            admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>(), It.IsAny<double>()),
                 Times.Once);
         }
     }

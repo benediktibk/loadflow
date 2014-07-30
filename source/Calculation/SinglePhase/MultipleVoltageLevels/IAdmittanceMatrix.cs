@@ -10,8 +10,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double g);
         void AddGyrator(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode,
             IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, double r);
-        void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, 
-            IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight);
+        void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, Complex ratio, double resistanceWeight);
         SingleVoltageLevel.AdmittanceMatrix GetSingleVoltageAdmittanceMatrix();
         int NodeCount { get; }
         Complex this[int row, int column] { get; }

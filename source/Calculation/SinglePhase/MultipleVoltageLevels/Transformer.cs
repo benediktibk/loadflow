@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -14,16 +15,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private Complex _lengthAdmittance;
         private Complex _shuntAdmittance;
         private readonly double _ratio;
+        private readonly int _phaseShift;
         private readonly List<DerivedInternalPQNode> _internalNodes;
 
         #endregion
 
         #region public functions
 
-        public Transformer(
-            IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, 
-            double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, 
-            double ratio, IdGenerator idGenerator)
+        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, int phaseShift, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
@@ -52,16 +51,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
             _ratio = ratio;
+            _phaseShift = phaseShift;
             _internalNodes = new List<DerivedInternalPQNode>();
             CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
                 relativeNoLoadCurrent);
 
-            if (HasNotNominalRatio)
-            {
-                _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
-                _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
-                    new Complex(0, 0)));
-            }
+            if (!HasNotNominalRatio) 
+                return;
+
+            _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
+            _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
+                new Complex(0, 0)));
         }
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
@@ -162,9 +162,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _ratio; }
         }
 
-        public double RelativeRatio
+        public Complex RelativeRatio
         {
-            get { return Ratio/NominalRatio; }
+            get { return Complex.FromPolarCoordinates(Ratio/NominalRatio, PhaseShift*Math.PI/6); }
+        }
+
+        public double PhaseShift
+        {
+            get { return _phaseShift; }
         }
 
         public Complex LengthAdmittance
@@ -199,7 +204,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool HasNotNominalRatio
         {
-            get { return Math.Abs(RelativeRatio - 1) > 0.001; } 
+            get { return (RelativeRatio - 1).MagnitudeSquared() > 0.000001; } 
         }
 
         #endregion

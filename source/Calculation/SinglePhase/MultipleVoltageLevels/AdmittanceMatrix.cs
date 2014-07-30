@@ -49,8 +49,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _values.AddGyrator(inputSourceNodeIndex, inputTargetNodeIndex, outputSourceNodeIndex, outputTargetNodeIndex, r);
         }
 
-        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode,
-            IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, double ratio, double resistanceWeight)
+        public void AddIdealTransformer(IReadOnlyNode inputSourceNode, IReadOnlyNode inputTargetNode, IReadOnlyNode outputSourceNode, IReadOnlyNode outputTargetNode, IReadOnlyNode internalNode, Complex ratio, double resistanceWeight)
         {
             var inputSourceNodeIndex = _nodeIndexes[inputSourceNode];
             var inputTargetNodeIndex = _nodeIndexes[inputTargetNode];
