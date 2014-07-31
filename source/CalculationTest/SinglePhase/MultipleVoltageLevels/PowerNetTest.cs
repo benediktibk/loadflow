@@ -511,7 +511,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void CalculateNodeVoltages_OneTransformerWithPhaseShift_VoltagesAreCorrect()
         {
             _powerNet.AddNode(0, 1000, 0);
-            _powerNet.AddNode(1, 400, 0);
+            _powerNet.AddNode(1, 400, (-1) * Math.PI / 6);
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
             _powerNet.AddLoad(1, new Complex(-200, 0));
@@ -549,7 +549,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void CalculateNodeVoltages_OneTransformerWithPhaseShiftAndNoLoad_VoltagesAreCorrect()
         {
             _powerNet.AddNode(0, 1000, 0);
-            _powerNet.AddNode(1, 400, 0);
+            _powerNet.AddNode(1, 400, (-1) * Math.PI / 6);
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
             _powerNet.AddLoad(1, new Complex(0, 0));

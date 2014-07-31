@@ -85,7 +85,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
         {
-            var singleVoltageNode = new SingleVoltageLevel.Node();
+            var singleVoltageNode = new SingleVoltageLevel.Node {NominalPhaseShift = NominalPhaseShift};
 
             if (MustBeSlackBus)
                 singleVoltageNode.Voltage = GetSlackVoltage(scaleBasePower);
