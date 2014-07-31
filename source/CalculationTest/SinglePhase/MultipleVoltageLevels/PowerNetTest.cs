@@ -488,5 +488,43 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.0001);
             ComplexAssert.AreEqual(401.398335699717, 0.0287342453164691, targetNode.Voltage, 0.0001);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneTransformerWithNominalRatioAndSmallLoad_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode(0, 1000);
+            _powerNet.AddNode(1, 400);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 0);
+            _powerNet.AddLoad(1, new Complex(-200, 0));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeById(0);
+            var targetNode = _powerNet.GetNodeById(1);
+            ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(399.003154084021, -0.724983731967074, targetNode.Voltage, 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneTransformerWithPhaseShift_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode(0, 1000);
+            _powerNet.AddNode(1, 400);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
+            _powerNet.AddLoad(1, new Complex(-200, 0));
+
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsFalse(voltageCollapse);
+            var sourceNode = _powerNet.GetNodeById(0);
+            var targetNode = _powerNet.GetNodeById(1);
+            var targetVoltageRotated = new Complex(399.003154084021, -0.724983731967074) *
+                                       Complex.FromPolarCoordinates(1, Math.PI/6);
+            ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(targetVoltageRotated, targetNode.Voltage, 0.01);
+        }
     }
 }
