@@ -5,19 +5,33 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class Node
     {
+        #region variables
+
         private Complex _power;
-        private bool _powerSet;
         private Complex _voltage;
-        private bool _voltageSet;
         private double _voltageMagnitude;
-        private bool _voltageMagnitudeSet;
-        private bool _realPowerSet;
+
+        #endregion
+
+        #region constructor
+
+        public Node()
+        {
+            VoltageIsKnown = false;
+            PowerIsKnown = false;
+            RealPowerIsKnown = false;
+            VoltageMagnitudeIsKnown = false;
+        }
+
+        #endregion
+
+        #region properties
 
         public Complex Power
         {
             get
             {
-                if (!_powerSet)
+                if (!PowerIsKnown)
                     throw new ArgumentOutOfRangeException();
                 
                 return _power;
@@ -25,8 +39,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             set
             {
                 _power = value;
-                _powerSet = true;
-                _realPowerSet = true;
+                PowerIsKnown = true;
+                RealPowerIsKnown = true;
             }
         }
 
@@ -34,7 +48,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get
             {
-                if (!_voltageSet)
+                if (!VoltageIsKnown)
                     throw new ArgumentOutOfRangeException();
                 
                 return _voltage;
@@ -43,8 +57,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             {
                 _voltage = value;
                 _voltageMagnitude = value.Magnitude;
-                _voltageSet = true;
-                _voltageMagnitudeSet = true;
+                VoltageIsKnown = true;
+                VoltageMagnitudeIsKnown = true;
             }
         }
 
@@ -52,7 +66,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get
             {
-                if (!_realPowerSet)
+                if (!RealPowerIsKnown)
                     throw new ArgumentOutOfRangeException();
 
                 return _power.Real;
@@ -60,8 +74,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             set
             {
                 _power = new Complex(value, 0);
-                _realPowerSet = true;
-                _powerSet = false;
+                RealPowerIsKnown = true;
+                PowerIsKnown = false;
             }
         }
 
@@ -69,7 +83,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get
             {
-                if (!_voltageMagnitudeSet)
+                if (!VoltageMagnitudeIsKnown)
                     throw new ArgumentOutOfRangeException();
 
                 return _voltageMagnitude;
@@ -80,30 +94,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                     throw new ArgumentOutOfRangeException("value", "mustn't be negative");
 
                 _voltageMagnitude = value;
-                _voltageMagnitudeSet = true;
-                _voltageSet = false;
+                VoltageMagnitudeIsKnown = true;
+                VoltageIsKnown = false;
             }
         }
 
-        public bool VoltageIsKnown
-        {
-            get { return _voltageSet; }
-        }
+        public bool VoltageIsKnown { get; private set; }
 
-        public bool PowerIsKnown
-        {
-            get { return _powerSet; }
-        }
+        public bool PowerIsKnown { get; private set; }
 
-        public bool VoltageMagnitudeIsKnown
-        {
-            get { return _voltageMagnitudeSet; }
-        }
+        public bool VoltageMagnitudeIsKnown { get; private set; }
 
-        public bool RealPowerIsKnown
-        {
-            get { return _realPowerSet; }
-        }
+        public bool RealPowerIsKnown { get; private set; }
 
         public bool IsPQBus
         {
@@ -120,12 +122,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             get { return VoltageIsKnown && !PowerIsKnown && !RealPowerIsKnown; }
         }
 
-        public Node()
-        {
-            _voltageSet = false;
-            _powerSet = false;
-            _realPowerSet = false;
-            _voltageMagnitudeSet = false;
-        }
+        #endregion
     }
 }
