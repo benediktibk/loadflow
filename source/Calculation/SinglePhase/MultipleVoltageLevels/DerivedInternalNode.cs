@@ -2,30 +2,53 @@
 {
     public abstract class DerivedInternalNode : IReadOnlyNode
     {
+        #region variables
+
         private readonly IExternalReadOnlyNode _sourceNode;
-        private readonly int _id;
+
+        #endregion
+
+        #region constructor
 
         protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, int id)
         {
             _sourceNode = sourceNode;
-            _id = id;
+            Id = id;
         }
 
-        public bool Equals(IReadOnlyNode other)
-        {
-            return Id == other.Id;
-        }
+        #endregion
+
+        #region properties
 
         public double NominalVoltage 
         {
             get { return _sourceNode.NominalVoltage; }
         }
 
-        public int Id
+        public int Id { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public bool Equals(IReadOnlyNode other)
         {
-            get { return _id; }
+            return Id == other.Id;
         }
 
-        public abstract SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);
+        public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        {
+            var node = CreateSingleVoltageNodeInternal(scaleBasePower);
+            node.NominalPhaseShift = _sourceNode.NominalPhaseShift;
+            return node;
+        }
+
+        #endregion
+
+        #region abstract functions
+
+        protected abstract SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower);
+
+        #endregion
     }
 }

@@ -2,8 +2,14 @@
 {
     public class DerivedInternalPVNode : DerivedInternalNode
     {
+        #region variables
+
         private readonly double _voltageMagnitude;
         private readonly double _realPower;
+
+        #endregion
+
+        #region constructor
 
         public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, int id, double voltageMagnitude, double realPower) : base(sourceNode, id)
         {
@@ -11,7 +17,11 @@
             _realPower = realPower;
         }
 
-        public override SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        #endregion
+
+        #region protected functions
+
+        protected override SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SingleVoltageLevel.Node()
@@ -20,5 +30,7 @@
                 RealPower = scaler.ScalePower(_realPower)
             };
         }
+
+        #endregion
     }
 }

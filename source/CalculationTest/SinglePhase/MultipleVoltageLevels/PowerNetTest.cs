@@ -510,19 +510,19 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithPhaseShift_VoltagesAreCorrect()
         {
+            var targetVoltageRotated = new Complex(399.003154084021, -0.724983731967074) *
+                                       Complex.FromPolarCoordinates(1, (-1) * Math.PI / 6);
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, (-1) * Math.PI / 6);
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
             _powerNet.AddLoad(1, new Complex(-200, 0));
 
-            var voltageCollapse = _powerNet.CalculateNodeVoltages(_calculator);
+            var voltageCollapse = _powerNet.CalculateNodeVoltages(new CurrentIteration(0.00000000000001, 1000));
 
             Assert.IsFalse(voltageCollapse);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
-            var targetVoltageRotated = new Complex(399.003154084021, -0.724983731967074) *
-                                       Complex.FromPolarCoordinates(1, (-1) * Math.PI/6);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
             ComplexAssert.AreEqual(targetVoltageRotated, targetNode.Voltage, 0.01);
         }

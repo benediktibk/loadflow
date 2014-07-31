@@ -4,17 +4,29 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class DerivedInternalPQNode : DerivedInternalNode
     {
+        #region variables
+
         private readonly Complex _power;
+
+        #endregion
+
+        #region constructor
 
         public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, int id, Complex power) : base(sourceNode, id)
         {
             _power = power;
         }
 
-        public override SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        #endregion
+
+        #region protected functions
+
+        protected override SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SingleVoltageLevel.Node() {Power = scaler.ScalePower(_power)};
         }
+
+        #endregion
     }
 }
