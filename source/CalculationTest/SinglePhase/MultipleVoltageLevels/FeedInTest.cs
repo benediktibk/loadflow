@@ -22,7 +22,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _node = new Node(0, 2);
+            _node = new Node(0, 2, 0);
             _feedIn = new FeedIn(_node, new Complex(4, 3), 5, _idGenerator);
         }
 

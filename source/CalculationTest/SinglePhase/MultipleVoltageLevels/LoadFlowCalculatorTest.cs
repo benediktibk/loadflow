@@ -39,8 +39,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_OneFeedInAndOneLoadWithoutPowerScaling_CorrectResults()
         {
-            _powerNet.AddNode(0, 100);
-            _powerNet.AddNode(1, 100);
+            _powerNet.AddNode(0, 100, 0);
+            _powerNet.AddNode(1, 100, 0);
             _powerNet.AddFeedIn(0, new Complex(100, 0), 0);
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddLine(0, 1, 10, 0, 0, 0, 1);
@@ -57,8 +57,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_OneFeedInAndOneLoadWithPowerScaling_CorrectResults()
         {
-            _powerNet.AddNode(0, 100);
-            _powerNet.AddNode(1, 100);
+            _powerNet.AddNode(0, 100, 0);
+            _powerNet.AddNode(1, 100, 0);
             _powerNet.AddFeedIn(0, new Complex(100, 0), 0);
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddLine(0, 1, 10, 0, 0, 0, 1);
@@ -102,8 +102,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_GeneratorAndLoadWithNoPowerScaling_CorrectResults()
         {
-            _powerNet.AddNode(0, 1);
-            _powerNet.AddNode(1, 1);
+            _powerNet.AddNode(0, 1, 0);
+            _powerNet.AddNode(1, 1, 0);
             _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
@@ -121,8 +121,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_GeneratorAndLoadWithPowerScaling_CorrectResults()
         {
-            _powerNet.AddNode(0, 1);
-            _powerNet.AddNode(1, 1);
+            _powerNet.AddNode(0, 1, 0);
+            _powerNet.AddNode(1, 1, 0);
             _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
@@ -140,8 +140,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNodeVoltages_CalculationFails_Null()
         {
-            _powerNet.AddNode(0, 1);
-            _powerNet.AddNode(1, 1);
+            _powerNet.AddNode(0, 1, 0);
+            _powerNet.AddNode(1, 1, 0);
             _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);

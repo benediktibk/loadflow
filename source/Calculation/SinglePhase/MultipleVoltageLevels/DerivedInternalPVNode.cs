@@ -5,7 +5,7 @@
         private readonly double _voltageMagnitude;
         private readonly double _realPower;
 
-        public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, long id, double voltageMagnitude, double realPower) : base(sourceNode, id)
+        public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, int id, double voltageMagnitude, double realPower) : base(sourceNode, id)
         {
             _voltageMagnitude = voltageMagnitude;
             _realPower = realPower;

@@ -5,21 +5,31 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class IdGenerator
     {
-        private readonly HashSet<long> _inUse;
-        private long _creationCounter;
+        #region variables
+
+        private readonly HashSet<int> _inUse;
+        private int _creationCounter;
+
+        #endregion
+
+        #region constructor
 
         public IdGenerator()
         {
-            _inUse = new HashSet<long>();
+            _inUse = new HashSet<int>();
             _creationCounter = 0;
         }
 
-        public bool IsAlreadyUsed(long id)
+        #endregion
+
+        #region public functions
+
+        public bool IsAlreadyUsed(int id)
         {
             return _inUse.Contains(id);
         }
 
-        public void Add(long id)
+        public void Add(int id)
         {
             if (id < 0)
                 throw new ArgumentOutOfRangeException("id", "must not be negative");
@@ -30,9 +40,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _inUse.Add(id);
         }
 
-        public long Generate()
+        public int Generate()
         {
-            if (_creationCounter == long.MinValue)
+            if (_creationCounter == int.MinValue)
                 throw new InvalidOperationException("no free ids left");
 
             --_creationCounter;
@@ -40,9 +50,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return _creationCounter;
         }
 
-        public long Count
+        #endregion
+
+        #region properties
+
+        public int Count
         {
             get { return _inUse.Count; }
         }
+
+        #endregion
     }
 }

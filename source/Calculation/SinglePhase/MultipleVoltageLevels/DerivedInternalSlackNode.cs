@@ -6,7 +6,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly Complex _voltage;
 
-        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, long id, Complex voltage) : base(sourceNode, id)
+        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, int id, Complex voltage) : base(sourceNode, id)
         {
             _voltage = voltage;
         }

@@ -24,9 +24,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _upperSideNode = new Node(0, 10);
-            _lowerSideNode = new Node(1, 0.25);
-            _groundNode = new Node(2, 0);
+            _upperSideNode = new Node(0, 10, 0);
+            _lowerSideNode = new Node(1, 0.25, 0);
+            _groundNode = new Node(2, 0, 0);
             _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, 0, _idGenerator);
             _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, 0, _idGenerator);
         }

@@ -20,7 +20,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 103);
+            _node = new Node(0, 103, 0);
             _generator = new Generator(_node, 5, 7);
         }
 

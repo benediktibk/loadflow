@@ -8,40 +8,35 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Node : IExternalReadOnlyNode
     {
-        private readonly long _id;
-        private readonly double _nominalVoltage;
+        #region variables
+
         private readonly List<IPowerNetElement> _connectedElements;
         private Complex _voltage;
         private bool _voltageSet;
 
-        public Node(long id, double nominalVoltage)
+        #endregion
+
+        #region constructor
+
+        public Node(int id, double nominalVoltage, double nominalPhaseShift)
         {
-            _id = id;
-            _nominalVoltage = nominalVoltage;
+            Id = id;
+            NominalVoltage = nominalVoltage;
+            NominalPhaseShift = nominalPhaseShift;
             _connectedElements = new List<IPowerNetElement>();
             _voltage = new Complex();
             _voltageSet = false;
         }
 
-        public void Connect(IPowerNetElement element)
-        {
-            _connectedElements.Add(element);
-        }
+        #endregion
 
-        public IReadOnlyCollection<IPowerNetElement> ConnectedElements
-        {
-            get { return _connectedElements; }
-        }
+        #region properties
 
-        public double NominalVoltage
-        {
-            get { return _nominalVoltage; }
-        }
+        public double NominalVoltage { get; private set; }
 
-        public long Id
-        {
-            get { return _id; }
-        }
+        public double NominalPhaseShift { get; private set; }
+
+        public int Id { get; private set; }
 
         public Complex Voltage
         {
@@ -57,6 +52,35 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 _voltage = value;
                 _voltageSet = true;
             }
+        }
+
+        public bool IsOverdetermined
+        {
+            get { return _connectedElements.Count(element => element.EnforcesSlackBus) + _connectedElements.Count(element => element.EnforcesPVBus) > 1; }
+        }
+
+        public bool MustBeSlackBus
+        {
+            get { return _connectedElements.Count(element => element.EnforcesSlackBus) > 0; }
+        }
+
+        public bool MustBePVBus
+        {
+            get { return _connectedElements.Count(element => element.EnforcesPVBus) > 0; }
+        }
+
+        #endregion
+
+        #region public functions
+
+        public void Connect(IPowerNetElement element)
+        {
+            _connectedElements.Add(element);
+        }
+
+        public IReadOnlyCollection<IPowerNetElement> ConnectedElements
+        {
+            get { return _connectedElements; }
         }
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
@@ -77,24 +101,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNode;
         }
 
-        public bool IsOverdetermined
-        {
-            get { return _connectedElements.Count(element => element.EnforcesSlackBus) + _connectedElements.Count(element => element.EnforcesPVBus) > 1; }
-        }
-
-        public bool MustBeSlackBus
-        {
-            get { return _connectedElements.Count(element => element.EnforcesSlackBus) > 0; }
-        }
-
-        public bool MustBePVBus
-        {
-            get { return _connectedElements.Count(element => element.EnforcesPVBus) > 0; }
-        }
-
         public override int GetHashCode()
         {
-            return _id.GetHashCode();
+            return Id.GetHashCode();
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
@@ -146,15 +155,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool Equals(IReadOnlyNode other)
         {
-            return _id == other.Id;
+            return Id == other.Id;
         }
 
         public void UpdateVoltage(IReadOnlyDictionary<long, Complex> voltages)
         {
             Debug.Assert(voltages.ContainsKey(Id));
-            var scaler = new DimensionScaler(_nominalVoltage, 1);
+            var scaler = new DimensionScaler(NominalVoltage, 1);
             var value = voltages[Id];
             Voltage = scaler.UnscaleVoltage(value);
         }
+
+        #endregion
     }
 }

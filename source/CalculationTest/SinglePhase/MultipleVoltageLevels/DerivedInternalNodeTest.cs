@@ -8,12 +8,12 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         private Node _sourceNode;
         private DerivedInternalNode _node;
 
-        protected abstract DerivedInternalNode CreateNode(Node sourceNode, long id);
+        protected abstract DerivedInternalNode CreateNode(Node sourceNode, int id);
 
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNode = new Node(0, 234);
+            _sourceNode = new Node(0, 234, 0);
             _node = CreateNode(_sourceNode, 1);
         }
 

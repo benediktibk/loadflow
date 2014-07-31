@@ -6,7 +6,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class DerivedInternalPVNodeTest : DerivedInternalNodeTest
     {
-        protected override DerivedInternalNode CreateNode(Node sourceNode, long id)
+        protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
         {
             return new DerivedInternalPVNode(sourceNode, id, 5, 4);
         }
@@ -14,7 +14,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidScaleBases_VoltageOfPVBusIsCorrectScaled()
         {
-            var sourceNode = new Node(0, 3);
+            var sourceNode = new Node(0, 3, 0);
             var node = CreateNode(sourceNode, 1);
 
             var result = node.CreateSingleVoltageNode(2);

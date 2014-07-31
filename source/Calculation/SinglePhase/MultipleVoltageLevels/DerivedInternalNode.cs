@@ -3,9 +3,9 @@
     public abstract class DerivedInternalNode : IReadOnlyNode
     {
         private readonly IExternalReadOnlyNode _sourceNode;
-        private readonly long _id;
+        private readonly int _id;
 
-        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, long id)
+        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, int id)
         {
             _sourceNode = sourceNode;
             _id = id;
@@ -21,7 +21,7 @@
             get { return _sourceNode.NominalVoltage; }
         }
 
-        public long Id
+        public int Id
         {
             get { return _id; }
         }
