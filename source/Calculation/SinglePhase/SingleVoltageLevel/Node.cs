@@ -21,6 +21,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             PowerIsKnown = false;
             RealPowerIsKnown = false;
             VoltageMagnitudeIsKnown = false;
+            NominalPhaseShift = 0;
         }
 
         #endregion
@@ -121,6 +122,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get { return VoltageIsKnown && !PowerIsKnown && !RealPowerIsKnown; }
         }
+
+        public double NominalPhaseShift { get; set; }
 
         #endregion
     }

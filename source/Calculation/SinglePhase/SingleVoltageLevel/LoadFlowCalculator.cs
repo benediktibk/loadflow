@@ -62,9 +62,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 Vector<Complex> constantCurrentRightHandSide;
                 var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfSlackBuses, knownVoltages, out constantCurrentRightHandSide);
                 var totalAdmittanceRowSums = admittances.CalculateRowSums();
+                var nominalVoltages = CalculateNominalVoltages(nominalVoltage, nodes, countOfUnknownVoltages, indexOfNodesWithUnknownVoltage);
 
-                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums,
-                    nominalVoltage, constantCurrentRightHandSide, pqBuses, pvBuses);
+                var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages, totalAdmittanceRowSums, nominalVoltage,
+                    nominalVoltages, constantCurrentRightHandSide, pqBuses, pvBuses);
 
                 allVoltages = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
                     indexOfNodesWithUnknownVoltage, unknownVoltages);
@@ -106,6 +107,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 voltageCollapse = true;
 
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+        }
+
+        private static IReadOnlyList<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
+            IEnumerable<int> indexOfNodesWithUnknownVoltage)
+        {
+            var nominalVoltages = new List<Complex>(countOfUnknownVoltages);
+
+            foreach (var index in indexOfNodesWithUnknownVoltage)
+            {
+                var node = nodes[index];
+                nominalVoltages.Add(Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift));
+            }
+
+            return nominalVoltages;
         }
 
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)

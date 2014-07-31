@@ -7,7 +7,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, IReadOnlyList<Complex> nominalVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
@@ -19,7 +19,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 foreach (var bus in pqBuses)
                     knownPowers[bus.ID] = bus.Power;
 
-                return CalculateUnknownVoltagesInternal(admittances, nominalVoltage, constantCurrents,
+                return CalculateUnknownVoltagesInternal(admittances, nominalVoltages, constantCurrents,
                     knownPowers);
             }
             
@@ -35,6 +35,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             knownVoltages = new DenseVector(pvBuses.Count);
             knownPowers = new DenseVector(pqBuses.Count);
+            var reducedNominalVoltags = new DenseVector(pvBuses.Count);
             var indexOfNodesWithKnownVoltage = new List<int>(pvBuses.Count);
             var indexOfNodesWithUnkownVoltage = new List<int>(pqBuses.Count);
                 
@@ -48,6 +49,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 indexOfNodesWithKnownVoltage.Add(pvBuses[i].ID);
                 knownVoltages[i] = new Complex(pvBuses[i].VoltageMagnitude, 0);
+                reducedNominalVoltags[i] = nominalVoltages[pvBuses[i].ID];
             }
 
             Vector<Complex> additionalConstantCurrents;
@@ -60,7 +62,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var totalConstantCurrents = reducedConstantCurrents.Add(additionalConstantCurrents);
 
-            var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, nominalVoltage, totalConstantCurrents,
+            var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, reducedNominalVoltags, totalConstantCurrents,
                 knownPowers);
             return LoadFlowCalculator.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
@@ -71,10 +73,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 10;
         }
 
-        private Vector<Complex> CalculateUnknownVoltagesInternal(AdmittanceMatrix admittances, double nominalVoltage,
+        private Vector<Complex> CalculateUnknownVoltagesInternal(AdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
-            var ownCurrents = (knownPowers.Divide(nominalVoltage)).Conjugate();
+            var ownCurrents = (knownPowers.PointwiseDivide(DenseVector.OfEnumerable(nominalVoltages))).Conjugate();
             var totalCurrents = ownCurrents.Add(constantCurrents);
             var factorization = admittances.CalculateFactorization();
             return factorization.Solve(totalCurrents);
