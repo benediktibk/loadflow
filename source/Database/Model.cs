@@ -132,6 +132,7 @@ namespace Database
                     {
                         Connection.Add(powerNet);
                         powerNet.PropertyChanged += UpdatePowerNetInDatabase;
+                        powerNet.Connection = Connection;
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
