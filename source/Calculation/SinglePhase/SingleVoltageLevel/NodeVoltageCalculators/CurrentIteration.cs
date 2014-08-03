@@ -25,16 +25,24 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var nodeCount = admittances.NodeCount;
             var powers = new DenseVector(nodeCount);
             var voltages = initialVoltages;
+            var totalAbsolutePowerSum = 0.0;
 
             foreach (var bus in pqBuses)
+            {
                 powers[bus.ID] = bus.Power;
+                totalAbsolutePowerSum += Math.Abs(bus.Power.Real) + Math.Abs(bus.Power.Imaginary);
+            }
 
             foreach (var bus in pvBuses)
+            {
                 powers[bus.ID] = new Complex(bus.RealPower, 0);
+                totalAbsolutePowerSum += Math.Abs(bus.RealPower);
+            }
 
             var iterations = 0;
             double voltageChange;
             bool powerErrorTooBig;
+            bool accurateEnough;
             var factorization = admittances.CalculateFactorization();
 
             do
@@ -63,9 +71,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var voltageDifference = newVoltages.Subtract(voltages);
                 var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
                 voltageChange = maximumVoltageDifference.Magnitude / nominalVoltage;
+                var absolutePowerError = LoadFlowCalculator.CalculatePowerError(admittances, newVoltages, constantCurrents,
+                    pqBuses, pvBuses);
+                var relativePowerError = totalAbsolutePowerSum != 0
+                    ? absolutePowerError/totalAbsolutePowerSum
+                    : absolutePowerError;
+                accurateEnough = voltageChange/nominalVoltage < _targetPrecision/10 && !powerErrorTooBig &&
+                                 relativePowerError < GetMaximumPowerError();
                 voltages = newVoltages;
                 ++iterations;
-            } while (iterations <= _maximumIterations && (voltageChange/nominalVoltage > _targetPrecision/10 || powerErrorTooBig));
+            } while (iterations <= _maximumIterations && !accurateEnough);
 
             return voltages;
         }
