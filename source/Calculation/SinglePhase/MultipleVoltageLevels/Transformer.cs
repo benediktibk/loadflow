@@ -125,7 +125,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
             if (relativeShortCircuitVoltageReal >= relativeShortCircuitVoltage)
-                throw new ArgumentException("the copper losses are too high compare to the nominal power");
+                throw new ArgumentException("the copper losses are too high compared to the nominal power");
 
             var relativeShortCircuitVoltageImaginary =
                 Math.Sqrt(relativeShortCircuitVoltage * relativeShortCircuitVoltage -
@@ -134,8 +134,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 relativeShortCircuitVoltageImaginary);
             _lengthAdmittance = new Complex(nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage), 0) /
                                 relativeShortCircuitVoltageComplex;
-            _shuntAdmittance = new Complex(1 / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage), 0) *
-                               new Complex(ironLosses, (-1) * relativeNoLoadCurrent * nominalPower);
+            _shuntAdmittance = new Complex(ironLosses, (-1) * relativeNoLoadCurrent * nominalPower) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
         }
 
         #endregion

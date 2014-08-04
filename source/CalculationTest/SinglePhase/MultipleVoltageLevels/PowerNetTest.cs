@@ -263,7 +263,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, 0);
             var node = _powerNet.GetNodeById(0);
 
-            _powerNet.AddFeedIn(0, new Complex(123, 3), 0);
+            _powerNet.AddFeedIn(0, new Complex(123, 3), 0, 1.1, 1);
 
             Assert.AreEqual(1, node.ConnectedElements.Count);
             Assert.AreEqual(1, _powerNet.FeedInCount);
@@ -306,7 +306,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 120, 0);
             _powerNet.AddNode(1, 120, 0);
-            _powerNet.AddFeedIn(0, new Complex(), 6);
+            _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
             _powerNet.AddLine(0, 1, 3, 5, 0, 0, 1);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
@@ -318,7 +318,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 120, 0);
             _powerNet.AddNode(1, 120, 0);
-            _powerNet.AddFeedIn(0, new Complex(), 6);
+            _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
             _powerNet.AddLine(0, 1, 3, 5, 5, 0, 1);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
@@ -330,7 +330,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 1000, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddLine(0, 1, 5, 700e-6, 0, 0, 1);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
@@ -348,7 +348,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 1000, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddLine(0, 1, 5, 700e-6, 0, 0, 1);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
@@ -366,7 +366,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, 0);
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
@@ -384,7 +384,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, 0);
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
@@ -402,7 +402,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 2, 0);
             _powerNet.AddNode(1, 1, 0);
-            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.02, 30, 50, 0.05, 1.95, 0);
             _powerNet.AddLoad(1, new Complex(0, 0));
             var calculator = new NodePotentialMethod();
@@ -421,7 +421,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 2, 0);
             _powerNet.AddNode(1, 1, 0);
-            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.02, 30, 50, 0.05, 1.95, 0);
             _powerNet.AddLoad(1, new Complex(0, 0));
 
@@ -439,7 +439,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 2, 0);
             _powerNet.AddNode(1, 1, 0);
-            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1.95, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 10, 0.02, 0.00000001, 0.00000000001, 0.05, 1.95, 0);
             _powerNet.AddLoad(1, new Complex(0, 0));
             var calculator = new NodePotentialMethod();
@@ -458,7 +458,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1002, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1002, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 0);
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
@@ -476,7 +476,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1002, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1002, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.02, 30, 50, 0.05, 2.495, 0);
             _powerNet.AddLoad(1, new Complex(0, 0));
 
@@ -494,7 +494,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 0);
             _powerNet.AddLoad(1, new Complex(-200, 0));
 
@@ -514,7 +514,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                                        Complex.FromPolarCoordinates(1, (-1) * Math.PI / 6);
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, (-1) * Math.PI / 6);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
             _powerNet.AddLoad(1, new Complex(-200, 0));
 
@@ -532,7 +532,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, 0);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 0);
             _powerNet.AddLoad(1, new Complex(0, 0));
 
@@ -550,7 +550,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1000, 0);
             _powerNet.AddNode(1, 400, (-1) * Math.PI / 6);
-            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0);
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, 1);
             _powerNet.AddLoad(1, new Complex(0, 0));
 

@@ -13,7 +13,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly double _c;
         private readonly double _realToImaginary;
 
-        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, IdGenerator idGenerator, double c, double realToImaginary)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, IdGenerator idGenerator)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");

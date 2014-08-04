@@ -107,7 +107,7 @@ namespace Database
                 foreach (var feedIn in FeedIns)
                     _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
                         new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        feedIn.ShortCircuitPower);
+                        feedIn.ShortCircuitPower, 1.1, 1);
 
                 foreach (var generator in Generators)
                     _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);

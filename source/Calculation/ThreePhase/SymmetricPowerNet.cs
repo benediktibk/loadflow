@@ -39,9 +39,9 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddGenerator(nodeId, voltageMagnitude/Math.Sqrt(3), realPower/3);
         }
 
-        public void AddFeedIn(int nodeId, Complex voltage, double shortCircuitPower)
+        public void AddFeedIn(int nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary)
         {
-            _singlePhasePowerNet.AddFeedIn(nodeId, voltage/Math.Sqrt(3), shortCircuitPower/3);
+            _singlePhasePowerNet.AddFeedIn(nodeId, voltage/Math.Sqrt(3), shortCircuitPower/3, c, realToImaginary);
         }
 
         public void AddTransformer(int upperSideNodeId, int lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, int phaseShift)
