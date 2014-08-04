@@ -40,7 +40,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodesById = new Dictionary<long, Node>();
             _idGeneratorNodes = new IdGenerator();
             _groundNode = new Node(_idGeneratorNodes.Generate(), 0, 0);
-            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, _idGeneratorNodes);
+            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, _idGeneratorNodes, 1.1, 1);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
         }
@@ -123,7 +123,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower)
         {
             var node = GetNodeByIdInternal(nodeId);
-            var feedIn = new FeedIn(node, voltage, shortCircuitPower, _idGeneratorNodes);
+            var feedIn = new FeedIn(node, voltage, shortCircuitPower, _idGeneratorNodes, 1.1, 1);
             _feedIns.Add(feedIn);
             _elements.Add(feedIn);
             node.Connect(feedIn);

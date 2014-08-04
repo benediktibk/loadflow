@@ -23,7 +23,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _idGenerator = new IdGenerator();
             _node = new Node(0, 2, 0);
-            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, _idGenerator);
+            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, _idGenerator, 1.1, 1);
         }
 
         [TestMethod]
@@ -42,13 +42,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_ShortCircuitPowerSetToNegativeValue_ThrowsException()
         {
-            new FeedIn(_node, new Complex(4, 3), -4, _idGenerator);
+            new FeedIn(_node, new Complex(4, 3), -4, _idGenerator, 1.1, 1);
         }
 
         [TestMethod]
         public void Constructor_ShortCircuitPowerSetTo0_ThrowsNoException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, _idGenerator, 1.1, 1);
 
             Assert.AreEqual(0, feedIn.ShortCircuitPower);
         }
@@ -63,21 +63,21 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void InputImpedance_ShortCircuitPowerSetTo0_ThrowsException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, _idGenerator, 1.1, 1);
             var impedance = feedIn.InputImpedance;
         }
 
         [TestMethod]
         public void InputImpedance_ShortCircuitPowerNotZero_CorrectResult()
         {
-            Assert.AreEqual(1.1*2*2/5, _feedIn.InputImpedance, 0.0001);
+            ComplexAssert.AreEqual(1.60706086633306, 1.60706086633306, _feedIn.InputImpedance, 0.0001);
         }
 
         [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, _idGenerator);
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, _idGenerator, 1.1, 1);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             feedIn.AddConnectedNodes(nodes);
@@ -128,7 +128,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_ShortCircuitPowerSetTo0_EmptyList()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, _idGenerator, 1.1, 1);
 
             var result = feedIn.GetInternalNodes();
 
@@ -148,7 +148,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_ShortCircuitPowerSetTo0_NothingChanged()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, _idGenerator, 1.1, 1);
             var dictionary = new Dictionary<IReadOnlyNode, int>();
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new [,]
@@ -182,10 +182,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             _feedIn.FillInAdmittances(admittances, 3, null, 1);
 
-            ComplexAssert.AreEqual(3.51515151, 4, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(1.4848484848, 1, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-4.51515151, 9, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(1.81515151, 0.4, admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(2.41483597829611, 3.58516402170389, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(-3.41483597829611, 9.41483597829611, admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(2.58516402170389, 1.41483597829611, admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(0.714835978296108, -0.0148359782961078, admittances[1, 1], 0.00001);
         }
 
         [TestMethod]

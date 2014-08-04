@@ -10,8 +10,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Complex _voltage;
         private readonly double _shortCircuitPower;
         private readonly DerivedInternalSlackNode _internalNode;
+        private readonly double _c;
+        private readonly double _realToImaginary;
 
-        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, IdGenerator idGenerator)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, IdGenerator idGenerator, double c, double realToImaginary)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
@@ -19,6 +21,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _node = node;
             _voltage = voltage;
             _shortCircuitPower = shortCircuitPower;
+            _c = c;
+            _realToImaginary = realToImaginary;
             _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage);
         }
 
@@ -37,7 +41,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _shortCircuitPower; }
         }
 
-        public double InputImpedance
+        public Complex InputImpedance
         {
             get
             {
@@ -45,7 +49,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     throw new InvalidOperationException();
 
                 var nominalVoltage = NominalVoltage;
-                return 1.1*nominalVoltage*nominalVoltage/_shortCircuitPower;
+                var Z = 1.1*nominalVoltage*nominalVoltage/_shortCircuitPower;
+                var X = Math.Sqrt(_realToImaginary*_realToImaginary + 1)/Z;
+                var R = _realToImaginary*X;
+                return new Complex(R, X);
             }
         }
 
