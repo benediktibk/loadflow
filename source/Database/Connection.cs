@@ -94,7 +94,7 @@ namespace Database
                 new SqlCommand(
                     "CREATE TABLE feedins " +
                     "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "FeedInName TEXT NOT NULL, VoltageReal REAL NOT NULL, VoltageImaginary REAL NOT NULL, ShortCircuitPower REAL NOT NULL, " +
+                    "FeedInName TEXT NOT NULL, VoltageReal REAL NOT NULL, VoltageImaginary REAL NOT NULL, ShortCircuitPower REAL NOT NULL, C REAL NOT NULL, RealToImaginary REAL NOT NULL, " +
                     "PRIMARY KEY(FeedInId));", _sqlConnection);
             var createGeneratorTable = 
                 new SqlCommand(
@@ -108,7 +108,6 @@ namespace Database
                     "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER REFERENCES nodes (NodeId), LowerSideNode INTEGER REFERENCES nodes (NodeId), " +
                     "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT NOT NULL, NominalPower REAL NOT NULL, " +
                     "RelativeShortCircuitVoltage REAL NOT NULL, CopperLosses REAL NOT NULL, IronLosses REAL NOT NULL, RelativeNoLoadCurrent REAL NOT NULL, Ratio REAL NOT NULL, " +
-                    "PhaseShift INT NOT NULL, " +
                     "PRIMARY KEY(TransformerId));", _sqlConnection);
             var createLineTable = 
                 new SqlCommand(
@@ -375,7 +374,7 @@ namespace Database
             var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
             var command = 
                 new SqlCommand(
-                    "SELECT FeedInId, Node, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower " +
+                    "SELECT FeedInId, Node, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower, C, RealToImaginary " +
                     "FROM feedins WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             
@@ -405,7 +404,7 @@ namespace Database
             var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
             var command =
                 new SqlCommand(
-                    "SELECT TransformerId, UpperSideNode, LowerSideNode, TransformerName, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift " +
+                    "SELECT TransformerId, UpperSideNode, LowerSideNode, TransformerName, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio " +
                     "FROM transformers WHERE PowerNet=@PowerNet;", _sqlConnection);
             command.Parameters.Add(powerNetParam);
             
@@ -429,7 +428,9 @@ namespace Database
                 Node = node,
                 VoltageReal = reader.Parse<double>("VoltageReal"),
                 VoltageImaginary = reader.Parse<double>("VoltageImaginary"),
-                ShortCircuitPower = reader.Parse<double>("ShortCircuitPower")
+                ShortCircuitPower = reader.Parse<double>("ShortCircuitPower"),
+                C = reader.Parse<double>("C"),
+                RealToImaginary = reader.Parse<double>("RealToImaginary")
             };
         }
 
@@ -524,7 +525,6 @@ namespace Database
                 IronLosses = reader.Parse<double>("IronLosses"),
                 RelativeNoLoadCurrent = reader.Parse<double>("RelativeNoLoadCurrent"),
                 Ratio = reader.Parse<double>("Ratio"),
-                PhaseShift = reader.Parse<int>("PhaseShift"),
                 UpperSideNode =  upperSideNode,
                 LowerSideNode = lowerSideNode
             };

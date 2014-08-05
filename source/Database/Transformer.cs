@@ -207,9 +207,9 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO transformers (TransformerName, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift) " +
+                    "INSERT INTO transformers (TransformerName, PowerNet, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio) " +
                     "OUTPUT INSERTED.TransformerId " +
-                    "VALUES(@Name, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio, @PhaseShift);");
+                    "VALUES(@Name, @PowerNet, @NominalPower, @RelativeShortCircuitVoltage, @CopperLosses, @IronLosses, @RelativeNoLoadCurrent, @Ratio);");
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             command.Parameters.Add(new SqlParameter("NominalPower", SqlDbType.Real) { Value = NominalPower });
@@ -218,7 +218,6 @@ namespace Database
             command.Parameters.Add(new SqlParameter("IronLosses", SqlDbType.Real) { Value = IronLosses });
             command.Parameters.Add(new SqlParameter("RelativeNoLoadCurrent", SqlDbType.Real) { Value = RelativeNoLoadCurrent });
             command.Parameters.Add(new SqlParameter("Ratio", SqlDbType.Real) { Value = Ratio });
-            command.Parameters.Add(new SqlParameter("PhaseShift", SqlDbType.Int) { Value = PhaseShift });
             return command;
         }
 
@@ -229,7 +228,7 @@ namespace Database
                     "UPDATE transformers SET " +
                     "UpperSideNode=@UpperSideNode, LowerSideNode=@LowerSideNode, TransformerName=@Name, NominalPower=@NominalPower, " +
                     "RelativeShortCircuitVoltage=@RelativeShortCircuitVoltage, CopperLosses=@CopperLosses, IronLosses=@IronLosses, " +
-                    "RelativeNoLoadCurrent=@RelativeNoLoadCurrent, Ratio=@Ratio, PhaseShift=@PhaseShift " +
+                    "RelativeNoLoadCurrent=@RelativeNoLoadCurrent, Ratio=@Ratio " +
                     "WHERE TransformerId=@Id;");
             command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
             command.Parameters.Add(new SqlParameter("UpperSideNode", SqlDbType.Int) { Value = UpperSideNodeForeignKey });
@@ -241,7 +240,6 @@ namespace Database
             command.Parameters.Add(new SqlParameter("IronLosses", SqlDbType.Real) { Value = IronLosses });
             command.Parameters.Add(new SqlParameter("RelativeNoLoadCurrent", SqlDbType.Real) { Value = RelativeNoLoadCurrent });
             command.Parameters.Add(new SqlParameter("Ratio", SqlDbType.Real) { Value = Ratio });
-            command.Parameters.Add(new SqlParameter("PhaseShift", SqlDbType.Int) { Value = PhaseShift });
             return command;
         }
 
