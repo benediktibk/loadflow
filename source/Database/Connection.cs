@@ -274,6 +274,7 @@ namespace Database
             powerNet.Nodes.Clear();
             var nodeIds = new Dictionary<int, Node> {{0, null}};
             var command = Node.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
