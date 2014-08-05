@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {

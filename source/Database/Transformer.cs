@@ -81,6 +81,7 @@ namespace Database
 
                 _upperSideNode = value;
                 NotifyPropertyChanged();
+                InitializeRatio();
             }
         }
 
@@ -93,6 +94,7 @@ namespace Database
 
                 _lowerSideNode = value;
                 NotifyPropertyChanged();
+                InitializeRatio();
             }
         }
 
@@ -282,6 +284,18 @@ namespace Database
                     "FROM transformers WHERE PowerNet=@PowerNet;");
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void InitializeRatio()
+        {
+            if (UpperSideNode == null || LowerSideNode == null)
+                return;
+
+            Ratio = UpperSideNode.NominalVoltage/LowerSideNode.NominalVoltage;
         }
 
         #endregion
