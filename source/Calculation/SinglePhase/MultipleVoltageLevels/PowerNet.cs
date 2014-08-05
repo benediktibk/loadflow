@@ -39,8 +39,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodes = new List<Node>();
             _nodesById = new Dictionary<long, Node>();
             _idGeneratorNodes = new IdGenerator();
-            _groundNode = new Node(_idGeneratorNodes.Generate(), 0, 0);
-            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
+            _groundNode = new Node(_idGeneratorNodes.Generate(), 0, 0, "ground");
+            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, "", _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
         }
@@ -69,8 +69,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var maximumPower = GetMaximumPower();
-            var powerScaling = maximumPower > 0 ? maximumPower : 1;
+            var powerScaling = DeterminePowerScaling();
             var calculator = new LoadFlowCalculator(powerScaling, nodeVoltageCalculator);
             var voltages = calculator.CalculateNodeVoltages(this);
 
@@ -88,14 +87,21 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return GetNodeByIdInternal(id);
         }
 
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
+        {
+            powerBase = DeterminePowerScaling();
+            var calculator = new LoadFlowCalculator(powerBase, new NodePotentialMethod());
+            calculator.CalculateAdmittanceMatrix(out matrix, out nodeNames, this);
+        }
+
         #endregion
 
         #region add functions
 
-        public void AddNode(int id, double nominalVoltage, double nominalPhaseShift)
+        public void AddNode(int id, double nominalVoltage, double nominalPhaseShift, string name)
         {
             _idGeneratorNodes.Add(id);
-            var node = new Node(id, nominalVoltage, nominalPhaseShift);
+            var node = new Node(id, nominalVoltage, nominalPhaseShift, name);
             _nodes.Add(node);
             _nodesById.Add(id, node);
         }
@@ -120,20 +126,20 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(generator);
         }
 
-        public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary)
+        public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary, string name)
         {
             var node = GetNodeByIdInternal(nodeId);
-            var feedIn = new FeedIn(node, voltage, shortCircuitPower, c, realToImaginary, _idGeneratorNodes);
+            var feedIn = new FeedIn(node, voltage, shortCircuitPower, c, realToImaginary, name, _idGeneratorNodes);
             _feedIns.Add(feedIn);
             _elements.Add(feedIn);
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio)
+        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, string name)
         {
             var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
             var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);
-            var transformer = new Transformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, _idGeneratorNodes);
+            var transformer = new Transformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, name, _idGeneratorNodes);
             _transformers.Add(transformer);
             _elements.Add(transformer);
             upperSideNode.Connect(transformer);
@@ -269,6 +275,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
             var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
             return Math.Max(generatorMaximum, loadMaximum);
+        }
+
+        private double DeterminePowerScaling()
+        {
+            var maximumPower = GetMaximumPower();
+            var powerScaling = maximumPower > 0 ? maximumPower : 1;
+            return powerScaling;
         }
 
         #endregion

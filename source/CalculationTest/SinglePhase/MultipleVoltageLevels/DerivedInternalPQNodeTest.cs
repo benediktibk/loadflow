@@ -10,13 +10,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     {
         protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
         {
-            return new DerivedInternalPQNode(sourceNode, id, new Complex(4, -2));
+            return new DerivedInternalPQNode(sourceNode, id, new Complex(4, -2), "");
         }
 
         [TestMethod]
         public void CreateSingleVoltageNode_2AsScaleBaseForPower_PowerOfPQBusIsCorrectScaled()
         {
-            var sourceNode = new Node(0, 3, 0);
+            var sourceNode = new Node(0, 3, 0, "");
             var node = CreateNode(sourceNode, 1);
 
             var result = node.CreateSingleVoltageNode(2);

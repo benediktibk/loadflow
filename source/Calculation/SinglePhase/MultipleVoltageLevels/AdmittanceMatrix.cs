@@ -6,8 +6,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class AdmittanceMatrix : IAdmittanceMatrix
     {
+        #region variables
+
         private readonly SingleVoltageLevel.AdmittanceMatrix _values;
         private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
+
+        #endregion
+
+        #region constructors
 
         public AdmittanceMatrix(int nodeCount, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
@@ -20,6 +26,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _values = new SingleVoltageLevel.AdmittanceMatrix(values);
             _nodeIndexes = nodeIndexes;
         }
+
+        #endregion
+
+        #region public functions
 
         public void AddConnection(IReadOnlyNode sourceNode, IReadOnlyNode targetNode, Complex admittance)
         {
@@ -74,5 +84,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return _values[row, column]; }
         }
+
+        #endregion
     }
 }

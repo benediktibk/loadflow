@@ -99,46 +99,27 @@ namespace Database
             _isCalculationRunning = true;
             _isCalculationRunningMutex.ReleaseMutex();
 
-            Log("creating symmetric power net");
-
-            _calculationPowerNet = new SymmetricPowerNet(Frequency);
             _nodeVoltageCalculator = NodeVoltageCalculatorFactory.Create(CalculatorSelection);
 
-            try
-            {
-                foreach (var node in Nodes)
-                    _calculationPowerNet.AddNode(node.Id, node.NominalVoltage);
-
-                foreach (var line in Lines)
-                    _calculationPowerNet.AddLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
-                        line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
-                        line.ShuntCapacityPerUnitLength, line.Length);
-
-                foreach (var feedIn in FeedIns)
-                    _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
-                        new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary);
-
-                foreach (var generator in Generators)
-                    _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
-
-                foreach (var load in Loads)
-                    _calculationPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
-
-                foreach (var transformer in Transformers)
-                    _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
-                        transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
-                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio);
-            } 
-            catch (Exception exception)
-            {
-                Log("an error occured during the creation of the net: " + exception.Message);
-                IsCalculationRunning = false;
+            if (!CreatePowerNet()) 
                 return;
-            }
 
             Log("starting with calculation of node voltages");
             _backgroundWorker.RunWorkerAsync();
+        }
+
+        public bool CalculateAdmittanceMatrix(out Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
+        {
+            matrix = null;
+            nodeNames = null;
+            powerBase = 0;
+
+            if (!CreatePowerNet())
+                return false;
+
+            _calculationPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+
+            return true;
         }
 
         public SqlCommand CreateCommandToAddToDatabase()
@@ -198,6 +179,11 @@ namespace Database
             inUse = Lines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
             inUse = Transformers.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
             return inUse;
+        }
+
+        public void Log(string message)
+        {
+            LogMessages += message + "\r\n";
         }
 
         #endregion
@@ -476,9 +462,46 @@ namespace Database
             }
         }
 
-        private void Log(string message)
+        private bool CreatePowerNet()
         {
-            LogMessages += message + "\r\n";
+            Log("creating symmetric power net");
+
+            _calculationPowerNet = new SymmetricPowerNet(Frequency);
+
+            try
+            {
+                foreach (var node in Nodes)
+                    _calculationPowerNet.AddNode(node.Id, node.NominalVoltage, node.Name);
+
+                foreach (var line in Lines)
+                    _calculationPowerNet.AddLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
+                        line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
+                        line.ShuntCapacityPerUnitLength, line.Length);
+
+                foreach (var feedIn in FeedIns)
+                    _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
+                        new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
+                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary, feedIn.Name);
+
+                foreach (var generator in Generators)
+                    _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
+
+                foreach (var load in Loads)
+                    _calculationPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
+
+                foreach (var transformer in Transformers)
+                    _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
+                        transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
+                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, transformer.Name);
+            }
+            catch (Exception exception)
+            {
+                Log("an error occured during the creation of the net: " + exception.Message);
+                IsCalculationRunning = false;
+                return false;
+            }
+
+            return true;
         }
 
         #endregion

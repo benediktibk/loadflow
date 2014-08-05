@@ -36,9 +36,9 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoad_CorrectResults()
         {
             const double omega = 2*Math.PI*50;
-            _powerNet.AddNode(1, 400);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNet.AddNode(1, 400, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1, "");
             _powerNet.AddLoad(2, new Complex(-20000, -2000));
             _powerNet.AddLine(1, 2, 0.1, 0.4/omega, 100/(400*400), 1e-10, 1);
 
@@ -55,11 +55,11 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_Transformer_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI/180), 0, 1.1, 1);
+            _powerNet.AddNode(1, 1000, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI/180), 0, 1.1, 1, "");
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5, "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -74,11 +74,11 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLosses_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNet.AddNode(1, 1000, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1, "");
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -93,11 +93,11 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLossesAndNoInductance_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNet.AddNode(1, 1000, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1, "");
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -112,10 +112,10 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_Generator_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, 400);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddNode(3, 400);
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), 0, 1.1, 1);
+            _powerNet.AddNode(1, 400, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddNode(3, 400, "");
+            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), 0, 1.1, 1, "");
             _powerNet.AddGenerator(3, 400, 15000);
             _powerNet.AddLoad(2, new Complex(-20000, -2000));
             _powerNet.AddLine(1, 2, 0.1, 0.4 / omega, 100 / (400 * 400), 1e-10, 1);
@@ -138,15 +138,15 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_CompletePowerNet_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, 400);
-            _powerNet.AddNode(2, 400);
-            _powerNet.AddNode(3, 400);
-            _powerNet.AddNode(4, 400);
-            _powerNet.AddNode(5, 400);
-            _powerNet.AddNode(6, 400);
-            _powerNet.AddNode(7, 400);
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2*Math.PI/180), 0, 1.2, 1e6);
-            _powerNet.AddTransformer(2, 4, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5);
+            _powerNet.AddNode(1, 400, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddNode(3, 400, "");
+            _powerNet.AddNode(4, 400, "");
+            _powerNet.AddNode(5, 400, "");
+            _powerNet.AddNode(6, 400, "");
+            _powerNet.AddNode(7, 400, "");
+            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2*Math.PI/180), 0, 1.2, 1e6, "");
+            _powerNet.AddTransformer(2, 4, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5, "");
             _powerNet.AddGenerator(7, 400, 15000);
             _powerNet.AddLoad(3, new Complex(-5000, -1000));
             _powerNet.AddLoad(5, new Complex(-10000, 200));

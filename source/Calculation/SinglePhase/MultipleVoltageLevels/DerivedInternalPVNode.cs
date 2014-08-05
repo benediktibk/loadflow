@@ -11,7 +11,7 @@
 
         #region constructor
 
-        public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, int id, double voltageMagnitude, double realPower) : base(sourceNode, id)
+        public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, int id, double voltageMagnitude, double realPower, string name) : base(sourceNode, id, name)
         {
             _voltageMagnitude = voltageMagnitude;
             _realPower = realPower;

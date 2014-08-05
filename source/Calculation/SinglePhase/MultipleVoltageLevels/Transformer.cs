@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region public functions
 
-        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, IdGenerator idGenerator)
+        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, string name, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
@@ -56,9 +56,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (!HasNotNominalRatio) 
                 return;
 
-            _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0)));
-            _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(),
-                new Complex(0, 0)));
+            _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0), name + "#upper"));
+            _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(), new Complex(0, 0), name + "#lower"));
         }
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)

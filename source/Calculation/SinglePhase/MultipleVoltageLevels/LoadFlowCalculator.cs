@@ -36,21 +36,26 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return voltageCollapse ? null : ExtractNodeVoltages(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
         }
 
-        private static Dictionary<long, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes,
-            IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, IReadOnlyPowerNet powerNet)
         {
-            var nodeVoltages = new Dictionary<long, Complex>();
-
-            foreach (var node in nodes)
-            {
-                var index = nodeIndexes[node];
-                var name = node.Id;
-                var voltage = singleVoltageNodesWithResults[index].Voltage;
-                nodeVoltages.Add(name, voltage);
-            }
-
-            return nodeVoltages;
+            var nodes = new List<IReadOnlyNode>(powerNet.GetAllNecessaryNodes());
+            var nodeIndexes = DetermineNodeIndexes(nodes);
+            matrix = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
+            nodeNames = nodes.Select(node => node.Name).ToList();
         }
+
+        #endregion
+
+        #region public properties
+
+        public double ScaleBasePower
+        {
+            get { return _scaleBasePower; }
+        }
+
+        #endregion
+
+        #region private functions
 
         private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances)
         {
@@ -73,6 +78,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return admittances;
         }
 
+        #endregion
+
+        #region private static functions
+
         private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
         {
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
@@ -93,18 +102,22 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
         }
 
-        #endregion
-
-        #region public properties
-
-        public double ScaleBasePower
+        private static Dictionary<long, Complex> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
-            get { return _scaleBasePower; }
+            var nodeVoltages = new Dictionary<long, Complex>();
+
+            foreach (var node in nodes)
+            {
+                var index = nodeIndexes[node];
+                var name = node.Id;
+                var voltage = singleVoltageNodesWithResults[index].Voltage;
+                nodeVoltages.Add(name, voltage);
+            }
+
+            return nodeVoltages;
         }
 
-        #endregion
 
-        #region private functions
         #endregion
     }
 }

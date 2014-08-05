@@ -1,5 +1,6 @@
-﻿using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {

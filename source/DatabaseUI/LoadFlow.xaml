@@ -21,6 +21,7 @@
                     <RowDefinition Height="150"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition MinHeight="100" MaxHeight="200"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -93,12 +94,16 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Button 
-                        Grid.Row="2"
-                        Name="CalculateButton" Content="calculate node voltages" 
-                        Margin="2,2,2,2" Click="CalculateNodeVoltages" 
-                        IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
+                    Grid.Row="2"
+                    Name="CalculateButton" Content="calculate node voltages" 
+                    Margin="2,2,2,2" Click="CalculateNodeVoltages" 
+                    IsEnabled="{Binding SelectedPowerNet.IsCalculationNotRunning}"/>
+                <Button
+                    Grid.Row="3"
+                    Name="CalculateAdmittanceMatrixButton" Content="calculate admittance matrix"
+                    Margin="2,2,2,2" Click="CalculateAdmittanceMatrix"/>
                 <TextBox 
-                    Grid.Row="3" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
+                    Grid.Row="4" Name="LoggingOutput" Margin="2,2,2,2" IsReadOnly="True" Width="396" 
                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                     Text="{Binding SelectedPowerNet.LogMessages, Mode=OneWay}"/>
             </Grid>

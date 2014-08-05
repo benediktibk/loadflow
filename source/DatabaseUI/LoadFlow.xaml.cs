@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Database;
+using Node = Database.Node;
 
 namespace DatabaseUI
 {
@@ -59,6 +61,28 @@ namespace DatabaseUI
                 return;
 
             _model.SelectedPowerNet.CalculateNodeVoltagesInBackground();
+        }
+
+        private void CalculateAdmittanceMatrix(object sender, RoutedEventArgs e)
+        {
+            var powerNet = _model.SelectedPowerNet;
+
+            if (powerNet == null || _model.Connection.NotConnected)
+                return;
+
+            Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix matrix;
+            IReadOnlyList<string> nodeNames;
+            double powerBase;
+
+            powerNet.Log("calculating the admittance matrix");
+            powerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+
+            if (matrix == null)
+                return;
+
+            powerNet.Log("storing the admittance matrix in the database");
+            _model.Connection.Add(matrix, nodeNames, powerNet.Name, powerBase);
+            powerNet.Log("done");
         }
 
         private void ScrollLoggingOutputToEnd(object sender, TextChangedEventArgs e)

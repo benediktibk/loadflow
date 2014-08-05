@@ -12,7 +12,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, int id, Complex power) : base(sourceNode, id)
+        public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, int id, Complex power, string name) : base(sourceNode, id, name)
         {
             _power = power;
         }

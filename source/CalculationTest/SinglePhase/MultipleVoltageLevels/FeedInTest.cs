@@ -22,8 +22,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _node = new Node(0, 2, 0);
-            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
+            _node = new Node(0, 2, 0, "");
+            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, "", _idGenerator);
         }
 
         [TestMethod]
@@ -42,13 +42,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_ShortCircuitPowerSetToNegativeValue_ThrowsException()
         {
-            new FeedIn(_node, new Complex(4, 3), -4, 1.1, 1, _idGenerator);
+            new FeedIn(_node, new Complex(4, 3), -4, 1.1, 1, "", _idGenerator);
         }
 
         [TestMethod]
         public void Constructor_ShortCircuitPowerSetTo0_ThrowsNoException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, "", _idGenerator);
 
             Assert.AreEqual(0, feedIn.ShortCircuitPower);
         }
@@ -63,7 +63,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void InputImpedance_ShortCircuitPowerSetTo0_ThrowsException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, "", _idGenerator);
             var impedance = feedIn.InputImpedance;
         }
 
@@ -77,7 +77,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, "", _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             feedIn.AddConnectedNodes(nodes);
@@ -128,7 +128,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_ShortCircuitPowerSetTo0_EmptyList()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, "", _idGenerator);
 
             var result = feedIn.GetInternalNodes();
 
@@ -148,7 +148,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_ShortCircuitPowerSetTo0_NothingChanged()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, "", _idGenerator);
             var dictionary = new Dictionary<IReadOnlyNode, int>();
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new [,]

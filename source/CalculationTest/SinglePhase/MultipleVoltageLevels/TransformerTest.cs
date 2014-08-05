@@ -24,11 +24,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _upperSideNode = new Node(0, 10, 0);
-            _lowerSideNode = new Node(1, 0.25, 0);
-            _groundNode = new Node(2, 0, 0);
-            _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, _idGenerator);
-            _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, _idGenerator);
+            _upperSideNode = new Node(0, 10, 0, "");
+            _lowerSideNode = new Node(1, 0.25, 0, "");
+            _groundNode = new Node(2, 0, 0, "");
+            _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, "", _idGenerator);
+            _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, "", _idGenerator);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, _idGenerator);
+            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, "", _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             transformer.AddConnectedNodes(nodes);

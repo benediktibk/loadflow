@@ -83,6 +83,7 @@ namespace Database
                 Transformer.CreateCommandToCreateTable(),
                 Line.CreateCommandToCreateTable()
             };
+            commands.AddRange(AdmittanceMatrix.CreateCommandsToCreateTables());
 
             foreach (var command in commands)
             {
@@ -152,6 +153,35 @@ namespace Database
             _sqlConnection.Close();
             _sqlConnection.Dispose();
             _sqlConnection = null;
+        }
+
+        public void Add(Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix matrix,
+            IReadOnlyList<string> nodeNames, string powerNet, double powerBase)
+        {
+            var headerCommand = AdmittanceMatrix.CreateCommandToAddHeader(matrix, powerNet, powerBase);
+            headerCommand.Connection = _sqlConnection;
+            var matrixId = Convert.ToInt32(headerCommand.ExecuteScalar().ToString());
+            var contentCommands = AdmittanceMatrix.CreateCommandsToAddContent(matrix, nodeNames, matrixId);
+
+            using (var transaction = _sqlConnection.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var command in contentCommands)
+                    {
+                        command.Connection = _sqlConnection;
+                        command.Transaction = transaction;
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         #endregion

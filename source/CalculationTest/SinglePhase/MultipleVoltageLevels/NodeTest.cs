@@ -17,7 +17,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 2, 0);
+            _node = new Node(0, 2, 0, "");
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Equals_DifferentObjectWithSameValues_False()
         {
-            Assert.AreNotEqual(_node, new Node(0, 2, 0));
+            Assert.AreNotEqual(_node, new Node(0, 2, 0, ""));
         }
 
         [TestMethod]

@@ -19,7 +19,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, IdGenerator idGenerator)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, string name, IdGenerator idGenerator)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
@@ -29,7 +29,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _shortCircuitPower = shortCircuitPower;
             _c = c;
             _realToImaginary = realToImaginary;
-            _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage);
+            _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage, name);
         }
 
         #endregion

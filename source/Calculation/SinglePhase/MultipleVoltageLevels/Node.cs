@@ -18,7 +18,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public Node(int id, double nominalVoltage, double nominalPhaseShift)
+        public Node(int id, double nominalVoltage, double nominalPhaseShift, string name)
         {
             Id = id;
             NominalVoltage = nominalVoltage;
@@ -26,6 +26,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _connectedElements = new List<IPowerNetElement>();
             _voltage = new Complex();
             _voltageSet = false;
+            Name = name;
         }
 
         #endregion
@@ -68,6 +69,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return _connectedElements.Count(element => element.EnforcesPVBus) > 0; }
         }
+
+        public string Name { get; private set; }
 
         #endregion
 

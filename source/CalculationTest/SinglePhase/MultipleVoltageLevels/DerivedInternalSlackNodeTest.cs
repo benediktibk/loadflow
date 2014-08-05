@@ -10,13 +10,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     {
         protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
         {
-            return new DerivedInternalSlackNode(sourceNode, id, new Complex(10, 1));
+            return new DerivedInternalSlackNode(sourceNode, id, new Complex(10, 1), "");
         }
 
         [TestMethod]
         public void CreateSingleVoltageNode_3AsScaleBaseForVoltage_VoltageOfPVBusIsCorrectScaled()
         {
-            var sourceNode = new Node(0, 3, 0);
+            var sourceNode = new Node(0, 3, 0, "");
             var node = CreateNode(sourceNode, 1);
 
             var result = node.CreateSingleVoltageNode(2);

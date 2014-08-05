@@ -12,7 +12,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, int id, Complex voltage) : base(sourceNode, id)
+        public DerivedInternalSlackNode(IExternalReadOnlyNode sourceNode, int id, Complex voltage, string name) : base(sourceNode, id, name)
         {
             _voltage = voltage;
         }

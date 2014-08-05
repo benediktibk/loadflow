@@ -10,10 +10,11 @@
 
         #region constructor
 
-        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, int id)
+        protected DerivedInternalNode(IExternalReadOnlyNode sourceNode, int id, string name)
         {
             _sourceNode = sourceNode;
             Id = id;
+            Name = name;
         }
 
         #endregion
@@ -26,6 +27,8 @@
         }
 
         public int Id { get; private set; }
+
+        public string Name { get; private set; }
 
         #endregion
 
