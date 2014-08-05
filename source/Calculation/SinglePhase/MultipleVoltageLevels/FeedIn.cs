@@ -6,12 +6,18 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class FeedIn : IPowerNetElement
     {
+        #region variables
+
         private readonly IExternalReadOnlyNode _node;
         private readonly Complex _voltage;
         private readonly double _shortCircuitPower;
         private readonly DerivedInternalSlackNode _internalNode;
         private readonly double _c;
         private readonly double _realToImaginary;
+
+        #endregion
+
+        #region constructor
 
         public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, IdGenerator idGenerator)
         {
@@ -25,6 +31,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _realToImaginary = realToImaginary;
             _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage);
         }
+
+        #endregion
+
+        #region properties
 
         public double NominalVoltage
         {
@@ -49,7 +59,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     throw new InvalidOperationException();
 
                 var nominalVoltage = NominalVoltage;
-                var Z = 1.1*nominalVoltage*nominalVoltage/_shortCircuitPower;
+                var Z = _c*nominalVoltage*nominalVoltage/_shortCircuitPower;
                 var X = Math.Sqrt(_realToImaginary*_realToImaginary + 1)/Z;
                 var R = _realToImaginary*X;
                 return new Complex(R, X);
@@ -80,6 +90,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return false; }
         }
+
+        #endregion
+
+        #region public functions
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
@@ -124,5 +138,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             return result;
         }
+
+        #endregion
     }
 }

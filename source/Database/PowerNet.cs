@@ -117,7 +117,7 @@ namespace Database
                 foreach (var feedIn in FeedIns)
                     _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
                         new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        feedIn.ShortCircuitPower, 1.1, 1);
+                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary);
 
                 foreach (var generator in Generators)
                     _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
@@ -128,7 +128,7 @@ namespace Database
                 foreach (var transformer in Transformers)
                     _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
                         transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
-                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, transformer.PhaseShift);
+                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio);
             } 
             catch (Exception exception)
             {

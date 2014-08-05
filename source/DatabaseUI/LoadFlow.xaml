@@ -203,6 +203,8 @@
                         <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat=N1}" Header="voltage, real"/>
                         <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat=N1}" Header="voltage, imaginary"/>
                         <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat=N1}" Header="short circuit power"/>
+                        <DataGridTextColumn Binding="{Binding C, StringFormat=N2}" Header="c"/>
+                        <DataGridTextColumn Binding="{Binding RealToImaginary, StringFormat=N3}" Header="R/X"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -230,7 +232,6 @@
                         <DataGridTextColumn Binding="{Binding IronLosses, StringFormat=N1}" Header="iron losses"/>
                         <DataGridTextColumn Binding="{Binding RelativeNoLoadCurrent, StringFormat=N4}" Header="relative no load current"/>
                         <DataGridTextColumn Binding="{Binding Ratio, StringFormat=N2}" Header="ratio"/>
-                        <DataGridTextColumn Binding="{Binding PhaseShift}" Header="phase shift"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

@@ -15,14 +15,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private Complex _lengthAdmittance;
         private Complex _shuntAdmittance;
         private readonly double _ratio;
-        private readonly int _phaseShift;
         private readonly List<DerivedInternalPQNode> _internalNodes;
 
         #endregion
 
         #region public functions
 
-        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, int phaseShift, IdGenerator idGenerator)
+        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
@@ -51,7 +50,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
             _ratio = ratio;
-            _phaseShift = phaseShift;
             _internalNodes = new List<DerivedInternalPQNode>();
             CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
                 relativeNoLoadCurrent);
@@ -161,14 +159,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _ratio; }
         }
 
-        public Complex RelativeRatio
+        public double RelativeRatio
         {
-            get { return Complex.FromPolarCoordinates(Ratio/NominalRatio, PhaseShift*Math.PI/6); }
-        }
-
-        public double PhaseShift
-        {
-            get { return _phaseShift; }
+            get { return Ratio/NominalRatio; }
         }
 
         public Complex LengthAdmittance
@@ -203,7 +196,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool HasNotNominalRatio
         {
-            get { return (RelativeRatio - 1).MagnitudeSquared() > 0.000001; } 
+            get { return Math.Abs(RelativeRatio - 1) > 0.000001; } 
         }
 
         #endregion

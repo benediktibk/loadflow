@@ -59,7 +59,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400);
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI/180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5, 0);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5);
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -78,7 +78,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400);
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, 0);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5);
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -97,7 +97,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400);
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, 0);
+            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5);
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -146,7 +146,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(6, 400);
             _powerNet.AddNode(7, 400);
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2*Math.PI/180), 0, 1.2, 1e6);
-            _powerNet.AddTransformer(2, 4, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5, 0);
+            _powerNet.AddTransformer(2, 4, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5);
             _powerNet.AddGenerator(7, 400, 15000);
             _powerNet.AddLoad(3, new Complex(-5000, -1000));
             _powerNet.AddLoad(5, new Complex(-10000, 200));

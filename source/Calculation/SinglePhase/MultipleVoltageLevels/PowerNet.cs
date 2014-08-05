@@ -129,11 +129,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, int phaseShift)
+        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio)
         {
             var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
             var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);
-            var transformer = new Transformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, phaseShift, _idGeneratorNodes);
+            var transformer = new Transformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, _idGeneratorNodes);
             _transformers.Add(transformer);
             _elements.Add(transformer);
             upperSideNode.Connect(transformer);

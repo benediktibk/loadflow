@@ -20,7 +20,6 @@ namespace Database
         private double _ironLosses;
         private double _relativeNoLoadCurrent;
         private double _ratio;
-        private int _phaseShift;
 
         #endregion
 
@@ -35,7 +34,6 @@ namespace Database
             RelativeNoLoadCurrent = 0.01;
             Ratio = 1;
             Name = "";
-            PhaseShift = 0;
         }
 
         public Transformer(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
@@ -189,18 +187,6 @@ namespace Database
                     return DBNull.Value;
 
                 return LowerSideNode.Id;
-            }
-        }
-
-        public int PhaseShift
-        {
-            get { return _phaseShift; }
-            set
-            {
-                if (_phaseShift == value) return;
-
-                _phaseShift = value;
-                NotifyPropertyChanged();
             }
         }
 
