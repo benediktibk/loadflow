@@ -49,9 +49,9 @@ namespace Database
             CopperLosses = reader.Parse<double>("CopperLosses");
             IronLosses = reader.Parse<double>("IronLosses");
             RelativeNoLoadCurrent = reader.Parse<double>("RelativeNoLoadCurrent");
-            Ratio = reader.Parse<double>("Ratio");
             UpperSideNode = upperSideNode;
             LowerSideNode = lowerSideNode;
+            Ratio = reader.Parse<double>("Ratio");
         }
 
         #endregion
@@ -79,7 +79,11 @@ namespace Database
             {
                 if (_upperSideNode == value) return;
 
+                if (_upperSideNode != null)
+                    _upperSideNode.NominalVoltageChanged -= InitializeRatio;
                 _upperSideNode = value;
+                if (_upperSideNode != null)
+                    _upperSideNode.NominalVoltageChanged += InitializeRatio;
                 NotifyPropertyChanged();
                 InitializeRatio();
             }
@@ -92,7 +96,11 @@ namespace Database
             {
                 if (_lowerSideNode == value) return;
 
+                if (_lowerSideNode != null)
+                    _lowerSideNode.NominalVoltageChanged -= InitializeRatio;
                 _lowerSideNode = value;
+                if (_lowerSideNode != null)
+                    _lowerSideNode.NominalVoltageChanged += InitializeRatio;
                 NotifyPropertyChanged();
                 InitializeRatio();
             }

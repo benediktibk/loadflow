@@ -65,6 +65,9 @@ namespace Database
 
                 _nominalVoltage = value;
                 NotifyPropertyChanged();
+
+                if (NominalVoltageChanged != null)
+                    NominalVoltageChanged();
             }
         }
 
@@ -98,7 +101,11 @@ namespace Database
 
         public delegate void NameChangedEventHandler();
 
+        public delegate void NominalVoltageChangedEventHandler();
+
         public event NameChangedEventHandler NameChanged;
+
+        public event NominalVoltageChangedEventHandler NominalVoltageChanged;
 
         #endregion
 
