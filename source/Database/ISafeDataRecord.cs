@@ -1,6 +1,6 @@
 ﻿namespace Database
 {
-    interface ISafeDataRecord
+    public interface ISafeDataRecord
     {
         T Parse<T>(string column);
     }

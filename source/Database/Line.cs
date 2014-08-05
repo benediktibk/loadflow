@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -31,6 +32,23 @@ namespace Database
             ShuntCapacityPerUnitLength = 0;
             ShuntConductancePerUnitLength = 0;
             Name = "";
+        }
+
+        public Line(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        {
+            var nodeOneId = reader.Parse<int>("NodeOne");
+            var nodeOne = nodeIds[nodeOneId];
+            var nodeTwoId = reader.Parse<int>("NodeTwo");
+            var nodeTwo = nodeIds[nodeTwoId];
+            Id = reader.Parse<int>("LineId");
+            Name = reader.Parse<string>("LineName");
+            SeriesResistancePerUnitLength = reader.Parse<double>("SeriesResistancePerUnitLength");
+            SeriesInductancePerUnitLength = reader.Parse<double>("SeriesInductancePerUnitLength");
+            ShuntConductancePerUnitLength = reader.Parse<double>("ShuntConductancePerUnitLength");
+            ShuntCapacityPerUnitLength = reader.Parse<double>("ShuntCapacityPerUnitLength");
+            Length = reader.Parse<double>("Length");
+            NodeOne = nodeOne;
+            NodeTwo = nodeTwo;
         }
 
         #endregion

@@ -139,7 +139,7 @@ namespace Database
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNets.Add(ReadPowerNetFromRecord(reader));
+                    powerNets.Add(new PowerNet(reader, this));
 
             ReadNetElements(powerNets);
         }
@@ -280,7 +280,7 @@ namespace Database
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
                 {
-                    var node = ReadNodeFromRecord(reader);
+                    var node = new Node(reader);
                     nodeIds.Add(node.Id, node);
                     powerNet.Nodes.Add(node);
                 }
@@ -311,7 +311,7 @@ namespace Database
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.Loads.Add(ReadLoadFromRecord(nodeIds, reader));
+                    powerNet.Loads.Add(new Load(nodeIds, reader));
         }
 
         private void ReadLines(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
@@ -322,7 +322,7 @@ namespace Database
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.Lines.Add(ReadLineFromRecord(nodeIds, reader));
+                    powerNet.Lines.Add(new Line(nodeIds, reader));
         }
 
         private void ReadFeedIns(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
@@ -333,7 +333,7 @@ namespace Database
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.FeedIns.Add(ReadFeedInFromRecord(nodeIds, reader));
+                    powerNet.FeedIns.Add(new FeedIn(nodeIds, reader));
         }
 
         private void ReadGenerators(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
@@ -344,7 +344,7 @@ namespace Database
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.Generators.Add(ReadGeneratorFromRecord(nodeIds, reader));
+                    powerNet.Generators.Add(new Generator(nodeIds, reader));
         }
 
         private void ReadTransformers(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
@@ -355,124 +355,7 @@ namespace Database
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.Transformers.Add(ReadTransformerFromRecord(nodeIds, reader));
-        }
-
-        #endregion
-
-        #region reading from single records
-
-        private static FeedIn ReadFeedInFromRecord(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
-        {
-            var nodeId = reader.Parse<int>("Node");
-            var node = nodeIds[nodeId];
-            return new FeedIn
-            {
-                Id = reader.Parse<int>("FeedInId"),
-                Name = reader.Parse<string>("FeedInName"),
-                Node = node,
-                VoltageReal = reader.Parse<double>("VoltageReal"),
-                VoltageImaginary = reader.Parse<double>("VoltageImaginary"),
-                ShortCircuitPower = reader.Parse<double>("ShortCircuitPower"),
-                C = reader.Parse<double>("C"),
-                RealToImaginary = reader.Parse<double>("RealToImaginary")
-            };
-        }
-
-        private static Line ReadLineFromRecord(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
-        {
-            var nodeOneId = reader.Parse<int>("NodeOne");
-            var nodeOne = nodeIds[nodeOneId];
-            var nodeTwoId = reader.Parse<int>("NodeTwo");
-            var nodeTwo = nodeIds[nodeTwoId];
-            return new Line
-            {
-                Id = reader.Parse<int>("LineId"),
-                Name = reader.Parse<string>("LineName"),
-                SeriesResistancePerUnitLength = reader.Parse<double>("SeriesResistancePerUnitLength"),
-                SeriesInductancePerUnitLength = reader.Parse<double>("SeriesInductancePerUnitLength"),
-                ShuntConductancePerUnitLength = reader.Parse<double>("ShuntConductancePerUnitLength"),
-                ShuntCapacityPerUnitLength = reader.Parse<double>("ShuntCapacityPerUnitLength"),
-                Length = reader.Parse<double>("Length"),
-                NodeOne = nodeOne,
-                NodeTwo = nodeTwo
-            };
-        }
-
-        private PowerNet ReadPowerNetFromRecord(ISafeDataRecord reader)
-        {
-            var powerNet = new PowerNet
-            {
-                Id = reader.Parse<int>("PowerNetId"),
-                Name = reader.Parse<string>("PowerNetName"),
-                Frequency = reader.Parse<double>("Frequency"),
-                CalculatorSelection =
-                    (NodeVoltageCalculatorSelection)reader.Parse<int>("CalculatorSelection"),
-                Connection = this
-            };
-
-            return powerNet;
-        }
-
-        private static Node ReadNodeFromRecord(ISafeDataRecord reader)
-        {
-            return new Node
-            {
-                Id = reader.Parse<int>("NodeId"),
-                Name = reader.Parse<string>("NodeName"),
-                NominalVoltage = reader.Parse<double>("NominalVoltage"),
-                VoltageReal = reader.Parse<double>("NodeVoltageReal"),
-                VoltageImaginary = reader.Parse<double>("NodeVoltageImaginary")
-            };
-        }
-
-        private static Load ReadLoadFromRecord(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
-        {
-            var nodeId = reader.Parse<int>("Node");
-            var node = nodeIds[nodeId];
-            return new Load
-            {
-                Id = reader.Parse<int>("LoadId"),
-                Name = reader.Parse<string>("LoadName"),
-                Real = reader.Parse<double>("LoadReal"),
-                Imaginary = reader.Parse<double>("LoadImaginary"),
-                Node = node
-            };
-        }
-
-        private static Generator ReadGeneratorFromRecord(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
-        {
-            var nodeId = reader.Parse<int>("Node");
-            var node = nodeIds[nodeId];
-            return new Generator
-            {
-                Id = reader.Parse<int>("GeneratorId"),
-                Name = reader.Parse<string>("GeneratorName"),
-                VoltageMagnitude = reader.Parse<double>("VoltageMagnitude"),
-                RealPower = reader.Parse<double>("RealPower"),
-                Node = node
-            };
-        }
-
-        private static Transformer ReadTransformerFromRecord(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
-        {
-            var upperSideNodeId = reader.Parse<int>("UpperSideNode");
-            var upperSideNode = nodeIds[upperSideNodeId];
-            var lowerSideNodeId = reader.Parse<int>("LowerSideNode");
-            var lowerSideNode = nodeIds[lowerSideNodeId];
-            return new Transformer
-            {
-                Id = reader.Parse<int>("TransformerId"),
-                Name = reader.Parse<string>("TransformerName"),
-                NominalPower = reader.Parse<double>("NominalPower"),
-                RelativeShortCircuitVoltage = reader.Parse<double>("RelativeShortCircuitVoltage"),
-                CopperLosses = reader.Parse<double>("CopperLosses"),
-                IronLosses = reader.Parse<double>("IronLosses"),
-                RelativeNoLoadCurrent = reader.Parse<double>("RelativeNoLoadCurrent"),
-                Ratio = reader.Parse<double>("Ratio"),
-                UpperSideNode =  upperSideNode,
-                LowerSideNode = lowerSideNode
-            };
+                    powerNet.Transformers.Add(new Transformer(nodeIds, reader));
         }
 
         #endregion

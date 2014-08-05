@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -35,6 +36,24 @@ namespace Database
             Ratio = 1;
             Name = "";
             PhaseShift = 0;
+        }
+
+        public Transformer(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        {
+            var upperSideNodeId = reader.Parse<int>("UpperSideNode");
+            var upperSideNode = nodeIds[upperSideNodeId];
+            var lowerSideNodeId = reader.Parse<int>("LowerSideNode");
+            var lowerSideNode = nodeIds[lowerSideNodeId];
+            Id = reader.Parse<int>("TransformerId");
+            Name = reader.Parse<string>("TransformerName");
+            NominalPower = reader.Parse<double>("NominalPower");
+            RelativeShortCircuitVoltage = reader.Parse<double>("RelativeShortCircuitVoltage");
+            CopperLosses = reader.Parse<double>("CopperLosses");
+            IronLosses = reader.Parse<double>("IronLosses");
+            RelativeNoLoadCurrent = reader.Parse<double>("RelativeNoLoadCurrent");
+            Ratio = reader.Parse<double>("Ratio");
+            UpperSideNode = upperSideNode;
+            LowerSideNode = lowerSideNode;
         }
 
         #endregion

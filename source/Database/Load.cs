@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -24,6 +25,17 @@ namespace Database
             Real = 0;
             Imaginary = 0;
             Name = "";
+        }
+
+        public Load(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        {
+            var nodeId = reader.Parse<int>("Node");
+            var node = nodeIds[nodeId];
+            Id = reader.Parse<int>("LoadId");
+            Name = reader.Parse<string>("LoadName");
+            Real = reader.Parse<double>("LoadReal");
+            Imaginary = reader.Parse<double>("LoadImaginary");
+            Node = node;
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -30,6 +31,20 @@ namespace Database
             C = 1.1;
             RealToImaginary = 0.1;
 
+        }
+
+        public FeedIn(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        {
+            var nodeId = reader.Parse<int>("Node");
+            var node = nodeIds[nodeId];
+            Id = reader.Parse<int>("FeedInId");
+            Name = reader.Parse<string>("FeedInName");
+            Node = node;
+            VoltageReal = reader.Parse<double>("VoltageReal");
+            VoltageImaginary = reader.Parse<double>("VoltageImaginary");
+            ShortCircuitPower = reader.Parse<double>("ShortCircuitPower");
+            C = reader.Parse<double>("C");
+            RealToImaginary = reader.Parse<double>("RealToImaginary");
         }
 
         #endregion

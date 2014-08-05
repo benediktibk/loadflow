@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Generator: INetElement
+    public class Generator : INetElement
     {
         #region variables
 
@@ -24,6 +25,17 @@ namespace Database
             VoltageMagnitude = 1;
             RealPower = 0;
             Name = "";
+        }
+
+        public Generator(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        {
+            var nodeId = reader.Parse<int>("Node");
+            var node = nodeIds[nodeId];
+            Id = reader.Parse<int>("GeneratorId");
+            Name = reader.Parse<string>("GeneratorName");
+            VoltageMagnitude = reader.Parse<double>("VoltageMagnitude");
+            RealPower = reader.Parse<double>("RealPower");
+            Node = node;
         }
 
         #endregion

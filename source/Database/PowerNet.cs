@@ -73,6 +73,16 @@ namespace Database
             _calculatorSelection = NodeVoltageCalculatorSelection.CurrentIteration;
         }
 
+        public PowerNet(ISafeDataRecord reader, IConnectionNetElements connection) : 
+            this()
+        {
+            Id = reader.Parse<int>("PowerNetId");
+            Name = reader.Parse<string>("PowerNetName");
+            Frequency = reader.Parse<double>("Frequency");
+            CalculatorSelection = (NodeVoltageCalculatorSelection) reader.Parse<int>("CalculatorSelection");
+            Connection = connection;
+        }
+
         #endregion
 
         #region public functions

@@ -27,6 +27,15 @@ namespace Database
             Name = "";
         }
 
+        public Node(ISafeDataRecord reader)
+        {
+            Id = reader.Parse<int>("NodeId");
+            Name = reader.Parse<string>("NodeName");
+            NominalVoltage = reader.Parse<double>("NominalVoltage");
+            VoltageReal = reader.Parse<double>("NodeVoltageReal");
+            VoltageImaginary = reader.Parse<double>("NodeVoltageImaginary");
+        }
+
         #endregion
 
         #region properties
