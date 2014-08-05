@@ -83,7 +83,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
-                        <DataGridTextColumn Binding="{Binding Frequency}" Header="frequency"/>
+                        <DataGridTextColumn Binding="{Binding Frequency}" Header="f [Hz]"/>
                         <DataGridComboBoxColumn 
                             ItemsSource="{Binding Source={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, Path=AllPossibleStrings}" 
                             SelectedItemBinding="{Binding CalculatorSelection, Converter={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
@@ -116,9 +116,9 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Id}" IsReadOnly="True" Header="ID"/>
                         <DataGridTextColumn Binding="{Binding Name}" Header="name"/>
-                        <DataGridTextColumn Binding="{Binding NominalVoltage}" Header="nominal voltage"/>
-                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat=N2}" IsReadOnly="True" Header="voltage, real"/>
-                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat=N2}" IsReadOnly="True" Header="voltage, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding NominalVoltage}" Header="nominal voltage [V]"/>
+                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat=N2}" IsReadOnly="True" Header="voltage, real [V]"/>
+                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat=N2}" IsReadOnly="True" Header="voltage, imaginary [V]"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -140,11 +140,11 @@
                             ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
                             SelectedItemBinding="{Binding NodeTwo, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
                             Header="second node"/>
-                        <DataGridTextColumn Binding="{Binding SeriesResistancePerUnitLength, StringFormat=N3}" Header="series resistance per unit length"/>
-                        <DataGridTextColumn Binding="{Binding SeriesInductancePerUnitLength, StringFormat=N3}" Header="series inductance per unit length"/>
-                        <DataGridTextColumn Binding="{Binding ShuntConductancePerUnitLength, StringFormat=N3}" Header="shunt conductance per unit length"/>
-                        <DataGridTextColumn Binding="{Binding ShuntCapacityPerUnitLength, StringFormat=N3}" Header="shunt capacity per unit length"/>
-                        <DataGridTextColumn Binding="{Binding Length, StringFormat=N3}" Header="length"/>
+                        <DataGridTextColumn Binding="{Binding SeriesResistancePerUnitLength, StringFormat=N3}" Header="R' [Ohm/m]"/>
+                        <DataGridTextColumn Binding="{Binding SeriesInductancePerUnitLength, StringFormat=N3}" Header="L' [Ohm/m]"/>
+                        <DataGridTextColumn Binding="{Binding ShuntConductancePerUnitLength, StringFormat=N3}" Header="G' [S/m]"/>
+                        <DataGridTextColumn Binding="{Binding ShuntCapacityPerUnitLength, StringFormat=N3}" Header="C' [F/m]"/>
+                        <DataGridTextColumn Binding="{Binding Length, StringFormat=N3}" Header="l [m]"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -162,8 +162,8 @@
                             ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
                             SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
                             Header="node"/>
-                        <DataGridTextColumn Binding="{Binding Real, StringFormat=N1}" Header="load, real"/>
-                        <DataGridTextColumn Binding="{Binding Imaginary, StringFormat=N1}" Header="load, imaginary"/>
+                        <DataGridTextColumn Binding="{Binding Real, StringFormat=N1}" Header="load, real [W]"/>
+                        <DataGridTextColumn Binding="{Binding Imaginary, StringFormat=N1}" Header="load, imaginary [Var]"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -181,8 +181,8 @@
                             ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
                             SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
                             Header="node"/>
-                        <DataGridTextColumn Binding="{Binding VoltageMagnitude, StringFormat=N1}" Header="voltage magnitude"/>
-                        <DataGridTextColumn Binding="{Binding RealPower, StringFormat=N1}" Header="real power"/>
+                        <DataGridTextColumn Binding="{Binding VoltageMagnitude, StringFormat=N1}" Header="voltage magnitude [V]"/>
+                        <DataGridTextColumn Binding="{Binding RealPower, StringFormat=N1}" Header="real power [W]"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -200,9 +200,9 @@
                             ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
                             SelectedItemBinding="{Binding Node, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
                             Header="node"/>
-                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat=N1}" Header="voltage, real"/>
-                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat=N1}" Header="voltage, imaginary"/>
-                        <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat=N1}" Header="short circuit power"/>
+                        <DataGridTextColumn Binding="{Binding VoltageReal, StringFormat=N1}" Header="voltage, real [V]"/>
+                        <DataGridTextColumn Binding="{Binding VoltageImaginary, StringFormat=N1}" Header="voltage, imaginary [V]"/>
+                        <DataGridTextColumn Binding="{Binding ShortCircuitPower, StringFormat=N1}" Header="short circuit power [VA]"/>
                         <DataGridTextColumn Binding="{Binding C, StringFormat=N2}" Header="c"/>
                         <DataGridTextColumn Binding="{Binding RealToImaginary, StringFormat=N3}" Header="R/X"/>
                     </DataGrid.Columns>
@@ -226,10 +226,10 @@
                             ItemsSource="{Binding Source={StaticResource Database}, Path=SelectedPowerNet.NodeNames}" 
                             SelectedItemBinding="{Binding LowerSideNode, Converter={StaticResource NodeToNodeNameConverter}, ConverterParameter=Name, UpdateSourceTrigger=PropertyChanged}"
                             Header="lower side node"/>
-                        <DataGridTextColumn Binding="{Binding NominalPower, StringFormat=N1}" Header="nominal power"/>
-                        <DataGridTextColumn Binding="{Binding RelativeShortCircuitVoltage, StringFormat=N4}" Header="relative short circuit voltage"/>
-                        <DataGridTextColumn Binding="{Binding CopperLosses, StringFormat=N1}" Header="copper losses"/>
-                        <DataGridTextColumn Binding="{Binding IronLosses, StringFormat=N1}" Header="iron losses"/>
+                        <DataGridTextColumn Binding="{Binding NominalPower, StringFormat=N1}" Header="nominal power [VA]"/>
+                        <DataGridTextColumn Binding="{Binding RelativeShortCircuitVoltage, StringFormat=N4}" Header="uk"/>
+                        <DataGridTextColumn Binding="{Binding CopperLosses, StringFormat=N1}" Header="copper losses [W]"/>
+                        <DataGridTextColumn Binding="{Binding IronLosses, StringFormat=N1}" Header="iron losses [W]"/>
                         <DataGridTextColumn Binding="{Binding RelativeNoLoadCurrent, StringFormat=N4}" Header="relative no load current"/>
                         <DataGridTextColumn Binding="{Binding Ratio, StringFormat=N2}" Header="ratio"/>
                     </DataGrid.Columns>
