@@ -502,5 +502,22 @@ namespace Database
         }
 
         #endregion
+
+        #region static functions
+
+        public static SqlCommand CreateCommandToCreateTable()
+        {
+            return new SqlCommand(
+                "CREATE TABLE powernets " +
+                "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL NOT NULL, PowerNetName TEXT NOT NULL, CalculatorSelection INTEGER NOT NULL, " +
+                "PRIMARY KEY(PowerNetId));");
+        }
+
+        public static SqlCommand CreateCommandToFetchAll()
+        {
+            return new SqlCommand("SELECT * FROM powernets;");
+        }
+
+        #endregion
     }
 }

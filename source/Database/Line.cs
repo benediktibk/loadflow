@@ -222,5 +222,28 @@ namespace Database
         }
 
         #endregion
+
+        #region static functions
+
+        public static SqlCommand CreateCommandToCreateTable()
+        {
+            return new SqlCommand(
+                "CREATE TABLE generators " +
+                "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                "GeneratorName TEXT NOT NULL, VoltageMagnitude REAL NOT NULL, RealPower REAL NOT NULL, " +
+                "PRIMARY KEY(GeneratorId));");
+        }
+
+        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "SELECT * " +
+                    "FROM lines WHERE PowerNet=@PowerNet;");
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            return command;
+        }
+
+        #endregion
     }
 }

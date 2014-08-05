@@ -147,5 +147,29 @@ namespace Database
         }
 
         #endregion
+        
+        #region static functions
+
+        public static SqlCommand CreateCommandToCreateTable()
+        {
+            return new SqlCommand(
+                "CREATE TABLE lines " +
+                "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
+                "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, " +
+                "PRIMARY KEY(LineId));");
+        }
+
+        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "SELECT * " +
+                    "FROM generators WHERE PowerNet=@PowerNet;");
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            return command;
+        }
+
+        #endregion
     }
 }

@@ -71,61 +71,24 @@ namespace Database
 
             _sqlConnection = new SqlConnection(ConnectionStringWithoutDatabase);
             _sqlConnection.Open();
-            var createDatabaseCommand = new SqlCommand("CREATE DATABASE " + Database + ";", _sqlConnection);
-            var selectDatabaseCommand = new SqlCommand("USE " + Database + ";", _sqlConnection);
-            var createPowerNetTable = 
-                new SqlCommand(
-                    "CREATE TABLE powernets " +
-                    "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL NOT NULL, PowerNetName TEXT NOT NULL, CalculatorSelection INTEGER NOT NULL, " +
-                    "PRIMARY KEY(PowerNetId));", _sqlConnection);
-            var createNodeTable = 
-                new SqlCommand(
-                    "CREATE TABLE nodes " +
-                    "(NodeId INTEGER NOT NULL IDENTITY, PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), NodeName TEXT NOT NULL, NominalVoltage REAL NOT NULL, " +
-                    "NodeVoltageReal REAL NOT NULL, NodeVoltageImaginary REAL NOT NULL, " +
-                    "PRIMARY KEY(NodeId));", _sqlConnection);
-            var createLoadTable = 
-                new SqlCommand(
-                    "CREATE TABLE loads " +
-                    "(LoadId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "LoadName TEXT NOT NULL, LoadReal REAL NOT NULL, LoadImaginary REAL NOT NULL, " +
-                    "PRIMARY KEY(LoadId));", _sqlConnection);
-            var createFeedInTable = 
-                new SqlCommand(
-                    "CREATE TABLE feedins " +
-                    "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "FeedInName TEXT NOT NULL, VoltageReal REAL NOT NULL, VoltageImaginary REAL NOT NULL, ShortCircuitPower REAL NOT NULL, C REAL NOT NULL, RealToImaginary REAL NOT NULL, " +
-                    "PRIMARY KEY(FeedInId));", _sqlConnection);
-            var createGeneratorTable = 
-                new SqlCommand(
-                    "CREATE TABLE generators " +
-                    "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "GeneratorName TEXT NOT NULL, VoltageMagnitude REAL NOT NULL, RealPower REAL NOT NULL, " +
-                    "PRIMARY KEY(GeneratorId));", _sqlConnection);
-            var createTransformerTable = 
-                new SqlCommand(
-                    "CREATE TABLE transformers " +
-                    "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER REFERENCES nodes (NodeId), LowerSideNode INTEGER REFERENCES nodes (NodeId), " +
-                    "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT NOT NULL, NominalPower REAL NOT NULL, " +
-                    "RelativeShortCircuitVoltage REAL NOT NULL, CopperLosses REAL NOT NULL, IronLosses REAL NOT NULL, RelativeNoLoadCurrent REAL NOT NULL, Ratio REAL NOT NULL, " +
-                    "PRIMARY KEY(TransformerId));", _sqlConnection);
-            var createLineTable = 
-                new SqlCommand(
-                    "CREATE TABLE lines " +
-                    "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                    "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
-                    "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, " +
-                    "PRIMARY KEY(LineId));", _sqlConnection);
+            var commands = new List<SqlCommand>
+            {
+                new SqlCommand("CREATE DATABASE " + Database + ";"),
+                new SqlCommand("USE " + Database + ";"),
+                PowerNet.CreateCommandToCreateTable(),
+                Node.CreateCommandToCreateTable(),
+                Load.CreateCommandToCreateTable(),
+                FeedIn.CreateCommandToCreateTable(),
+                Generator.CreateCommandToCreateTable(),
+                Transformer.CreateCommandToCreateTable(),
+                Line.CreateCommandToCreateTable()
+            };
 
-            createDatabaseCommand.ExecuteNonQuery();
-            selectDatabaseCommand.ExecuteNonQuery();
-            createPowerNetTable.ExecuteNonQuery();
-            createNodeTable.ExecuteNonQuery();
-            createLoadTable.ExecuteNonQuery();
-            createFeedInTable.ExecuteNonQuery();
-            createGeneratorTable.ExecuteNonQuery();
-            createTransformerTable.ExecuteNonQuery();
-            createLineTable.ExecuteNonQuery();
+            foreach (var command in commands)
+            {
+                command.Connection = _sqlConnection;
+                command.ExecuteNonQuery();
+            }
 
             Disconnect();
         }
@@ -343,9 +306,8 @@ namespace Database
         private void ReadLoads(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Loads.Clear();
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command = new SqlCommand("SELECT LoadId, Node, LoadName, LoadReal, LoadImaginary FROM loads WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = Load.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -355,13 +317,8 @@ namespace Database
         private void ReadLines(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Lines.Clear();
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command = 
-                new SqlCommand(
-                    "SELECT " +
-                    "LineId, NodeOne, NodeTwo, LineName, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length " +
-                    "FROM lines WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = Line.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -371,12 +328,8 @@ namespace Database
         private void ReadFeedIns(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.FeedIns.Clear();
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command = 
-                new SqlCommand(
-                    "SELECT FeedInId, Node, FeedInName, VoltageReal, VoltageImaginary, ShortCircuitPower, C, RealToImaginary " +
-                    "FROM feedins WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = FeedIn.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -386,12 +339,8 @@ namespace Database
         private void ReadGenerators(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Generators.Clear();
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command =
-                new SqlCommand(
-                    "SELECT GeneratorId, Node, GeneratorName, VoltageMagnitude, RealPower " +
-                    "FROM generators WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = Generator.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -401,12 +350,8 @@ namespace Database
         private void ReadTransformers(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Transformers.Clear();
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command =
-                new SqlCommand(
-                    "SELECT TransformerId, UpperSideNode, LowerSideNode, TransformerName, NominalPower, RelativeShortCircuitVoltage, CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio " +
-                    "FROM transformers WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = Transformer.CreateCommandToFetchAll(powerNet.Id);
+            command.Connection = _sqlConnection;
             
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())

@@ -20,7 +20,7 @@ namespace Database
 
         #endregion
 
-        #region constructor
+        #region constructors
 
         public FeedIn()
         {
@@ -197,6 +197,29 @@ namespace Database
         public bool UsesNode(Node node)
         {
             return node == Node;
+        }
+
+        #endregion
+
+        #region static functions
+
+        public static SqlCommand CreateCommandToCreateTable()
+        {
+            return new SqlCommand(
+                "CREATE TABLE feedins " +
+                "(FeedInId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                "FeedInName TEXT NOT NULL, VoltageReal REAL NOT NULL, VoltageImaginary REAL NOT NULL, ShortCircuitPower REAL NOT NULL, C REAL NOT NULL, RealToImaginary REAL NOT NULL, " +
+                "PRIMARY KEY(FeedInId));");
+        }
+
+        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
+        {
+            var command =
+                new SqlCommand(
+                    "SELECT * " +
+                    "FROM feedins WHERE PowerNet=@PowerNet;");
+            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
+            return command;
         }
 
         #endregion
