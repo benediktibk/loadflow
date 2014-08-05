@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,7 +10,8 @@ using System.Text.RegularExpressions;
 
 namespace Database
 {
-    public class Connection : INotifyPropertyChanged, IConnectionNetElements, IDisposable
+    public class Connection : 
+        INotifyPropertyChanged, IConnectionNetElements, IDisposable
     {
         #region variables
 
@@ -273,9 +273,7 @@ namespace Database
         {
             powerNet.Nodes.Clear();
             var nodeIds = new Dictionary<int, Node> {{0, null}};
-            var powerNetParam = new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNet.Id };
-            var command = new SqlCommand("SELECT * FROM nodes WHERE PowerNet=@PowerNet;", _sqlConnection);
-            command.Parameters.Add(powerNetParam);
+            var command = Node.CreateCommandToFetchAll(powerNet.Id);
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
