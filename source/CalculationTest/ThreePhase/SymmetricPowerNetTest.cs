@@ -209,7 +209,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(1, threePhaseFactor, "feed in");
             _powerNet.AddNode(2, threePhaseFactor, "generator");
             _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1, "");
-            _powerNet.AddGenerator(2, Math.Sqrt(0.95*0.95 + 0.1*0.1) * threePhaseFactor, -0.09375);
+            _powerNet.AddGenerator(2, Math.Sqrt(0.95*0.95 + 0.1*0.1) * threePhaseFactor, 0.09375);
             _powerNet.AddLine(1, 2, 1, 1 / omega, 0, 0, 1);
 
             _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
