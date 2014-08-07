@@ -24,7 +24,7 @@ namespace CalculationTest.ThreePhase
         public void SetUp()
         {
             _powerNet = new SymmetricPowerNet(50);
-            _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.000001, 1000);
+            _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.001, 1000);
             _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.000001, 80, new PrecisionMulti(200), true);
         }
 

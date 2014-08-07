@@ -71,30 +71,48 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                     indexOfNodesWithUnknownVoltage, unknownVoltages);
             }
 
-            var allPowers = CalculateAllPowers(admittances, allVoltages);
             voltageCollapse = false;
             var inputPowerSum = new Complex();
 
+            var allPowers = CalculateAllPowers(admittances, allVoltages);
             foreach (var index in indexOfPQBuses)
             {
                 var power = nodes[index].Power;
-                inputPowerSum += power;
                 allPowers[index] = power;
             }
 
             foreach (var index in indexOfPVBuses)
             {
                 var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
-                inputPowerSum += power;
                 allPowers[index] = power;
-                allVoltages[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
-                    allVoltages[index].Phase);
+            }
+
+            foreach (var index in indexOfPQBuses)
+            {
+                var power = nodes[index].Power;
+                inputPowerSum += power;
+            }
+
+            foreach (var index in indexOfPVBuses)
+            {
+                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
+                inputPowerSum += power;
             }
 
             foreach (var index in indexOfSlackBuses)
             {
                 var power = allPowers[index];
                 inputPowerSum += power;
+            }
+
+            foreach (var index in indexOfPVBuses)
+            {
+                allVoltages[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
+                    allVoltages[index].Phase);
+            }
+
+            foreach (var index in indexOfSlackBuses)
+            {
                 allVoltages[index] = nodes[index].Voltage;
             }
 
