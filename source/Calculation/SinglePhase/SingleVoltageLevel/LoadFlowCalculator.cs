@@ -65,10 +65,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 CalculateUnknownVoltages(admittances, nominalVoltage, nodes, indexOfSlackBuses, indexOfPQBuses, indexOfPVBuses, indexOfNodesWithUnknownVoltage, countOfUnknownVoltages);
 
             var allPowers = DeterminePowers(admittances, nodes, allVoltages, indexOfPQBuses, indexOfPVBuses);
-            var allVoltagesFixed = DetermineFixedVoltages(nodes, allVoltages, indexOfPVBuses, indexOfSlackBuses);
-            voltageCollapse = CheckForVoltageCollapse(admittances, allPowers, allVoltagesFixed);
+            allVoltages = DetermineFixedVoltages(nodes, allVoltages, indexOfPVBuses, indexOfSlackBuses);
+            voltageCollapse = CheckForVoltageCollapse(admittances, allPowers, allVoltages);
 
-            return CombineVoltagesAndPowersToNodes(allPowers, allVoltagesFixed);
+            return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
         }
 
         #endregion
@@ -295,11 +295,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return nominalVoltages;
         }
 
-        private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltagesFixed)
+        private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             var inputPowerSum = allPowers.Sum();
             var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
-            var lossPowerSum = CalculatePowerLoss(admittances, allVoltagesFixed);
+            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
             var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
 
