@@ -27,7 +27,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);
             CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0,
                 0, allNodes, allNodes);
-            var factorizationRealPower = changeMatrixRealPower.QR();
+            var factorizationRealPower = changeMatrixRealPower.LU();
             var angleChange = factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
             Vector<double> amplitudeChange = null;
 
@@ -36,7 +36,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
                 CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages,
                     constantCurrents, 0, 0, pqBuses, pqBuses);
-                var factorizationImaginaryPower = changeMatrixImaginaryPower.QR();
+                var factorizationImaginaryPower = changeMatrixImaginaryPower.LU();
                 amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
             }
 
