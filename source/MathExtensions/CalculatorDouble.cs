@@ -49,7 +49,7 @@ namespace MathExtensions
         public Vector<double> SolveEquationSystem(Matrix<double> matrix, Vector<double> vector)
         {
             var matrixCasted = (Matrix) matrix;
-            var factorization = matrixCasted.QR();
+            var factorization = matrixCasted.LU();
             return factorization.Solve(vector);
         }
 
