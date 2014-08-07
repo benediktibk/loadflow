@@ -35,21 +35,23 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             knownVoltages = new DenseVector(pvBuses.Count);
             knownPowers = new DenseVector(pqBuses.Count);
-            var reducedNominalVoltags = new DenseVector(pvBuses.Count);
+            var reducedNominalVoltages = new DenseVector(pqBuses.Count);
             var indexOfNodesWithKnownVoltage = new List<int>(pvBuses.Count);
             var indexOfNodesWithUnkownVoltage = new List<int>(pqBuses.Count);
-                
-            foreach (var bus in pqBuses)
+
+            for (var i = 0; i < pqBuses.Count; ++i)
             {
+                var bus = pqBuses[i];
                 knownPowers[bus.ID] = bus.Power;
                 indexOfNodesWithUnkownVoltage.Add(bus.ID);
+                reducedNominalVoltages[i] = nominalVoltages[bus.ID];
             }
 
             for (var i = 0; i < pvBuses.Count; ++i)
             {
-                indexOfNodesWithKnownVoltage.Add(pvBuses[i].ID);
-                knownVoltages[i] = new Complex(pvBuses[i].VoltageMagnitude, 0);
-                reducedNominalVoltags[i] = nominalVoltages[pvBuses[i].ID];
+                var bus = pvBuses[i];
+                indexOfNodesWithKnownVoltage.Add(bus.ID);
+                knownVoltages[i] = new Complex(bus.VoltageMagnitude, 0);
             }
 
             Vector<Complex> additionalConstantCurrents;
@@ -62,7 +64,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var totalConstantCurrents = reducedConstantCurrents.Add(additionalConstantCurrents);
 
-            var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, reducedNominalVoltags, totalConstantCurrents,
+            var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, reducedNominalVoltages, totalConstantCurrents,
                 knownPowers);
             return LoadFlowCalculator.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
