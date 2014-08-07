@@ -50,7 +50,7 @@ namespace MathExtensions
         public Vector<Complex> SolveEquationSystem(Matrix<Complex> matrix, Vector<Complex> vector)
         {
             var matrixCasted = (Matrix) matrix;
-            var factorization = matrixCasted.QR();
+            var factorization = matrixCasted.LU();
             return factorization.Solve(vector);
         }
 
