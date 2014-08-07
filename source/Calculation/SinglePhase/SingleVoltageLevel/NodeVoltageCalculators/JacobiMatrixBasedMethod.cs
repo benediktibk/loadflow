@@ -55,8 +55,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             do
             {
                 ++iterations;
-                var improvedVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBusIds, pvBusIds, pvBusVoltages);
-                currentVoltages = improvedVoltages;
+                currentVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBusIds, pvBusIds, pvBusVoltages);
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
                 var powersRealDifferenceAbsolute = powersRealDifference.Select(Math.Abs);
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
