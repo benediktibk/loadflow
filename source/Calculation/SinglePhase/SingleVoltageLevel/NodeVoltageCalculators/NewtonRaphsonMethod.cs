@@ -56,7 +56,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             DenseMatrix changeMatrix)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var factorization = ExtensionMethods.QR(changeMatrix);
+            var factorization = ExtensionMethods.LU(changeMatrix);
             var voltageChanges = factorization.Solve(rightSide);
             return voltageChanges;
         }
