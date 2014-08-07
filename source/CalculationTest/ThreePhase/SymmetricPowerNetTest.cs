@@ -15,6 +15,7 @@ namespace CalculationTest.ThreePhase
         private SymmetricPowerNet _powerNet;
         private INodeVoltageCalculator _newtonRaphsonCalculator;
         private INodeVoltageCalculator _helmCalculator;
+        private INodeVoltageCalculator _currentIterationCalculator;
 
         #endregion
 
@@ -24,8 +25,9 @@ namespace CalculationTest.ThreePhase
         public void SetUp()
         {
             _powerNet = new SymmetricPowerNet(50);
-            _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.001, 1000);
+            _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.00001, 1000);
             _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.000001, 80, new PrecisionMulti(200), true);
+            _currentIterationCalculator = new CurrentIteration(0.00001, 1000);
         }
 
         #endregion
@@ -161,6 +163,26 @@ namespace CalculationTest.ThreePhase
 
             ComplexAssert.AreEqual(Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), _powerNet.GetNodeVoltage(1), 0.01);
             ComplexAssert.AreEqual(Complex.FromPolarCoordinates(989.668, 0.701 * Math.PI / 180), _powerNet.GetNodeVoltage(2), 0.01);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltagesMinimalExampleWithGeneratorAndLoad_CorrectResults()
+        {
+            var threePhaseFactor = Math.Sqrt(3);
+            _powerNet.AddNode(1, threePhaseFactor, "feed in");
+            _powerNet.AddNode(2, threePhaseFactor, "generator");
+            _powerNet.AddNode(3, threePhaseFactor, "load");
+            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1, "");
+            _powerNet.AddGenerator(2, 0.95 * threePhaseFactor, 0.0855);
+            _powerNet.AddLoad(3, new Complex(-0.0558, 0));
+            _powerNet.AddLine(1, 2, 1, 0, 0, 0, 1);
+            _powerNet.AddLine(2, 3, 1, 0, 0, 0, 1);
+
+            _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
+
+            ComplexAssert.AreEqual(1, 0, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(0.95, 0, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(0.93, 0, _powerNet.GetNodeVoltage(3) / threePhaseFactor, 0.000001);
         }
 
         #endregion
