@@ -72,8 +72,42 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             }
 
             voltageCollapse = false;
-            var inputPowerSum = new Complex();
 
+            var allPowers = DeterminePowers(admittances, nodes, allVoltages, indexOfPQBuses, indexOfPVBuses);
+            var inputPowerSum = allPowers.Sum();
+            var allVoltagesFixed = DetermineFixedVoltages(nodes, allVoltages, indexOfPVBuses, indexOfSlackBuses);
+            var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
+            var lossPowerSum = CalculatePowerLoss(admittances, allVoltagesFixed);
+            var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
+            var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
+
+            if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
+                voltageCollapse = true;
+
+            return CombineVoltagesAndPowersToNodes(allPowers, allVoltagesFixed);
+        }
+
+        private static DenseVector DetermineFixedVoltages(IList<Node> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,
+            IEnumerable<int> indexOfSlackBuses)
+        {
+            var allVoltagesFixed = DenseVector.OfVector(allVoltages);
+
+            foreach (var index in indexOfPVBuses)
+            {
+                allVoltagesFixed[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
+                    allVoltagesFixed[index].Phase);
+            }
+
+            foreach (var index in indexOfSlackBuses)
+            {
+                allVoltagesFixed[index] = nodes[index].Voltage;
+            }
+            return allVoltagesFixed;
+        }
+
+        private static Vector<Complex> DeterminePowers(AdmittanceMatrix admittances, IList<Node> nodes, Vector<Complex> allVoltages,
+            IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
+        {
             var allPowers = CalculateAllPowers(admittances, allVoltages);
             foreach (var index in indexOfPQBuses)
             {
@@ -86,45 +120,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
                 allPowers[index] = power;
             }
-
-            foreach (var index in indexOfPQBuses)
-            {
-                var power = nodes[index].Power;
-                inputPowerSum += power;
-            }
-
-            foreach (var index in indexOfPVBuses)
-            {
-                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
-                inputPowerSum += power;
-            }
-
-            foreach (var index in indexOfSlackBuses)
-            {
-                var power = allPowers[index];
-                inputPowerSum += power;
-            }
-
-            foreach (var index in indexOfPVBuses)
-            {
-                allVoltages[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
-                    allVoltages[index].Phase);
-            }
-
-            foreach (var index in indexOfSlackBuses)
-            {
-                allVoltages[index] = nodes[index].Voltage;
-            }
-
-            var absolutePowerSum = allPowers.Sum(power => Math.Abs((double) power.Real) + Math.Abs((double) power.Imaginary));
-            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
-            var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
-            var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
-
-            if (relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) || Double.IsInfinity(relativePowerError))
-                voltageCollapse = true;
-
-            return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+            return allPowers;
         }
 
         private static IReadOnlyList<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
