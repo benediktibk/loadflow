@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -12,14 +11,24 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class LoadFlowCalculator
     {
+        #region variables
+
         private readonly double _maximumPowerError;
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
+
+        #endregion
+
+        #region constructor
 
         public LoadFlowCalculator(INodeVoltageCalculator nodeVoltageCalculator)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
             _maximumPowerError = nodeVoltageCalculator.GetMaximumPowerError();
         }
+
+        #endregion
+
+        #region public functions
 
         /// <summary>
         /// calculates the missing node voltages and powers
@@ -87,55 +96,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltagesFixed);
         }
 
-        private static DenseVector DetermineFixedVoltages(IList<Node> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,
-            IEnumerable<int> indexOfSlackBuses)
-        {
-            var allVoltagesFixed = DenseVector.OfVector(allVoltages);
+        #endregion
 
-            foreach (var index in indexOfPVBuses)
-            {
-                allVoltagesFixed[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
-                    allVoltagesFixed[index].Phase);
-            }
-
-            foreach (var index in indexOfSlackBuses)
-            {
-                allVoltagesFixed[index] = nodes[index].Voltage;
-            }
-            return allVoltagesFixed;
-        }
-
-        private static Vector<Complex> DeterminePowers(AdmittanceMatrix admittances, IList<Node> nodes, Vector<Complex> allVoltages,
-            IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
-        {
-            var allPowers = CalculateAllPowers(admittances, allVoltages);
-            foreach (var index in indexOfPQBuses)
-            {
-                var power = nodes[index].Power;
-                allPowers[index] = power;
-            }
-
-            foreach (var index in indexOfPVBuses)
-            {
-                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
-                allPowers[index] = power;
-            }
-            return allPowers;
-        }
-
-        private static IReadOnlyList<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
-            IEnumerable<int> indexOfNodesWithUnknownVoltage)
-        {
-            var nominalVoltages = new List<Complex>(countOfUnknownVoltages);
-
-            foreach (var index in indexOfNodesWithUnknownVoltage)
-            {
-                var node = nodes[index];
-                nominalVoltages.Add(Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift));
-            }
-
-            return nominalVoltages;
-        }
+        #region public static functions
 
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
@@ -152,27 +115,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 }
 
             return powerLoss*(-1);
-        }
-
-        private static Node[] CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
-        {
-            if (allPowers.Count != allVoltages.Count)
-                throw new ArgumentOutOfRangeException();
-
-            var nodeCount = allPowers.Count;
-            var result = new Node[nodeCount];
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var node = new Node
-                {
-                    Power = allPowers[i],
-                    Voltage = allVoltages[i]
-                };
-                result[i] = node;
-            }
-
-            return result;
         }
 
         public static double CalculatePowerError(AdmittanceMatrix admittances, Vector<Complex> voltages,
@@ -230,6 +172,31 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             var allVoltages = new DenseVector(voltagesArray);
             return allVoltages;
+        }
+
+        #endregion
+
+        #region private static functions
+
+        private static Node[] CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
+        {
+            if (allPowers.Count != allVoltages.Count)
+                throw new ArgumentOutOfRangeException();
+
+            var nodeCount = allPowers.Count;
+            var result = new Node[nodeCount];
+
+            for (var i = 0; i < nodeCount; ++i)
+            {
+                var node = new Node
+                {
+                    Power = allPowers[i],
+                    Voltage = allVoltages[i]
+                };
+                result[i] = node;
+            }
+
+            return result;
         }
 
         private static List<PQBus> ExtractPQBuses(IList<Node> nodes,
@@ -302,5 +269,57 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                         "invalid bus type (neither PV, PQ or slack bus)");
             }
         }
+
+        private static DenseVector DetermineFixedVoltages(IList<Node> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,
+            IEnumerable<int> indexOfSlackBuses)
+        {
+            var allVoltagesFixed = DenseVector.OfVector(allVoltages);
+
+            foreach (var index in indexOfPVBuses)
+            {
+                allVoltagesFixed[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
+                    allVoltagesFixed[index].Phase);
+            }
+
+            foreach (var index in indexOfSlackBuses)
+            {
+                allVoltagesFixed[index] = nodes[index].Voltage;
+            }
+            return allVoltagesFixed;
+        }
+
+        private static Vector<Complex> DeterminePowers(AdmittanceMatrix admittances, IList<Node> nodes, Vector<Complex> allVoltages,
+            IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
+        {
+            var allPowers = CalculateAllPowers(admittances, allVoltages);
+            foreach (var index in indexOfPQBuses)
+            {
+                var power = nodes[index].Power;
+                allPowers[index] = power;
+            }
+
+            foreach (var index in indexOfPVBuses)
+            {
+                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
+                allPowers[index] = power;
+            }
+            return allPowers;
+        }
+
+        private static IReadOnlyList<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
+            IEnumerable<int> indexOfNodesWithUnknownVoltage)
+        {
+            var nominalVoltages = new List<Complex>(countOfUnknownVoltages);
+
+            foreach (var index in indexOfNodesWithUnknownVoltage)
+            {
+                var node = nodes[index];
+                nominalVoltages.Add(Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift));
+            }
+
+            return nominalVoltages;
+        }
+
+        #endregion
     }
 }
