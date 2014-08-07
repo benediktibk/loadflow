@@ -214,8 +214,25 @@ namespace CalculationTest.ThreePhase
 
             _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
 
-            ComplexAssert.AreEqual(1, 0, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.000001);
-            ComplexAssert.AreEqual(0.95, 0.1, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(1, 0, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.00001);
+            ComplexAssert.AreEqual(0.95, 0.1, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_MinimalExampleWithGeneratorAndNewtonRaphson_CorrectResults()
+        {
+            var threePhaseFactor = Math.Sqrt(3);
+            const double omega = 2 * Math.PI * 50;
+            _powerNet.AddNode(1, threePhaseFactor, "feed in");
+            _powerNet.AddNode(2, threePhaseFactor, "generator");
+            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1, "");
+            _powerNet.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
+            _powerNet.AddLine(1, 2, 1, 1 / omega, 0, 0, 1);
+
+            _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+
+            ComplexAssert.AreEqual(1, 0, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.001);
+            ComplexAssert.AreEqual(0.95, 0.1, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.001);
         }
 
         #endregion
