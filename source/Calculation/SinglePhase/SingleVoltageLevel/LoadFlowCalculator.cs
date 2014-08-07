@@ -151,7 +151,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         #endregion
 
-        #region private functions
+        #region private static functions
 
         private static Node[] CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
         {
@@ -294,6 +294,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             return nominalVoltages;
         }
+
+        #endregion
+
+        #region private functions
 
         private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
