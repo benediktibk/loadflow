@@ -37,10 +37,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, IReadOnlyList<Complex> nominalVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
+            Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfEnumerable(nominalVoltages);
             var iterations = 0;
-            var initialVoltageCalculator = new NodePotentialMethod();
-            var currentVoltages = initialVoltageCalculator.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums, nominalVoltage,
-                nominalVoltages, constantCurrents, pqBuses, pvBuses);
             IList<double> powersRealDifference;
             IList<double> powersImaginaryDifference;
             CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
