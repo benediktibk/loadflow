@@ -29,12 +29,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         #region public functions
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, double nominalVoltage,
-            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
-            Vector<Complex> initialVoltages)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             var nodeCount = admittances.NodeCount;
-            var voltages = initialVoltages;
+            Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
             var powers = CollectPowers(pqBuses, pvBuses, nodeCount);
             var totalAbsolutePowerSum = powers.Sum(x => Math.Abs(x.Real) + Math.Abs(x.Imaginary));
             var iterations = 0;
@@ -55,14 +53,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             } while (iterations <= _maximumIterations && !accurateEnough);
 
             return voltages;
-        }
-
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages1, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
-        {
-            var initialVoltages = DenseVector.OfEnumerable(initialVoltages1);
-
-            return CalculateUnknownVoltages(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses,
-                initialVoltages);
         }
 
         public double GetMaximumPowerError()
