@@ -281,15 +281,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allPowers;
         }
 
-        private static IReadOnlyList<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
-            IEnumerable<int> indexOfNodesWithUnknownVoltage)
+        private static Vector<Complex> CalculateNominalVoltages(double nominalVoltage, IList<Node> nodes, int countOfUnknownVoltages,
+            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
-            var nominalVoltages = new List<Complex>(countOfUnknownVoltages);
+            var nominalVoltages = new DenseVector(countOfUnknownVoltages);
 
-            foreach (var index in indexOfNodesWithUnknownVoltage)
+            for (var i = 0; i < indexOfNodesWithUnknownVoltage.Count; ++i)
             {
+                var index = indexOfNodesWithUnknownVoltage[i];
                 var node = nodes[index];
-                nominalVoltages.Add(Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift));
+                nominalVoltages[i] = Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift);
             }
 
             return nominalVoltages;
@@ -323,12 +324,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage,
                 indexOfSlackBuses, knownVoltages, out constantCurrentRightHandSide);
             var totalAdmittanceRowSums = admittances.CalculateRowSums();
-            var nominalVoltages = CalculateNominalVoltages(nominalVoltage, nodes, countOfUnknownVoltages,
+            var initialVoltages = CalculateNominalVoltages(nominalVoltage, nodes, countOfUnknownVoltages,
                 indexOfNodesWithUnknownVoltage);
 
             var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages,
                 totalAdmittanceRowSums, nominalVoltage,
-                nominalVoltages, constantCurrentRightHandSide, pqBuses, pvBuses);
+                initialVoltages, constantCurrentRightHandSide, pqBuses, pvBuses);
 
             var result = CombineKnownAndUnknownVoltages(indexOfSlackBuses, knownVoltages,
                 indexOfNodesWithUnknownVoltage, unknownVoltages);

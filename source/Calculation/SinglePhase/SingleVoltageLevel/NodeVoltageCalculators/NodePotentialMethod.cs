@@ -7,7 +7,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, IReadOnlyList<Complex> nominalVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
@@ -19,7 +19,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 foreach (var bus in pqBuses)
                     knownPowers[bus.ID] = bus.Power;
 
-                return CalculateUnknownVoltagesInternal(admittances, nominalVoltages, constantCurrents,
+                return CalculateUnknownVoltagesInternal(admittances, initialVoltages, constantCurrents,
                     knownPowers);
             }
             
@@ -44,7 +44,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var bus = pqBuses[i];
                 knownPowers[bus.ID] = bus.Power;
                 indexOfNodesWithUnkownVoltage.Add(bus.ID);
-                reducedNominalVoltages[i] = nominalVoltages[bus.ID];
+                reducedNominalVoltages[i] = initialVoltages[bus.ID];
             }
 
             for (var i = 0; i < pvBuses.Count; ++i)

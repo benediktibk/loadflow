@@ -57,9 +57,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltages;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, IReadOnlyList<Complex> nominalVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages1, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            var initialVoltages = DenseVector.OfEnumerable(nominalVoltages);
+            var initialVoltages = DenseVector.OfEnumerable(initialVoltages1);
 
             return CalculateUnknownVoltages(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses,
                 initialVoltages);

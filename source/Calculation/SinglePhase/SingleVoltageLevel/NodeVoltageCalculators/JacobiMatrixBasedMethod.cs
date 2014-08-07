@@ -35,9 +35,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         #region INodeVoltageCalculator
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, IReadOnlyList<Complex> nominalVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
-            Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfEnumerable(nominalVoltages);
+            Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfVector(initialVoltages);
             var iterations = 0;
             IList<double> powersRealDifference;
             IList<double> powersImaginaryDifference;
