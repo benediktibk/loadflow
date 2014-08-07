@@ -113,7 +113,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             set { _values[row, column] = value; }
         }
 
-        public MathNet.Numerics.LinearAlgebra.Complex.Factorization.QR CalculateFactorization()
+        public ISolver<Complex> CalculateFactorization()
         {
             return _values.QR();
         }
