@@ -2,6 +2,7 @@
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
+using MathNet.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
@@ -170,20 +171,28 @@ namespace CalculationTest.ThreePhase
         {
             const double omega = 2 * Math.PI * 50;
             var threePhaseFactor = Math.Sqrt(3);
+            var Z = new Complex(1, 1);
+            var U1 = new Complex(1, 0);
+            var U2 = new Complex(0.95, 0.1);
+            var U3 = new Complex(0.93, 0.08);
+            var I1 = (U1 - U2)/Z;
+            var I2 = (U2 - U3)/Z;
+            var load = (-1)*U3*I2.Conjugate();
+            var generatorLoad = U2*(I2 - I1).Conjugate();
             _powerNet.AddNode(1, threePhaseFactor, "feed in");
             _powerNet.AddNode(2, threePhaseFactor, "generator");
             _powerNet.AddNode(3, threePhaseFactor, "load");
-            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1, "");
-            _powerNet.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.10575);
-            _powerNet.AddLoad(3, new Complex(-0.0558, -0.0048));
+            _powerNet.AddFeedIn(1, U1 * threePhaseFactor, 0, 1, 1, "");
+            _powerNet.AddGenerator(2, U2.Magnitude * threePhaseFactor, generatorLoad.Real * 3);
+            _powerNet.AddLoad(3, load * 3);
             _powerNet.AddLine(1, 2, 1, 1 / omega, 0, 0, 1);
             _powerNet.AddLine(2, 3, 1, 1 / omega, 0, 0, 1);
 
             _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
 
-            ComplexAssert.AreEqual(1, 0, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.000001);
-            ComplexAssert.AreEqual(0.95, 0.1, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.000001);
-            ComplexAssert.AreEqual(0.93, 0.08, _powerNet.GetNodeVoltage(3) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(U1, _powerNet.GetNodeVoltage(1) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(U2, _powerNet.GetNodeVoltage(2) / threePhaseFactor, 0.000001);
+            ComplexAssert.AreEqual(U3, _powerNet.GetNodeVoltage(3) / threePhaseFactor, 0.000001);
         }
 
         [TestMethod]
