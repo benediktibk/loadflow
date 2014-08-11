@@ -32,7 +32,7 @@ namespace Database
         private readonly Mutex _isCalculationRunningMutex;
         private readonly BackgroundWorker _backgroundWorker;
         private SymmetricPowerNet _calculationPowerNet;
-        private INodeVoltageCalculator _nodeVoltageCalculator;
+        private ICalculator _calculator;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
 
@@ -99,7 +99,45 @@ namespace Database
             _isCalculationRunning = true;
             _isCalculationRunningMutex.ReleaseMutex();
 
-            _nodeVoltageCalculator = NodeVoltageCalculatorFactory.Create(CalculatorSelection);
+            const double targetPrecision = 0.000001;
+            const int maximumIterations = 1000;
+            const int helmBitPrecisionMulti = 200;
+            const int coefficientCountHelmMulti = 80;
+            const int coefficientCountHelmLongDouble = 50;
+
+            switch (CalculatorSelection)
+            {
+                case NodeVoltageCalculatorSelection.NodePotential:
+                    _calculator = new CalculatorDirect(new NodePotentialMethod());
+                    break;
+                case NodeVoltageCalculatorSelection.CurrentIteration:
+                    _calculator = new CalculatorDirect(new CurrentIteration(targetPrecision, maximumIterations));
+                    break;
+                case NodeVoltageCalculatorSelection.NewtonRaphson:
+                    _calculator = new CalculatorDirect(new NewtonRaphsonMethod(targetPrecision, maximumIterations));
+                    break;
+                case NodeVoltageCalculatorSelection.FastDecoupledLoadFlow:
+                    _calculator = new CalculatorDirect(new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations));
+                    break;
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlow:
+                    _calculator =
+                        new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmLongDouble,
+                            new PrecisionLongDouble(), true));
+                    break;
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
+                    _calculator =
+                        new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti,
+                            new PrecisionMulti(helmBitPrecisionMulti), true));
+                    break;
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
+                    _calculator = new CalculatorHelmCombined(new CurrentIteration(targetPrecision, maximumIterations), coefficientCountHelmMulti, helmBitPrecisionMulti, targetPrecision, Log);
+                    break;
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
+                    _calculator = new CalculatorHelmCombined(new NewtonRaphsonMethod(targetPrecision, maximumIterations), coefficientCountHelmMulti, helmBitPrecisionMulti, targetPrecision, Log);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             if (!CreatePowerNet()) 
                 return;
@@ -453,9 +491,9 @@ namespace Database
         {
             try
             {
-                var error = _calculationPowerNet.CalculateNodeVoltages(_nodeVoltageCalculator);
+                var ok = _calculator.Calculate(_calculationPowerNet);
 
-                if (!error)
+                if (ok)
                     return;
 
                 Log("voltage collapse");

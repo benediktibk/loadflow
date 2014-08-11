@@ -89,6 +89,10 @@ namespace DatabaseUI
                     return "holomorphic embedded load flow";
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
                     return "holomorphic embedded load flow, high precision";
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
+                    return "holomorphic embedded load flow with current iteration";
+                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
+                    return "holomorphic embedded load flow with newton raphson";
                 default:
                     throw new ArgumentOutOfRangeException("calculator");
             }

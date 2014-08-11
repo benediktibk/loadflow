@@ -7,6 +7,8 @@
         NewtonRaphson,
         FastDecoupledLoadFlow,
         HolomorphicEmbeddedLoadFlow,
-        HolomorphicEmbeddedLoadFlowHighPrecision
+        HolomorphicEmbeddedLoadFlowHighPrecision,
+        HolomorphicEmbeddedLoadFlowWithCurrentIteration,
+        HolomorphicEmbeddedLoadFlowWithNewtonRaphson
     }
 }
