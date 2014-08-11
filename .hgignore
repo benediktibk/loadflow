@@ -14,7 +14,10 @@ documents/~$*.xlsx
 *.opensdf
 *.sln.DotSettings
 Thumbs.db
-documents/forschungspraxis/*.pdf
-documents/forschungspraxis/*.aux
-documents/forschungspraxis/*.log
-documents/forschungspraxis/*.toc
+documents/forschungspraxis/*/*.pdf
+documents/forschungspraxis/*/*.aux
+documents/forschungspraxis/*/*.log
+documents/forschungspraxis/*/*.out
+documents/forschungspraxis/*/*.nav
+documents/forschungspraxis/*/*.toc
+documents/forschungspraxis/*/*.snm
