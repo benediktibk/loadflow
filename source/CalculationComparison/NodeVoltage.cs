@@ -13,6 +13,8 @@ namespace CalculationComparison
         public Complex FastDecoupledLoadFlow { get; set; }
         public Complex HolomorphicEmbeddingLoadFlowLongDouble { get; set; }
         public Complex HolomorphicEmbeddingLoadFlowMulti { get; set; }
+        public Complex HelmWithNewtonRaphson { get; set; }
+        public Complex HelmWithCurrentIteration { get; set; }
 
         public NodeVoltage DeepClone()
         {
@@ -26,7 +28,9 @@ namespace CalculationComparison
                 NewtonRaphson = DeepCloneComplex(NewtonRaphson),
                 FastDecoupledLoadFlow = DeepCloneComplex(FastDecoupledLoadFlow),
                 HolomorphicEmbeddingLoadFlowLongDouble = DeepCloneComplex(HolomorphicEmbeddingLoadFlowLongDouble),
-                HolomorphicEmbeddingLoadFlowMulti = DeepCloneComplex(HolomorphicEmbeddingLoadFlowMulti)
+                HolomorphicEmbeddingLoadFlowMulti = DeepCloneComplex(HolomorphicEmbeddingLoadFlowMulti),
+                HelmWithNewtonRaphson = DeepCloneComplex(HelmWithNewtonRaphson),
+                HelmWithCurrentIteration = DeepCloneComplex(HelmWithCurrentIteration)
             };
         }
 

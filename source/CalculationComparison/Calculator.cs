@@ -17,6 +17,7 @@ namespace CalculationComparison
     public class Calculator
     {
         #region variables
+
         private readonly GeneralSettings _generalSettings; 
         private readonly IterativeMethodSettings _currentIteration;
         private readonly IterativeMethodSettings _fastDecoupledLoadFlow;
@@ -27,12 +28,15 @@ namespace CalculationComparison
         private readonly CalculationResults _calculationResults;
         private readonly NodeVoltages _nodeVoltages;
         private readonly Dispatcher _mainDispatcher;
+
         #endregion
 
         #region delegates
+
         private delegate void ResultCalculated(CalculationResult result);
         private delegate void CombinedResultCalculated(CombinedCalculationResult result);
         private delegate void SetVoltages(Vector<Complex> voltages);
+
         #endregion
 
         #region constructor
@@ -381,6 +385,7 @@ namespace CalculationComparison
         #endregion
 
         #region result adding
+
         private void AddCalculationResult(CalculationResult result)
         {
             _calculationResults.Add(result);
@@ -450,9 +455,31 @@ namespace CalculationComparison
                 _nodeVoltages[i] = copy;
             }
         }
+
+        private void SetVoltagesHelmWithNewtonRaphson(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.HelmWithNewtonRaphson = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
+        private void SetVoltagesHelmWithCurrentIteration(Vector<Complex> voltages)
+        {
+            for (var i = 0; i < _nodeVoltages.Count; ++i)
+            {
+                var copy = _nodeVoltages[i].DeepClone();
+                copy.HelmWithCurrentIteration = voltages[i];
+                _nodeVoltages[i] = copy;
+            }
+        }
+
         #endregion
 
         #region result calculation
+
         public void Calculate()
         {
             _generalSettings.CalculationRunning = true;
@@ -478,6 +505,8 @@ namespace CalculationComparison
                 CalculateFastDecoupledLoadFlowResult();
                 CalculateHolomorphicEmbeddingLoadFlowResult();
                 CalculateHolomorphicEmbeddingLoadFlowHighAccuracyResult();
+                CalculateHelmWithNewtonRaphsonResult();
+                CalculateHelmWithCurrentIterationResult();
             });
 
             calculationTask.ContinueWith(t => CalculationFinished(), CancellationToken.None,
@@ -536,6 +565,26 @@ namespace CalculationComparison
             _mainDispatcher.Invoke(new SetVoltages(SetVoltagesHolomorphicEmbeddingLoadFlowMulti), voltages);
         }
 
+        private void CalculateHelmWithNewtonRaphsonResult()
+        {
+            var calculator =
+                new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(
+                    _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
+                    new NewtonRaphsonMethod(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision, 1000));
+            var voltages = CalculateResult(calculator, "HELM with newton raphson");
+            _mainDispatcher.Invoke(new SetVoltages(SetVoltagesHelmWithNewtonRaphson), voltages);
+        }
+
+        private void CalculateHelmWithCurrentIterationResult()
+        {
+            var calculator =
+                new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(
+                    _holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision,
+                    new CurrentIteration(_holomorphicEmbeddedLoadFlowHighAccuracy.TargetPrecision, 1000));
+            var voltages = CalculateResult(calculator, "HELM with current iteration");
+            _mainDispatcher.Invoke(new SetVoltages(SetVoltagesHelmWithCurrentIteration), voltages);
+        }
+
         private Vector<Complex> CalculateResult(INodeVoltageCalculator nodeVoltageCalculator, string algorithmName)
         {
             var numberOfExecutions = _generalSettings.NumberOfExecutions;
@@ -585,6 +634,7 @@ namespace CalculationComparison
             _mainDispatcher.Invoke(new CombinedResultCalculated(AddCombinedCalculationResult), combinedResult);
             return powerNet.NodeVoltages;
         }
+
         #endregion
     }
 }

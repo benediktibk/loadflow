@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Load Flow Calculation Methods - Comparison" 
         Height="650" 
-        Width="1000">
+        Width="1100">
     <Window.Resources>
         <ObjectDataProvider x:Key="DataFromEnum" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -217,9 +217,9 @@
         </ScrollViewer>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30*"/>
                 <RowDefinition Height="40*"/>
-                <RowDefinition Height="30*"/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
             <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
                 <DataGrid.Columns>
@@ -259,6 +259,8 @@
                     <DataGridTextColumn Binding="{Binding FastDecoupledLoadFlow, StringFormat={}{0:0.####}}" Header="FDLF"/>
                     <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowLongDouble, StringFormat={}{0:0.####}}" Header="HELM - long double"/>
                     <DataGridTextColumn Binding="{Binding HolomorphicEmbeddingLoadFlowMulti, StringFormat={}{0:0.####}}" Header="HELM - multi"/>
+                    <DataGridTextColumn Binding="{Binding HelmWithNewtonRaphson, StringFormat={}{0:0.####}}" Header="HELM with newton raphson"/>
+                    <DataGridTextColumn Binding="{Binding HelmWithCurrentIteration, StringFormat={}{0:0.####}}" Header="HELM with current iteration"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
