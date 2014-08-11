@@ -117,7 +117,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return nodeVoltages;
         }
 
-
         #endregion
     }
 }

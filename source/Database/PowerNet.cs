@@ -453,7 +453,13 @@ namespace Database
         {
             try
             {
-                _calculationPowerNet.CalculateNodeVoltages(_nodeVoltageCalculator);
+                var error = _calculationPowerNet.CalculateNodeVoltages(_nodeVoltageCalculator);
+
+                if (!error)
+                    return;
+
+                Log("voltage collapse");
+                _calculationPowerNet = null;
             }
             catch (Exception exception)
             {

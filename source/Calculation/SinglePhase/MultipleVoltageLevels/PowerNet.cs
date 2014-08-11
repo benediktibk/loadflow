@@ -74,12 +74,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var voltages = calculator.CalculateNodeVoltages(this);
 
             if (voltages == null)
-                throw new Exception("was not able to calculate the node voltages");
+                return false;
 
             foreach (var node in _nodes)
                 node.UpdateVoltage(voltages);
 
-            return false;
+            return true;
         }
 
         public IExternalReadOnlyNode GetNodeById(long id)
