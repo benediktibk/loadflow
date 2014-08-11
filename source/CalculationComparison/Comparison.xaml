@@ -217,9 +217,8 @@
         </ScrollViewer>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40*"/>
-                <RowDefinition Height="40*"/>
-                <RowDefinition Height="20*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
             <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
                 <DataGrid.Columns>
@@ -232,17 +231,7 @@
                     <DataGridTextColumn Binding="{Binding StandardDeviationExecutionTime, StringFormat={}{0:e3}}" Header="sigma t"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Name="ResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{StaticResource CalculationResults}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
-                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
-                    <DataGridCheckBoxColumn Binding="{Binding VoltageCollapseDetected}" Header="reported collapse"/>
-                    <DataGridTextColumn Binding="{Binding RelativePowerError, StringFormat={}{0:e3}}" Header="power error"/>
-                    <DataGridTextColumn Binding="{Binding MaximumRelativeVoltageError, StringFormat={}{0:e3}}" Header="voltage error"/>
-                    <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:e3}}" Header="time"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="3">
+            <DataGrid Name="VoltagesDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{StaticResource NodeVoltages}" FrozenColumnCount="3">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding NodeName}" Header="node"/>
                     <DataGridCheckBoxColumn Binding="{Binding Known}" Header="known"/>

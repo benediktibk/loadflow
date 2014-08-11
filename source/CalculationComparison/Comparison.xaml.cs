@@ -55,20 +55,6 @@ namespace CalculationComparison
 
         #region automatic gui update
 
-        private void ScrollResultDataGridToEnd()
-        {
-            if (ResultDataGrid.Items.Count <= 0)
-                return;
-
-            var border = VisualTreeHelper.GetChild(ResultDataGrid, 0) as Decorator;
-            if (border == null)
-                return;
-
-            var scroll = border.Child as ScrollViewer;
-            if (scroll != null)
-                scroll.ScrollToEnd();
-        }
-
         private void ProblemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var currentIterationTargetPrecision = 0.0;
@@ -272,7 +258,6 @@ namespace CalculationComparison
         void CalculationResultsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CalculateProgressBar.Value = _calculationResults.Count;
-            ScrollResultDataGridToEnd();
         }
 
         #endregion
@@ -281,7 +266,7 @@ namespace CalculationComparison
 
         private void CalculateClicked(object sender, RoutedEventArgs e)
         {
-            CalculateProgressBar.Maximum = 6*_generalSettings.NumberOfExecutions;
+            CalculateProgressBar.Maximum = 8*_generalSettings.NumberOfExecutions;
             CalculateProgressBar.Value = 0;
             _calculator.Calculate();
         }
