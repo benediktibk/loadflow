@@ -160,8 +160,9 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddLine(5, 6, 0.1, 0.4 / omega, 100 / (400 * 400), 1e-10, 0.1);
             _powerNet.AddLine(6, 7, 0.1, 0.4 / omega, 100 / (400 * 400), 1e-10, 1);
 
-            _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
+            Assert.IsFalse(voltageCollapse);
             ComplexAssert.AreEqual(Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), _powerNet.GetNodeVoltage(1), 0.01);
             ComplexAssert.AreEqual(Complex.FromPolarCoordinates(989.668, 0.701 * Math.PI / 180), _powerNet.GetNodeVoltage(2), 0.01);
         }
