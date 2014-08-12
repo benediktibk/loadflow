@@ -7,11 +7,32 @@
 \usepackage{lmodern}
 \usepackage{setspace}
 \usepackage{siunitx}
+\usepackage[ngerman]{babel}
  
 \author{Benedikt Schmidt}
 \title{Validierung von HELM}
 
 \begin{document}
-\maketitle
+	\maketitle
+	
+	\section{Einführung}
+	Klassische Verfahren zur Berechnung von Lastflüssen in elektrischen Energieverteilungsnetzen, wie zum Beispiel die Stromiteration oder Fast-Decoupled-Loadflow, weisen erhebliche Probleme in Bezug auf die Konvergenz auf. Zum einen können diese iterative Verfahren unter Umständen gar nicht konvergieren, obwohl das zu berechnende System an sich stabil wäre. Zusätzlich dazu können die berechneten Lösungen in bestimmten Situationen keine physikalische Lösung des Systems beschreiben. Holomorphic Embedding Loadflow (HELM) \cite{helmIEEE}, ein von Antonio Trias neu entwickelter Ansatz zur Lastflussberechnung, verspricht diese Probleme zu lösen. Die praktische Valdidierung dieser Aussagen erfolgte von mir durch die Entwicklung eines Programmes, welches sowohl HELM als auch die klassischen iterativen Verfahren implementiert.
+	
+	\section{Berechnung der Knotenspannungen in HELM}
+	
+	\section{Implementierung}
+	
+	\subsection{Software Architektur}
+	
+	\subsection{Datenbankschema}
+	
+	\subsection{Bedienung}
+	
+	\section{Ergebnisse}
+	
+	\begin{thebibliography}{1}
+		\bibitem{helmIEEE}
+		A.~Trias, \emph{The Holomorphic Embedding Load Flow Method}, IEEE PES General Meeting, July 2012
+	\end{thebibliography}
 
 \end{document}
