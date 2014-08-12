@@ -22,7 +22,7 @@
 	Klassische Verfahren zur Berechnung von Lastflüssen in elektrischen Energieverteilungsnetzen, wie zum Beispiel die Stromiteration oder Fast-Decoupled-Loadflow, weisen erhebliche Probleme in Bezug auf die Konvergenz auf. Zum einen können diese iterative Verfahren unter Umständen gar nicht konvergieren, obwohl das zu berechnende System an sich stabil wäre. Zusätzlich dazu können die berechneten Lösungen in bestimmten Situationen keine physikalische Lösung des Systems beschreiben. Holomorphic Embedding Loadflow (HELM) \cite{helmIEEE}, ein von Antonio Trias neu entwickelter Ansatz zur Lastflussberechnung, verspricht diese Probleme zu lösen. Die praktische Valdidierung dieser Aussagen erfolgte von mir durch die Entwicklung eines Programmes, welches sowohl HELM als auch die klassischen iterativen Verfahren implementiert.
 	
 	\section{Berechnung der Knotenspannungen in HELM}
-	Ausgangsproblem ist ein elektrisches Energieverteilungsnetz bestehend aus Knoten bzw. sogenannten Bussen und Admittanzen $Y_{ij}$, welche die Knoten verbinden. Zudem muss an mindestens einem Knoten, dem Slackbus, Real- und Imaginärteil der Spannung zur Definition des Winkels vorgegeben sein. An allen anderen Knoten müssen dann jeweils genau zwei der folgenden Größen vorgegeben sein: $P_i$, $Q_i$, $\Re\{U_i\}$, $\Im\{U_i\}$ und $|U_i|$. Bei einer Vorgabe von $|U_i|$ und $P_i$ spricht man dann von einem PV-Bus, bei $P_i$ und $Q_i$ von einem PQ-Bus. Im folgenden werde ich mich immer auf den Fall eines PQ-Busses beziehen, die Modellierung eines PV-Busses in HELM wird in \cite{helmPV} behandelt. Die im weiteren Verlauf angeführten Formeln und Methoden entstammen größtenteils \cite{helmIEEE}, \cite{helmPatentApr2009} und \cite{helmPatentSept2009}.
+	Ausgangsproblem ist ein elektrisches Energieverteilungsnetz bestehend aus Knoten bzw. sogenannten Bussen und Admittanzen $Y_{ij}$, welche die Knoten verbinden. Zudem muss an mindestens einem Knoten, dem Slackbus, Real- und Imaginärteil der Spannung zur Definition des Winkels vorgegeben sein. An allen anderen Knoten müssen dann jeweils genau zwei der folgenden Größen vorgegeben sein: $P_i$, $Q_i$, $\Re\{U_i\}$, $\Im\{U_i\}$ oder $|U_i|$. Bei einer Vorgabe von $|U_i|$ und $P_i$ spricht man dann von einem PV-Bus, bei $P_i$ und $Q_i$ von einem PQ-Bus. Im folgenden werde ich mich immer auf den Fall eines PQ-Busses beziehen, die Modellierung eines PV-Busses in HELM wird in \cite{helmPV} behandelt. Die im weiteren Verlauf angeführten Formeln und Methoden entstammen größtenteils \cite{helmIEEE}, \cite{helmPatentApr2009} und \cite{helmPatentSept2009}.
 	
 	Für einen PQ-Bus ergibt sich dann aus der Kirchhoffschen Knotenregel
 	\begin{equation}
@@ -48,6 +48,22 @@
 	Theoretisch lässt sich nun für die Lösung nachweisen, dass sie genau dann konvergiert wenn das System stabil ist, also kein Spannungszusammenbruch eintritt. Somit erhält man also an und für sich genau jenes Ergebnis, welches man sich wünscht: Wenn im System die Spannung zusammenbricht konvergiert das Verfahren nicht, falls das System stabil ist konvergiert das Verfahren. Praktisch ist man allerdings nicht in der Lage zum einen beliebig viele Koeffizienten zu berechnen, und zum anderen stößt man an die Grenze der Rechengenauigkeit. Bereits für sehr einfache Systeme erreichen die Koeffizienten $c_{i,50}$ dermaßen große Werte, dass mit einem 64 Bit Gleitkommadatentyp die Rechenfehler größer als etwaige Verbesserungen in der Genauigkeit des Ergebnisses ist. Auf Ansätze um dieses Problem zu umgehen bzw. zu lösen werde ich im nächsten Abschnitt eingehen.
 	
 	\section{Implementierung}
+	
+	Um HELM, bzw. genauer gesagt meine Implementierung von HELM, mit den klassischen Ansätzen zur Lastflussberechung vergleichen zu können habe ich folgende Berechnungsverfahren implementiert:
+	\begin{enumerate}
+		\item Knotenpotentialverfahren
+		\item Stromiteration
+		\item Newton-Raphson (ohne Vereinfachung)
+		\item Fast-Decoupled-Loadflow
+		\item HELM mit doppelter Genauigkeit
+		\item HELM mit beliebiger Genauigkeit
+		\item HELM kombiniert mit Newton-Raphson
+		\item HELM kombiniert mit einer Stromiteration
+	\end{enumerate}
+	
+	Die zwei unterschiedlichen Varianten von HELM ergeben sich aus der Einschränkung eines 64 Bit Gleitkommadatentyps, in den meisten Programmiersprachen bekannt als double. Da für eine größere Genauigkeit mehr als nur 50 Koeffizienten und somit auch eine größerer Datentyp nötig ist, habe ich diesen Teil, als einzigen, in C++ entwickelt. Dadurch konnte ich auf Templates zurückgreifen um beliebige Datentypen und darauf basierend Matrizen zu verwenden. Für den Gleitkommadatentyp mit beliebiger Genauigkeit habe ich \emph{MPIR} \footnote{http://www.mpir.org/} eingebunden, für die Template-Matrizenrechnung \emph{Eigen} \footnote{http://eigen.tuxfamily.org/index.php}. Somit sind die einzigen Einschränkungen für die Rechengenauigkeit der verfügbare Arbeitspeicher und die Berechnungsdauer. Insbesondere letztere wird stark verschlechtert durch die Wahl eines größeren Datentyps, dementsprechend ist dieses Berechnungsverfahren vermutlich eher für akademische Zwecke sinnvoll.
+	
+	Praktisch durchaus nützlich sein könnten die beiden letzten implementierten Berechnungsverfahren in denen jeweils HELM mit doppelter Genaugikeit mit einem iterativen Verfahren kombiniert wird. Bei diesen Kombinationen wird zuerst das iterative Verfahren angewandt, da dieses in der Regel um Größenordnungen schneller ist als HELM. Falls allerdings das iterative Verfahren nicht konvergiert kommt HELM mit doppelter Genauigkeit zum Einsatz und liefert bessere Startwerte, basierend auf denen wiederum das iterative Verfahren angewandt wird. Somit erhält man gewissermaßen die Vorteile beider Welten, die Geschwindigkeit der iterativen Verfahren kombiniert mit der verbesserten Konvergenz bei Situationen nahe dem Spannungszusammenbruch.
 	
 	\subsection{Software Architektur}
 	
