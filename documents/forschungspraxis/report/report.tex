@@ -120,6 +120,12 @@
 	
 	\section{Ergebnisse}
 	
+	Um die unterschiedlichen Berechnungsverfahren möglichst gut vergleichen zu können habe ich eine weitere Benutzeroberfläche in \emph{CalculationComparison} implementiert. Diese ermöglicht alle implementierten Berechnungsverfahren anhand einiger relativ zufällig gewählter Netze zu vergleichen bezüglich Genauigkeit, Konvergenzverhalten und Geschwindigkeit. Beginnen möchte ich hier mit Grafik \reffig{MISSING}, welche die Anzahl der Netze darstellt, in welchen das jeweilige Verfahren korrekt konvergiert. In diesem Fall kommt es nicht zu der Situation einer Konvergenz zu einem instabilen Arbeitspunkt, daher ist nur die Information darüber ob das Verfahren konvergierte oder nicht relevant. Einige der Beispielnetze sind auch bewusst so gewählt, dass sich ein Spannungszusammenbruch ergibt. In diesen Fällen ist dann natürlich ein korrektes Konvergenzverhalten wenn das Verfahren nicht konvergiert und somit den Spannungszusammenbruch detektiert. MISSING EXPLANATION
+	
+	Als nächsten Aspekt gehe ich nun auf die Genauigkeit der Verfahren ein, welche durchaus variiert. Dabei zeigt sich in \reffig{MISSING}, dass HELM mit nur 64 Bit Rechengenauigkeit teilweise eine inakzeptable Genaugikeit aufweist.
+	
+	Zu guter Letzt stellt sich noch die Frage der Berechnungsdauer, welche insbesondere bei größeren Netzen ein relevanter Aspekt wird. Hierbei erkennt man in \reffig{MISSING} den Nachteil der höheren Rechengenauigkeit von HELM mit einem genaueren Datentyp. Dementsprechend vermute ich vor allem akademische Anwendungsgebiete für HELM mit beliebiger Genauigkeit, praktisch ist dieses Verfahren allerdings nicht unbedingt relevant. HELM ist aber ein durchaus interessanter Ansatz für Netze, welche nahe am Spannungszusammenbruch betrieben bzw. berechnet werden. Um dieses 
+	
 	\begin{thebibliography}{1}
 		\bibitem{helmIEEE}
 			A.~Trias, \emph{The Holomorphic Embedding Load Flow Method}, IEEE PES General Meeting, July 2012
