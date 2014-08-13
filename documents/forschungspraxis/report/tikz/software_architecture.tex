@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+	\tikzstyle{block} = [
+	rectangle, draw, fill=blue!20,
+	text width=10em, text centered,
+	rounded corners, minimum height=3em,
+	node distance=2cm]
+	\tikzstyle{cloud} = [draw, ellipse,fill=green!20, node distance=5cm, minimum height=2em]	
+	\tikzstyle{lineOneWay} = [draw, ->, >=stealth', thick]
+	\tikzstyle{lineTwoWay} = [draw, <->, >=stealth', thick]
+	
+	\node [block] (databaseUI) {DatabaseUI};
+	\node [block, below of=databaseUI] (database) {Database};
+	\node [block, below of=database] (calculation) {Calculation};
+	\node [block, below of=calculation] (HELM) {HELM};	
+	\node [cloud, right of=database] (sqlDatabase) {SQL Server};
+	
+	\path [lineOneWay] ($(databaseUI.south)$) -- ($(database.north)$);
+	\path [lineOneWay] ($(database.south)$) -- ($(calculation.north)$);
+	\path [lineOneWay] ($(calculation.south)$) -- ($(HELM.north)$);
+	\path [lineTwoWay] ($(database.east)$) -- ($(sqlDatabase.west)$);
+\end{tikzpicture}

@@ -21,3 +21,4 @@ documents/forschungspraxis/*/*.out
 documents/forschungspraxis/*/*.nav
 documents/forschungspraxis/*/*.toc
 documents/forschungspraxis/*/*.snm
+documents/forschungspraxis/*/tikz/*.aux

@@ -8,6 +8,8 @@
 \usepackage{setspace}
 \usepackage{siunitx}
 \usepackage[ngerman]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc}
 
 \newcommand{\reffig}[1]{{Abb.~\ref{#1}}}
 \newcommand{\refeq}[1]{{(\ref{#1})}}
@@ -65,7 +67,13 @@
 	
 	Praktisch durchaus nützlich sein könnten die beiden letzten implementierten Berechnungsverfahren in denen jeweils HELM mit doppelter Genaugikeit mit einem iterativen Verfahren kombiniert wird. Bei diesen Kombinationen wird zuerst das iterative Verfahren angewandt, da dieses in der Regel um Größenordnungen schneller ist als HELM. Falls allerdings das iterative Verfahren nicht konvergiert kommt HELM mit doppelter Genauigkeit zum Einsatz und liefert bessere Startwerte, basierend auf denen wiederum das iterative Verfahren angewandt wird. Somit erhält man gewissermaßen die Vorteile beider Welten, die Geschwindigkeit der iterativen Verfahren kombiniert mit der verbesserten Konvergenz bei Situationen nahe dem Spannungszusammenbruch.
 	
-	\subsection{Software Architektur}
+	\begin{figure}
+		\center
+		\include{tikz/software_architecture}
+		\caption{Software Architektur}
+		\label{fig:software_architecture}
+	\end{figure}
+	Die Software gliedert sich in mehrere Klassenbibliotheken, welche hierarchisch aufeinander aufbauen. Die wichtigsten Teile zusammengefasst finden sich in \reffig{fig:software_architecture}. Die Implementierung von HELM ist dabei als einziger Teil in C++, der Rest ist in C\# implementiert. Außerdem gibt es für die meisten Bibliotheken ein Pendant mit Unittests, welche mit Hilfe des in Visual Studio integrierten Testframeworks ausgeführt werden können.
 	
 	\subsection{Datenbankschema}
 	

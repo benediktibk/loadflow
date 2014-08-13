@@ -1,8 +1,9 @@
 TARGET=report
+TIKZ=software_architecture
 
 all: $(TARGET).pdf
 
-$(TARGET).pdf: $(TARGET).tex
+$(TARGET).pdf: $(TARGET).tex tikz/$(TIKZ).tex
 	pdflatex $(TARGET).tex
 	pdflatex $(TARGET).tex
 	
