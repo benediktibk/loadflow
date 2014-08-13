@@ -12,6 +12,7 @@
 \usetikzlibrary{shapes,arrows,calc}
 
 \newcommand{\reffig}[1]{{Abb.~\ref{#1}}}
+\newcommand{\reftab}[1]{{Tab.~\ref{#1}}}
 \newcommand{\refeq}[1]{{(\ref{#1})}}
  
 \author{Benedikt Schmidt}
@@ -68,14 +69,41 @@
 	Praktisch durchaus nützlich sein könnten die beiden letzten implementierten Berechnungsverfahren in denen jeweils HELM mit doppelter Genaugikeit mit einem iterativen Verfahren kombiniert wird. Bei diesen Kombinationen wird zuerst das iterative Verfahren angewandt, da dieses in der Regel um Größenordnungen schneller ist als HELM. Falls allerdings das iterative Verfahren nicht konvergiert kommt HELM mit doppelter Genauigkeit zum Einsatz und liefert bessere Startwerte, basierend auf denen wiederum das iterative Verfahren angewandt wird. Somit erhält man gewissermaßen die Vorteile beider Welten, die Geschwindigkeit der iterativen Verfahren kombiniert mit der verbesserten Konvergenz bei Situationen nahe dem Spannungszusammenbruch.
 	
 	\begin{figure}
-		\center
+		\centering
 		\include{tikz/software_architecture}
 		\caption{Software Architektur}
 		\label{fig:software_architecture}
 	\end{figure}
-	Die Software gliedert sich in mehrere Klassenbibliotheken, welche hierarchisch aufeinander aufbauen. Die wichtigsten Teile zusammengefasst finden sich in \reffig{fig:software_architecture}. Die Implementierung von HELM ist dabei als einziger Teil in C++, der Rest ist in C\# implementiert. Außerdem gibt es für die meisten Bibliotheken ein Pendant mit Unittests, welche mit Hilfe des in Visual Studio integrierten Testframeworks ausgeführt werden können.
+	Die Software gliedert sich in mehrere Klassenbibliotheken, welche hierarchisch aufeinander aufbauen. Die wichtigsten Teile zusammengefasst finden sich in \reffig{fig:software_architecture}. Die Implementierung von HELM ist dabei als einziger Teil in \emph{C++}, der Rest ist in \emph{C\#} implementiert. Außerdem gibt es für die meisten Bibliotheken ein Pendant mit Unittests, welche mit Hilfe des in Visual Studio integrierten Testframeworks ausgeführt werden können.
 	
-	\subsection{Datenbankschema}
+	\subsection{Datenbank}
+	Im Hintergrund zur eigentlichen Anwendung ist es nötig einen Datenbankserver zu betreiben, idealerweise eine \emph{Microsoft SQL Server} oder \emph{Microsoft SQL Server Express}. Die Informationen über das Netz, also die Tabellen powernets, nodes, loads, transformers, lines, generators und feedins, werden beim Verbinden mit der Datenbank eingelesen. Dementsprechend ist es möglich ohne Verwendung des grafischen Oberfläche Netze zu definieren. Das dafür zu beachtende Datenbankschema ist in \reffig{fig:database_schema} dargestellt. Die Auswahl des Berechnungsverfahrens erfolgt dabei dann über die CalculatorSelection eines PowerNet, die jeweilige Bedeutung der Werte kann \reftab{tab:calculator_selection} entnommen werden.
+	
+	\begin{table}
+		\centering
+		\begin{tabular}{c|l}
+			CalculatorSelection & Berechnungsverfahren \\ \hline
+			0 & Knotenpunktpotentialverfahren \\
+	        1 & Stromiteration \\
+	        2 & Newton Raphson \\
+	        3 & Fast-Decoupled-Loadflow \\
+	        4 & HELM, 64 Bit \\
+	        5 & HELM, 200 Bit \\
+	        6 & HELM mit Stromiteration \\
+	        7 & HELM mit Newton Raphson
+		\end{tabular}
+		\caption{Bedeutung der Werte für CalculatorSelection}
+		\label{tab:calculator_selection}
+	\end{table}
+	
+	Die Tabellen admittances, admittancenodenames und admittancevalues hingegen werden nicht eingelesen und dienen nur der Speicherung der Admittanzmatrix, falls der Benutzer dies wünscht. Sowohl in diesen Tabellen als auch in jenen, in denen die Netze abgebildet werden, sind sämtliche Größen in SI-Einheiten.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.35]{Pictures/database_schema}
+		\caption{Datenbankschema}
+		\label{fig:database_schema}
+	\end{figure}
 	
 	\subsection{Bedienung}
 	

@@ -13,6 +13,7 @@ documents/~$*.xlsx
 *.sdf
 *.opensdf
 *.sln.DotSettings
+*.dia~
 Thumbs.db
 documents/forschungspraxis/*/*.pdf
 documents/forschungspraxis/*/*.aux

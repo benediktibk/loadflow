@@ -1,9 +1,10 @@
 TARGET=report
 TIKZ=software_architecture
+PICTURES=database_schema
 
 all: $(TARGET).pdf
 
-$(TARGET).pdf: $(TARGET).tex tikz/$(TIKZ).tex
+$(TARGET).pdf: $(TARGET).tex tikz/$(TIKZ).tex Pictures/$(PICTURES).pdf
 	pdflatex $(TARGET).tex
 	pdflatex $(TARGET).tex
 	

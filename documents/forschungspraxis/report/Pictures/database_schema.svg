@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="37cm" height="49cm" viewBox="239 25 730 970" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="240" y="246.163" width="202.5" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="246.163" width="202.5" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="341.25" y="265.163">PowerNet</text>
+    <rect style="fill: #ffffff" x="240" y="274.163" width="202.5" height="68"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="274.163" width="202.5" height="68"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="288.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="304.163"> Name: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="320.163"> Frequency: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="336.163"> CalculatorSelection: Int</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="620" y="26.1626" width="187.1" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="620" y="26.1626" width="187.1" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="713.55" y="45.1626">Node</text>
+    <rect style="fill: #ffffff" x="620" y="54.1626" width="187.1" height="100"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="620" y="54.1626" width="187.1" height="100"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="68.1626"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="84.1626"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="100.163"> Name: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="116.163"> NominalVoltage: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="132.163"> VoltageReal: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="623" y="148.163"> VoltageImaginary: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,64.1626 620,64.1626 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="680" y="166.163" width="287.2" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="166.163" width="287.2" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="823.6" y="185.163">Line</text>
+    <rect style="fill: #ffffff" x="680" y="194.163" width="287.2" height="148"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="194.163" width="287.2" height="148"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="208.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="224.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="240.163"> NodeOne: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="256.163"> NodeTwo: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="272.163"> LineName: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="288.163"> SeriesResistancePerUnitLength: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="304.163"> SeriesInductancePerUnitLength: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="320.163"> ShuntConductancePerUnitLength: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="336.163"> ShuntCapacityPerUnitLength: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,220.163 680,220.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,236.163 580,236.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,236.163 666,240.963 652,236.163 666,231.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,236.163 666,240.963 652,236.163 666,231.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,252.163 580,252.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,252.163 666,256.963 652,252.163 666,247.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,252.163 666,256.963 652,252.163 666,247.363 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="680" y="346.163" width="271.8" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="346.163" width="271.8" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="815.9" y="365.163">Transformer</text>
+    <rect style="fill: #ffffff" x="680" y="374.163" width="271.8" height="164"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="374.163" width="271.8" height="164"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="388.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="404.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="420.163"> UpperSideNode: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="436.163"> LowerSideNode: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="452.163"> TransformerName: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="468.163"> NominalPower: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="484.163"> RelativeShortCircuitVoltage: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="500.163"> CopperLosses: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="516.163"> IronLosses: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="532.163"> Ratio: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,416.163 580,416.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,416.163 666,420.963 652,416.163 666,411.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,416.163 666,420.963 652,416.163 666,411.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,432.163 580,432.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,432.163 666,436.963 652,432.163 666,427.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,432.163 666,436.963 652,432.163 666,427.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,400.163 680,400.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="680" y="546.163" width="187.1" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="546.163" width="187.1" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="773.55" y="565.163">Generator</text>
+    <rect style="fill: #ffffff" x="680" y="574.163" width="187.1" height="100"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="574.163" width="187.1" height="100"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="588.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="604.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="620.163"> Node: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="636.163"> GeneratorName: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="652.163"> VoltageMagnitude: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="668.163"> RealPower: Real</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="680" y="686.163" width="194.8" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="686.163" width="194.8" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="777.4" y="705.163">FeedIn</text>
+    <rect style="fill: #ffffff" x="680" y="714.163" width="194.8" height="148"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="714.163" width="194.8" height="148"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="728.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="744.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="760.163"> Node: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="776.163"> FeedInName: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="792.163"> VoltageReal: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="808.163"> VoltageImaginary: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="824.163"> ShortCircuitPower: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="840.163"> C: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="856.163"> RealToImaginary: Real</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="680" y="866.163" width="164" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="866.163" width="164" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="762" y="885.163">Load</text>
+    <rect style="fill: #ffffff" x="680" y="894.163" width="164" height="100"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="680" y="894.163" width="164" height="100"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="908.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="924.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="940.163"> Node: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="956.163"> LoadName: Text</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="972.163"> LoadReal: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="683" y="988.163"> LoadImaginary: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,616.163 580,616.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,616.163 666,620.963 652,616.163 666,611.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,616.163 666,620.963 652,616.163 666,611.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,756.163 580,756.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,756.163 666,760.963 652,756.163 666,751.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,756.163 666,760.963 652,756.163 666,751.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="654.828,936.163 580,936.163 580,80.1626 620,80.1626 "/>
+    <polygon style="fill: #ffffff" points="680,936.163 666,940.963 652,936.163 666,931.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="680,936.163 666,940.963 652,936.163 666,931.363 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,600.163 680,600.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,740.163 680,740.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,920.163 680,920.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="240" y="406.163" width="156.3" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="406.163" width="156.3" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="318.15" y="425.163">Admittance</text>
+    <rect style="fill: #ffffff" x="240" y="434.163" width="156.3" height="68"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="434.163" width="156.3" height="68"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="448.163"> PowerNet: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="464.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="480.163"> NodeCount: Int</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="496.163"> PowerBase: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="467.672,284.163 560,284.163 560,444.163 396.3,444.163 "/>
+    <polygon style="fill: #ffffff" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.5,284.163 456.5,279.363 470.5,284.163 456.5,288.963 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="240" y="526.163" width="212.25" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="526.163" width="212.25" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="346.125" y="545.163">AdmittanceNodeName</text>
+    <rect style="fill: #ffffff" x="240" y="554.163" width="212.25" height="68"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="554.163" width="212.25" height="68"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="568.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="584.163"> Matrix: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="600.163"> Index: Int</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="616.163"> Name: Text</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="421.472,460.163 540,460.163 540,580.163 452.25,580.163 "/>
+    <polygon style="fill: #ffffff" points="396.3,460.163 410.3,455.363 424.3,460.163 410.3,464.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="396.3,460.163 410.3,455.363 424.3,460.163 410.3,464.963 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="240" y="646.163" width="171.7" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="646.163" width="171.7" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="325.85" y="665.163">AdmittanceValue</text>
+    <rect style="fill: #ffffff" x="240" y="674.163" width="171.7" height="100"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="240" y="674.163" width="171.7" height="100"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="688.163"> Id: Int &lt;PK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="704.163"> Matrix: Int &lt;FK&gt;</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="720.163"> Row: Int</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="736.163"> Column: Int</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="752.163"> ValueReal: Real</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="243" y="768.163"> ValueImaginary: Real</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="421.472,460.163 540,460.163 540,700.163 411.7,700.163 "/>
+    <polygon style="fill: #ffffff" points="396.3,460.163 410.3,455.363 424.3,460.163 410.3,464.963 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="396.3,460.163 410.3,455.363 424.3,460.163 410.3,464.963 "/>
+  </g>
+</svg>
