@@ -106,6 +106,17 @@
 	\end{figure}
 	
 	\subsection{Bedienung}
+	Zum Start der Anwendung muss die Datei \emph{DatabaseUI.exe} ausgeführt werden, welche sich im Build-Verzeichnis des Projektes \emph{DatabaseUI} befindet. Falls diese Anwendung von einem anderen Verzeichnis aus gestartet werden sollte ist es nötig sämtliche Libraries, welche sich im selben Pfad befinden, mit zu kopieren.
+	
+	Nach Start der Anwendung ist es nötig eine Verbindung zur Datenbank aufzubauen. Mit den standardmäßig ausgefüllten Werten wird eine Verbindung zu einer lokal gestarteten Instanz eines \emph{Microsoft SQL Express} aufgebaut mit der aktuellen Benutzerkennung. Falls die Felder für den Benutzernamen und das Passwort ausgefüllt werden erfolgt die Authentifikation am Server darüber.
+	
+	Falls das Datenbankschema im angegebenen Server noch nicht existiert werden die Tabellen bei Bedarf automatisch angelegt. Dafür ist es dann aber nötig, dass der Benutzer die Berechtigungen dazu im SQL Server hat.
+	
+	Nach einem Aufbau der Verbindung, und unter Umständen dem Anlegen der Tabellen, werden sämtlich Werte, welche sich derzeit im Server befinden. Dieser Schritt erfolgt nur nach dem Aufbau der Verbindung. Falls also im Hintergrund manuell Daten in die Tabellen eingetragen wurden muss die Verbindung getrennt und wieder neu aufgebaut werden um diese Änderungen in der Benutzeroberfläche dargestellt zu bekommen.
+	
+	Das Eintragen von neuen Element erfolgt an und für sich wie in einer Tabellenkalkulation, die Daten werden dann automatisch im Hintergrund zum SQL Server übertragen. Sämtliche Größen sind dabei wiederum in SI-Einheiten angegeben. Die Berechnung der Knotenspannungen erfolgt dann über den Button \emph{calculate node voltages}. Die berechneten Spannungen werden dann in der Tabelle \emph{Nodes} abgespeichert. Es gilt allerdings auch die Ausgabe links unten zu beachten. Falls es nicht möglich war die Spannungen zu berechnen wird hier eine Fehlermeldung ausgegeben.
+	
+	Zudem ist es noch möglich über den Button \emph{calculate admittance matrix} für das aktuell ausgewählte Netz die Admittanzmatrix in der Datenbank abzulegen.
 	
 	\section{Ergebnisse}
 	
