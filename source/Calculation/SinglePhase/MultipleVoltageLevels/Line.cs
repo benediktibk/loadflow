@@ -7,13 +7,19 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Line : IPowerNetElement
     {
+        #region variables
+
         private readonly IExternalReadOnlyNode _sourceNode;
         private readonly IExternalReadOnlyNode _targetNode;
         private Complex _lengthImpedance;
         private Complex _shuntAdmittance;
         private bool _hasShuntAdmittance;
 
-        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency)
+        #endregion
+
+        #region constructor
+
+        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
             if (seriesResistancePerUnitLength <= 0 && seriesInductancePerUnitLength <= 0)
                 throw new ArgumentOutOfRangeException();
@@ -21,34 +27,28 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (length <= 0)
                 throw new ArgumentOutOfRangeException("length", "must be positive");
 
+            if (frequency <= 0)
+                throw new ArgumentOutOfRangeException("frequency", "must be positive");
+
             _sourceNode = sourceNode;
             _targetNode = targetNode;
-            CalculateElectricCharacteristics
-                (seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, length, frequency);
-        }
 
-        private void CalculateElectricCharacteristics(double lengthResistance, double lengthInductance, double shuntCapacity,
-            double shuntConductance, double length, double frequency)
-        {
-            var omega = 2*Math.PI*frequency;
-            var directLengthImpedance = new Complex(lengthResistance * length, omega * lengthInductance * length);
-            var directShuntAdmittance = new Complex(shuntConductance * length, omega * shuntCapacity * length);
-
-            if (directShuntAdmittance == new Complex())
-            {
-                _hasShuntAdmittance = false;
-                _lengthImpedance = directLengthImpedance;
-                _shuntAdmittance = new Complex();
-            }
+            if (shuntCapacityPerUnitLength == 0 && shuntConductancePerUnitLength == 0)
+                CalculateElectricCharacteristicsWithSimplifiedDirectModel(seriesResistancePerUnitLength,
+                    seriesInductancePerUnitLength, length, frequency);
+            else if (transmissionEquationModel)
+                CalculateElectricCharacteristicsWithTransmissionEquationModel(seriesResistancePerUnitLength, 
+                    seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, 
+                    length, frequency);
             else
-            {
-                _hasShuntAdmittance = true;
-                var waveImpedance = Complex.Sqrt(directLengthImpedance / directShuntAdmittance);
-                var angle = Complex.Sqrt(directLengthImpedance * directShuntAdmittance);
-                _lengthImpedance = waveImpedance * Complex.Sinh(angle);
-                _shuntAdmittance = Complex.Tanh(angle / 2) / waveImpedance;
-            }
+                CalculateElectricCharacteristicsWithSimplifiedPiModel(seriesResistancePerUnitLength, 
+                    seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, 
+                    length, frequency);
         }
+
+        #endregion
+
+        #region properties
 
         public Complex LengthImpedance
         {
@@ -89,6 +89,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return false; }
         }
+
+        #endregion
+
+        #region public functions
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
@@ -131,5 +135,52 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             return new List<IReadOnlyNode>();
         }
+
+        #endregion
+
+        #region private functions
+
+        private void CalculateElectricCharacteristicsWithSimplifiedDirectModel(double lengthResistance,
+            double lengthInductance, double length, double frequency)
+        {
+            _hasShuntAdmittance = false;
+            _lengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
+        }
+
+        private void CalculateElectricCharacteristicsWithTransmissionEquationModel(double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double length, double frequency)
+        {
+            _hasShuntAdmittance = true;
+            var directLengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
+            var directShuntAdmittance = CalculateDirectShuntAdmittance(shuntCapacity, shuntConductance, length, frequency);
+            var waveImpedance = Complex.Sqrt(directLengthImpedance / directShuntAdmittance);
+            var angle = Complex.Sqrt(directLengthImpedance * directShuntAdmittance);
+            _lengthImpedance = waveImpedance * Complex.Sinh(angle); 
+            _shuntAdmittance = Complex.Tanh(angle / 2) / waveImpedance;
+        }
+
+        private void CalculateElectricCharacteristicsWithSimplifiedPiModel(double lengthResistance,
+            double lengthInductance, double shuntCapacity, double shuntConductance, double length, double frequency)
+        {
+            _hasShuntAdmittance = true;
+            _lengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
+            _shuntAdmittance = CalculateDirectShuntAdmittance(shuntCapacity, shuntConductance, length, frequency)/2;
+        }
+
+        private static Complex CalculateDirectShuntAdmittance(double shuntCapacity, double shuntConductance, double length, double frequency)
+        {
+            return new Complex(shuntConductance * length, CalculateOmega(frequency) * shuntCapacity * length);
+        }
+
+        private static Complex CalculateDirectLengthImpedance(double lengthResistance, double lengthInductance, double length, double frequency)
+        {
+            return new Complex(lengthResistance * length, CalculateOmega(frequency) * lengthInductance * length);
+        }
+
+        private static double CalculateOmega(double frequency)
+        {
+            return 2 * Math.PI * frequency;
+        }
+
+        #endregion
     }
 }

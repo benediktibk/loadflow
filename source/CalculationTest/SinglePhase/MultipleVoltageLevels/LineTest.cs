@@ -27,11 +27,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _sourceNodeInvalid = new Node(0, 102, 0, "");
             _targetNodeInvalid = new Node(1, 12, 0, "");
-            _lineInvalid = new Line(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10);
+            _lineInvalid = new Line(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10, true);
             _sourceNodeValid = new Node(0, 100, 0, "");
             _targetNodeValid = new Node(1, 100, 0, "");
-            _lineWithOnlyLengthValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10);
-            _lineWithLengthAndShuntValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10);
+            _lineWithOnlyLengthValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
+            _lineWithLengthAndShuntValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var source = new Mock<IExternalReadOnlyNode>();
             var target = new Mock<IExternalReadOnlyNode>();
-            var line = new Line(source.Object, target.Object, 5, 4, 3, 2, 1, 10);
+            var line = new Line(source.Object, target.Object, 5, 4, 3, 2, 1, 10, true);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             line.AddConnectedNodes(nodes);
