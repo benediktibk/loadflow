@@ -155,7 +155,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var waveImpedance = Complex.Sqrt(directLengthImpedance / directShuntAdmittance);
             var angle = Complex.Sqrt(directLengthImpedance * directShuntAdmittance);
             _lengthImpedance = waveImpedance * Complex.Sinh(angle); 
-            _shuntAdmittance = Complex.Tanh(angle / 2) / waveImpedance;
+            _shuntAdmittance = (Complex.Tanh(angle / 2) / waveImpedance) / 2;
         }
 
         private void CalculateElectricCharacteristicsWithSimplifiedPiModel(double lengthResistance,
