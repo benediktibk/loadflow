@@ -56,6 +56,26 @@ namespace CalculationTest.ThreePhase
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadSecondVersion_CorrectResults()
+        {
+            const double omega = 2 * Math.PI * 50;
+            _powerNet.AddNode(1, 400, "");
+            _powerNet.AddNode(2, 400, "");
+            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1, "");
+            _powerNet.AddLoad(2, new Complex(-20000, -2000));
+            _powerNet.AddLine(1, 2, 0.1, 0.4 / omega, 10000 / (400 * 400), 1e-7, 1);
+
+            _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
+
+            var sourceVoltage = _powerNet.GetNodeVoltage(1);
+            var loadVoltage = _powerNet.GetNodeVoltage(2);
+            var sourceVoltageShouldBe = Complex.FromPolarCoordinates(400, 0);
+            var loadVoltageShouldBe = Complex.FromPolarCoordinates(392.131, -2.963 * Math.PI / 180);
+            ComplexAssert.AreEqual(sourceVoltageShouldBe, sourceVoltage, 0.01);
+            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.01);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_Transformer_CorrectResults()
         {
             _powerNet.AddNode(1, 1000, "");
