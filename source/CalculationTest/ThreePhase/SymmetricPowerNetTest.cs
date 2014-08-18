@@ -50,9 +50,9 @@ namespace CalculationTest.ThreePhase
             var sourceVoltage = _powerNet.GetNodeVoltage(1);
             var loadVoltage = _powerNet.GetNodeVoltage(2);
             var sourceVoltageShouldBe = Complex.FromPolarCoordinates(400, 0);
-            var loadVoltageShouldBe = Complex.FromPolarCoordinates(392.369, -2.849*Math.PI/180);
+            var loadVoltageShouldBe = Complex.FromPolarCoordinates(392.363, -2.852*Math.PI/180);
             ComplexAssert.AreEqual(sourceVoltageShouldBe, sourceVoltage, 0.01);
-            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.025);
+            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.01);
         }
 
         [TestMethod]
