@@ -19,6 +19,7 @@ namespace Database
         private double _shuntConductancePerUnitLength;
         private double _shuntCapacityPerUnitLength;
         private double _length;
+        private bool _transmissionEquationModel;
 
         #endregion
 
@@ -31,6 +32,7 @@ namespace Database
             Length = 1;
             ShuntCapacityPerUnitLength = 0;
             ShuntConductancePerUnitLength = 0;
+            TransmissionEquationModel = true;
             Name = "";
         }
 
@@ -149,6 +151,18 @@ namespace Database
                 if (_length == value) return;
 
                 _length = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public bool TransmissionEquationModel
+        {
+            get { return _transmissionEquationModel; }
+            set
+            {
+                if (_transmissionEquationModel == value) return;
+
+                _transmissionEquationModel = value;
                 NotifyPropertyChanged();
             }
         }

@@ -520,7 +520,7 @@ namespace Database
                 foreach (var line in Lines)
                     _calculationPowerNet.AddLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
                         line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
-                        line.ShuntCapacityPerUnitLength, line.Length);
+                        line.ShuntCapacityPerUnitLength, line.Length, line.TransmissionEquationModel);
 
                 foreach (var feedIn in FeedIns)
                     _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
