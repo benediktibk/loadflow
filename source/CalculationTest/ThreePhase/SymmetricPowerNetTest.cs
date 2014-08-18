@@ -129,7 +129,7 @@ namespace CalculationTest.ThreePhase
             var sourceVoltageShouldBe = Complex.FromPolarCoordinates(400, 0);
             var loadVoltageShouldBe = Complex.FromPolarCoordinates(397.476, -0.365 * Math.PI / 180);
             ComplexAssert.AreEqual(sourceVoltageShouldBe, sourceVoltage, 0.01);
-            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.05);
+            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.01);
         }
 
         [TestMethod]
