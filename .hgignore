@@ -14,6 +14,7 @@ documents/~$*.xlsx
 *.opensdf
 *.sln.DotSettings
 *.dia~
+~$*.xlsx
 Thumbs.db
 documents/forschungspraxis/*/*.pdf
 documents/forschungspraxis/*/*.aux

@@ -220,7 +220,7 @@
                 <RowDefinition Height="50*"/>
                 <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
-            <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}">
+            <DataGrid Name="CombinedResultDataGrid" VerticalAlignment="Stretch" Margin="10,10,10,10" HorizontalAlignment="Stretch" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{StaticResource CombinedCalculationResults}" SelectionMode="Extended" SelectionUnit="Cell">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Algorithm}" Header="algorithm"/>
                     <DataGridCheckBoxColumn Binding="{Binding VoltageCollapse}" Header="real collapse"/>
