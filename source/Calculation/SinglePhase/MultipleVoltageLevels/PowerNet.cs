@@ -106,11 +106,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodesById.Add(id, node);
         }
 
-        public void AddLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length)
+        public void AddLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
         {
             var sourceNode = GetNodeByIdInternal(sourceNodeId);
             var targetNode = GetNodeByIdInternal(targetNodeId);
-            var line = new Line(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntConductancePerUnitLength, shuntCapacityPerUnitLength, length, _frequency, true);
+            var line = new Line(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntConductancePerUnitLength, shuntCapacityPerUnitLength, length, _frequency, transmissionEquationModel);
             _lines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);
