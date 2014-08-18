@@ -43,16 +43,16 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400, "");
             _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1, "");
             _powerNet.AddLoad(2, new Complex(-20000, -2000));
-            _powerNet.AddLine(1, 2, 0.1, 0.4/omega, 100/(400*400), 1e-10, 1, true);
+            _powerNet.AddLine(1, 2, 0.1, 0.4/omega, 100.0/(400*400), 1e-10, 1, true);
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
             var sourceVoltage = _powerNet.GetNodeVoltage(1);
             var loadVoltage = _powerNet.GetNodeVoltage(2);
             var sourceVoltageShouldBe = Complex.FromPolarCoordinates(400, 0);
-            var loadVoltageShouldBe = Complex.FromPolarCoordinates(392.367, -2.850*Math.PI/180);
+            var loadVoltageShouldBe = Complex.FromPolarCoordinates(392.369, -2.849*Math.PI/180);
             ComplexAssert.AreEqual(sourceVoltageShouldBe, sourceVoltage, 0.01);
-            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.01);
+            ComplexAssert.AreEqual(loadVoltageShouldBe, loadVoltage, 0.025);
         }
 
         [TestMethod]
