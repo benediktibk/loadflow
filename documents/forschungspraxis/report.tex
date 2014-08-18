@@ -20,6 +20,9 @@
 
 \begin{document}
 	\maketitle
+	\newpage
+	\tableofcontents
+	\newpage
 	
 	\section{Einführung}
 	Klassische Verfahren zur Berechnung von Lastflüssen in elektrischen Energieverteilungsnetzen, wie zum Beispiel die Stromiteration oder Fast-Decoupled-Loadflow, weisen erhebliche Probleme in Bezug auf die Konvergenz auf. Zum einen können diese iterative Verfahren unter Umständen gar nicht konvergieren, obwohl das zu berechnende System an sich stabil wäre. Zusätzlich dazu können die berechneten Lösungen in bestimmten Situationen keine physikalische Lösung des Systems beschreiben. \emph{Holomorphic Embedding Loadflow} (\emph{HELM}) \cite{helmIEEE}, ein von Antonio Trias neu entwickelter Ansatz zur Lastflussberechnung, verspricht diese Probleme zu lösen. Die praktische Valdidierung dieser Aussagen erfolgte von mir durch die Entwicklung eines Programmes, welches sowohl \emph{HELM} als auch die klassischen iterativen Verfahren implementiert.
@@ -120,11 +123,57 @@
 	
 	\section{Ergebnisse}
 	
-	Um die unterschiedlichen Berechnungsverfahren möglichst gut vergleichen zu können habe ich eine weitere Benutzeroberfläche in \emph{CalculationComparison} implementiert. Diese ermöglicht alle implementierten Berechnungsverfahren anhand einiger relativ zufällig gewählter Netze zu vergleichen bezüglich Genauigkeit, Konvergenzverhalten und Geschwindigkeit. Beginnen möchte ich hier mit \reffig{MISSING}, welche die Anzahl der Netze darstellt, in welchen das jeweilige Verfahren korrekt konvergiert. In diesem Fall kommt es nicht zu der Situation einer Konvergenz zu einem instabilen Arbeitspunkt, daher ist nur die Information darüber ob das Verfahren konvergierte oder nicht relevant. Einige der Beispielnetze sind auch bewusst so gewählt, dass sich ein Spannungszusammenbruch ergibt. In diesen Fällen ist natürlich dann ein korrektes Konvergenzverhalten gegeben wenn das Verfahren nicht konvergiert und somit den Spannungszusammenbruch detektiert. Die Größe des Datentyps ist in HELM mit höherer Genaugikeit dabei jeweils so konfiguriert, dass von der Genauigkeit her mit den iterativen Verfahren vergleichbare Ergebnisse erreicht werden. MISSING EXPLANATION
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.8]{pictures/convergence}
+		\caption{Konvergenzverhalten der Berechnungsverfahren}
+		\label{fig:convergence}
+	\end{figure}
 	
-	Als nächsten Aspekt gehe ich nun auf die Genauigkeit der Verfahren ein, welche durchaus variiert. Dabei zeigt sich in \reffig{MISSING}, dass HELM mit nur 64 Bit Rechengenauigkeit teilweise eine inakzeptable Genaugikeit aufweist. Die dabei berechneten Netze und Einstellungen sind dieselben wie für \reffig{MISSING}.
+	Um die unterschiedlichen Berechnungsverfahren möglichst gut vergleichen zu können habe ich eine weitere Benutzeroberfläche in \emph{CalculationComparison} implementiert. Diese ermöglicht alle implementierten Berechnungsverfahren anhand einiger relativ zufällig gewählter Netze zu vergleichen bezüglich Genauigkeit, Konvergenzverhalten und Geschwindigkeit. Beginnen möchte ich hier mit \reffig{fig:convergence}, welche die Anzahl der Netze darstellt, in welchen das jeweilige Verfahren korrekt konvergiert. In diesem Fall kommt es nicht zu der Situation einer Konvergenz zu einem instabilen Arbeitspunkt, daher ist nur die Information darüber ob das Verfahren konvergierte oder nicht relevant. Einige der Beispielnetze sind auch bewusst so gewählt, dass sich ein Spannungszusammenbruch ergibt. In diesen Fällen ist natürlich dann ein korrektes Konvergenzverhalten gegeben wenn das Verfahren nicht konvergiert und somit den Spannungszusammenbruch detektiert. Die Größe des Datentyps ist in HELM mit höherer Genauigkeit dabei jeweils so konfiguriert, dass von der Genauigkeit her mit den iterativen Verfahren vergleichbare Ergebnisse erreicht werden. Exakt gleiche Ergebnisse sind natürlich nicht möglich, ein paar Verfahren konvergieren gar nicht für alle Testnetze korrekt. Allerdings konnte ich mit den standardmäßig angepassten Parametern vergleichbare Resultate bezüglich der Genauigkeit erreichen. Dabei sei noch angemerkt, dass für HELM dabei teilweise eine Datentyp mit mehreren tausend Bit Genauigkeit nötig ist.
 	
-	Zu guter Letzt stellt sich noch die Frage der Berechnungsdauer, welche insbesondere bei größeren Netzen ein relevanter Aspekt wird. Hierbei erkennt man in \reffig{MISSING} den Nachteil der höheren Rechengenauigkeit von HELM mit einem genaueren Datentyp. Dementsprechend vermute ich vor allem akademische Anwendungsgebiete für HELM mit beliebiger Genauigkeit, praktisch ist dieses Verfahren allerdings nicht unbedingt relevant. HELM ist aber ein durchaus interessanter Ansatz für Netze, welche nahe am Spannungszusammenbruch betrieben bzw. berechnet werden. Um dieses mögliche Einsatzgebiet zu überprüfen habe ich in einem einfachen Netz \reffig{MISSING} mit nur einer Einpeisung, einer Last und einer Verbindung dazwischen sukzessive die Last erhöht bis die das jeweilige Berechnungsverfahren einen Spannungszusammenbruch detektierte. Aufgrund der einfachen Struktur des Netzes lässt sich zudem rechnerisch zeigen, dass die tatsächliche Stabilitätsgrenze bei $P = \SI{0.25}{\watt}$ liegt. In \reffig{MISSING} erkennt man anhand der Ergebnisse die besseren Eigenschaften von HELM, verglichen mit den klassischen iterativen Verfahren, bei der Berechnung eines Netzes nahe am Spannungszusammenbruch.
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.8]{pictures/precision_1}
+		\caption{Genauigkeit der Berechnungsverfahren}
+		\label{fig:precision_1}
+	\end{figure}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.8]{pictures/precision_2}
+		\caption{Genauigkeit der Berechnungsverfahren}
+		\label{fig:precision_2}
+	\end{figure}
+	
+	Als nächsten Aspekt gehe ich nun auf die Genauigkeit der Verfahren ein, welche durchaus variiert. Hierfür findet sich in \reffig{fig:precision_1} und \reffig{fig:precision_2} nur eine reduzierte Auswahl der Testnetzen von \reffig{fig:convergence}, nämlich auf jene, bei denen alle Verfahren zumindest konvergieren. In \reffig{fig:precision_1} zeigt sich allerdings, dass das Knotenpunktpotentialverfahren und Fast-Decoupled-Loadflow teilweise trotzdem nicht wirklich brauchbare Ergebnisse liefern. In \reffig{fig:precision_2} findet sich deswegen noch einmal der selbe Durchlauf, allerdings ohne die beiden zuletzt genannten Verfahren. In diesem Diagramm ist gut erkennbar, dass HELM mit nur 64 Bit Rechengenauigkeit in manchen Fällen noch keine ausreichend exakten Ergebnisse ausgibt. Die anderen Verfahren hingegen zeigen ausreichend kleine und vergleichbare Fehler um einen Blick auf die Berechnungsdauer werfen zu können.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.8]{pictures/duration_mean}
+		\caption{durchschnittliche Berechnungsdauer der Verfahren}
+		\label{fig:duration_mean}
+	\end{figure}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.8]{pictures/duration_deviation}
+		\caption{Standardabweichung der Berechnungsdauer der Verfahren}
+		\label{fig:duration_deviation}
+	\end{figure}
+	
+	Zu guter Letzt stellt sich noch die Frage der Berechnungsdauer, welche insbesondere bei größeren Netzen ein relevanter Aspekt wird. Hierbei erkennt man in \reffig{fig:duration_mean} den Nachteil der höheren Rechengenauigkeit von HELM mit einem genaueren Datentyp. Dementsprechend vermute ich vor allem akademische Anwendungsgebiete für HELM mit beliebiger Genauigkeit, praktisch ist dieses Verfahren allerdings nicht unbedingt relevant. Der Vollständigkeit halber sind in \reffig{fig:duration_deviation} noch die Schätzungen der Standardabweichungen angegeben welche deutlich zeigen, dass es sich in \reffig{fig:duration_mean} um keine einzelnen Ausreißer handelt.
+	
+	HELM ist aber ein durchaus interessanter Ansatz für Netze, welche nahe am Spannungszusammenbruch betrieben bzw. berechnet werden. Um dieses mögliche Einsatzgebiet zu überprüfen habe ich in einem einfachen Netz \reffig{MISSING} mit nur einer Einpeisung, einer Last und einer Verbindung dazwischen sukzessive die Last erhöht bis die das jeweilige Berechnungsverfahren einen Spannungszusammenbruch detektierte. Aufgrund der einfachen Struktur des Netzes lässt sich zudem rechnerisch zeigen, dass die tatsächliche Stabilitätsgrenze bei $P = \SI{0.25}{\watt}$ liegt. In \reffig{MISSING} erkennt man anhand der Ergebnisse die besseren Eigenschaften von HELM, verglichen mit den klassischen iterativen Verfahren, bei der Berechnung eines Netzes nahe am Spannungszusammenbruch.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.55]{pictures/complete_powernet_modified}
+		\caption{Testnetz zur Überprüfung der Modellierung}
+		\label{fig:powernet_complete}
+	\end{figure}
+	
+	Zu guter Letzt möchte ich noch erwähnen, dass ich für einige Testnetze, unter anderem für \reffig{fig:powernet_complete}, die Ergebnisse der Lastflussberechnung mit \emph{PSS SINCAL} verfiziert habe um Fehler in der Modellierung der Netzelemente ausschließen zu können.
 	
 	\begin{thebibliography}{1}
 		\bibitem{helmIEEE}
