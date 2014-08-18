@@ -80,7 +80,12 @@
 	Die Software gliedert sich in mehrere Klassenbibliotheken, welche hierarchisch aufeinander aufbauen. Die wichtigsten Teile zusammengefasst finden sich in \reffig{fig:software_architecture}. Die Implementierung von \emph{HELM} ist dabei als einziger Teil in \emph{C++}, der Rest ist in \emph{C\#} implementiert. Außerdem gibt es für die meisten Bibliotheken ein Pendant mit Unittests, welche mit Hilfe des in Visual Studio integrierten Testframeworks ausgeführt werden können.
 	
 	\subsection{Datenbank}
-	Im Hintergrund zur eigentlichen Anwendung ist es nötig einen Datenbankserver zu betreiben, idealerweise eine \emph{Microsoft SQL Server} oder \emph{Microsoft SQL Server Express}. Die Informationen über das Netz, also die Tabellen powernets, nodes, loads, transformers, lines, generators und feedins, werden beim Verbinden mit der Datenbank eingelesen. Dementsprechend ist es möglich ohne Verwendung des grafischen Oberfläche Netze zu definieren. Das dafür zu beachtende Datenbankschema ist in \reffig{fig:database_schema} dargestellt. Die Auswahl des Berechnungsverfahrens erfolgt dabei dann über die CalculatorSelection eines PowerNet, die jeweilige Bedeutung der Werte kann \reftab{tab:calculator_selection} entnommen werden.
+	Im Hintergrund zur eigentlichen Anwendung ist es nötig einen Datenbankserver zu betreiben, idealerweise eine \emph{Microsoft SQL Server} oder \emph{Microsoft SQL Server Express}. Die Informationen über das Netz, also die Tabellen powernets, nodes, loads, transformers, lines, generators und feedins, werden beim Verbinden mit der Datenbank eingelesen. Dementsprechend ist es möglich ohne Verwendung des grafischen Oberfläche Netze zu definieren. Das dafür zu beachtende Datenbankschema ist in \reffig{fig:database_schema} dargestellt. Die Auswahl des Berechnungsverfahrens erfolgt dabei dann über die CalculatorSelection eines PowerNet, die jeweilige Bedeutung der Werte kann \reftab{tab:calculator_selection} entnommen werden. Die Werte HELM mit Stromiteration und HELM mit Newton-Raphson werden hierbei ein wenig anders interpertiert wie in der Testanwendung, welche im späteren Verlauf noch angesprochen wird. Im Grunde genommen sind diese beiden Einstellungen als möglichst allgemein einsetzbare Verfahren gedacht und versuchen die Vorteile von den iterativen Verfahren und HELM zu kombinieren. Das Vorgehen ist hierfür in drei Schritte unterteilt:
+	\begin{enumerate}
+		\item Versuch die Spannungen mit dem jeweiligen iterativen Verfahren zu berechnen
+		\item Falls die direkte Berechnung nicht konvergiert mithilfe von HELM mit 64 Bit Rechengenauigkeit bessere Startwerte berechnen und wiederum das iterative Verfahren anwenden
+		\item Falls immer noch keine Konvergenz erreicht werden kann HELM mit 200 Bit Rechengenauigkeit anwenden
+	\end{enumerate}
 	
 	\begin{table}
 		\centering
@@ -99,7 +104,7 @@
 		\label{tab:calculator_selection}
 	\end{table}
 	
-	Die Tabellen admittances, admittancenodenames und admittancevalues hingegen werden nicht eingelesen und dienen nur der Speicherung der Admittanzmatrix, falls der Benutzer dies wünscht. Sowohl in diesen Tabellen als auch in jenen, in denen die Netze abgebildet werden, sind sämtliche Größen in SI-Einheiten.
+	Die Tabellen admittances, admittancenodenames und admittancevalues werden nicht eingelesen und dienen nur der Speicherung der Admittanzmatrix, falls der Benutzer dies wünscht. Sowohl in diesen Tabellen als auch in jenen, in denen die Netze abgebildet werden, sind sämtliche Größen in SI-Einheiten.
 	
 	\begin{figure}
 		\centering
