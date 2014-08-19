@@ -21,6 +21,7 @@ clean::
 	-rm -f *-blx.bib
 	-rm -f *.run.xml
 	-rm -f texput.log
+	-rm -f *.pdf
 
 realclean: clean
 	-rm -f *.pdf
