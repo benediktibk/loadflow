@@ -1,0 +1,8 @@
+\begin{circuitikz}[scale=0.6, transform shape]
+	\draw (0, 0) node[below] {$S_1$} to [R=$Y_{12}$,*-*] (3, 0) node[below] {$S_2$};
+	\draw (0, 0) to [R=$Y_{13}$,*-*] (0, 3) node[left] {$S_3$};
+	\draw (3, 0) to [R=$Y_{24}$,*-*] (6, 1.5) node[right] {$|U_4|$, $P_4$};
+	\draw (3, 3) to [R=$Y_{54}$,*-*] (6, 1.5);
+	\draw (0, 3) to [R=$Y_{35}$,*-*] (3, 3) node[below] {$S_5$};
+	\draw (3, 3) to [R=$Y_{56}$,*-*] (3, 6) node[left] {$U_6$};
+\end{circuitikz} 
