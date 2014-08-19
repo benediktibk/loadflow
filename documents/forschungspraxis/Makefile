@@ -1,13 +1,10 @@
-TARGET = presentation report
-TIKZ = software_architecture
-
 all: presentation.pdf report.pdf
 
-presentation.pdf: presentation.tex tikz/$(TIKZ).tex pictures/*.pdf
+presentation.pdf: presentation.tex tikz/*.tex pictures/*.pdf
 	pdflatex presentation.tex
 	pdflatex presentation.tex
 
-report.pdf: report.tex tikz/$(TIKZ).tex pictures/*.pdf
+report.pdf: report.tex tikz/*.tex pictures/*.pdf
 	pdflatex report.tex
 	pdflatex report.tex
 	

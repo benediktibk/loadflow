@@ -10,6 +10,7 @@
 \usepackage[ngerman]{babel}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,calc}
+\usepackage[european]{circuitikz}
 
 \newcommand{\reffig}[1]{{Abb.~\ref{#1}}}
 \newcommand{\reftab}[1]{{Tab.~\ref{#1}}}
@@ -77,6 +78,7 @@
 		\caption{Software Architektur}
 		\label{fig:software_architecture}
 	\end{figure}
+	
 	Die Software gliedert sich in mehrere Klassenbibliotheken, welche hierarchisch aufeinander aufbauen. Die wichtigsten Teile zusammengefasst finden sich in \reffig{fig:software_architecture}. Die Implementierung von \emph{HELM} ist dabei als einziger Teil in \emph{C++}, der Rest ist in \emph{C\#} implementiert. Außerdem gibt es für die meisten Bibliotheken ein Pendant mit Unittests, welche mit Hilfe des in Visual Studio integrierten Testframeworks ausgeführt werden können.
 	
 	\subsection{Datenbank}
@@ -183,7 +185,14 @@
 		\label{fig:convergence_border_2}
 	\end{figure}
 	
-	HELM ist aber ein durchaus interessanter Ansatz für Netze, welche nahe am Spannungszusammenbruch betrieben bzw. berechnet werden. Um dieses mögliche Einsatzgebiet zu überprüfen habe ich in einem einfachen Netz \reffig{MISSING} mit nur einer Einpeisung, einer Last und einer Verbindung dazwischen sukzessive die Last erhöht bis die das jeweilige Berechnungsverfahren einen Spannungszusammenbruch detektierte. Aufgrund der einfachen Struktur des Netzes lässt sich zudem rechnerisch zeigen, dass die tatsächliche Stabilitätsgrenze bei $P = \SI{0.25}{\watt}$ liegt. In \reffig{fig:convergence_border_1} und \reffig{fig:convergence_border_2} zeigen sich die besseren Eigenschaften von HELM, verglichen mit den klassischen iterativen Verfahren, bei der Berechnung eines Netzes nahe am Spannungszusammenbruch.
+	\begin{figure}
+		\centering
+		\include{tikz/two_node_net}
+		\caption{Netz zur Ermittlung der Konvergenzgrenze}
+		\label{fig:two_node_net}
+	\end{figure}
+	
+	HELM ist aber ein durchaus interessanter Ansatz für Netze, welche nahe am Spannungszusammenbruch betrieben bzw. berechnet werden. Um dieses mögliche Einsatzgebiet zu überprüfen habe ich in einem einfachen Netz \reffig{fig:two_node_net} mit nur einer Einpeisung, einer Last und einer Verbindung dazwischen sukzessive die Last erhöht bis die das jeweilige Berechnungsverfahren einen Spannungszusammenbruch detektierte. Aufgrund der einfachen Struktur des Netzes lässt sich zudem rechnerisch zeigen, dass die tatsächliche Stabilitätsgrenze bei $P = \SI{0.25}{\watt}$ liegt. In \reffig{fig:convergence_border_1} und \reffig{fig:convergence_border_2} zeigen sich die besseren Eigenschaften von HELM, verglichen mit den klassischen iterativen Verfahren, bei der Berechnung eines Netzes nahe am Spannungszusammenbruch.
 	
 	\begin{figure}
 		\centering
@@ -195,7 +204,7 @@
 	Zu guter Letzt möchte ich noch erwähnen, dass ich für einige Testnetze, unter anderem für \reffig{fig:powernet_complete}, die Ergebnisse der Lastflussberechnung mit \emph{PSS SINCAL} verfiziert habe um Fehler in der Modellierung der Netzelemente ausschließen zu können.
 	
 	\section{Fazit}
-	HELM verspricht theoretisch die idealen Eigenschaften für ein Verfahren zur Lastflussberechnung. Aufgrund numerischer Einschränkungen, bedingt durch eine begrenzte Rechengenauigkeit, ergibt sich allerdings ein durchaus relevanter Nachteil: Man muss für HELM, in Reinform, abwägen zwischen Genaugikeit und Rechenzeit. Die Verschlechterung der Performance führt dabei zu Rechenzeiten welche um Größenordnung höher sind als jene für die klassischen Verfahren wie die Stromiteration oder Newton Raphson. Wenn man allerdings HELM mit nur 64 Bit mit einem iterativen Verfahren verbindet ist es möglich die Vorteile beider Verfahren zu kombinieren.
+	HELM verspricht theoretisch die idealen Eigenschaften für ein Verfahren zur Lastflussberechnung. Aufgrund numerischer Einschränkungen, bedingt durch eine begrenzte Rechengenauigkeit, ergibt sich allerdings ein durchaus relevanter Nachteil: Man muss für HELM, in Reinform, abwägen zwischen Genauigkeit und Rechenzeit. Die Verschlechterung der Performance führt dabei zu Rechenzeiten welche um Größenordnung höher sind als jene für die klassischen Verfahren wie die Stromiteration oder Newton Raphson. Wenn man allerdings HELM mit nur 64 Bit mit einem iterativen Verfahren verbindet ist es möglich die Vorteile beider Verfahren zu kombinieren.
 	
 	Schlussendlich ist also HELM kein Allheilmittel, es stellt allerdings eine durchaus nützliche Alternative dar. Welches Berechnungsverfahren nun das ideale ist hängt sehr stark von der jeweiligen Situation ab. Mit HELM hat man dabei allerdings eine weitere Option, welche sich insbesonders für Systeme nahe am Spannungszusammenbruch anbietet.
 	
