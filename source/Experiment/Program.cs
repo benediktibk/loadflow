@@ -34,18 +34,23 @@ namespace Experiment
                 },
                 {
                     "HELM 200 Bit",
-                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(200))
+                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision/100, 80, new PrecisionMulti(200))
                 },
                 {
-                    "HELM 1000 Bit",
-                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(5000))
+                    "HELM 2000 Bit",
+                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision/100, 150, new PrecisionMulti(2000))
                 }
             };
 
-            foreach (var calculator in calculators)
+            using (var file = new System.IO.StreamWriter("out.csv", false))
             {
-                var border = DetermineBorderOfVoltageCollapse(calculator.Value, targetPrecision);
-                Console.WriteLine(calculator.Key + ";" + border);
+                foreach (var calculator in calculators)
+                {
+                    var border = DetermineBorderOfVoltageCollapse(calculator.Value, targetPrecision);
+                    var line = calculator.Key + ";" + border;
+                    Console.WriteLine(line);
+                    file.WriteLine(line);
+                }
             }
 
             Console.ReadKey();
