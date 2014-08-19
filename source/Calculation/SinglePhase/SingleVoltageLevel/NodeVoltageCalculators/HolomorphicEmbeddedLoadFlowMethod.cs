@@ -13,11 +13,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private readonly int _numberOfCoefficients;
         private readonly HolomorphicEmbeddedLoadFlowMethodNativeMethods.StringCallback _stringCallback;
         private readonly Precision _precision;
-        private readonly bool _calculatePartialResults;
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision, bool calculatePartialResults)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -30,7 +29,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _stringCallback += DebugOutput;
             _precision = precision;
             _calculator = -1;
-            _calculatePartialResults = calculatePartialResults;
             _disposed = false;
         }
 
@@ -73,11 +71,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 case DataType.LongDouble:
                     _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _calculatePartialResults);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage);
                     break;
                 case DataType.MultiPrecision:
                     _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision, _calculatePartialResults);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
                     break;
             }
 

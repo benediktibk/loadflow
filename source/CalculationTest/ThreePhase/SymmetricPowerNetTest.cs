@@ -27,7 +27,7 @@ namespace CalculationTest.ThreePhase
         {
             _powerNet = new SymmetricPowerNet(50);
             _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.0000001, 1000);
-            _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00000001, 80, new PrecisionMulti(200), true);
+            _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00000001, 80, new PrecisionMulti(200));
             _currentIterationCalculator = new CurrentIteration(0.0000001, 1000);
         }
 

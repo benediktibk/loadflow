@@ -12,7 +12,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     {
         protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, new PrecisionLongDouble(), true);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, new PrecisionLongDouble());
         }
 
         [TestMethod]

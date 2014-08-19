@@ -12,7 +12,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     {
         protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300), true);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300));
         }
 
         [TestMethod]
@@ -224,7 +224,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
-            var nodeVoltageCalculator =  new HolomorphicEmbeddedLoadFlowMethod(0.00001, 150, new PrecisionMulti(400), false);
+            var nodeVoltageCalculator =  new HolomorphicEmbeddedLoadFlowMethod(0.000000001, 150, new PrecisionMulti(400));
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
@@ -232,7 +232,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
             nodeVoltageCalculator.Dispose();
             Assert.IsFalse(_voltageCollapse);
-            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.001, 0.1);
+            NodeAssert.AreEqual(nodes, _voltages, _powers, 0.02, 0.2);
         }
 
         [TestMethod]
@@ -358,7 +358,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400), false);
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
@@ -382,7 +382,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400), false);
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
 
@@ -406,7 +406,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(500), false);
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(500));
             var loadFlowCalculator = new LoadFlowCalculator(nodeVoltageCalculator);
             var nodes = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
 

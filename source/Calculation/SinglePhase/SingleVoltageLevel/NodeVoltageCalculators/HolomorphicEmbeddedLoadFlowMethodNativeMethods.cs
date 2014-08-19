@@ -7,10 +7,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public delegate void StringCallback(string text);
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, [MarshalAs(UnmanagedType.I1)]bool calculatePartialResults);
+        public static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision, [MarshalAs(UnmanagedType.I1)]bool calculatePartialResults);
+        public static extern int CreateLoadFlowCalculatorMultiPrecision(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision);
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void DeleteLoadFlowCalculator(int calculator);

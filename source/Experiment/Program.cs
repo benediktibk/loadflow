@@ -20,7 +20,7 @@ namespace Experiment
                 {"FDLF", new FastDecoupledLoadFlowMethod(targetPrecision, iterations)},
                 {
                     "HELM 64 Bit",
-                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, new PrecisionLongDouble(), false)
+                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, new PrecisionLongDouble())
                 },
                 {
                     "HELM with current iteration",
@@ -34,11 +34,11 @@ namespace Experiment
                 },
                 {
                     "HELM 200 Bit",
-                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(200), false)
+                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(200))
                 },
                 {
                     "HELM 1000 Bit",
-                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(5000), false)
+                    new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 80, new PrecisionMulti(5000))
                 }
             };
 

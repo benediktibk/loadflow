@@ -122,12 +122,12 @@ namespace Database
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlow:
                     _calculator =
                         new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmLongDouble,
-                            new PrecisionLongDouble(), true));
+                            new PrecisionLongDouble()));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
                     _calculator =
                         new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti,
-                            new PrecisionMulti(helmBitPrecisionMulti), true));
+                            new PrecisionMulti(helmBitPrecisionMulti)));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
                     _calculator = new CalculatorHelmCombined(new CurrentIteration(targetPrecision, maximumIterations), coefficientCountHelmMulti, helmBitPrecisionMulti, targetPrecision, Log);
