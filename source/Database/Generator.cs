@@ -165,11 +165,10 @@ namespace Database
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
-                "CREATE TABLE lines " +
-                "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
-                "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, " +
-                "PRIMARY KEY(LineId));");
+                "CREATE TABLE generators " +
+                "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                "GeneratorName TEXT NOT NULL, VoltageMagnitude REAL NOT NULL, RealPower REAL NOT NULL, " +
+                "PRIMARY KEY(GeneratorId));");
         }
 
         public static SqlCommand CreateCommandToFetchAll(int powerNetId)
