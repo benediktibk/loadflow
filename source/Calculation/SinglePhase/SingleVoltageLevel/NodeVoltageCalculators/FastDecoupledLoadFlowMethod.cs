@@ -9,8 +9,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {
+        #region constructor
+
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
         { }
+
+        #endregion
+
+        #region public functions
 
         public override Vector<Complex> CalculateImprovedVoltages(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
@@ -50,5 +56,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             return improvedVoltages;
         }
+
+        #endregion
     }
 }

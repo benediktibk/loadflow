@@ -9,12 +9,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
+        #region variables
+
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
         private readonly HolomorphicEmbeddedLoadFlowMethodNativeMethods.StringCallback _stringCallback;
         private readonly Precision _precision;
         private int _calculator;
         private bool _disposed;
+
+        #endregion
+
+        #region constructor/destructor
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
         {
@@ -54,6 +60,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
+
+        #region public functions
 
         private static void DebugOutput(string text)
         {
@@ -151,5 +161,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             return result;
         }
+
+        #endregion
     }
 }
