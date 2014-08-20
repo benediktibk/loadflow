@@ -13,7 +13,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
-        private readonly HolomorphicEmbeddedLoadFlowMethodNativeMethods.StringCallback _stringCallback;
         private readonly Precision _precision;
         private int _calculator;
         private bool _disposed;
@@ -32,7 +31,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
-            _stringCallback += DebugOutput;
             _precision = precision;
             _calculator = -1;
             _disposed = false;
@@ -65,11 +63,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         #region public functions
 
-        private static void DebugOutput(string text)
-        {
-            Debug.WriteLine(text);
-        }
-
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             if (_calculator >= 0)
@@ -88,8 +81,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                         pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
                     break;
             }
-
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConsoleOutput(_calculator, _stringCallback);
 
             if (_calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
