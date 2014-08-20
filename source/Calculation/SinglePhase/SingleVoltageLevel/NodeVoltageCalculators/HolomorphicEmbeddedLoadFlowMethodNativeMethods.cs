@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
-    class HolomorphicEmbeddedLoadFlowMethodNativeMethods
+    static class HolomorphicEmbeddedLoadFlowMethodNativeMethods
     {
         public delegate void StringCallback(string text);
 

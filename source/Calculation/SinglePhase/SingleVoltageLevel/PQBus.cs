@@ -5,8 +5,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PQBus
     {
+        #region variables
+
         private readonly int _id;
         private readonly Complex _power;
+
+        #endregion
+
+        #region constructor
 
         public PQBus(int ID, Complex power)
         {
@@ -18,6 +24,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _power = power;
         }
 
+        #endregion
+
+        #region properties
+
         public int ID
         {
             get { return _id; }
@@ -27,5 +37,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get { return _power; }
         }
+
+        #endregion
     }
 }
