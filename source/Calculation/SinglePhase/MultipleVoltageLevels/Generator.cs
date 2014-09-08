@@ -6,9 +6,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Generator : IPowerNetElement
     {
+        #region variables
+
         private readonly IExternalReadOnlyNode _node;
         private readonly double _voltageMagnitude;
         private readonly double _realPower;
+
+        #endregion
+
+        #region constructor
 
         public Generator(IExternalReadOnlyNode node, double voltageMagnitude, double realPower)
         {
@@ -16,6 +22,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _voltageMagnitude = voltageMagnitude;
             _realPower = realPower;
         }
+
+        #endregion
+
+        #region properties
 
         public double NominalVoltage
         {
@@ -47,6 +57,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return true; }
         }
 
+        public bool NeedsGroundNode
+        {
+            get { return false; }
+        }
+
+        #endregion
+
+        #region public functions
+
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
@@ -68,11 +87,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodes(visitedNodes);
         }
 
-        public bool NeedsGroundNode
-        {
-            get { return false; }
-        }
-
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         { }
 
@@ -80,5 +94,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             return new List<IReadOnlyNode>();
         }
+
+        #endregion
     }
 }

@@ -19,6 +19,7 @@ namespace Database
         private double _shuntConductancePerUnitLength;
         private double _shuntCapacityPerUnitLength;
         private double _length;
+        private bool _transmissionEquationModel;
 
         #endregion
 
@@ -31,6 +32,7 @@ namespace Database
             Length = 1;
             ShuntCapacityPerUnitLength = 0;
             ShuntConductancePerUnitLength = 0;
+            TransmissionEquationModel = true;
             Name = "";
         }
 
@@ -47,6 +49,7 @@ namespace Database
             ShuntConductancePerUnitLength = reader.Parse<double>("ShuntConductancePerUnitLength");
             ShuntCapacityPerUnitLength = reader.Parse<double>("ShuntCapacityPerUnitLength");
             Length = reader.Parse<double>("Length");
+            TransmissionEquationModel = reader.Parse<int>("TransmissionEquationModel") != 0;
             NodeOne = nodeOne;
             NodeTwo = nodeTwo;
         }
@@ -153,6 +156,18 @@ namespace Database
             }
         }
 
+        public bool TransmissionEquationModel
+        {
+            get { return _transmissionEquationModel; }
+            set
+            {
+                if (_transmissionEquationModel == value) return;
+
+                _transmissionEquationModel = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public object NodeOneForeignKey
         {
             get
@@ -197,9 +212,9 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO lines (LineName, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength) " +
+                    "INSERT INTO lines (LineName, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, TransmissionEquationModel) " +
                     "OUTPUT INSERTED.LineId " +
-                    "VALUES(@Name, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength);");
+                    "VALUES(@Name, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength, @TransmissionEquationModel);");
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             command.Parameters.Add(new SqlParameter("Length", SqlDbType.Real) { Value = Length });
@@ -207,6 +222,7 @@ namespace Database
             command.Parameters.Add(new SqlParameter("SeriesInductancePerUnitLength", SqlDbType.Real) { Value = SeriesInductancePerUnitLength });
             command.Parameters.Add(new SqlParameter("ShuntConductancePerUnitLength", SqlDbType.Real) { Value = ShuntConductancePerUnitLength });
             command.Parameters.Add(new SqlParameter("ShuntCapacityPerUnitLength", SqlDbType.Real) { Value = ShuntCapacityPerUnitLength });
+            command.Parameters.Add(new SqlParameter("TransmissionEquationModel", SqlDbType.Int) { Value = TransmissionEquationModel ? 1 : 0 });
             return command;
         }
 
@@ -214,7 +230,7 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "UPDATE lines SET NodeOne=@NodeOne, NodeTwo=@NodeTwo, LineName=@Name, Length=@Length, SeriesResistancePerUnitLength=@SeriesResistancePerUnitLength, SeriesInductancePerUnitLength=@SeriesInductancePerUnitLength, ShuntConductancePerUnitLength=@ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength=@ShuntCapacityPerUnitLength WHERE LineId=@Id;");
+                    "UPDATE lines SET NodeOne=@NodeOne, NodeTwo=@NodeTwo, LineName=@Name, Length=@Length, SeriesResistancePerUnitLength=@SeriesResistancePerUnitLength, SeriesInductancePerUnitLength=@SeriesInductancePerUnitLength, ShuntConductancePerUnitLength=@ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength=@ShuntCapacityPerUnitLength, TransmissionEquationModel=@TransmissionEquationModel WHERE LineId=@Id;");
             command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
             command.Parameters.Add(new SqlParameter("NodeOne", SqlDbType.Int) { Value = NodeOneForeignKey });
             command.Parameters.Add(new SqlParameter("NodeTwo", SqlDbType.Int) { Value = NodeTwoForeignKey });
@@ -224,6 +240,7 @@ namespace Database
             command.Parameters.Add(new SqlParameter("SeriesInductancePerUnitLength", SqlDbType.Real) { Value = SeriesInductancePerUnitLength });
             command.Parameters.Add(new SqlParameter("ShuntConductancePerUnitLength", SqlDbType.Real) { Value = ShuntConductancePerUnitLength });
             command.Parameters.Add(new SqlParameter("ShuntCapacityPerUnitLength", SqlDbType.Real) { Value = ShuntCapacityPerUnitLength });
+            command.Parameters.Add(new SqlParameter("TransmissionEquationModel", SqlDbType.Int) { Value = TransmissionEquationModel ? 1 : 0 });
             return command;
         }
 
@@ -246,10 +263,11 @@ namespace Database
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
-                "CREATE TABLE generators " +
-                "(GeneratorId INTEGER NOT NULL IDENTITY, Node INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                "GeneratorName TEXT NOT NULL, VoltageMagnitude REAL NOT NULL, RealPower REAL NOT NULL, " +
-                "PRIMARY KEY(GeneratorId));");
+                "CREATE TABLE lines " +
+                "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
+                "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
+                "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, TransmissionEquationModel INTEGER NOT NULL, " +
+                "PRIMARY KEY(LineId));");
         }
 
         public static SqlCommand CreateCommandToFetchAll(int powerNetId)

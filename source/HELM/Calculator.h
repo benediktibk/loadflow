@@ -16,7 +16,7 @@ template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
 {
 public:
-	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool calculatePartialResults);
+	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
 	virtual ~Calculator();
 
 	virtual void setAdmittance(int row, int column, std::complex<double> value);
@@ -67,7 +67,6 @@ private:
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
 	const double _nominalVoltage;
-	const bool _calculatePartialResults;
 	Decomposition<ComplexFloating> *_factorization;
 	Matrix<ComplexFloating> _admittances;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;

@@ -36,7 +36,7 @@ namespace Database
             _iterativeNodeVoltageCalculator = iterativeNodeVoltageCalculator;
             _helmCombined = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision,
                 iterativeNodeVoltageCalculator);
-            _helmMulti = new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmSecondStep, new PrecisionMulti(bitPrecisionSecondStep), true);
+            _helmMulti = new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmSecondStep, new PrecisionMulti(bitPrecisionSecondStep));
             _log = log;
         }
 

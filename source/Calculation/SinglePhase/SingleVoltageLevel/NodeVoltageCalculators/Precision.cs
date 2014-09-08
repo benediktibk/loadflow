@@ -10,8 +10,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
     public class Precision
     {
+        #region variables
+
         private readonly DataType _dataType;
         private readonly int _bitPrecision;
+
+        #endregion
+
+        #region constructor
 
         protected Precision(DataType dataType, int bitPrecision)
         {
@@ -21,6 +27,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _dataType = dataType;
             _bitPrecision = bitPrecision;
         }
+
+        #endregion
+
+        #region properties
 
         public DataType Type
         {
@@ -37,5 +47,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 return _bitPrecision;
             }
         }
+
+        #endregion
     }
 }

@@ -67,7 +67,8 @@
       <Command>call $(SolutionDir)killvstest.bat
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationComparison\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)DatabaseUI\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Experiment\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,7 +89,8 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)DatabaseUI
       <Command>call $(SolutionDir)killvstest.bat
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)CalculationComparison\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)DatabaseUI\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Experiment\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

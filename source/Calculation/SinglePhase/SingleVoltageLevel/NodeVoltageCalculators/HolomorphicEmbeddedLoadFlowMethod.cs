@@ -9,15 +9,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
+        #region variables
+
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
-        private readonly HolomorphicEmbeddedLoadFlowMethodNativeMethods.StringCallback _stringCallback;
         private readonly Precision _precision;
-        private readonly bool _calculatePartialResults;
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision, bool calculatePartialResults)
+        #endregion
+
+        #region constructor/destructor
+
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -27,10 +31,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             _numberOfCoefficients = numberOfCoefficients;
             _targetPrecision = targetPrecision;
-            _stringCallback += DebugOutput;
             _precision = precision;
             _calculator = -1;
-            _calculatePartialResults = calculatePartialResults;
             _disposed = false;
         }
 
@@ -57,10 +59,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             GC.SuppressFinalize(this);
         }
 
-        private static void DebugOutput(string text)
-        {
-            Debug.WriteLine(text);
-        }
+        #endregion
+
+        #region public functions
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
@@ -73,15 +74,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 case DataType.LongDouble:
                     _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _calculatePartialResults);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage);
                     break;
                 case DataType.MultiPrecision:
                     _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision, _calculatePartialResults);
+                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
                     break;
             }
-
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConsoleOutput(_calculator, _stringCallback);
 
             if (_calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
@@ -153,5 +152,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             return result;
         }
+
+        #endregion
     }
 }

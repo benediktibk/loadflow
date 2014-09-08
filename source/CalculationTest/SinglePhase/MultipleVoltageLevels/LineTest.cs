@@ -27,11 +27,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _sourceNodeInvalid = new Node(0, 102, 0, "");
             _targetNodeInvalid = new Node(1, 12, 0, "");
-            _lineInvalid = new Line(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10);
+            _lineInvalid = new Line(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10, true);
             _sourceNodeValid = new Node(0, 100, 0, "");
             _targetNodeValid = new Node(1, 100, 0, "");
-            _lineWithOnlyLengthValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10);
-            _lineWithLengthAndShuntValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10);
+            _lineWithOnlyLengthValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
+            _lineWithLengthAndShuntValues = new Line(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void Constructor_LengthAndShuntValues_LengthImpedanceAndShuntAdmittanceIsCorrect()
         {
             ComplexAssert.AreEqual(-10.1139581511325, -12.3601714830373, _lineWithLengthAndShuntValues.LengthImpedance, 0.00001);
-            ComplexAssert.AreEqual(0.905151500442966, -0.0466578682016948, _lineWithLengthAndShuntValues.ShuntAdmittance, 0.00001);
+            ComplexAssert.AreEqual(0.905151500442966/2, -0.0466578682016948/2, _lineWithLengthAndShuntValues.ShuntAdmittance, 0.00001);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var source = new Mock<IExternalReadOnlyNode>();
             var target = new Mock<IExternalReadOnlyNode>();
-            var line = new Line(source.Object, target.Object, 5, 4, 3, 2, 1, 10);
+            var line = new Line(source.Object, target.Object, 5, 4, 3, 2, 1, 10, true);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             line.AddConnectedNodes(nodes);
@@ -116,15 +116,15 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             _lineWithLengthAndShuntValues.FillInAdmittances(admittances, 10, groundNode, 1);
 
-            ComplexAssert.AreEqual(866.499180634597, 3.80085243052449, admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(413.923430413114, 27.1297865313719, admittances[0, 0], 0.00001);
             ComplexAssert.AreEqual(36.6523198083696, -44.4587206322193, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(-908.151500442966, 47.6578682016948, admittances[2, 0], 0.00001);
+            ComplexAssert.AreEqual(-455.575750221483, 24.3289341008474, admittances[2, 0], 0.00001);
             ComplexAssert.AreEqual(37.6523198083696, -45.4587206322193, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(867.499180634597, 2.80085243052449, admittances[1, 1], 0.00001);
-            ComplexAssert.AreEqual(-895.151500442966, 89.6578682016948, admittances[2, 1], 0.00001);
-            ComplexAssert.AreEqual(-908.151500442966, 48.6578682016948, admittances[0, 2], 0.00001);
-            ComplexAssert.AreEqual(-904.151500442966, 50.6578682016948, admittances[1, 2], 0.00001);
-            ComplexAssert.AreEqual(1807.30300088593, -97.3157364033897, admittances[2, 2], 0.00001);
+            ComplexAssert.AreEqual(414.923430413114, 26.1297865313719, admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-442.575750221483, 66.3289341008474, admittances[2, 1], 0.00001);
+            ComplexAssert.AreEqual(-455.575750221483, 25.3289341008474, admittances[0, 2], 0.00001);
+            ComplexAssert.AreEqual(-451.575750221483, 27.3289341008474, admittances[1, 2], 0.00001);
+            ComplexAssert.AreEqual(902.151500442966, -50.6578682016948, admittances[2, 2], 0.00001);
         }
 
         [TestMethod]

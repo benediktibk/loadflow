@@ -150,6 +150,7 @@
                         <DataGridTextColumn Binding="{Binding ShuntConductancePerUnitLength, StringFormat=N3}" Header="G' [S/m]"/>
                         <DataGridTextColumn Binding="{Binding ShuntCapacityPerUnitLength, StringFormat=N3}" Header="C' [F/m]"/>
                         <DataGridTextColumn Binding="{Binding Length, StringFormat=N3}" Header="l [m]"/>
+                        <DataGridCheckBoxColumn Binding="{Binding TransmissionEquationModel}" Header="accurate model"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
