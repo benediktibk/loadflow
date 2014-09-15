@@ -16,7 +16,8 @@ source/*/Release/**
 ~$*.xlsx
 ~$*.pptx
 Thumbs.db
-documents/forschungspraxis/*.pdf
+documents/forschungspraxis/report.pdf
+documents/forschungspraxis/presentation.pdf
 documents/forschungspraxis/*.aux
 documents/forschungspraxis/*.log
 documents/forschungspraxis/*.out
