@@ -11,43 +11,73 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{geometry}
+\usepackage{subfig}
+\usepackage[subfigure]{tocloft}
 
 % do not display the chapter-headings
 \titleformat{\chapter}[display]
   {\normalfont\huge\bfseries}{}{0pt}{\Huge}
-  
-\newcommand{\emptypage}{
-	\newpage
-	\thispagestyle{empty}
-	\mbox{}
-}
+ 
+% reference figures, sections and equations
+\newcommand{\figref}[1]{{(Figure \ref{#1})}}
+\newcommand{\secref}[1]{{(Section \ref{#1})}}
+\newcommand{\neweqref}[1]{{(Equation \ref{#1})}}
+
+% list of equations
+\newcommand{\listequationsname}{List of Equations}
+\newlistof{equationname}{equ}{\listequationsname}
+\newcommand{\equationname}[1]{%
+\addcontentsline{equ}{figure}{\protect\numberline{\theequation} #1}\par}
  
 \author{Benedikt Schmidt}
 \title{MISSING}
 
 \begin{document}
 	\input{title}
-	% the abstract should be on the right side in the book
-	\emptypage
 	
 	% the title page set a different layout
 	\newgeometry{top=1in,bottom=1in,right=0.5in,left=1.5in}
 	
+	\cleardoublepage
 	\input{abstract}
 	
 	% ensure that the page number is the identical with the pdf page number
 	\setcounter{page}{4}
-	
-	% the table of contents should be on the right side of the book
-	\emptypage
-	
+
+	\cleardoublepage
 	\tableofcontents
 	
-	\input{introduction}
-	
-	\input{methods}
-	
-	\input{implementation}
-	
+	\input{introduction}	
+	\input{methods}	
+	\input{implementation}	
 	\input{results}
+	
+	\cleardoublepage
+	\phantomsection
+	\listoffigures
+	\addcontentsline{toc}{chapter}{\listfigurename}
+
+	\cleardoublepage
+	\phantomsection
+	\listofequationname
+	\addcontentsline{toc}{chapter}{\listequationsname}
+
+	\cleardoublepage	
+	\begin{thebibliography}{1}
+		\bibitem{helmIEEE}
+		A.~Trias, \emph{The Holomorphic Embedding Load Flow Method}, IEEE PES General Meeting, July 2012
+		
+		\bibitem{helmPV}
+		M.~K.~Subramanian, Y.~Feng, D.~Tylavsky, \emph{PV Bus Modeling in a Holomorphically Embedded Power-Flow Formulation}, 978-1-4799-1255-1/13, IEEE, 2013
+		
+		\bibitem{helmPatentApr2009}
+		A.~Trias, \emph{System and Method for Monitoring and Managing Electrical Power Transmission and Distribution Networks}, US Patent 7,519,506 B2, April 2009
+		
+		\bibitem{helmPatentSept2009}
+		A.~Trias, \emph{System and Method for Monitoring and Managing Electrical Power Transmission and Distribution Networks}, US Patent US 2009/0228154 A1, September 2009
+					
+		\bibitem{epsilonWynn}
+		P.~Wynn, \emph{The Epsilon Algorithm and Operational Formulas of Numerical Analysis}, June 1960
+		
+	\end{thebibliography}
 \end{document}

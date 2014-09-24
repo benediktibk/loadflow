@@ -30,4 +30,6 @@ documents/thesis/thesis.pdf
 documents/thesis/*.aux
 documents/thesis/*.log
 documents/thesis/*.toc
+documents/thesis/*.equ
+documents/thesis/*.lof
 documents/thesis/figures/*.pdf
