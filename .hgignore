@@ -26,3 +26,6 @@ documents/forschungspraxis/*.toc
 documents/forschungspraxis/*.snm
 documents/forschungspraxis/*.brf
 documents/forschungspraxis/tikz/*.aux
+documents/thesis/thesis.pdf
+documents/thesis/*.aux
+documents/thesis/*.log
