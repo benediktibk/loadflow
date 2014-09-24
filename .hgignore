@@ -29,3 +29,5 @@ documents/forschungspraxis/tikz/*.aux
 documents/thesis/thesis.pdf
 documents/thesis/*.aux
 documents/thesis/*.log
+documents/thesis/*.toc
+documents/thesis/figures/*.pdf
