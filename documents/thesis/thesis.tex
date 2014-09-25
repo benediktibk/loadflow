@@ -13,6 +13,9 @@
 \usepackage{geometry}
 \usepackage{subfig}
 \usepackage[subfigure]{tocloft}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{blindtext}
 
 % do not display the chapter-headings
 \titleformat{\chapter}[display]
@@ -37,11 +40,27 @@
 	\mbox{}
 }
 
-\begin{document}
+\begin{document}	
+	% page numbers left and right on even and odd pages
+	\fancypagestyle{plain}
+	{
+		\fancyhf{}
+		\renewcommand{\headrulewidth}{0pt}
+		\renewcommand{\footrulewidth}{0.4pt}
+		\fancyfoot[LE]{\thepage}
+		\fancyfoot[RO]{\thepage}
+	}
+	\pagestyle{fancy}
+	\fancyhf{}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+	\fancyfoot[LE]{\thepage}
+	\fancyfoot[RO]{\thepage}
+	
 	\input{title}
 	
 	% the title page set a different layout
-	\newgeometry{top=1in,bottom=1in,right=0.5in,left=1.5in}
+	\newgeometry{top=1in,bottom=1in,right=1in,left=2in}
 	
 	\emptypage
 	\input{abstract}
