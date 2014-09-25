@@ -29,8 +29,13 @@
 \newcommand{\equationname}[1]{%
 \addcontentsline{equ}{figure}{\protect\numberline{\theequation} #1}\par}
  
-\author{Benedikt Schmidt}
-\title{MISSING}
+% create an completely empty page
+\newcommand{\emptypage}
+{
+	\newpage
+	\thispagestyle{empty}
+	\mbox{}
+}
 
 \begin{document}
 	\input{title}
@@ -38,13 +43,13 @@
 	% the title page set a different layout
 	\newgeometry{top=1in,bottom=1in,right=0.5in,left=1.5in}
 	
-	\cleardoublepage
+	\emptypage
 	\input{abstract}
 	
 	% ensure that the page number is the identical with the pdf page number
 	\setcounter{page}{4}
 
-	\cleardoublepage
+	\emptypage
 	\tableofcontents
 	
 	\input{introduction}	
