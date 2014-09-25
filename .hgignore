@@ -1,4 +1,8 @@
 syntax: glob
+*.dia~
+~$*.xlsx
+~$*.pptx
+Thumbs.db
 source/*/bin/**
 source/*/obj/**
 source/packages/**
@@ -7,15 +11,11 @@ source/Debug/**
 source/*/Debug/**
 source/Release/**
 source/*/Release/**
-*.user
-*.suo
-*.sdf
-*.opensdf
-*.sln.DotSettings
-*.dia~
-~$*.xlsx
-~$*.pptx
-Thumbs.db
+source/*.user
+source/*.suo
+source/*.sdf
+source/*.opensdf
+source/*.sln.DotSettings
 documents/forschungspraxis/report.pdf
 documents/forschungspraxis/presentation.pdf
 documents/forschungspraxis/*.aux
