@@ -32,4 +32,5 @@ documents/thesis/*.log
 documents/thesis/*.toc
 documents/thesis/*.equ
 documents/thesis/*.lof
+documents/thesis/*.out
 documents/thesis/figures/*.pdf
