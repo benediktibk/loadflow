@@ -57,14 +57,17 @@ and
 \end{equation}
 which have to be considered in the admittance matrix through
 \begin{equation}
-	\mat Y_{p} = 
-	\begin{bmatrix}
-	 		& \vdots 	& 			& \vdots 	& 			\\
-	 \hdots & G			& \hdots	& -G		& \hdots 	\\
-	 		& \vdots 	& 			& \vdots 	& 			\\
-	 \hdots & -G		& \hdots	& G			& \hdots 	\\
-	 		& \vdots 	& 			& \vdots 	& 			
-	\end{bmatrix}.
+	\mat Y_p = 	
+	\begin{blockarray}{cccccc}
+		\begin{block}{[ccccc]c}
+		 		& \vdots	&			& \vdots	&			& \\
+		\cdots	& G			& \cdots	& -G		& \cdots	& \alpha \\
+		 		& \vdots	&			& \vdots	&			& \\
+		\cdots	& -G		& \cdots	& G			& \cdots	& \beta \\
+		 		& \vdots	&			& \vdots	&			& \\
+		\end{block}
+				& \alpha	&			& \beta		&			& 
+	\end{blockarray}
 \end{equation}
 
 \subsubsection{Voltage Controlled Current Source}
@@ -86,9 +89,56 @@ and
 \end{equation}
 but with the difference to the admittance that this time the current is controlled by different nodes.
 
+\begin{equation}
+	\mat Y_p = 	
+	\begin{blockarray}{cccccc}
+		\begin{block}{[ccccc]c}
+		 		& \vdots	&			& \vdots	&			& \\
+		\cdots	& g_m		& \cdots	& -g_m		& \cdots	& \alpha \\
+		 		& \vdots	&			& \vdots	&			& \\
+		\cdots	& -g_m		& \cdots	& g_m		& \cdots	& \beta \\
+		 		& \vdots	&			& \vdots	&			& \\
+		\end{block}
+				& \gamma	&			& \delta	&			& 
+	\end{blockarray}
+\end{equation}
+
 \subsubsection{Gyrator}
 
+\begin{figure}
+	\centering
+	\include{tikz/gyrator}
+	\caption{Equivalent circuit for a gyrator}
+	\label{fig:gyrator}
+\end{figure}
+
+The gyrator, which is defined by
+\begin{equation}
+	i_1 = G_D u_2
+\end{equation}
+and
+\begin{equation}
+	i_2 = -G_D u_1
+\end{equation}
+can be replaced with two VCCSs like in \figref{gyrator}.
+
 \subsubsection{Current Controlled Current Source}
+
+\begin{figure}
+	\centering
+	\include{tikz/current_controlled_current_source_original}
+	\caption{CCCS}
+	\label{fig:cccs_original}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\include{tikz/current_controlled_current_source_equivalent}
+	\caption{Circuit made out of voltage controlled elements, which is equivalent to a CCCS}
+	\label{fig:cccs_equivalent}
+\end{figure}
+
+The current controlled current source (CCCS) is by definition not voltage controlled, but with a gyrator it can be transformed to be so. For this, the CCCS \figref{cccs_original} is replaced by the equivalent circuit \figref{cccs_equivalent}.
 
 \subsubsection{Voltage Controlled Voltage Source}
 

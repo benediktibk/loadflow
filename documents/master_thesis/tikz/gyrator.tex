@@ -1,0 +1,10 @@
+\begin{circuitikz}	
+	\draw (1, 4) to[european controlled current source,i_=$G_D u_2$] (1, 0);
+	\draw (-1, 4) node[left] {$U_\alpha$} to[short,i=$i_1$,o-] (1, 4);
+	\draw (1, 0) to[short,-o] (-1, 0) node[left] {$U_\beta$};
+	\draw (-1, 0) to[open,v^=$u_1$] (-1, 4);
+	\draw (3, 4) to[european controlled current source,i=$-G_D u_1$] (3, 0);
+	\draw (5, 4) node[right] {$U_\gamma$} to[short,i=$i_2$,o-] (3, 4);
+	\draw (3, 0) to[short,-o] (5, 0) node[right] {$U_\delta$};
+	\draw (5, 0) to[open,v=$u_2$] (5, 4);
+\end{circuitikz} 

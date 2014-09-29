@@ -1,0 +1,7 @@
+\begin{circuitikz}
+	\draw (0, 0) node[left] {$U_\delta$} to[open,o-o,v^=$u_1$] (0, 4) node[left] {$U_\gamma$};
+	\draw (3, 4) to[european controlled voltage source] (3, 0);
+	\draw (4, 0) to[open,v=$\mu u_1$] (4, 4);
+	\draw (3, 4) to[short,-o] (4, 4) node[right] {$U_\alpha$};
+	\draw (3, 0) to[short,-o] (4, 0) node[right] {$U_\beta$};
+\end{circuitikz} 
