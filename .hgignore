@@ -33,5 +33,6 @@ documents/master_thesis/*.toc
 documents/master_thesis/*.equ
 documents/master_thesis/*.lof
 documents/master_thesis/*.out
+documents/master_thesis/*.lot
 documents/master_thesis/figures/*.pdf
 documents/master_thesis/tikz/*.aux
