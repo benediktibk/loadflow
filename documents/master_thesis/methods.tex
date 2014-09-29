@@ -135,6 +135,7 @@ can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
 \subsubsection{Current Controlled Current Source}
 
+
 \begin{figure}
 	\centering
 	\include{tikz/current_controlled_current_source_original}
@@ -152,6 +153,22 @@ can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 The current controlled current source (CCCS) is by definition not voltage controlled, but with a gyrator it can be transformed to be so. For this, the CCCS \figref{cccs_original} is replaced by the equivalent circuit \figref{cccs_equivalent}. The value $G_D$ can be chosen freely in theory, but because of numerical issues the internal voltage $U_\epsilon$ should be in the range of the nominal voltage. The gyrator itself can be replaced like previously shown.
 
 \subsubsection{Voltage Controlled Voltage Source}
+
+\begin{figure}
+	\centering
+	\include{tikz/voltage_controlled_voltage_source_original}
+	\caption{VCVS}
+	\label{fig:vcvs_original}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\include{tikz/voltage_controlled_voltage_source_equivalent}
+	\caption{Equivalent circuit for a VCVS}
+	\label{fig:vcvs_equivalent}
+\end{figure}
+
+A voltage controlled voltage source (VCVS) like \figref{vcvs_original} is also replaced by elements, which have been already previously discussed. This leads then to \figref{vcvs_equivalent}, which has again a freely chosable parameter. It should be chosen similar to the one of the CCCS.
 
 \subsubsection{Ideal Transformer}
 
