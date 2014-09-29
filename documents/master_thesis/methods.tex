@@ -119,7 +119,11 @@ but with the difference to the admittance that this time the current is controll
 	\label{fig:gyrator_equivalent}
 \end{figure}
 
-The gyrator, which is defined by
+\begin{figure}
+	\centering
+\end{figure}
+
+The gyrator \figref{gyrator_original}, which is defined by
 \begin{equation}
 	i_1 = G_D u_2
 \end{equation}
@@ -127,7 +131,7 @@ and
 \begin{equation}
 	i_2 = -G_D u_1
 \end{equation}
-can be replaced with two VCCSs like in \figref{gyrator}.
+can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
 \subsubsection{Current Controlled Current Source}
 
@@ -141,11 +145,11 @@ can be replaced with two VCCSs like in \figref{gyrator}.
 \begin{figure}
 	\centering
 	\include{tikz/current_controlled_current_source_equivalent}
-	\caption{Circuit made out of voltage controlled elements, which is equivalent to a CCCS}
+	\caption{Equivalent circuit for a CCCS}
 	\label{fig:cccs_equivalent}
 \end{figure}
 
-The current controlled current source (CCCS) is by definition not voltage controlled, but with a gyrator it can be transformed to be so. For this, the CCCS \figref{cccs_original} is replaced by the equivalent circuit \figref{cccs_equivalent}.
+The current controlled current source (CCCS) is by definition not voltage controlled, but with a gyrator it can be transformed to be so. For this, the CCCS \figref{cccs_original} is replaced by the equivalent circuit \figref{cccs_equivalent}. The value $G_D$ can be chosen freely in theory, but because of numerical issues the internal voltage $U_\epsilon$ should be in the range of the nominal voltage. The gyrator itself can be replaced like previously shown.
 
 \subsubsection{Voltage Controlled Voltage Source}
 
