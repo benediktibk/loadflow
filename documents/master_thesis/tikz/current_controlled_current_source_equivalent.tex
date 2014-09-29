@@ -1,12 +1,11 @@
 \begin{circuitikz}
 	\draw (0, 0) node[gyrator] (G) {};
 	\draw (G.base) node{$G_D$};
-  	\draw ($(G.B1) + (1, 0)$) node[right] {$U_\alpha$} to[short,o-,i=$i_2$] (G.B1);
-  	\draw (G.B2) to[short,-o] ($(G.B2) + (1, 0)$) node[right] {$U_\beta$};
-  	\draw ($(G.B2) + (1, 0)$) to[open,v=$u_2$] ($(G.B1) + (1, 0)$);
+  	\draw ($(G.A1) - (0.5, 0)$) node[left] {$U_\gamma$} to[short,o-,i=$i_1$] (G.A1);
+  	\draw (G.A2) to[short,-o] ($(G.A2) - (0.5, 0)$) node[left] {$U_\delta$};
   	\draw (G.A2) to[short] (G.B2);
-  	\draw (G.A1) node[above] {$U_\epsilon$} to[short,*-] ($(G.A1) - (1, 0)$);
-  	\draw ($(G.A1) - (1, 0)$) to[european controlled current source,i_=$-\mu G_D u_1$] ($(G.A2) - (1, 0)$);
-  	\draw ($(G.A2) - (1, 0)$) to[short] (G.A2);
-  	\draw ($(G.A2) - (3.5, 0)$) node[left] {$U_\delta$}to[open,o-o,v^=$u_1$] ($(G.A1) - (3.5, 0)$) node[left] {$U_\gamma$} ;
+  	\draw (G.B2) to[open,v=$u$] (G.B1);
+  	\draw ($(G.B1) + (2, 0)$) to[european controlled current source,i=$\beta G_D u$] ($(G.B2) + (2, 0)$);
+  	\draw ($(G.B1) + (3, 0)$) node[right] {$U_\alpha$} to[short,i=$i_2$,o-] ($(G.B1) + (2, 0)$);
+  	\draw ($(G.B2) + (2, 0)$) to[short,-o] ($(G.B2) + (3, 0)$) node[right] {$U_\beta$};
 \end{circuitikz}

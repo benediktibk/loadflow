@@ -32,12 +32,6 @@
 \newcommand{\figref}[1]{{(Figure \ref{fig:#1})}}
 \newcommand{\secref}[1]{{(Section \ref{sec:#1})}}
 \newcommand{\neweqref}[1]{{(Equation \ref{eq:#1})}}
-
-% list of equations
-\newcommand{\listequationsname}{List of Equations}
-\newlistof{equationname}{equ}{\listequationsname}
-\newcommand{\equationname}[1]{%
-\addcontentsline{equ}{figure}{\protect\numberline{\theequation} #1}\par}
  
 % create an completely empty page
 \newcommand{\emptypage}
@@ -98,11 +92,6 @@
 	\phantomsection
 	\listoffigures
 	\addcontentsline{toc}{chapter}{\listfigurename}
-
-	\cleardoublepage
-	\phantomsection
-	\listofequationname
-	\addcontentsline{toc}{chapter}{\listequationsname}
 
 	\cleardoublepage	
 	\input{bibliography}
