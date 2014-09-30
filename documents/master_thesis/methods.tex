@@ -38,6 +38,8 @@ The same superposition applies also for the current sources, if there are any.
 	\vec I = \sum_i \vec I_{p,i}
 \end{equation}
 
+The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers which non-nominal ratios. All the controlled sources and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
+
 \subsubsection{Admittance}
 
 \begin{figure}
@@ -176,15 +178,23 @@ A voltage controlled voltage source (VCVS) like \figref{vcvs_original} is also r
 The power net elements are modelled through admittances and busses, therefore we will use the previously derived knowledge to describe the behaviour of the net elements.
 
 \subsection{Transmission Line}
-A transmission line is modelled only with admittances like in \figref{transmission_line}. The values $Y_q$ and $Y_l$ can be derived from the wave impedance $Z_W$ and the propagation constant $\gamma$ of the transmission line through
+A transmission line is modelled only with admittances like in \figref{transmission_line}. The values $Y_q$ and $Y_l$ can be derived from the wave impedance $Z_W$, the propagation constant $\gamma$ and the length of the transmission line through
 \begin{equation}
-	MISSING
+	Y_l = \frac{1}{Z_W \sinh \left( \gamma l \right)}
 \end{equation}
 and
 \begin{equation}
-	MISSING,
+	\frac{Y_q}{2} = \frac{1}{Z_W} \tanh \left( \frac{\gamma l}{2} \right),
 \end{equation}
-as shown in \citep[p. 155]{powerSystemAnalysis}.
+as shown in \citep[p. 155]{powerSystemAnalysis}. The wave impedance and the propagation constant can be calculated from the electrical characteristics with
+\begin{equation}
+	Z_W = \sqrt{\frac{R' + j \omega L'}{G' + j \omega C}}
+\end{equation}
+and 
+\begin{equation}
+	\gamma = \sqrt{\left( R' + j \omega L' \right) \left( G' + j \omega C \right)},
+\end{equation}
+also derived in \citep[p. 153]{powerSystemAnalysis}.
 
 \begin{figure}
 	\centering
