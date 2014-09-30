@@ -2,7 +2,10 @@
 
 \section{Problem Formulation}
 The aim of an load-flow analysis is to determine the voltages in the power net. Any further information, like currents in connections, critically low voltages, etc. can be derived from this result. Therefore I will consider the problem to be solved if the voltages are known.
-The first step in a load flow analysis is the modelling of the net elements, as it is way to complex to use a detailed description of for instance a power plant like \figref{power_plant}. Therefore, all elements in a power net are modelled through busses, also called nodes, and admittances between them. The base of the load-flow calculation is a nodal analysis, but extended to support power defined nodes.
+
+The first step in a load flow analysis is the modelling of the net elements, as it is way to complex to use a detailed description of for instance a power plant like \figref{power_plant}. Therefore, all elements in a power net are modelled through busses, also called nodes, and admittances between them. To simplify the calculations only single phase nets are considered, therefore three phase systems have to scaled down by the factor 3, respective $\sqrt{3}$. In the model also exists only one voltage level, which means that all admittances, powers and voltages have to be scaled according to this.
+
+The second step is then the actual calculation of the node voltages, which based is on a nodal analysis. As a pure nodal analysis is only capable of current loads it is extended to support more realistic load models.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{figures/adam_beck_complex.jpg}
@@ -197,13 +200,15 @@ A load can be modelled through a PQ-bus and no change to the admittance matrix. 
 	\label{fig:generator}
 \end{figure}
 
-Generators are represented through an synchronous reactance $X_d$, which models internal losses, and a PV-bus, like it can be seen in \figref{generator}. The voltage magnitude at the internal PV-bus is the excitation voltage $E$ and the real power input is determined by the mechanical power and some transformation losses. 
+Generators are represented through a synchronous reactance $X_d$, which models internal losses, and a PV-bus \citep[p. 55]{powerSystemAnalysis}, like it can be seen in \figref{generator}. The voltage magnitude at the internal PV-bus is the excitation voltage $E$ and the real power input is determined by the mechanical power and some transformation losses. 
 
 If the synchronous reactance is not zero the external node $\alpha$ is not forced to any certain bus type, but if it is zero, the bus is forced to become a PV-bus.
 
 \subsection{Transformer}
 
 \subsection{Feed-In}
+
+\section{Scaling}
 
 \section{Calculation Methods}
 
