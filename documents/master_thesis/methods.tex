@@ -154,6 +154,43 @@ An ideal transformer like in \figref{ideal_transformer_original} is modelled wit
 
 The parameter $R$ in this model can be chosen freely in theory, but for numerical reasons I recommend such a scaling of the internal node, that it is in the range of the nominal voltages. To be able to do this an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
 
+\section{Scaling}
+As long as the relations are kept the same it is possible to change the scale base of all values in a system. For purpose from the set of voltage, current, impedance and power two physical quantities can be freely chosen and the others arise out of this decision. Another term for this scaling is the transformation into a so-called per-unit system \citep[p. 90]{powerSystemAnalysis}.
+
+For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the scale base
+\begin{equation}
+	P_B = \frac{1}{2n} \left( \sum_{i}^n \left| P_{load,i} \right| + \sum_{i}^n \left| Q_{load,i} \right| \right)
+\end{equation}
+for the powers. 
+
+The other scale bases are then derived from these two chosen values:
+\begin{equation}
+	I_B = \frac{P_B}{U_B}
+\end{equation}
+\begin{equation}
+	Z_B = \frac{1}{Y_B} = \frac{U_B}{I_B}
+\end{equation}
+
+The actually scaling is achieved through a division of the values by the scale bases.
+\begin{equation}
+	U_{scaled} = \frac{U}{U_B}
+\end{equation}
+\begin{equation}
+	I_{scaled} = \frac{I}{I_B}
+\end{equation}
+\begin{equation}
+	P_{scaled} = \frac{P}{P_B}
+\end{equation}
+\begin{equation}
+	Q_{scaled} = \frac{Q}{P_B}
+\end{equation}
+\begin{equation}
+	Z_{scaled} = \frac{Z}{Z_B}
+\end{equation}
+\begin{equation}
+	Y_{scaled} = \frac{Y}{Y_B}
+\end{equation}
+
 \section{Modelling of Net Elements}
 
 The power net elements are modelled through admittances and busses, therefore we will use the previously derived knowledge to describe the behaviour of the net elements.
@@ -207,8 +244,6 @@ If the synchronous reactance is not zero the external node $\alpha$ is not force
 \subsection{Transformer}
 
 \subsection{Feed-In}
-
-\section{Scaling}
 
 \section{Calculation Methods}
 
