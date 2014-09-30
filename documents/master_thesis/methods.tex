@@ -155,6 +155,10 @@ The parameter $R$ in this model can be chosen freely in theory, but for numerica
 
 The power net elements are modelled through admittances and busses, therefore we will use the previously derived knowledge to describe the behaviour of the net elements.
 
+All external nodes which exist in a power net are by default PQ-busses with no load, therefore $P = 0$ and $Q = 0$. The direct combination of PQ-busses leads to a summation of the partial inputs (or loads, depending on the sign). The direct connection of a PV-bus to a PQ-bus instead has the result, that bus is forced to become a PV-bus with the values $P_{total} = P_{PV} + P_{PQ}$ and $V_{total} = V_{PV}$. The reactive power of the PQ-node is assumed to be provided by the PV-bus. The third type of busses, a slack bus, can be combined with a PQ-bus too. In this case all loads are provided by the slack bus itself, therefore the total result is a slack bus.
+
+As it would lead to an overspecified problem PV-busses must not be connected to slack busses. Theoretically this is possible if the PV-bus has the same voltage magnitude as the slack bus, but in practice this case does not occur and can be neglected.
+
 \subsection{Transmission Line}
 A transmission line is modelled only with admittances like in \figref{transmission_line}. The values $Y_q$ and $Y_l$ can be derived from the wave impedance $Z_W$, the propagation constant $\gamma$ and the length of the transmission line through
 \begin{equation}
@@ -182,8 +186,20 @@ also derived in \citep[p. 153]{powerSystemAnalysis}.
 \end{figure}
 
 \subsection{Load}
+A load can be modelled through a PQ-bus and no change to the admittance matrix. If there are several loads connected to one node their values sum up as already discussed before.
 
 \subsection{Generator}
+
+\begin{figure}
+	\centering
+	\include{tikz/generator}
+	\caption{Equivalent circuit for a generator}
+	\label{fig:generator}
+\end{figure}
+
+Generators are represented through an synchronous reactance $X_d$, which models internal losses, and a PV-bus, like it can be seen in \figref{generator}. The voltage magnitude at the internal PV-bus is the excitation voltage $E$ and the real power input is determined by the mechanical power and some transformation losses. 
+
+If the synchronous reactance is not zero the external node $\alpha$ is not forced to any certain bus type, but if it is zero, the bus is forced to become a PV-bus.
 
 \subsection{Transformer}
 
