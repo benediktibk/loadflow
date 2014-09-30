@@ -6,7 +6,7 @@ The first step in a load flow analysis is the modelling of the net elements, as 
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{figures/adam_beck_complex.jpg}
-	\caption{Sir Adam Beck Hydroelectric Generating Stations \cite{adam_back_complex}}
+	\caption{Sir Adam Beck Hydroelectric Generating Stations \citep{adam_back_complex}}
 	\label{fig:power_plant}
 \end{figure}
 
@@ -175,21 +175,22 @@ A voltage controlled voltage source (VCVS) like \figref{vcvs_original} is also r
 
 The power net elements are modelled through admittances and busses, therefore we will use the previously derived knowledge to describe the behaviour of the net elements.
 
-\subsection{Connection}
-A connection is modelled only with admittances like in \figref{connection}. The values $Y_q$ and $Y_l$ can be derived from the physical properties of the connection through
+\subsection{Transmission Line}
+A transmission line is modelled only with admittances like in \figref{transmission_line}. The values $Y_q$ and $Y_l$ can be derived from the wave impedance $Z_W$ and the propagation constant $\gamma$ of the transmission line through
 \begin{equation}
 	MISSING
 \end{equation}
 and
 \begin{equation}
-	MISSING.
+	MISSING,
 \end{equation}
+as shown in \citep[p. 155]{powerSystemAnalysis}.
 
 \begin{figure}
 	\centering
-	\include{tikz/connection}
-	\caption{Equivalent circuit for a connection}
-	\label{fig:connection}
+	\include{tikz/transmission_line}
+	\caption{Equivalent circuit for a transmission line}
+	\label{fig:transmission_line}
 \end{figure}
 
 \subsection{Load}
