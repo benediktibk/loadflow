@@ -38,7 +38,7 @@ The same superposition applies also for the current sources, if there are any.
 	\vec I = \sum_i \vec I_{p,i}
 \end{equation}
 
-The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers which non-nominal ratios. All the controlled sources and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
+The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers which non-nominal ratios. The controlled source and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
 
 \subsubsection{Admittance}
 
@@ -121,10 +121,6 @@ but with the difference to the admittance that this time the current is controll
 	\label{fig:gyrator_equivalent}
 \end{figure}
 
-\begin{figure}
-	\centering
-\end{figure}
-
 The gyrator \figref{gyrator_original}, which is defined by
 \begin{equation}
 	i_1 = G_D u_2
@@ -135,43 +131,25 @@ and
 \end{equation}
 can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
-\subsubsection{Current Controlled Current Source}
-
-\begin{figure}
-	\centering
-	\include{tikz/current_controlled_current_source_original}
-	\caption{CCCS}
-	\label{fig:cccs_original}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\include{tikz/current_controlled_current_source_equivalent}
-	\caption{Equivalent circuit for a CCCS}
-	\label{fig:cccs_equivalent}
-\end{figure}
-
-The current controlled current source (CCCS) is by definition not voltage controlled, but with a gyrator it can be transformed to be so. For this, the CCCS \figref{cccs_original} is replaced by the equivalent circuit \figref{cccs_equivalent}. The value $G_D$ can be chosen freely in theory, but because of numerical issues the internal voltage $U_\epsilon$ should be in the range of the nominal voltage. The gyrator itself can be replaced like previously shown.
-
-\subsubsection{Voltage Controlled Voltage Source}
-
-\begin{figure}
-	\centering
-	\include{tikz/voltage_controlled_voltage_source_original}
-	\caption{VCVS}
-	\label{fig:vcvs_original}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\include{tikz/voltage_controlled_voltage_source_equivalent}
-	\caption{Equivalent circuit for a VCVS}
-	\label{fig:vcvs_equivalent}
-\end{figure}
-
-A voltage controlled voltage source (VCVS) like \figref{vcvs_original} is also replaced by elements, which have been already previously discussed. This leads then to \figref{vcvs_equivalent}, which has again a freely chosable parameter. It should be chosen similar to the one of the CCCS.
-
 \subsubsection{Ideal Transformer}
+
+\begin{figure}
+	\centering
+	\include{tikz/ideal_transformer_original}
+	\caption{Ideal transformer}
+	\label{fig:ideal_transformer_original}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\include{tikz/ideal_transformer_equivalent}
+	\caption{Equivalent circuit for an ideal transformer}
+	\label{fig:ideal_transformer_equivalent}
+\end{figure}
+
+An ideal transformer like in \figref{ideal_transformer_original} is modelled with two gyrators according to the circuit \figref{ideal_transformer_equivalent}. The gyrators themselves have to be replaced by voltage controlled elements, like it was presented previously.
+
+The parameter $R$ in this model can be chosen freely in theory, but for numerical reasons I recommend such a scaling of the internal node, that it is in the range of the nominal voltages. To be able to do this an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
 
 \section{Modelling of Net Elements}
 

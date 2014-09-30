@@ -1,0 +1,14 @@
+\begin{circuitikz}
+	\draw (0, 0) node[gyrator] (G1) {};
+	\draw (2, 0) node[gyrator] (G2) {};
+	\draw (G1.base) node{$a R$};
+	\draw (G2.base) node{$R$};
+	\draw (G1.B1) to[short,-*] (G1.B1) node[above] {$U_\epsilon$};
+  	\draw ($(G1.A1) - (0.5, 0)$) node[left] {$U_\alpha$} to[short,o-,i=$i_1$] (G1.A1);
+  	\draw (G1.A2) to[short,-o] ($(G1.A2) - (0.5, 0)$) node[left] {$U_\beta$};
+  	\draw ($(G2.B1) + (0.5, 0)$) node[right] {$U_\gamma$} to[short,o-,i=$i_2$] (G2.B1);
+  	\draw (G2.B2) to[short,-o] ($(G2.B2) + (0.5, 0)$) node[right] {$U_\delta$};
+  	\draw ($(G1.A2) - (0.5, 0)$) to[open,v^=$u_1$] ($(G1.A1) - (0.5, 0)$);
+  	\draw ($(G2.B2) + (0.5, 0)$) to[open,v=$u_2$] ($(G2.B1) + (0.5, 0)$);
+  	\draw (G1.A2) to[short] (G1.B2);
+\end{circuitikz}
