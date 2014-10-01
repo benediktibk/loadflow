@@ -21,7 +21,7 @@ The most basic mathematical description of a an electric circuit, which an power
 \end{equation}
 will be used. If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as result. Unfortunately, most elements in a power net are defined through power, which is fed in, and load, which is drawn from the power net. Therefore, we have to extend \neweqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
-	\sum_i Y_{ik} U_i = I_k + \frac{S_j^\star}{U_j^\star}.
+	\sum_i Y_{ik} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
 	\label{eq:pq_bus}
 \end{equation}
 This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is the defined.
@@ -323,10 +323,41 @@ In case the short circuit power is very high compared to the actual load flow th
 
 \section{Calculation Methods}
 
+The task for the following calculation methods is to determine the node voltages from a admittance matrix, a list of PQ- and PV-busses and a vector of constant currents. In this section I will describe in total four different algorithms for this problem:
+\begin{itemize}
+	\item Current Iteration \citep[p. 209]{powerSystemAnalysis}
+	\item Newton-Raphson \citep[p. 232]{powerSystemAnalysis}
+	\item Fast-decoupled-load-flow \citep[p. 240]{powerSystemAnalysis}
+	\item Holomorphic Embedding Load Flow \citep{helmIEEE, helmPatentApr2009, helmPatentSept2009}
+\end{itemize}
+
+As short overview I will start with a classification of these methods, based on their specific characteristics.
+
 \subsection{Classification of Methods}
+The first three methods, Current Iteration, Newton-Raphson and the FDLF, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this point leads direct to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physical, what in this case means that they do no represent a stable operating point. This happens typically only for certain constructed power nets, but in practice the bigger problem is that these methods often do not converge, although the power net is in a stable condition.
+
+To circumvent these drawbacks a new approach to the load flow problem was developed, the so-called Holomorphic Embedding Load Flow. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore HELM would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
+The basic problem of the load flow calculation is that \neweqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \neweqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
+\begin{equation}
+	\sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
+\end{equation}
+and then the rest is brought to the right hand side
+\begin{equation}
+	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ik} U_i \right).
+\end{equation}
+The resulting equation is again not explicitly solved for $U_k$ as this variable still occurs on the right hand side, but at this appearance the old value, from the previous iteration, can be used. This leads then to
+\begin{equation}
+	 U_k^{j + 1} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ik} U_i^{(j)} \right),
+\end{equation}
+where the superindex $j$ denotes the iteration step. For the sake of legibilty with this formula one would actually update the node voltages only after every iteration, but they can actually be updated every time a new value is calculated.
+
+To this point only the PQ-busses were discuess, but PV-busses can be handled too. For this purpose the PV-bus is considered as PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
+\begin{equation}
+	U_k' = |U_{k,PV}| e^{j \angle U_k}.
+\end{equation}
 
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
