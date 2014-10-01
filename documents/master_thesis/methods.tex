@@ -189,6 +189,7 @@ The actually scaling is achieved through a division of the values by the scale b
 \end{equation}
 \begin{equation}
 	Y_{scaled} = \frac{Y}{Y_B}
+	\label{eq:scaling_admittance}
 \end{equation}
 
 \section{Modelling of Net Elements}
@@ -242,6 +243,55 @@ Generators are represented through a synchronous reactance $X_d$, which models i
 If the synchronous reactance is not zero the external node $\alpha$ is not forced to any certain bus type, but if it is zero, the bus is forced to become a PV-bus.
 
 \subsection{Transformer}
+
+\begin{figure}
+	\centering
+	\include{tikz/transformer}
+	\caption{Equivalent circuit for a transformer}
+	\label{fig:transformer}
+\end{figure}
+
+To model the transformer I chose to use the equivalent circuit \figref{transformer} with a $\pi$-model and an ideal transformer. As all variables are scaled to the same nominal voltage the ideal transformer is only needed, if the real transmission ratio $a$ is not the nominal transmission ratio
+\begin{equation}
+	a_n = \frac{U_{1n}}{U_{2n}}.
+\end{equation}
+In this case the ratio of the ideal transformer is set to the relative ratio
+\begin{equation}
+	a_r = \frac{a}{a_n}.
+\end{equation}
+For transformer exist several different ways to specifiy their electrical characeristics. I've chosen to use as input:
+\begin{itemize}
+	\item $S_n$: nominal power
+	\item $|u_r|$: relative short circuit voltage
+	\item $P_{Cu}$: copper losses
+	\item $P_{Fe}$: iron losses
+	\item $\frac{I_0}{I_n}$: relative no-load current
+\end{itemize}
+
+The shunt admittance can then be derived direct from these values through
+\begin{equation}
+	Y_q = \frac{1}{2} \left( P_{Fe} - j \frac{I_0}{I_n} S_n \right) \frac{1}{U_{2n}^2}.
+\end{equation}
+
+For the length admittance it is first necessary to calculate the complex relative short circuit voltage $u_r$. The real part
+\begin{equation}
+	\Re{u_r} = \frac{P_{Cu}}{S_n}
+\end{equation}
+can be calculate from the copper losses and the nominal power. As now the magnitude and the real part of the relative short circuit voltage are known, it is possible to calculate the imaginary part
+\begin{equation}
+	\Im{u_r} = \sqrt{|u_r|^2 - \Re{u_r}}.
+\end{equation}
+Therefore, the total complex short circuit voltage
+\begin{equation}
+	u_r = \Re{u_r} + j \Im{u_r}
+\end{equation}
+is known too and the length admittance
+\begin{equation}
+	Y_l = \frac{S_n}{U_{1n}^2 u_r}
+\end{equation}
+can be calculated.
+
+Before these admittances are inserted into the admittance matrix they have to be scaled according to \neweqref{scaling_admittance}.
 
 \subsection{Feed-In}
 
