@@ -19,13 +19,13 @@ The most basic mathematical description of a an electric circuit, which an power
 	\sum_i Y_{ik} U_i = I_k,
 	\label{eq:current_controlled}
 \end{equation}
-will be used. If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as result. Unfortunately, most elements in a power net are defined through power, which is fed in, and load, which is drawn from the power net. Therefore, we have to extend \neweqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
+will be used. If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as result. Unfortunately, most elements in a power net are defined through power, which is fed in, and load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
 	\sum_i Y_{ik} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
 	\label{eq:pq_bus}
 \end{equation}
 This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is the defined.
-Another type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need any further description of this bus, but the bus is also part from neighbour busses through the branch currents $Y_{ik} U_i$. In this case, if one of the branch currents is already known, this value can be moved to the right hand side of the equation \neweqref{pq_bus} and combined with $I_k$. Although, slack busses show up only in the constant currents of the right hand sides, there must be always at least one slack bus in the power net, as this bus then defines the rotation of the system and compensates mismatches in the total power sum. In practice, typically a major power plant is selected as slack bus.
+Another type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need any further description of this bus, but the bus is also part from neighbour busses through the branch currents $Y_{ik} U_i$. In this case, if one of the branch currents is already known, this value can be moved to the right hand side of the equation \eqref{pq_bus} and combined with $I_k$. Although, slack busses show up only in the constant currents of the right hand sides, there must be always at least one slack bus in the power net, as this bus then defines the rotation of the system and compensates mismatches in the total power sum. In practice, typically a major power plant is selected as slack bus.
 The third important type of bus, beside the slack bus and PQ-bus, is the PV-bus. This is already some sort of control, as at such a node the real power $P_k$ and the voltage magnitude $|U_k|$ is defined. The implementation of this bus type depends on the algorithm which is used to calculate the missing node voltages, therefore I will discuss this in the section about the algorithms.
 
 \subsection{Admittance Matrix}
@@ -291,7 +291,7 @@ is known too and the length admittance
 \end{equation}
 can be calculated.
 
-Before these admittances are inserted into the admittance matrix they have to be scaled according to \neweqref{scaling_admittance}.
+Before these admittances are inserted into the admittance matrix they have to be scaled according to \eqref{scaling_admittance}.
 
 \subsection{Feed-In}
 
@@ -340,7 +340,7 @@ To circumvent these drawbacks a new approach to the load flow problem was develo
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
-The basic problem of the load flow calculation is that \neweqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \neweqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
+The basic problem of the load flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
 \begin{equation}
 	\sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
 \end{equation}
@@ -446,7 +446,7 @@ and for the specified powers
 
 The last missing part is the derivation of the power function, which means we have to start to separate the power at each node into its real and imaginary part and derive these functions then with respect to the voltage magnitudes and angles.
 
-As first step \neweqref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
+As first step \eqref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
 \begin{align}
 	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
 		&= U_k \left( \sum_{i \ne k} Y_{ik}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
@@ -462,7 +462,7 @@ for the load at bus $k$. This load can be separated into its real and imaginary 
 \begin{equation}
 	S_k = P_k + j Q_k,
 \end{equation}
-as well as the part on the right hand side of \neweqref{newton_raphson_polar} to receive
+as well as the part on the right hand side of \eqref{newton_raphson_polar} to receive
 \begin{equation}
 	P_k = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
 \end{equation}
@@ -512,16 +512,16 @@ With these derivations we can calculate the derivation of the power functions wi
 
 The iterative process to improve the voltages is then:
 \begin{enumerate}
-	\item Calculate the current power mismatch $\Delta \vec S (\vec x_k)$ with \neweqref{power_mismatch}
-	\item Calculate the Jacobian matrix $\vec S' (\vec x_k)$ with \neweqref{power_jacobian_newton_raphson}
-	\item Calculate the voltage changes $\Delta \vec x_k$ through solving the linear equation system \neweqref{newton_raphson_equation_system}
+	\item Calculate the current power mismatch $\Delta \vec S (\vec x_k)$ with \eqref{power_mismatch}
+	\item Calculate the Jacobian matrix $\vec S' (\vec x_k)$ with \eqref{power_jacobian_newton_raphson}
+	\item Calculate the voltage changes $\Delta \vec x_k$ through solving the linear equation system \eqref{newton_raphson_equation_system}
 	\item Calculate the improved voltages through $\vec x_{k + 1} = \vec x_k + \Delta \vec x_k$
 	\item Repeat these steps until the voltage change is small enough
 \end{enumerate}
 
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
-The FDLF is a modification of the Newton-Raphson method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind one can neglect two quarters of the Jacobian matrix in \neweqref{power_jacobian_newton_raphson} and reduce the matrix therefore to
+The FDLF is a modification of the Newton-Raphson method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind one can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce the matrix therefore to
 \begin{equation}
 	\vec S' (\vec x_k) \approx 
 	\begin{bmatrix}
@@ -538,7 +538,7 @@ The FDLF is a modification of the Newton-Raphson method, which is based on an ob
 	\end{bmatrix}.
 \end{equation}
 
-With this simplified system matrix the equation system \neweqref{newton_raphson_equation_system} can be seperated into
+With this simplified system matrix the equation system \eqref{newton_raphson_equation_system} can be seperated into
 \begin{equation}
 	\frac{\partial P}{\partial \delta} \cdot \Delta \delta_k = \Delta P_k
 \end{equation}
