@@ -295,6 +295,32 @@ Before these admittances are inserted into the admittance matrix they have to be
 
 \subsection{Feed-In}
 
+\begin{figure}
+	\centering
+	\include{tikz/feedin}
+	\caption{Equivalent circuit for a feed-in}
+	\label{fig:feedin}
+\end{figure}
+
+A feed-in \figref{feedin} is characterized through the voltage at the internal slack bus $U_{slack}$, the short circuit power $S_k$, the power factor $c$ and the ratio of the real to the imaginary part $\frac{R}{X}$. From these values the magnitude of the input impedance 
+\begin{equation}
+	|Z_q| = c \frac{U_n}{S_k}
+\end{equation}
+can be derived, which therefore is the enables the calculation of
+\begin{equation}
+	X = \frac{\sqrt{\left( \frac{R}{X} \right) + 1}}{|Z_q|}
+\end{equation}
+and
+\begin{equation}
+	R = \frac{R}{X} \cdot X.
+\end{equation}
+These two values combined are then the input impedance
+\begin{equation}
+	Z_q = R + j X.
+\end{equation}
+
+In case the short circuit power is very high compared to the actual load flow the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
+
 \section{Calculation Methods}
 
 \subsection{Classification of Methods}
