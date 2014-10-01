@@ -361,6 +361,135 @@ To this point only the PQ-busses were discuess, but PV-busses can be handled too
 
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
+In general, under the name Newton-Raphson a method for finding roots of a nonlinear function is known. In the area of load flow calculation the idea is the same, the problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec p (\vec x)$ is the same as the specified loads $p_{spec}$:
+\begin{equation}
+	\vec p (\vec x) = p_{spec}
+\end{equation}
+With a small transformation this leads to the problem of finding the roots of
+\begin{equation}
+	\vec p (\vec x) - p_{spec} = 0,
+\end{equation}
+which is exactly what Newton-Raphson does. For this the whole left part is considered as function
+\begin{equation}
+	\vec f (\vec x) = \vec p (\vec x) - p_{spec},
+\end{equation}
+which is developed into the Taylor-series
+\begin{equation}
+	\vec f (\vec x) = \sum_{k = 0}^\infty \frac{\vec f^{(k)} (\vec x_0}{k!} \left( \vec x - \vec x_0 \right).
+\end{equation}
+This series is terminated after the linear term, which leads to the approximation
+\begin{equation}
+	\vec f (\vec x) \approx \vec f (\vec x_0) + \vec f' (\vec x_0) \left( \vec x - \vec x_0 \right).
+\end{equation}
+
+As we actually want to find the root of $\vec f (\vec x)$ we set the approximation to 0 and replace in the result
+\begin{equation}
+	0 = \vec f (\vec x_k) + \vec f' (\vec x_k) \left( \vec x_{k + 1} - \vec x_k \right)
+\end{equation}
+the occurence of $\vec f (\vec x)$ with its definition to get
+\begin{equation}
+	\vec p' (\vec x_k) \left( \vec x_{k + 1} - \vec x_k \right) = \vec p (\vec x_k) - \vec p_{spec}.
+\end{equation}
+In this formula we have on the left side as matrix the derivation of the power function with respect to the voltages, the voltage changes and on the right side the current power mismatch. This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on.
+
+The open question at this point is how to represent the voltages, as they are complex variables. As in practice the in real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, the voltages are represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
+\begin{equation}
+	\vec x = 
+	\begin{bmatrix}
+		|U_1| \\
+		\vdots \\
+		|U_n| \\
+		\delta_1 \\
+		\vdots \\
+		\delta_n \\
+		\delta_{n + 1} \\
+		\vdots \\
+		\delta_{n + m} 
+	\end{bmatrix} = 	
+	\begin{bmatrix}
+		|U_1| \\
+		\vdots \\
+		|U_n| \\
+		\delta_1 \\
+		\vdots \\
+		\delta_{n + m} 
+	\end{bmatrix}
+\end{equation}
+and for the specified powers
+\begin{equation}
+	\vec p_{spec} = 
+	\begin{bmatrix}
+		P_1 \\
+		\vdots \\
+		P_n \\
+		P_{n + 1} \\
+		\vdots \\
+		P_{n + m} \\
+		Q_1 \\
+		\vdots \\
+		Q_n
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		P_1 \\
+		\vdots \\
+		P_{n + m} \\
+		Q_1 \\
+		\vdots \\
+		Q_n
+	\end{bmatrix}.
+\end{equation}
+
+The last missing part is the derivation of the power function, which means we have to start to separate the power at each node into its real and imaginary part and derive these functions then with respect to the voltage magnitudes and angles.
+
+As first step \neweqref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
+\begin{align}
+	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
+		&= U_k \left( \sum_{i \ne k} Y_{ik}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
+		&= \sum_{i \ne k} U_k Y_{ik}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
+\end{align}
+Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ik} = |Y_{ik}| e^{j \theta_{ik}}$) which leads to the expression
+\begin{align}
+	S_k &= \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ik}| e^{-j \theta_{ik}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 - |I_k| e^{-j \gamma_k} |U_k| e^{j \delta_k} \\
+		&= \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| e^{j \left( \delta_k - \theta_{ik} - \delta_i \right)} + |Y_{kk}| |U_k|^2 e^{-j \theta_{kk}} - |I_k| |U_k| e^{j \left( \delta_k - \gamma_k \right)}
+		\label{eq:newton_raphson_polar}
+\end{align}
+for the load at bus $k$. This load can be separated into its real and imaginary part
+\begin{equation}
+	S_k = P_k + j Q_k,
+\end{equation}
+as well as the part on the right hand side of \neweqref{newton_raphson_polar} to receive
+\begin{equation}
+	P_k = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+\end{equation}
+and
+\begin{equation}
+	Q_k = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
+\end{equation}
+These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
+\begin{equation}
+	\frac{\partial P_k}{\partial U_k} = \sum_{i \ne k} |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) - |I_k| \cos \left( \delta_k - \gamma_k \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_k} = \sum_{i \ne k} |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) - |I_k| \sin \left( \delta_k - \gamma_k \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial U_i} = |U_k| |Y_{ik}| \cos \left( \delta_k - \theta_{ik} - \delta_i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_i} = |U_k| |Y_{ik}| \sin \left( \delta_k - \theta_{ik} - \delta_i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial \delta_k} = - \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) + |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial \delta_k} = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial \delta_i} = |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right)
+\end{equation}
 
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
