@@ -1,6 +1,7 @@
 \chapter{Load-Flow Calculation}
 
 \section{Problem Formulation}
+
 The aim of an load-flow analysis is to determine the voltages in the power net. Any further information, like currents in connections, critically low voltages, etc. can be derived from this result. Therefore I will consider the problem to be solved if the voltages are known.
 
 The first step in a load flow analysis is the modelling of the net elements, as it is way to complex to use a detailed description of for instance a power plant like \figref{power_plant}. Therefore, all elements in a power net are modelled through busses, also called nodes, and admittances between them. To simplify the calculations only single phase nets are considered, therefore three phase systems have to scaled down by the factor 3, respective $\sqrt{3}$. In the model also exists only one voltage level, which means that all admittances, powers and voltages have to be scaled according to this.
@@ -14,6 +15,7 @@ The second step is then the actual calculation of the node voltages, which based
 \end{figure}
 
 \subsection{Busses}
+
 The most basic mathematical description of a an electric circuit, which an power net is, would be through admittances $Y_{ik}$ between the nodes $i$ and $k$, node voltages $U_k$ and branch currents $I_k$. In this case the element-based formulation
 \begin{equation}
 	\sum_i Y_{ik} U_i = I_k,
@@ -29,6 +31,7 @@ Another type of bus is a slack bus. At this bus the voltage is defined, therefor
 The third important type of bus, beside the slack bus and PQ-bus, is the PV-bus. This is already some sort of control, as at such a node the real power $P_k$ and the voltage magnitude $|U_k|$ is defined. The implementation of this bus type depends on the algorithm which is used to calculate the missing node voltages, therefore I will discuss this in the section about the algorithms.
 
 \subsection{Admittance Matrix}
+
 The admittance matrix $\mat Y = (Y_{ik})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, actually have to be voltage controlled, so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
 
 As during the modelling later several kinds of electric elements are used I will describe for each of them how they effect the admittance matrix. Each circuit element is there defined through a partial admittance matrix $\mat Y_p$, which have to be summed up afterwards to get the total admittance matrix $\mat Y$:
@@ -155,6 +158,7 @@ An ideal transformer like in \figref{ideal_transformer_original} is modelled wit
 The parameter $R$ in this model can be chosen freely in theory, but for numerical reasons I recommend such a scaling of the internal node, that it is in the range of the nominal voltages. To be able to do this an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
 
 \section{Scaling}
+
 As long as the relations are kept the same it is possible to change the scale base of all values in a system. For purpose from the set of voltage, current, impedance and power two physical quantities can be freely chosen and the others arise out of this decision. Another term for this scaling is the transformation into a so-called per-unit system \citep[p. 90]{powerSystemAnalysis}.
 
 For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the scale base
@@ -334,12 +338,14 @@ The task for the following calculation methods is to determine the node voltages
 As short overview I will start with a classification of these methods, based on their specific characteristics.
 
 \subsection{Classification of Methods}
+
 The first three methods, Current Iteration, Newton-Raphson and the FDLF, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this point leads direct to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physical, what in this case means that they do no represent a stable operating point. This happens typically only for certain constructed power nets, but in practice the bigger problem is that these methods often do not converge, although the power net is in a stable condition.
 
 To circumvent these drawbacks a new approach to the load flow problem was developed, the so-called Holomorphic Embedding Load Flow. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore HELM would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
+
 The basic problem of the load flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
 \begin{equation}
 	\sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
@@ -361,6 +367,7 @@ To this point only the PQ-busses were discuess, but PV-busses can be handled too
 
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
+
 In general, under the name Newton-Raphson a method for finding roots of a nonlinear function is known. In the area of load flow calculation the idea is the same, the problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ is the same as the specified loads $S_{spec}$:
 \begin{equation}
 	\vec S (\vec x) = S_{spec}
@@ -521,6 +528,7 @@ The iterative process to improve the voltages is then:
 
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
+
 The FDLF is a modification of the Newton-Raphson method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind one can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce the matrix therefore to
 \begin{equation}
 	\vec S' (\vec x_k) \approx 
@@ -552,12 +560,152 @@ The steps for solving the load flow problem are nearly the same as for the Newto
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
 
+HELM is a comparatively young algorithm for the load flow problem, as it was developed 2012 \citep{helmIEEE}. The basic idea behind it is to replace the voltages with voltage functions and their Laurent series. Through this approach it is possible to guarantee that the algorithm will converge if, and only if, the power net is stable. With this advantage in mind I will start in this section with the theory behind HELM, the practical implications will be discussed in \secref{results}.
+
 \subsubsection{Calculation of Coefficients}
 
-\paragraph{Slack-Busses}
+The starting point for HELM is \eqref{pq_bus}, where the slack busses are already considered as constant currents. As already mentioned before, because of its structure it is not possible to solve this equation respectively equation system explicitly. Therefore, the voltages $U_i$ are replaced with the functions $U_i(s)$. To achieve even further that these functions are holomorph \citep{helmPatentSept2009} \eqref{pq_bus} is extended to
+\begin{equation}	
+		\sum_j Y_{ij} U_{j}(s) = s I_j + \frac{s S_j^\star}{U_j^\star(s^\star)} + (1 - s) \sum_j Y_{ij}.
+		\label{eq:pq_bus_embedded}
+\end{equation}
+In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Therefore, the target is to evalute the functions $U_i(s)$ at point $s = 1$. To get an explicit formula for these functions we replace them with their Laurent series
+\begin{equation}
+	U_i(s) = \sum_{k = -\infty}^\infty c_k (s - s_0)^k.
+\end{equation}
+As the functions are holomorph the prinicipal part of the series has the coefficients zero, which turns the series into
+\begin{equation}
+	U_i(s) = \sum_{k = 0}^\infty c_k (s - s_0)^k.
+\end{equation}
+To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert them into \eqref{pq_bus_embedded} to get
+\begin{equation}
+		\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + \frac{s S_j^\star}{\sum_{k = 0}^\infty c_{j,k}^\star s^k} + (1 - s) \sum_j Y_{ij}.
+		\label{eq:helm_series_pq_bus}
+\end{equation}
+At this point we would actually like to make coefficient comparison, but on the right side we have the inverse of a series. So, to circumvent this we need a series expression for the inverse of a series. We can get this series
+\begin{equation}
+	W_i(s) = \sum_{k = 0}^\infty d_{j,k} s^k,
+\end{equation}
+which satisifies
+\begin{equation}
+	1 = W_i(s) U_i^\star(s^\star)
+\end{equation}
+through a coefficient comparison of
+\begin{equation}
+	1 = \left( \sum_{k = 0}^\infty d_{j,k} s^k \right) \left( \sum_{l = 0}^\infty c_{j,l}^\star s^l \right).
+\end{equation}
+To do so, the equation is rewritten with the discrete convolution formula to
+\begin{equation}
+	1 = \sum_{k = 0}^\infty \left( \sum_{l = 0}^k d_{j,l} c_{j,k - l}^\star \right) s^k,
+\end{equation}
+where we have to consider separately the power 0 and all others. For $s^0$ the coefficient comparison the outcome is
+\begin{equation}
+	1 = d_{j,0} c_{j,0}^\star,
+\end{equation}
+from which the first inverse coefficient can derived to be
+\begin{equation}
+	d_{j,0} = \frac{1}{c_{j,0}^\star}.
+\end{equation}
+For all other powers of $s$ the coefficient comparison delivers
+\begin{equation}
+	0 = \sum_{l = 0}^k d_{j,l} c_{j,k - l}^\star,
+\end{equation}
+where we can assume to already know the previous inverse coefficients. Hence, we can extract the last summand
+\begin{equation}
+	0 = \sum_{l = 0}^{k - 1} d_{j,l} c_{j,k - l}^\star + d_{j,k} c_{j,0}^\star
+\end{equation}
+and transform the result to the explicit formula 
+\begin{equation}
+	d_{j,k} = - \frac{\sum_{l = 0}^{k - 1} d_{j,l} c_{j,k - l}^\star}{c_{j,0}^\star}.
+\end{equation}
+With this formula we are now able to reformulate \eqref{helm_series_pq_bus} to
+\begin{equation}
+	\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + s S_j^\star \sum_{k = 0}^\infty d_{j,k} s^k + (1 - s) \sum_j Y_{ij}.
+\end{equation}
+Here we apply again a coefficient comparison. For the power $s^0$ we get the linear equation system
+\begin{equation}
+	\sum_j Y_{ij} c_{j,0} = \sum_j Y_{ij},
+	\label{eq:helm_first_coefficients}
+\end{equation}
+which we can solve to get the coefficients $c_{j,0}$. The second coefficients $c_{j,1}$ can be calculated with
+\begin{equation}
+	\sum_j Y_{ij} c_{j,1} = I_j + S_j^\star d_{j,0} - \sum_j Y_{ij},
+	\label{eq:helm_second_coefficients}
+\end{equation}
+as the coefficients $d_{j,k}$ depend only on the previous $c_{j,k}$. All other coefficients are then the solution of
+\begin{equation}
+	\sum_j Y_{ij} c_{j,k} = S_j^\star d_{j,k - 1}.
+	\label{eq:helm_other_coefficients}
+\end{equation}
 
-\paragraph{PQ-Busses}
+\paragraph{PV-busses}
 
-\paragraph{PV-Busses}
+\subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
 
-\subsubsection{Analytic Continuation with Wynn's Epsilon Method}
+Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of Viskovatov is suggested, but I achieved better results with Wynn's epsilon algorithm \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
+\begin{equation}
+	U_i[n] = \sum_{k = 0}^n c_{i,k}.
+\end{equation}
+The algorithm is then initialized with these partial sums
+\begin{equation}
+	\epsilon_0^{(n)} = U_i[n]
+\end{equation}
+and
+\begin{equation}
+	\epsilon_{-1}^{(n)} = 0.
+\end{equation}
+The other values of the tableau
+\begin{equation}
+	\begin{matrix}
+	\epsilon_0^{(0)}	& \epsilon_1^{(0)}		& \epsilon_2^{(0)}		& \hdots 	& \epsilon_{m-3}^{(0)} 	& \epsilon_{m-2}^{(0)} 	& \epsilon_{m-1}^{(0)} \\
+	\epsilon_0^{(1)}	& \epsilon_1^{(1)}		& \epsilon_2^{(1)}		& \hdots 	& \epsilon_{m-3}^{(1)} 	& \epsilon_{m-2}^{(1)} \\
+	\epsilon_0^{(2)}	& \epsilon_1^{(2)}		& \epsilon_2^{(2)}		& \hdots 	& \epsilon_{m-3}^{(2)} \\
+	\vdots				& \vdots				& \vdots				& \iddots \\
+	\epsilon_0^{(m-3)}	& \epsilon_1^{(m-3)}	& \epsilon_2^{(m-3)}	& \\
+	\epsilon_0^{(m-2)}	& \epsilon_1^{(m-2)} \\
+	\epsilon_0^{(m-1)} \\
+	\end{matrix}
+	\label{eq:epsilon_wynn_tableau}
+\end{equation}
+are calculated according to
+\begin{equation}
+	\epsilon_{k + 1}^{(n)} = \epsilon_{k - 1}^{(n + 1)} + \frac{1}{\epsilon_{k}^{(n + 1)} - \epsilon_{k}^{(n)}}.
+	\label{eq:epsilon_wynn}
+\end{equation}
+The most accurate value for the total sum can then be found in the end of the last even column of \eqref{epsilon_wynn_tableau}, as the odd columns diverge and the even columns converge. This divergence is actually a big problem in HELM, because the diverging columns explode so fast, that even a 64 Bit floating point datatype (\emph{double}) is not big enough for more than 50 coefficients.
+
+For the practical application a nice feature of this algorithm is that additional coefficients only cause the tableau to grow downwards. Consequently, it is no real additional effort to calculate partial results, which can be used for instance as termination criteria.
+
+\subsubsection{Summary}
+In summary, the steps of HELM are:
+\begin{enumerate}
+	\item Calculate the first coefficients with \eqref{helm_first_coefficients}
+	\item Calculate the second coefficients with \eqref{helm_second_coefficients}
+	\item Calculate the other coefficients with \eqref{helm_other_coefficients}
+	\item Evaluate the voltage functions $U_i(s = 1)$ with \eqref{epsilon_wynn}
+\end{enumerate}
+
+\subsubsection{Example}
+
+\begin{figure}
+	\centering
+	\include{tikz/two_node_net}
+	\caption{Netz zur Ermittlung der Konvergenzgrenze}
+	\label{fig:two_node_net}
+\end{figure}
+
+As HELM is a fairly new algorithm and only little information about it is available I would like to give here a short numerical example. I will also include the coefficients and steps of Wynn's Epsilon algorithm to make it easier to reimplement HELM and to have some data for debugging.
+
+For the sake of simplicity only the small net \figref{two_node_net} is calculated, which has because of only real valued input parameter ($U_1 = \si{1}{V}$, $Z = \si{1}{\Omega}$ and $P = \si{0.1}{W}$) also no imaginary parts in the solution and intermediate results. The exact solution is determined with the current sum on the second node
+\begin{equation}
+	\frac{U_1 - U_2}{Z} = \frac{P}{U_2}.
+\end{equation}
+This is only one quadratic equation
+\begin{equation}
+	U_2^2 - U_1 U_2 + P Z = 0,
+\end{equation}
+whereas the physical solution is
+\begin{align}
+	U_2 & = \frac{U_1 + \sqrt{U_1^2 - 4 P Z}}{2} \\
+		& = \frac{\si{1}{V} + \sqrt{(\si{1}{V})^2 - 4 \cdot \si{0,1}{W} \cdot \si{1}{\Omega}}}{2} = \si{0,887298334}{V}.
+\end{align}
