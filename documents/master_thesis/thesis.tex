@@ -30,9 +30,11 @@
   {\normalfont\huge\bfseries}{}{0pt}{\Huge}
  
 % reference figures, sections and equations
-\newcommand{\figref}[1]{{(Figure \ref{fig:#1})}}
-\newcommand{\secref}[1]{{(Section \ref{sec:#1})}}
-\renewcommand{\eqref}[1]{{(Equation \ref{eq:#1})}}
+\newcommand{\figref}[1]{{(Figure~\ref{fig:#1})}}
+\newcommand{\secref}[1]{{(Section~\ref{sec:#1})}}
+\newcommand{\chapref}[1]{{(Chapter~\ref{chap:#1})}}
+\renewcommand{\eqref}[1]{{(Equation~\ref{eq:#1})}}
+\newcommand{\tabref}[1]{{(Table~\ref{tab:#1})}}
  
 % create an completely empty page
 \newcommand{\emptypage}
@@ -86,6 +88,10 @@
 	\input{methods}	
 	\input{implementation}	
 	\input{results}
+	
+	\begin{appendix}
+		\input{helm_example}
+	\end{appendix}
 	
 	\cleardoublepage
 	\phantomsection

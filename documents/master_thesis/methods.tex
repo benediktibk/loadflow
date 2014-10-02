@@ -685,27 +685,4 @@ In summary, the steps of HELM are:
 	\item Evaluate the voltage functions $U_i(s = 1)$ with \eqref{epsilon_wynn}
 \end{enumerate}
 
-\subsubsection{Example}
-
-\begin{figure}
-	\centering
-	\include{tikz/two_node_net}
-	\caption{Netz zur Ermittlung der Konvergenzgrenze}
-	\label{fig:two_node_net}
-\end{figure}
-
-As HELM is a fairly new algorithm and only little information about it is available I would like to give here a short numerical example. I will also include the coefficients and steps of Wynn's Epsilon algorithm to make it easier to reimplement HELM and to have some data for debugging.
-
-For the sake of simplicity only the small net \figref{two_node_net} is calculated, which has because of only real valued input parameter ($U_1 = \si{1}{V}$, $Z = \si{1}{\Omega}$ and $P = \si{0.1}{W}$) also no imaginary parts in the solution and intermediate results. The exact solution is determined with the current sum on the second node
-\begin{equation}
-	\frac{U_1 - U_2}{Z} = \frac{P}{U_2}.
-\end{equation}
-This is only one quadratic equation
-\begin{equation}
-	U_2^2 - U_1 U_2 + P Z = 0,
-\end{equation}
-whereas the physical solution is
-\begin{align}
-	U_2 & = \frac{U_1 + \sqrt{U_1^2 - 4 P Z}}{2} \\
-		& = \frac{\si{1}{V} + \sqrt{(\si{1}{V})^2 - 4 \cdot \si{0,1}{W} \cdot \si{1}{\Omega}}}{2} = \si{0,887298334}{V}.
-\end{align}
+As HELM is a fairly new algorithm and only little information about it is available I add a short numerical example in \chapref{helm_example}. I include there also the coefficients and steps of Wynn's Epsilon algorithm to make it easier to reimplement HELM and to have some data for debugging.
