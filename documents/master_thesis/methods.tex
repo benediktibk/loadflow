@@ -566,10 +566,16 @@ HELM is a comparatively young algorithm for the load flow problem, as it was dev
 
 The starting point for HELM is \eqref{pq_bus}, where the slack busses are already considered as constant currents. As already mentioned before, because of its structure it is not possible to solve this equation respectively equation system explicitly. Therefore, the voltages $U_i$ are replaced with the functions $U_i(s)$. To achieve even further that these functions are holomorph \citep{helmPatentSept2009} \eqref{pq_bus} is extended to
 \begin{equation}	
-		\sum_j Y_{ij} U_{j}(s) = s I_j + \frac{s S_j^\star}{U_j^\star(s^\star)} + (1 - s) \sum_j Y_{ij}.
+		\sum_j Y_{ij} U_{j}(s) = s I_j + \frac{s S_j^\star}{U_j^\star(s^\star)} + (1 - s) Y_i.
 		\label{eq:pq_bus_embedded}
 \end{equation}
-In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Therefore, the target is to evalute the functions $U_i(s)$ at point $s = 1$. To get an explicit formula for these functions we replace them with their Laurent series
+In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Therefore, the target is to evalute the functions $U_i(s)$ at point $s = 1$. The term $(1 - s) Y_{total}$ vanishes at this point and is only needed to avoid that the first coefficients of a Laurent series become 0. In fact, the value $Y_{total}$ can be chosen arbitrarly. In \citep{helmPatentSept2009} the expression
+\begin{equation}
+	Y_i = \sum_j Y_{ij}
+\end{equation}
+is suggested, where the sum is calculated over all nodes, including the slack busses, which turns out to work well for real world problems.
+
+To get an explicit formula for these functions we replace them with their Laurent series
 \begin{equation}
 	U_i(s) = \sum_{k = -\infty}^\infty c_k (s - s_0)^k.
 \end{equation}
@@ -579,7 +585,7 @@ As the functions are holomorph the prinicipal part of the series has the coeffic
 \end{equation}
 To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert them into \eqref{pq_bus_embedded} to get
 \begin{equation}
-		\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + \frac{s S_j^\star}{\sum_{k = 0}^\infty c_{j,k}^\star s^k} + (1 - s) \sum_j Y_{ij}.
+		\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + \frac{s S_j^\star}{\sum_{k = 0}^\infty c_{j,k}^\star s^k} + (1 - s) Y_i.
 		\label{eq:helm_series_pq_bus}
 \end{equation}
 At this point we would actually like to make coefficient comparison, but on the right side we have the inverse of a series. So, to circumvent this we need a series expression for the inverse of a series. We can get this series
@@ -620,16 +626,16 @@ and transform the result to the explicit formula
 \end{equation}
 With this formula we are now able to reformulate \eqref{helm_series_pq_bus} to
 \begin{equation}
-	\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + s S_j^\star \sum_{k = 0}^\infty d_{j,k} s^k + (1 - s) \sum_j Y_{ij}.
+	\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + s S_j^\star \sum_{k = 0}^\infty d_{j,k} s^k + (1 - s) Y_i.
 \end{equation}
 Here we apply again a coefficient comparison. For the power $s^0$ we get the linear equation system
 \begin{equation}
-	\sum_j Y_{ij} c_{j,0} = \sum_j Y_{ij},
+	\sum_j Y_{ij} c_{j,0} = Y_i,
 	\label{eq:helm_first_coefficients}
 \end{equation}
 which we can solve to get the coefficients $c_{j,0}$. The second coefficients $c_{j,1}$ can be calculated with
 \begin{equation}
-	\sum_j Y_{ij} c_{j,1} = I_j + S_j^\star d_{j,0} - \sum_j Y_{ij},
+	\sum_j Y_{ij} c_{j,1} = I_j + S_j^\star d_{j,0} - Y_i,
 	\label{eq:helm_second_coefficients}
 \end{equation}
 as the coefficients $d_{j,k}$ depend only on the previous $c_{j,k}$. All other coefficients are then the solution of
@@ -672,22 +678,22 @@ were we have brought into play the voltage magnitude $|U_k|$, which is also defi
 \end{equation}
 where we can embedded a complex parameter $s$, so that the voltages $U_i$ turn into holomorphic voltage functions $U_i(s)$. To avoid additional complexity I will still use $U_i$ for the voltage functions. This way we end up with
 \begin{equation}
-	|U_k|^2 \sum_i Y_{ik} U_i = s 2 P_k U_k - s U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 I_k^\star + |U_k|^2 I_k + (1 - s) |U_k|^2 \sum_i Y_{ik},
+	|U_k|^2 \sum_i Y_{ik} U_i = s 2 P_k U_k - s U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 I_k^\star + |U_k|^2 I_k + (1 - s) |U_k|^2 Y_k,
 \end{equation}
 which is after the division by $|U_k|^2$
 \begin{equation}
-	\sum_i Y_{ik} U_i = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) \sum_i Y_{ik}
+	\sum_i Y_{ik} U_i = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k
 	\label{eq:pv_bus_helm}
 \end{equation}
 then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation which I want to abbreviate with
 \begin{equation}
-	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) \sum_i Y_{ik}.
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k.
 	\label{eq:rhs_pv}
 \end{equation}
 Consequently, the counter part for a PQ-bus is
 \begin{align}
-	F_{PQ}(s) 	& = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) \sum_i Y_{ik} \\
-				& = s I_k + s S_k^\star W_k(s) + (1 - s) \sum_i Y_{ik}.
+	F_{PQ}(s) 	& = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) Y_k \\
+				& = s I_k + s S_k^\star W_k(s) + (1 - s) Y_k.
 	\label{eq:rhs_pq}
 \end{align}
 In the implementation of HELM it is then only necessary to calculate for the next coefficient the elements of the right hand side, depending on if the lines represent PQ- or PV-busses.
@@ -727,16 +733,16 @@ and for $W(s)$ we can convolute and weigh these coefficients again to calculate
 
 With these two substitutions \eqref{rhs_pv} can be simplified to
 \begin{equation}
-	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} W_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) \sum_i Y_{ik}
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} W_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) Y_k
 \end{equation}
 
 For the coefficient comparison, which delivers the right hand side of the linear equation system, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first coefficient $s^0$ we get the expression
 \begin{equation}
-	\sum_j Y_{kj} c_{j,0} = I_k + \sum_i Y_{ik},
+	\sum_j Y_{kj} c_{j,0} = I_k + Y_k,
 \end{equation}
 for the second one
 \begin{equation}
-	\sum_j Y_{kj} c_{j,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} w_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - \sum_i Y_{ik}
+	\sum_j Y_{kj} c_{j,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} w_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k
 \end{equation}
 and for all other coefficients
 \begin{equation}
