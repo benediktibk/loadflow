@@ -640,6 +640,109 @@ as the coefficients $d_{j,k}$ depend only on the previous $c_{j,k}$. All other c
 
 \paragraph{PV-busses}
 
+How PV-busses can be modelled in HELM was first mentioned in \citep{helmPV}. As there the notation and handling of slack busses is different to the formulas in this work I will reformulate them to fit to the other equations here.
+
+Starting with the definition of a PQ-bus \eqref{pq_bus} we transform this equation to the explicit definition of the power
+\begin{equation}
+	S_k = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star.
+	\label{eq:bus_power}
+\end{equation}
+For the PV-bus only the real power is defined, therefore we do not have to consider the reactive power and can reduce this equation to
+\begin{equation}
+	P_k = \Re{U_k \left( \sum_i Y_{ik}^\star U_i^\star - I_k^\star \right)}.
+	\label{eq:pv_bus_definition}
+\end{equation}
+This way we end up with only one equation, but actually two parameter of the bus, which are defined. We also bring into the equation system two unknowns, therefore we will also need two equations for the bus. Consequently, we can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
+\begin{equation}
+	2 P_k = S_k + S_k^\star.
+\end{equation}
+If we insert here the definition of the bus power \eqref{bus_power} we get
+\begin{align}
+	2 P_k 	& = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star + \left( U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star \right)^\star \\
+			& = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star + U_k^\star \left( \sum_i Y_{ik} U_i - I_k \right)
+\end{align}
+Multiplying this with $U_k$ gives
+\begin{align}
+	2 P_k U_k 	& = U_k^2 \left( \sum_i Y_{ik} U_i - I_k \right)^\star + |U_k|^2 \left( \sum_i Y_{ik} U_i - I_k \right) \\
+				& = U_k^2 \sum_i Y_{ik}^\star U_i^\star - U_k^2 I_k^\star + |U_k|^2 \sum_i Y_{ik} U_i - |U_k|^2 I_k,
+\end{align}
+were we have brought into play the voltage magnitude $|U_k|$, which is also defined at the PV-bus. Through moving a few summands to the other side of the equation we get
+\begin{equation}
+	|U_k|^2 \sum_i Y_{ik} U_i = 2 P_k U_k - U_k^2 \sum_i Y_{ik}^\star U_i^\star + U_k^2 I_k^\star + |U_k|^2 I_k,
+\end{equation}
+where we can embedded a complex parameter $s$, so that the voltages $U_i$ turn into holomorphic voltage functions $U_i(s)$. To avoid additional complexity I will still use $U_i$ for the voltage functions. This way we end up with
+\begin{equation}
+	|U_k|^2 \sum_i Y_{ik} U_i = s 2 P_k U_k - s U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 I_k^\star + |U_k|^2 I_k + (1 - s) |U_k|^2 \sum_i Y_{ik},
+\end{equation}
+which is after the division by $|U_k|^2$
+\begin{equation}
+	\sum_i Y_{ik} U_i = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) \sum_i Y_{ik}
+	\label{eq:pv_bus_helm}
+\end{equation}
+then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation which I want to abbreviate with
+\begin{equation}
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) \sum_i Y_{ik}.
+	\label{eq:rhs_pv}
+\end{equation}
+Consequently, the counter part for a PQ-bus is
+\begin{align}
+	F_{PQ}(s) 	& = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) \sum_i Y_{ik} \\
+				& = s I_k + s S_k^\star W_k(s) + (1 - s) \sum_i Y_{ik}.
+	\label{eq:rhs_pq}
+\end{align}
+In the implementation of HELM it is then only necessary to calculate for the next coefficient the elements of the right hand side, depending on if the lines represent PQ- or PV-busses.
+
+The important point for this is that all elements in $F_{PQ}(s)$ and $F_{PV}(s)$ are either constant or depending only on previous coefficients. This is ensured through the embedding, where all summands which are functions in the parameter $s$ are multiplied with $s$, which shifts the coefficients of the series.
+
+Next, I would like to go a little bit more into the details of $F_{PV}(s)$. First, it contains the summand 
+\begin{equation}
+	U_k^2 \sum_i Y_{ik}^\star U_i^\star,
+\end{equation}
+which has for the implementation to be split up like
+\begin{equation}
+	U_k^2 \sum_{i \ne k} Y_{ik}^\star U_i^\star + U_k^2 U_k^\star = U_k^2 \sum_{i \ne k} Y_{ik}^\star U_i^\star + |U_k|^2 U_k.
+\end{equation}
+The problem here is the first part, which contains the multiplication of three power series. The multiplication of the two power series $\sum_i a_i s^i$ and $\sum_i b_i s^i$ results in the power series $\sum_i c_i s^i$ with the coefficients
+\begin{equation}
+	c_i = \sum_{j = 0}^i a_j b_{n - j}.
+\end{equation}
+The multiplication of three power series can then be build upon this formula.
+
+To simplify \eqref{rhs_pv} we start with the two substitutions
+\begin{equation}
+	V_k(s) = U_k(s)^2 = \sum_i v_i s^i
+\end{equation}
+and
+\begin{equation}
+	X_k(s) = U_k(s)^2 \sum_{i \ne k} Y_{ik}^\star U_i(s)^\star = \sum_i w_i s^i.
+\end{equation}
+The coefficients for $V(s)$ can be calculate with the convolution formula
+\begin{equation}
+	v_i = \sum_{j = 0}^i c_j c_{n - j}
+\end{equation}
+and for $W(s)$ we can convolute and weigh these coefficients again to calculate
+\begin{equation}
+	w_i = \sum_{l \ne k} Y_{lk}^\star \sum_{j = 0}^i v_j c_{n - j}.
+\end{equation}
+
+With these two substitutions \eqref{rhs_pv} can be simplified to
+\begin{equation}
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} W_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) \sum_i Y_{ik}
+\end{equation}
+
+For the coefficient comparison, which delivers the right hand side of the linear equation system, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first coefficient $s^0$ we get the expression
+\begin{equation}
+	\sum_j Y_{kj} c_{j,0} = I_k + \sum_i Y_{ik},
+\end{equation}
+for the second one
+\begin{equation}
+	\sum_j Y_{kj} c_{j,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} w_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - \sum_i Y_{ik}
+\end{equation}
+and for all other coefficients
+\begin{equation}
+	\sum_j Y_{kj} c_{j,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} w_{k,n-1} - |U_k|^2 c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
+\end{equation}
+
 \subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
 
 Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of Viskovatov is suggested, but I achieved better results with Wynn's epsilon algorithm \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
