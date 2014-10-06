@@ -472,29 +472,47 @@ As first step \eqref{pq_bus} is transformed into an explicit calculation of the 
 		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
 \end{align}
 Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$) which leads to the expression
-\begin{align}
-	S_k &= \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ki}| e^{-j \theta_{ki}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 - |I_k| e^{-j \gamma_k} |U_k| e^{j \delta_k} \\
-		&= \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| e^{j \left( \delta_k - \theta_{ki} - \delta_i \right)} + |Y_{kk}| |U_k|^2 e^{-j \theta_{kk}} - |I_k| |U_k| e^{j \left( \delta_k - \gamma_k \right)}
-		\label{eq:newton_raphson_polar}
-\end{align}
+\begin{equation}
+	\begin{split}
+		S_k = 	& \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ki}| e^{-j \theta_{ki}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 \\
+				& - |I_k| e^{-j \gamma_k} |U_k| e^{j \delta_k} \\
+			= 	& \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| e^{j \left( \delta_k - \theta_{ki} - \delta_i \right)} + |Y_{kk}| |U_k|^2 e^{-j \theta_{kk}} \\
+				& - |I_k| |U_k| e^{j \left( \delta_k - \gamma_k \right)}
+	\end{split}
+	\label{eq:newton_raphson_polar}
+\end{equation}
 for the load at bus $k$. This load can be separated into its real and imaginary part
 \begin{equation}
 	S_k = P_k + j Q_k,
 \end{equation}
 as well as the part on the right hand side of \eqref{newton_raphson_polar} to receive
 \begin{equation}
-	P_k = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	\begin{split}
+		P_k = 	& \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) \\
+				& + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	\end{split}
 \end{equation}
 and
 \begin{equation}
-	Q_k = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
+	\begin{split}
+		Q_k = 	& \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) \\
+				& - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
+	\end{split}
 \end{equation}
 These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
 \begin{equation}
-	\frac{\partial P_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) - |I_k| \cos \left( \delta_k - \gamma_k \right)
+	\begin{split}
+		\frac{\partial P_k}{\partial |U_k|} = 
+			& \sum_{i \ne k} |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) \\
+			& - |I_k| \cos \left( \delta_k - \gamma_k \right)
+	\end{split}
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) - |I_k| \sin \left( \delta_k - \gamma_k \right)
+	\begin{split}
+		\frac{\partial Q_k}{\partial |U_k|} = 
+			& \sum_{i \ne k} |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) \\
+			& - |I_k| \sin \left( \delta_k - \gamma_k \right)
+	\end{split}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial |U_i|} = |U_k| |Y_{ki}| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
@@ -515,15 +533,15 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
 \end{equation}
 
-With these derivations we can calculate the derivation of the power functions with form the Jacobian matrix
+With these derivations we can calculate the derivation of the power functions which form the Jacobian matrix
 \begin{equation}
 	\vec S' (\vec x_k) = 
 	\begin{bmatrix}
 		\frac{\partial P_1}{\partial |U_1|}	& \hdots	& \frac{\partial P_1}{\partial |U_n|}	& \frac{\partial P_1}{\partial \delta_1}	& \hdots	& \frac{\partial P_1}{\partial \delta_{n + m}} \\
-		\vdots								&			& \vdots								& \vdots									&			& \vdots \\
+		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
 		\frac{\partial P_{n + m}}{\partial |U_1|}	& \hdots	& \frac{\partial P_{n + m}}{\partial |U_n|}	& \frac{\partial P_{n + m}}{\partial \delta_1}	& \hdots	& \frac{\partial P_{n + m}}{\partial \delta_{n + m}} \\
 		\frac{\partial Q_1}{\partial |U_1|}	& \hdots	& \frac{\partial Q_1}{\partial |U_n|}	& \frac{\partial Q_1}{\partial \delta_1}	& \hdots	& \frac{\partial Q_1}{\partial \delta_{n + m}} \\
-		\vdots								&			& \vdots								& \vdots									&			& \vdots \\
+		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
 		\frac{\partial Q_n}{\partial |U_1|}	& \hdots	& \frac{\partial Q_n}{\partial |U_n|}	& \frac{\partial Q_n}{\partial \delta_1}	& \hdots	& \frac{\partial Q_n}{\partial \delta_{n + m}}
 	\end{bmatrix}.
 	\label{eq:power_jacobian_newton_raphson}
@@ -546,10 +564,10 @@ The FDLF is a modification of the Newton-Raphson method, which is based on an ob
 	\vec S' (\vec x_k) \approx 
 	\begin{bmatrix}
 		0	& \hdots	& 0	& \frac{\partial P_1}{\partial \delta_1}	& \hdots	& \frac{\partial P_1}{\partial \delta_{n + m}} \\
-		\vdots								&			& \vdots								& \vdots									&			& \vdots \\
+		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
 		0	& \hdots	& 0	& \frac{\partial P_{n + m}}{\partial \delta_1}	& \hdots	& \frac{\partial P_{n + m}}{\partial \delta_{n + m}} \\
 		\frac{\partial Q_1}{\partial |U_1|}	& \hdots	& \frac{\partial Q_1}{\partial |U_n|}	& 0	& \hdots	& 0 \\
-		\vdots								&			& \vdots								& \vdots									&			& \vdots \\
+		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
 		\frac{\partial Q_n}{\partial |U_1|}	& \hdots	& \frac{\partial Q_n}{\partial |U_n|}	& 0	& \hdots	& 0
 	\end{bmatrix} =
 	\begin{bmatrix}
