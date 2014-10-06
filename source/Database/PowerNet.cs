@@ -19,7 +19,7 @@ namespace Database
         #region variables
 
         private ObservableCollection<Node> _nodes; 
-        private ObservableCollection<Line> _lines;
+        private ObservableCollection<TransmissionLine> _transmissionLines;
         private ObservableCollection<Load> _loads;
         private ObservableCollection<FeedIn> _feedIns;
         private ObservableCollection<Generator> _generators;
@@ -46,13 +46,13 @@ namespace Database
             Name = "";
             ReactToChangesWithDatabaseUpdate = true;
             _nodes = new ObservableCollection<Node>();
-            _lines = new ObservableCollection<Line>();
+            _transmissionLines = new ObservableCollection<TransmissionLine>();
             _loads = new ObservableCollection<Load>();
             _feedIns = new ObservableCollection<FeedIn>();
             _generators = new ObservableCollection<Generator>();
             _transformers = new ObservableCollection<Transformer>();
-            _lines.CollectionChanged += UpdateNetElementCount;
-            _lines.CollectionChanged += UpdateDatabaseWithChangedNetElements;
+            _transmissionLines.CollectionChanged += UpdateNetElementCount;
+            _transmissionLines.CollectionChanged += UpdateDatabaseWithChangedNetElements;
             _loads.CollectionChanged += UpdateNetElementCount;
             _loads.CollectionChanged += UpdateDatabaseWithChangedNetElements;
             _feedIns.CollectionChanged += UpdateNetElementCount;
@@ -214,7 +214,7 @@ namespace Database
             var inUse = FeedIns.Aggregate(false, (current, element) => current || element.UsesNode(node));
             inUse = Generators.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
             inUse = Loads.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
-            inUse = Lines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = TransmissionLines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
             inUse = Transformers.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
             return inUse;
         }
@@ -290,14 +290,14 @@ namespace Database
             }
         }
 
-        public ObservableCollection<Line> Lines
+        public ObservableCollection<TransmissionLine> TransmissionLines
         {
-            get { return _lines; }
+            get { return _transmissionLines; }
             set
             {
-                if (_lines == value) return;
+                if (_transmissionLines == value) return;
 
-                _lines = value;
+                _transmissionLines = value;
                 NotifyPropertyChanged();
             }
         }
@@ -434,7 +434,7 @@ namespace Database
 
         private void UpdateNetElementCount(object sender, NotifyCollectionChangedEventArgs e)
         {
-            NetElementCount = _lines.Count + _loads.Count + _feedIns.Count + _generators.Count + _transformers.Count;
+            NetElementCount = _transmissionLines.Count + _loads.Count + _feedIns.Count + _generators.Count + _transformers.Count;
         }
 
         private void UpdateNodeAbonnements(object sender, NotifyCollectionChangedEventArgs e)
@@ -517,8 +517,8 @@ namespace Database
                 foreach (var node in Nodes)
                     _calculationPowerNet.AddNode(node.Id, node.NominalVoltage, node.Name);
 
-                foreach (var line in Lines)
-                    _calculationPowerNet.AddLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
+                foreach (var line in TransmissionLines)
+                    _calculationPowerNet.AddTransmissionLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
                         line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
                         line.ShuntCapacityPerUnitLength, line.Length, line.TransmissionEquationModel);
 

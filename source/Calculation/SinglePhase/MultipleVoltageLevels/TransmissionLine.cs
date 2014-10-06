@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Line : IPowerNetElement
+    public class TransmissionLine : IPowerNetElement
     {
         #region variables
 
@@ -19,7 +19,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public Line(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
+        public TransmissionLine(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
             if (seriesResistancePerUnitLength <= 0 && seriesInductancePerUnitLength <= 0)
                 throw new ArgumentOutOfRangeException();

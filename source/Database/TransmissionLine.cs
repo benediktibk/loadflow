@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Database
 {
-    public class Line : INetElement
+    public class TransmissionLine : INetElement
     {
         #region variables
 
@@ -25,7 +25,7 @@ namespace Database
 
         #region constructor
 
-        public Line()
+        public TransmissionLine()
         {
             SeriesResistancePerUnitLength = 1;
             SeriesInductancePerUnitLength = 0;
@@ -36,7 +36,7 @@ namespace Database
             Name = "";
         }
 
-        public Line(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        public TransmissionLine(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
         {
             var nodeOneId = reader.Parse<int>("NodeOne");
             var nodeOne = nodeIds[nodeOneId];
@@ -212,7 +212,7 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "INSERT INTO lines (LineName, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, TransmissionEquationModel) " +
+                    "INSERT INTO transmissionlines (LineName, PowerNet, Length, SeriesResistancePerUnitLength, SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, TransmissionEquationModel) " +
                     "OUTPUT INSERTED.LineId " +
                     "VALUES(@Name, @PowerNet, @Length, @SeriesResistancePerUnitLength, @SeriesInductancePerUnitLength, @ShuntConductancePerUnitLength, @ShuntCapacityPerUnitLength, @TransmissionEquationModel);");
             command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
@@ -230,7 +230,7 @@ namespace Database
         {
             var command =
                 new SqlCommand(
-                    "UPDATE lines SET NodeOne=@NodeOne, NodeTwo=@NodeTwo, LineName=@Name, Length=@Length, SeriesResistancePerUnitLength=@SeriesResistancePerUnitLength, SeriesInductancePerUnitLength=@SeriesInductancePerUnitLength, ShuntConductancePerUnitLength=@ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength=@ShuntCapacityPerUnitLength, TransmissionEquationModel=@TransmissionEquationModel WHERE LineId=@Id;");
+                    "UPDATE transmissionlines SET NodeOne=@NodeOne, NodeTwo=@NodeTwo, LineName=@Name, Length=@Length, SeriesResistancePerUnitLength=@SeriesResistancePerUnitLength, SeriesInductancePerUnitLength=@SeriesInductancePerUnitLength, ShuntConductancePerUnitLength=@ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength=@ShuntCapacityPerUnitLength, TransmissionEquationModel=@TransmissionEquationModel WHERE LineId=@Id;");
             command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
             command.Parameters.Add(new SqlParameter("NodeOne", SqlDbType.Int) { Value = NodeOneForeignKey });
             command.Parameters.Add(new SqlParameter("NodeTwo", SqlDbType.Int) { Value = NodeTwoForeignKey });
@@ -246,7 +246,7 @@ namespace Database
 
         public SqlCommand CreateCommandToRemoveFromDatabase()
         {
-            var command = new SqlCommand("DELETE FROM lines WHERE LineId=@Id;");
+            var command = new SqlCommand("DELETE FROM transmissionlines WHERE LineId=@Id;");
             command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
             return command;
         }
@@ -263,7 +263,7 @@ namespace Database
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
-                "CREATE TABLE lines " +
+                "CREATE TABLE transmissionlines " +
                 "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
                 "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
                 "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, TransmissionEquationModel INTEGER NOT NULL, " +
@@ -275,7 +275,7 @@ namespace Database
             var command =
                 new SqlCommand(
                     "SELECT * " +
-                    "FROM lines WHERE PowerNet=@PowerNet;");
+                    "FROM transmissionlines WHERE PowerNet=@PowerNet;");
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
         }

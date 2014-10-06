@@ -127,10 +127,10 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
-            <TabItem Header="Lines">
+            <TabItem Header="Transmission Lines">
                 <DataGrid 
                     AutoGenerateColumns="False" 
-                    ItemsSource="{Binding SelectedPowerNet.Lines, Mode=TwoWay}" 
+                    ItemsSource="{Binding SelectedPowerNet.TransmissionLines, Mode=TwoWay}" 
                     Margin="2,2,2,2" 
                     Name="LinesDataGrid"
                     IsReadOnly="{Binding SelectedPowerNet.IsCalculationRunning}"

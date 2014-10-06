@@ -70,7 +70,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScalerTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedInTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\GeneratorTest.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\LineTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\TransmissionLineTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeTest.cs" />

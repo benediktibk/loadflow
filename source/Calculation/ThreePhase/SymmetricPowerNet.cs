@@ -30,9 +30,9 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), 0, name);
         }
 
-        public void AddLine(int sourceNodeId, int targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
+        public void AddTransmissionLine(int sourceNodeId, int targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
         {
-            _singlePhasePowerNet.AddLine(sourceNodeId, targetNodeId, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntConductancePerUnitLength, shuntCapacityPerUnitLength, length, transmissionEquationModel);
+            _singlePhasePowerNet.AddTransmissionLine(sourceNodeId, targetNodeId, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntConductancePerUnitLength, shuntCapacityPerUnitLength, length, transmissionEquationModel);
         }
 
         public void AddGenerator(int nodeId, double voltageMagnitude, double realPower)

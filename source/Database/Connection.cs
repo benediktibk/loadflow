@@ -81,7 +81,7 @@ namespace Database
                 FeedIn.CreateCommandToCreateTable(),
                 Generator.CreateCommandToCreateTable(),
                 Transformer.CreateCommandToCreateTable(),
-                Line.CreateCommandToCreateTable()
+                TransmissionLine.CreateCommandToCreateTable()
             };
             commands.AddRange(AdmittanceMatrix.CreateCommandsToCreateTables());
 
@@ -345,13 +345,13 @@ namespace Database
 
         private void ReadLines(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
-            powerNet.Lines.Clear();
-            var command = Line.CreateCommandToFetchAll(powerNet.Id);
+            powerNet.TransmissionLines.Clear();
+            var command = TransmissionLine.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
 
             using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNet.Lines.Add(new Line(nodeIds, reader));
+                    powerNet.TransmissionLines.Add(new TransmissionLine(nodeIds, reader));
         }
 
         private void ReadFeedIns(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)

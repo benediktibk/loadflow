@@ -62,7 +62,7 @@
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
-    <Compile Include="Line.cs" />
+    <Compile Include="TransmissionLine.cs" />
     <Compile Include="Load.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeToNodeNameConverter.cs" />

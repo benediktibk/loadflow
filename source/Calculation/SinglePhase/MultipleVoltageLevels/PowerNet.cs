@@ -12,7 +12,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private readonly double _frequency;
         private readonly List<Load> _loads;
-        private readonly List<Line> _lines;
+        private readonly List<TransmissionLine> _lines;
         private readonly List<Transformer> _transformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
@@ -31,7 +31,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             _frequency = frequency;
             _loads = new List<Load>();
-            _lines = new List<Line>();
+            _lines = new List<TransmissionLine>();
             _transformers = new List<Transformer>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
@@ -106,11 +106,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodesById.Add(id, node);
         }
 
-        public void AddLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
+        public void AddTransmissionLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
         {
             var sourceNode = GetNodeByIdInternal(sourceNodeId);
             var targetNode = GetNodeByIdInternal(targetNodeId);
-            var line = new Line(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, length, _frequency, transmissionEquationModel);
+            var line = new TransmissionLine(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, length, _frequency, transmissionEquationModel);
             _lines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);
