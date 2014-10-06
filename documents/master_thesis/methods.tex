@@ -566,31 +566,31 @@ HELM is a comparatively young algorithm for the load flow problem, as it was dev
 
 The starting point for HELM is \eqref{pq_bus}, where the slack busses are already considered as constant currents. As already mentioned before, because of its structure it is not possible to solve this equation respectively equation system explicitly. Therefore, the voltages $U_i$ are replaced with the functions $U_i(s)$. To achieve even further that these functions are holomorph \citep{helmPatentSept2009} \eqref{pq_bus} is extended to
 \begin{equation}	
-		\sum_j Y_{ij} U_{j}(s) = s I_j + \frac{s S_j^\star}{U_j^\star(s^\star)} + (1 - s) Y_i.
+		\sum_i Y_{ki} U_{i}(s) = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) Y_k.
 		\label{eq:pq_bus_embedded}
 \end{equation}
 In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Therefore, the target is to evalute the functions $U_i(s)$ at point $s = 1$. The term $(1 - s) Y_{total}$ vanishes at this point and is only needed to avoid that the first coefficients of a Laurent series become 0. In fact, the value $Y_{total}$ can be chosen arbitrarly. In \citep{helmPatentSept2009} the expression
 \begin{equation}
-	Y_i = \sum_j Y_{ij}
+	Y_k = \sum_i Y_{ki}
 \end{equation}
 is suggested, where the sum is calculated over all nodes, including the slack busses, which turns out to work well for real world problems.
 
 To get an explicit formula for these functions we replace them with their Laurent series
 \begin{equation}
-	U_i(s) = \sum_{k = -\infty}^\infty c_k (s - s_0)^k.
+	U_i(s) = \sum_{j = -\infty}^\infty c_j (s - s_0)^j.
 \end{equation}
 As the functions are holomorph the prinicipal part of the series has the coefficients zero, which turns the series into
 \begin{equation}
-	U_i(s) = \sum_{k = 0}^\infty c_k (s - s_0)^k.
+	U_i(s) = \sum_{j = 0}^\infty c_j (s - s_0)^j.
 \end{equation}
 To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert them into \eqref{pq_bus_embedded} to get
 \begin{equation}
-		\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + \frac{s S_j^\star}{\sum_{k = 0}^\infty c_{j,k}^\star s^k} + (1 - s) Y_i.
+		\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + \frac{s S_k^\star}{\sum_{j = 0}^\infty c_{k,j}^\star s^j} + (1 - s) Y_k.
 		\label{eq:helm_series_pq_bus}
 \end{equation}
 At this point we would actually like to make coefficient comparison, but on the right side we have the inverse of a series. So, to circumvent this we need a series expression for the inverse of a series. We can get this series
 \begin{equation}
-	W_i(s) = \sum_{k = 0}^\infty d_{j,k} s^k,
+	W_i(s) = \sum_{j = 0}^\infty d_{i,j} s^j,
 \end{equation}
 which satisifies
 \begin{equation}
@@ -598,15 +598,15 @@ which satisifies
 \end{equation}
 through a coefficient comparison of
 \begin{equation}
-	1 = \left( \sum_{k = 0}^\infty d_{j,k} s^k \right) \left( \sum_{l = 0}^\infty c_{j,l}^\star s^l \right).
+	1 = \left( \sum_{j = 0}^\infty d_{i,j} s^j \right) \left( \sum_{l = 0}^\infty c_{i,l}^\star s^l \right).
 \end{equation}
 To do so, the equation is rewritten with the discrete convolution formula to
 \begin{equation}
-	1 = \sum_{k = 0}^\infty \left( \sum_{l = 0}^k d_{j,l} c_{j,k - l}^\star \right) s^k,
+	1 = \sum_{j = 0}^\infty \left( \sum_{l = 0}^j d_{i,l} c_{i,j - l}^\star \right) s^j,
 \end{equation}
 where we have to consider separately the power 0 and all others. For $s^0$ the coefficient comparison the outcome is
 \begin{equation}
-	1 = d_{j,0} c_{j,0}^\star,
+	1 = d_{i,0} c_{i,0}^\star,
 \end{equation}
 from which the first inverse coefficient can derived to be
 \begin{equation}
