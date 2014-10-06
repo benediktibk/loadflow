@@ -733,7 +733,7 @@ and for $W(s)$ we can convolute and weigh these coefficients again to calculate
 
 With these two substitutions \eqref{rhs_pv} can be simplified to
 \begin{equation}
-	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} X_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) Y_k
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} X_k(s) - s U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) Y_k
 \end{equation}
 
 For the coefficient comparison, which delivers the right hand side of the linear equation system, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first coefficient $s^0$ we get the expression
@@ -742,11 +742,11 @@ For the coefficient comparison, which delivers the right hand side of the linear
 \end{equation}
 for the second one
 \begin{equation}
-	\sum_i Y_{ki} c_{i,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k
+	\sum_i Y_{ki} c_{i,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k
 \end{equation}
 and for all other coefficients
 \begin{equation}
-	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - |U_k|^2 c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
+	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
 \subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
@@ -788,10 +788,48 @@ For the practical application a nice feature of this algorithm is that additiona
 \subsubsection{Summary}
 In summary, the steps of HELM are:
 \begin{enumerate}
-	\item Calculate the first coefficients with \eqref{helm_first_coefficients}
-	\item Calculate the second coefficients with \eqref{helm_second_coefficients}
-	\item Calculate the other coefficients with \eqref{helm_other_coefficients}
+	\item Calculate the first coefficients with
+	\begin{equation}
+		\sum_i Y_{ki} c_{i,0} = 
+		\begin{cases}
+			Y_k & \text{if k is a PQ-bus} \\
+			I_k + Y_k & \text{if k is a PV-bus}
+		\end{cases}
+	\end{equation}
+	\item Calculate the second coefficients with
+	\begin{equation}
+		\sum_i Y_{ki} c_{i,0} = 
+		\begin{cases}
+			I_k + S_k^\star d_{k,0} - Y_k & \text{if k is a PQ-bus} \\
+			\frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k & \text{if k is a PV-bus}
+		\end{cases}
+	\end{equation}
+	\item Calculate the other coefficients with
+	\begin{equation}
+		\sum_i Y_{ki} c_{i,n} = 
+		\begin{cases}
+			S_k^\star d_{k,j - 1} & \text{if k is a PQ-bus} \\
+			\frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1} & \text{if k is a PV-bus}
+		\end{cases}
+	\end{equation}
 	\item Evaluate the voltage functions $U_i(s = 1)$ with \eqref{epsilon_wynn}
 \end{enumerate}
+
+The derived coefficients $d_{k,j}$ during the first step can be calculated with
+\begin{equation}
+	d_{i,0} = \frac{1}{c_{i,0}^\star},
+\end{equation}
+in all further iterations
+\begin{equation}
+	d_{i,j} = - \frac{\sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}
+\end{equation}
+can be used. The coefficients $v_{k,j}$ are calculated with
+\begin{equation}
+	v_{k,j} = \sum_{l = 0}^j c_l c_{j - l}
+\end{equation}
+and the $x_{k,j}$'s are determined through
+\begin{equation}
+	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
+\end{equation}
 
 As HELM is a fairly new algorithm and only little information about it is available I add a short numerical example in \chapref{helm_example}. I include there also the coefficients and steps of Wynn's Epsilon algorithm to make it easier to reimplement HELM and to have some data for debugging.
