@@ -18,12 +18,12 @@ The second step is then the actual calculation of the node voltages, which based
 
 The most basic mathematical description of a an electric circuit, which an power net is, would be through admittances $Y_{ik}$ between the nodes $i$ and $k$, node voltages $U_k$ and branch currents $I_k$. In this case the element-based formulation
 \begin{equation}
-	\sum_i Y_{ik} U_i = I_k,
+	\sum_i Y_{ki} U_i = I_k,
 	\label{eq:current_controlled}
 \end{equation}
 will be used. If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as result. Unfortunately, most elements in a power net are defined through power, which is fed in, and load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
-	\sum_i Y_{ik} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
+	\sum_i Y_{ki} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
 	\label{eq:pq_bus}
 \end{equation}
 This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is the defined.
@@ -32,7 +32,7 @@ The third important type of bus, beside the slack bus and PQ-bus, is the PV-bus.
 
 \subsection{Admittance Matrix}
 
-The admittance matrix $\mat Y = (Y_{ik})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, actually have to be voltage controlled, so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
+The admittance matrix $\mat Y = (Y_{ki})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, actually have to be voltage controlled, so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
 
 As during the modelling later several kinds of electric elements are used I will describe for each of them how they effect the admittance matrix. Each circuit element is there defined through a partial admittance matrix $\mat Y_p$, which have to be summed up afterwards to get the total admittance matrix $\mat Y$:
 \begin{equation}
@@ -348,15 +348,15 @@ To circumvent these drawbacks a new approach to the load flow problem was develo
 
 The basic problem of the load flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
 \begin{equation}
-	\sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
+	\sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
 \end{equation}
 and then the rest is brought to the right hand side
 \begin{equation}
-	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ik} U_i \right).
+	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ki} U_i \right).
 \end{equation}
 The resulting equation is again not explicitly solved for $U_k$ as this variable still occurs on the right hand side, but at this appearance the old value, from the previous iteration, can be used. This leads then to
 \begin{equation}
-	 U_k^{j + 1} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ik} U_i^{(j)} \right),
+	 U_k^{j + 1} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ki} U_i^{(j)} \right),
 \end{equation}
 where the superindex $j$ denotes the iteration step. For the sake of legibilty with this formula one would actually update the node voltages only after every iteration, but they can actually be updated every time a new value is calculated.
 
@@ -455,14 +455,14 @@ The last missing part is the derivation of the power function, which means we ha
 
 As first step \eqref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
 \begin{align}
-	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ik} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
-		&= U_k \left( \sum_{i \ne k} Y_{ik}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
-		&= \sum_{i \ne k} U_k Y_{ik}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
+	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
+		&= U_k \left( \sum_{i \ne k} Y_{ki}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
+		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
 \end{align}
-Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ik} = |Y_{ik}| e^{j \theta_{ik}}$) which leads to the expression
+Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$) which leads to the expression
 \begin{align}
-	S_k &= \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ik}| e^{-j \theta_{ik}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 - |I_k| e^{-j \gamma_k} |U_k| e^{j \delta_k} \\
-		&= \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| e^{j \left( \delta_k - \theta_{ik} - \delta_i \right)} + |Y_{kk}| |U_k|^2 e^{-j \theta_{kk}} - |I_k| |U_k| e^{j \left( \delta_k - \gamma_k \right)}
+	S_k &= \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ki}| e^{-j \theta_{ki}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 - |I_k| e^{-j \gamma_k} |U_k| e^{j \delta_k} \\
+		&= \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| e^{j \left( \delta_k - \theta_{ki} - \delta_i \right)} + |Y_{kk}| |U_k|^2 e^{-j \theta_{kk}} - |I_k| |U_k| e^{j \left( \delta_k - \gamma_k \right)}
 		\label{eq:newton_raphson_polar}
 \end{align}
 for the load at bus $k$. This load can be separated into its real and imaginary part
@@ -471,36 +471,36 @@ for the load at bus $k$. This load can be separated into its real and imaginary 
 \end{equation}
 as well as the part on the right hand side of \eqref{newton_raphson_polar} to receive
 \begin{equation}
-	P_k = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	P_k = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + |Y_{kk}| |U_k|^2 \cos \left( \theta_{kk} \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
 \end{equation}
 and
 \begin{equation}
-	Q_k = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
+	Q_k = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
 \end{equation}
 These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
 \begin{equation}
-	\frac{\partial P_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) - |I_k| \cos \left( \delta_k - \gamma_k \right)
+	\frac{\partial P_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) - |I_k| \cos \left( \delta_k - \gamma_k \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) - |I_k| \sin \left( \delta_k - \gamma_k \right)
+	\frac{\partial Q_k}{\partial |U_k|} = \sum_{i \ne k} |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) - |I_k| \sin \left( \delta_k - \gamma_k \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial P_k}{\partial |U_i|} = |U_k| |Y_{ik}| \cos \left( \delta_k - \theta_{ik} - \delta_i \right)
+	\frac{\partial P_k}{\partial |U_i|} = |U_k| |Y_{ki}| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial |U_i|} = |U_k| |Y_{ik}| \sin \left( \delta_k - \theta_{ik} - \delta_i \right)
+	\frac{\partial Q_k}{\partial |U_i|} = |U_k| |Y_{ki}| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial P_k}{\partial \delta_k} = - \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right) + |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right)
+	\frac{\partial P_k}{\partial \delta_k} = - \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) + |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial \delta_k} = \sum_{i \ne k} |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	\frac{\partial Q_k}{\partial \delta_k} = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial P_k}{\partial \delta_i} = |U_k| |Y_{ik}| |U_i| \sin \left( \delta_k - \theta_{ik} - \delta_i \right)
+	\frac{\partial P_k}{\partial \delta_i} = |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ik}| |U_i| \cos \left( \delta_k - \theta_{ik} - \delta_i \right)
+	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
 \end{equation}
 
 With these derivations we can calculate the derivation of the power functions with form the Jacobian matrix
