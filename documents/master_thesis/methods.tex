@@ -167,7 +167,7 @@ can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
 An ideal transformer like in \figref{ideal_transformer_original} is modelled with two gyrators according to the circuit \figref{ideal_transformer_equivalent}. The gyrators themselves have to be replaced by voltage controlled elements, like it was presented previously.
 
-In theory, the parameter $R$ in this model can be chosen freely, but for numerical reasons I recommend a scaling of the internal node so that its voltage is in the range of the nominal voltage. To be able to do so an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
+In theory, the parameter $R$ in this model can be chosen freely, but for numerical reasons I recommend a scaling of the internal node so that its voltage is in the range of the nominal voltage. To be able to do so an estimation of the load-flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load-flow problem will not convergence in most cases.
 
 \section{Scaling}
 
@@ -335,7 +335,7 @@ These two values combined are then the input impedance
 	Z_q = R + j X.
 \end{equation}
 
-In case the short circuit power is very high compared to the actual load flow, the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
+In case the short circuit power is very high compared to the actual load-flow, the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
 
 \section{Calculation Methods}
 
@@ -626,7 +626,7 @@ To be able to calculate the coefficients we develop these series now around the 
 \end{equation}
 At this point we would actually like to make a coefficient comparison, but on the right side we have the inverse of a series. So, to circumvent this, we need a power series for the inverse of a series. We can get this series
 \begin{equation}
-	W_i(s) = \sum_{j = 0}^\infty d_{i,j} s^j,
+	W_i(s) = \sum_{j = 0}^\infty w_{i,j} s^j,
 \end{equation}
 which satisifies
 \begin{equation}
@@ -634,36 +634,36 @@ which satisifies
 \end{equation}
 through a coefficient comparison of
 \begin{equation}
-	1 = \left( \sum_{j = 0}^\infty d_{i,j} s^j \right) \left( \sum_{l = 0}^\infty c_{i,l}^\star s^l \right).
+	1 = \left( \sum_{j = 0}^\infty w_{i,j} s^j \right) \left( \sum_{l = 0}^\infty c_{i,l}^\star s^l \right).
 \end{equation}
 To do so, the equation is rewritten with the discrete convolution formula to
 \begin{equation}
-	1 = \sum_{j = 0}^\infty \left( \sum_{l = 0}^j d_{i,l} c_{i,j - l}^\star \right) s^j,
+	1 = \sum_{j = 0}^\infty \left( \sum_{l = 0}^j w_{i,l} c_{i,j - l}^\star \right) s^j,
 \end{equation}
 where we have to consider separately the power 0 and all others. For $s^0$ the outcome of the coefficient comparison is
 \begin{equation}
-	1 = d_{i,0} c_{i,0}^\star,
+	1 = w_{i,0} c_{i,0}^\star,
 \end{equation}
 from which the first inverse coefficient can derived to be
 \begin{equation}
-	d_{i,0} = \frac{1}{c_{i,0}^\star}.
+	w_{i,0} = \frac{1}{c_{i,0}^\star}.
 \end{equation}
 For all other powers of $s$ the coefficient comparison delivers
 \begin{equation}
-	0 = \sum_{l = 0}^j d_{i,l} c_{i,j - l}^\star,
+	0 = \sum_{l = 0}^j w_{i,l} c_{i,j - l}^\star,
 \end{equation}
 where we can assume to already know the previous inverse coefficients. Hence, we can extract the last summand
 \begin{equation}
-	0 = \sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star + d_{i,j} c_{j,0}^\star
+	0 = \sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star + w_{i,j} c_{j,0}^\star
 \end{equation}
 and transform the result to the explicit formula 
 \begin{equation}
-	d_{i,j} = - \frac{\sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}.
+	w_{i,j} = - \frac{\sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}.
 \end{equation}
 
 With the power series of the inverse voltage functions we are now able to reformulate \eqref{helm_series_pq_bus} to
 \begin{equation}
-	\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + s S_k^\star \sum_{j = 0}^\infty d_{i,j} s^j + (1 - s) Y_k.
+	\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + s S_k^\star \sum_{j = 0}^\infty w_{i,j} s^j + (1 - s) Y_k.
 \end{equation}
 Here we apply again a coefficient comparison. For the power $s^0$ we get the linear equation system
 \begin{equation}
@@ -672,12 +672,12 @@ Here we apply again a coefficient comparison. For the power $s^0$ we get the lin
 \end{equation}
 which we can solve to get the coefficients $c_{i,0}$. The second coefficients $c_{i,1}$ can be calculated with
 \begin{equation}
-	\sum_i Y_{ki} c_{i,1} = I_k + S_k^\star d_{k,0} - Y_k,
+	\sum_i Y_{ki} c_{i,1} = I_k + S_k^\star w_{k,0} - Y_k,
 	\label{eq:helm_second_coefficients}
 \end{equation}
-as the coefficients $d_{i,j}$ depend only on the previous coefficients $c_{i,j}$. All other coefficients are then the solution of
+as the coefficients $w_{i,j}$ depend only on the previous coefficients $c_{i,j}$. All other coefficients are then the solution of
 \begin{equation}
-	\sum_i Y_{ki} c_{i,j} = S_k^\star d_{k,j - 1}.
+	\sum_i Y_{ki} c_{i,j} = S_k^\star w_{k,j - 1}.
 	\label{eq:helm_other_coefficients}
 \end{equation}
 
@@ -869,8 +869,8 @@ The functions on the right hand side of equation \eqref{helm_total_equation_syst
 	F_{PQ}[k,n] = 
 	\begin{cases}
 		Y_k & n = 0 \\
-		I_k + S_k^\star d_{k,0} - Y_k & n = 1 \\
-		S_k^\star d_{k,n - 1} & n \ge 2
+		I_k + S_k^\star w_{k,0} - Y_k & n = 1 \\
+		S_k^\star w_{k,n - 1} & n \ge 2
 	\end{cases}
 \end{equation}
 and
@@ -883,19 +883,19 @@ and
 	\end{cases}.
 \end{equation}
 
-The derived coefficients $d_{k,j}$ during the first step can be calculated with
+The derived coefficients $w_{k,j}$ during the first step can be calculated with
 \begin{equation}
-	d_{k,0} = \frac{1}{c_{k,0}^\star},
+	w_{k,0} = \frac{1}{c_{k,0}^\star},
 \end{equation}
 in all further iterations
 \begin{equation}
-	d_{k,j} = - \frac{\sum_{l = 0}^{j - 1} d_{k,l} c_{k,j - l}^\star}{c_{k,0}^\star}
+	w_{k,j} = - \frac{\sum_{l = 0}^{j - 1} w_{k,l} c_{k,j - l}^\star}{c_{k,0}^\star}
 \end{equation}
 can be used. The coefficients $v_{k,j}$ are calculated with
 \begin{equation}
 	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l}
 \end{equation}
-and the $x_{k,j}$'s are determined through
+and the values for $x_{k,j}$ are determined through
 \begin{equation}
 	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
 \end{equation}
