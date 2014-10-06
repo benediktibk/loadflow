@@ -788,32 +788,37 @@ For the practical application a nice feature of this algorithm is that additiona
 \subsubsection{Summary}
 In summary, the steps of HELM are:
 \begin{enumerate}
-	\item Calculate the first coefficients with
-	\begin{equation}
-		\sum_i Y_{ki} c_{i,0} = 
-		\begin{cases}
-			Y_k & \text{if k is a PQ-bus} \\
-			I_k + Y_k & \text{if k is a PV-bus}
-		\end{cases}
-	\end{equation}
-	\item Calculate the second coefficients with
-	\begin{equation}
-		\sum_i Y_{ki} c_{i,0} = 
-		\begin{cases}
-			I_k + S_k^\star d_{k,0} - Y_k & \text{if k is a PQ-bus} \\
-			\frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k & \text{if k is a PV-bus}
-		\end{cases}
-	\end{equation}
-	\item Calculate the other coefficients with
+	\item Calculate the next coefficients with
 	\begin{equation}
 		\sum_i Y_{ki} c_{i,n} = 
 		\begin{cases}
-			S_k^\star d_{k,j - 1} & \text{if k is a PQ-bus} \\
-			\frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1} & \text{if k is a PV-bus}
+			F_{PQ}[k,n] & \text{if k is a PQ-bus} \\
+			F_{PV}[k,n] & \text{if k is a PV-bus}
 		\end{cases}
+		\label{eq:helm_total_equation_system}
 	\end{equation}
 	\item Evaluate the voltage functions $U_i(s = 1)$ with \eqref{epsilon_wynn}
+	\item Repeat these steps until the voltage change is small enough \emph{or} repeat until the power mismatch is small enough
 \end{enumerate}
+
+The functions on the right hand side of equation \eqref{helm_total_equation_system} are defined by
+\begin{equation}
+	F_{PQ}[k,n] = 
+	\begin{cases}
+		Y_k & n = 0 \\
+		I_k + S_k^\star d_{k,0} - Y_k & n = 1 \\
+		S_k^\star d_{k,n - 1} & n \ge 2
+	\end{cases}
+\end{equation}
+and
+\begin{equation}
+	F_{PV}[k,n] = 
+	\begin{cases}
+		I_k + Y_k & n = 0 \\
+		\frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k & n = 1 \\
+		\frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1} & n \ge 2
+	\end{cases}.
+\end{equation}
 
 The derived coefficients $d_{k,j}$ during the first step can be calculated with
 \begin{equation}
