@@ -2,11 +2,11 @@
 
 \section{Problem Formulation}
 
-The aim of an load-flow analysis is to determine the voltages in the power net. Any further information, like currents in connections, critically low voltages, etc. can be derived from this result. Therefore I will consider the problem to be solved if the voltages are known.
+The aim of a load-flow analysis is to determine the voltages in the power net. Any further information, like currents in connections, critically low voltages, etc. can be derived from these voltages. Therefore, I will consider the problem to be solved if the voltages are known.
 
-The first step in a load flow analysis is the modelling of the net elements, as it is way to complex to use a detailed description of for instance a power plant like \figref{power_plant}. Therefore, all elements in a power net are modelled through busses, also called nodes, and admittances between them. To simplify the calculations only single phase nets are considered, therefore three phase systems have to scaled down by the factor 3, respective $\sqrt{3}$. In the model also exists only one voltage level, which means that all admittances, powers and voltages have to be scaled according to this.
+The first step in a load-flow analysis is the modelling of the net elements, as it is way to complex to use a detailed description of for instance a power plant like \figref{power_plant}. Therefore, all elements in a power net are modelled through busses, also called nodes, and admittances between them. To simplify the calculations only single phase nets are considered. Consequently, three phase systems have to scaled down by the factor 3, respective $\sqrt{3}$, to be represented by a single phase system. Asymmetric cases can be modelled with only single phase nets through symmetrical components \citep[p. 399]{powerSystemAnalysis}. Besides that, in the final model also exists only one voltage level, which means that all admittances, powers and voltages have to be scaled down to this voltage level.
 
-The second step is then the actual calculation of the node voltages, which based is on a nodal analysis. As a pure nodal analysis is only capable of current loads it is extended to support more realistic load models.
+The second step is then the actual calculation of the node voltages, which is based on a nodal analysis. As a pure nodal analysis is only capable of current loads it is extended to support more realistic load models, which define for instance the power at a node.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{figures/adam_beck_complex.jpg}
@@ -16,25 +16,38 @@ The second step is then the actual calculation of the node voltages, which based
 
 \subsection{Busses}
 
-The most basic mathematical description of a an electric circuit, which an power net is, would be through admittances $Y_{ik}$ between the nodes $i$ and $k$, node voltages $U_k$ and branch currents $I_k$. In this case the element-based formulation
+The most basic mathematical description of an electric circuit, which a power net is, would be through admittances $Y_{ki}$ between the nodes $k$ and $i$, node voltages $U_k$ and branch currents $I_k$. In this case the element-based version
 \begin{equation}
 	\sum_i Y_{ki} U_i = I_k,
 	\label{eq:current_controlled}
 \end{equation}
-will be used. If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as result. Unfortunately, most elements in a power net are defined through power, which is fed in, and load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
+of
+\begin{equation}
+	\mat Y \vec U = \vec I
+\end{equation}
+will be used, as in the end the right hand side of this equation can not be described with a vector notation.
+
+If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as the result. Unfortunately, most elements in a power net are defined through power, which is fed in, or load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
 	\sum_i Y_{ki} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
 	\label{eq:pq_bus}
 \end{equation}
-This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is the defined.
-Another type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need any further description of this bus, but the bus is also part from neighbour busses through the branch currents $Y_{ik} U_i$. In this case, if one of the branch currents is already known, this value can be moved to the right hand side of the equation \eqref{pq_bus} and combined with $I_k$. Although, slack busses show up only in the constant currents of the right hand sides, there must be always at least one slack bus in the power net, as this bus then defines the rotation of the system and compensates mismatches in the total power sum. In practice, typically a major power plant is selected as slack bus.
-The third important type of bus, beside the slack bus and PQ-bus, is the PV-bus. This is already some sort of control, as at such a node the real power $P_k$ and the voltage magnitude $|U_k|$ is defined. The implementation of this bus type depends on the algorithm which is used to calculate the missing node voltages, therefore I will discuss this in the section about the algorithms.
+
+As a short side remark, a positive power means in this formulation that power is drawn from the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
+
+This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is defined. Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need to add a line to the equation system, but the bus is also part from neighbour busses through the branch currents $Y_{ki} U_i$. All these known branch currents are represented on the right hand side of \eqref{pq_bus} through
+\begin{equation}
+	I_k = -\sum_{\text{slack busses}} Y_{ki} U_i.
+\end{equation}
+Although, slack busses show up only in the constant currents of the right hand side, there must be always at least one slack bus in the power net, as this bus then defines the rotation of the system and compensates mismatches in the total power sum. In practice, typically a major power plant is selected as slack bus.
+
+The third important type of bus, besides the slack bus and PQ-bus, is the PV-bus. This is already some sort of control, as at such a node the real power $P_k$ and the voltage magnitude $|U_k|$ is defined. The implementation of this bus type depends on the algorithm which is used to calculate the missing node voltages, therefore I will discuss this in the section about the algorithms.
 
 \subsection{Admittance Matrix}
 
-The admittance matrix $\mat Y = (Y_{ki})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, actually have to be voltage controlled, so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
+The admittance matrix $\mat Y = (Y_{ki})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, have to be represented by an equivalent circuit which is voltage controlled so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
 
-As during the modelling later several kinds of electric elements are used I will describe for each of them how they effect the admittance matrix. Each circuit element is there defined through a partial admittance matrix $\mat Y_p$, which have to be summed up afterwards to get the total admittance matrix $\mat Y$:
+As during the modelling later several kinds of electric elements will be used I will describe for each of them how they effect the admittance matrix. Each circuit element is there defined through a partial admittance matrix $\mat Y_p$. These partial matrices have to be summed up afterwards to get the total admittance matrix $\mat Y$:
 \begin{equation}
 	\mat Y = \sum_i \mat Y_{p,i}
 \end{equation}
@@ -44,7 +57,7 @@ The same superposition applies also for the current sources, if there are any.
 	\vec I = \sum_i \vec I_{p,i}
 \end{equation}
 
-The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers which non-nominal ratios. The controlled source and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
+The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers with non-nominal ratios. The controlled source and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
 
 \subsubsection{Admittance}
 
@@ -95,8 +108,7 @@ and
 \begin{equation}
 	I_\beta = (U_{k,\delta} - U_{k,\gamma}) g_m,
 \end{equation}
-but with the difference to the admittance that this time the current is controlled by different nodes.
-
+but with the difference to the admittance matrix that this time the current is controlled by different nodes, what results in the asymmetric admittance matrix
 \begin{equation}
 	\mat Y_p = 	
 	\begin{blockarray}{cccccc}
@@ -108,7 +120,7 @@ but with the difference to the admittance that this time the current is controll
 		 		& \vdots	&			& \vdots	&			& \\
 		\end{block}
 				& \gamma	&			& \delta	&			& 
-	\end{blockarray}
+	\end{blockarray}.
 \end{equation}
 
 \subsubsection{Gyrator}
@@ -155,13 +167,13 @@ can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
 An ideal transformer like in \figref{ideal_transformer_original} is modelled with two gyrators according to the circuit \figref{ideal_transformer_equivalent}. The gyrators themselves have to be replaced by voltage controlled elements, like it was presented previously.
 
-The parameter $R$ in this model can be chosen freely in theory, but for numerical reasons I recommend such a scaling of the internal node, that it is in the range of the nominal voltages. To be able to do this an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
+In theory, the parameter $R$ in this model can be chosen freely, but for numerical reasons I recommend a scaling of the internal node so that its voltage is in the range of the nominal voltage. To be able to do so an estimation of the load flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load flow problem will not convergence in most cases.
 
 \section{Scaling}
 
-As long as the relations are kept the same it is possible to change the scale base of all values in a system. For purpose from the set of voltage, current, impedance and power two physical quantities can be freely chosen and the others arise out of this decision. Another term for this scaling is the transformation into a so-called per-unit system \citep[p. 90]{powerSystemAnalysis}.
+As long as the relations are kept the same it is possible to change the scale base of all values in a system. For this purpose from the set of voltage, current, impedance and power two physical quantities can be freely chosen and the others arise out of this decision. Another term for this scaling is the transformation into a so-called per-unit system \citep[p. 90]{powerSystemAnalysis}.
 
-For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the scale base
+For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The second degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the scale base
 \begin{equation}
 	P_B = \frac{1}{2n} \left( \sum_{i}^n \left| P_{load,i} \right| + \sum_{i}^n \left| Q_{load,i} \right| \right)
 \end{equation}
@@ -198,9 +210,9 @@ The actually scaling is achieved through a division of the values by the scale b
 
 \section{Modelling of Net Elements}
 
-The power net elements are modelled through admittances and busses, therefore we will use the previously derived knowledge to describe the behaviour of the net elements.
+The power net elements are modelled through admittances and busses, therefore I will use the previously derived knowledge to describe the behaviour of the net elements.
 
-All external nodes which exist in a power net are by default PQ-busses with no load, therefore $P = 0$ and $Q = 0$. The direct combination of PQ-busses leads to a summation of the partial inputs (or loads, depending on the sign). The direct connection of a PV-bus to a PQ-bus instead has the result, that bus is forced to become a PV-bus with the values $P_{total} = P_{PV} + P_{PQ}$ and $V_{total} = V_{PV}$. The reactive power of the PQ-node is assumed to be provided by the PV-bus. The third type of busses, a slack bus, can be combined with a PQ-bus too. In this case all loads are provided by the slack bus itself, therefore the total result is a slack bus.
+All external nodes which exist in a power net are by default PQ-busses with no load, therefore $P = 0$ and $Q = 0$. The direct combination of PQ-busses leads to a summation of the partial inputs (or loads, depending on the sign). The direct connection of a PV-bus to a PQ-bus instead has the result that the bus is forced to become a PV-bus with the values $P_{total} = P_{PV} + P_{PQ}$ and $V_{total} = V_{PV}$. The reactive power of the PQ-node is assumed to be provided by the PV-bus. The third type of busses, a slack bus, can be combined with a PQ-bus too. In this case all loads are provided by the slack bus itself, therefore the total result is a slack bus.
 
 As it would lead to an overspecified problem PV-busses must not be connected to slack busses. Theoretically this is possible if the PV-bus has the same voltage magnitude as the slack bus, but in practice this case does not occur and can be neglected.
 
@@ -263,7 +275,7 @@ In this case the ratio of the ideal transformer is set to the relative ratio
 \begin{equation}
 	a_r = \frac{a}{a_n}.
 \end{equation}
-For transformer exist several different ways to specifiy their electrical characeristics. I've chosen to use as input:
+For transformers exist several different ways to specifiy their electrical characeristics. I've chosen to use as input:
 \begin{itemize}
 	\item $S_n$: nominal power
 	\item $|u_r|$: relative short circuit voltage
@@ -310,7 +322,7 @@ A feed-in \figref{feedin} is characterized through the voltage at the internal s
 \begin{equation}
 	|Z_q| = c \frac{U_n}{S_k}
 \end{equation}
-can be derived, which therefore is the enables the calculation of
+can be derived, which therefore enables the calculation of
 \begin{equation}
 	X = \frac{\sqrt{\left( \frac{R}{X} \right) + 1}}{|Z_q|}
 \end{equation}
@@ -323,11 +335,11 @@ These two values combined are then the input impedance
 	Z_q = R + j X.
 \end{equation}
 
-In case the short circuit power is very high compared to the actual load flow the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
+In case the short circuit power is very high compared to the actual load flow, the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
 
 \section{Calculation Methods}
 
-The task for the following calculation methods is to determine the node voltages from a admittance matrix, a list of PQ- and PV-busses and a vector of constant currents. In this section I will describe in total four different algorithms for this problem:
+The task for the following calculation methods is to determine the node voltages from an admittance matrix, a list of PQ- and PV-busses and a vector of constant currents. In this section I will describe in total four different algorithms for this problem:
 \begin{itemize}
 	\item Current Iteration \citep[p. 209]{powerSystemAnalysis}
 	\item Newton-Raphson \citep[p. 232]{powerSystemAnalysis}
@@ -339,18 +351,18 @@ As short overview I will start with a classification of these methods, based on 
 
 \subsection{Classification of Methods}
 
-The first three methods, Current Iteration, Newton-Raphson and the FDLF, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this point leads direct to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physical, what in this case means that they do no represent a stable operating point. This happens typically only for certain constructed power nets, but in practice the bigger problem is that these methods often do not converge, although the power net is in a stable condition.
+The first three methods, Current Iteration, Newton-Raphson and the FDLF, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this point leads direct to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physical, what in this case means that they do no represent a stable operating point. This happens typically only for certain constructed power nets, so in practice the bigger problem is that these methods often do not converge, although the power net is in a stable condition.
 
-To circumvent these drawbacks a new approach to the load flow problem was developed, the so-called Holomorphic Embedding Load Flow. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore HELM would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
+To circumvent these drawbacks a new approach to the load-flow problem was developed, the so-called Holomorphic Embedding Load Flow. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore, HELM would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
 
-The basic problem of the load flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
+The basic problem of the load-flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
 \begin{equation}
 	\sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
 \end{equation}
-and then the rest is brought to the right hand side
+and then the rest is moved to the right hand side
 \begin{equation}
 	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ki} U_i \right).
 \end{equation}
@@ -360,7 +372,7 @@ The resulting equation is again not explicitly solved for $U_k$ as this variable
 \end{equation}
 where the superindex $j$ denotes the iteration step. For the sake of legibilty with this formula one would actually update the node voltages only after every iteration, but they can actually be updated every time a new value is calculated.
 
-To this point only the PQ-busses were discuess, but PV-busses can be handled too. For this purpose the PV-bus is considered as PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
+To this point only the PQ-busses were discuess, but PV-busses can be handled too. For this purpose the PV-bus is considered as a PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
 \begin{equation}
 	U_k' = |U_{k,PV}| e^{j \angle U_k}.
 \end{equation}
@@ -368,7 +380,7 @@ To this point only the PQ-busses were discuess, but PV-busses can be handled too
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
 
-In general, under the name Newton-Raphson a method for finding roots of a nonlinear function is known. In the area of load flow calculation the idea is the same, the problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ is the same as the specified loads $S_{spec}$:
+In general, under the name Newton-Raphson a method for finding roots of a nonlinear function is known. In the area of load-flow calculation the idea is the same, the basic problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ are the same as the specified loads $S_{spec}$:
 \begin{equation}
 	\vec S (\vec x) = S_{spec}
 \end{equation}
@@ -398,13 +410,13 @@ the occurence of $\vec f (\vec x)$ with its definition to get
 	\vec S' (\vec x_k) \left( \vec x_{k + 1} - \vec x_k \right) = \vec S (\vec x_k) - \vec S_{spec}.
 	\label{eq:newton_raphson_equation_system}
 \end{equation}
-In this formula we have on the left side as matrix the derivation of the power function with respect to the voltages $\vec S' (\vec x_k)$, the voltage changes $\Delta \vec x_k = \left( \vec x_{k + 1} - \vec x_k \right)$ and on the right side the current power mismatch 
+In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\vec S' (\vec x_k)$, the voltage changes $\Delta \vec x_k = \left( \vec x_{k + 1} - \vec x_k \right)$ and on the right side the current power mismatch 
 \begin{equation}
 	\Delta \vec S (\vec x_k) = \vec S (\vec x_k) - \vec S_{spec}.
 	\label{eq:power_mismatch}
 \end{equation}
 
-This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. As in practice the in real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, the voltages are represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
+This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. As in real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, the voltages are represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
