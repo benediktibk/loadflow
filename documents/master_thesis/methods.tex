@@ -724,7 +724,7 @@ and
 \end{equation}
 The coefficients for $V(s)$ can be calculate with the convolution formula
 \begin{equation}
-	v_{k,j} = \sum_{l = 0}^j c_l c_{j - l}
+	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l}
 \end{equation}
 and for $W(s)$ we can convolute and weigh these coefficients again to calculate
 \begin{equation}
@@ -817,15 +817,15 @@ In summary, the steps of HELM are:
 
 The derived coefficients $d_{k,j}$ during the first step can be calculated with
 \begin{equation}
-	d_{i,0} = \frac{1}{c_{i,0}^\star},
+	d_{k,0} = \frac{1}{c_{k,0}^\star},
 \end{equation}
 in all further iterations
 \begin{equation}
-	d_{i,j} = - \frac{\sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}
+	d_{k,j} = - \frac{\sum_{l = 0}^{j - 1} d_{k,l} c_{k,j - l}^\star}{c_{k,0}^\star}
 \end{equation}
 can be used. The coefficients $v_{k,j}$ are calculated with
 \begin{equation}
-	v_{k,j} = \sum_{l = 0}^j c_l c_{j - l}
+	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l}
 \end{equation}
 and the $x_{k,j}$'s are determined through
 \begin{equation}
