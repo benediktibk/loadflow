@@ -577,11 +577,11 @@ is suggested, where the sum is calculated over all nodes, including the slack bu
 
 To get an explicit formula for these functions we replace them with their Laurent series
 \begin{equation}
-	U_i(s) = \sum_{j = -\infty}^\infty c_j (s - s_0)^j.
+	U_i(s) = \sum_{j = -\infty}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
 As the functions are holomorph the prinicipal part of the series has the coefficients zero, which turns the series into
 \begin{equation}
-	U_i(s) = \sum_{j = 0}^\infty c_j (s - s_0)^j.
+	U_i(s) = \sum_{j = 0}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
 To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert them into \eqref{pq_bus_embedded} to get
 \begin{equation}
@@ -610,37 +610,37 @@ where we have to consider separately the power 0 and all others. For $s^0$ the c
 \end{equation}
 from which the first inverse coefficient can derived to be
 \begin{equation}
-	d_{j,0} = \frac{1}{c_{j,0}^\star}.
+	d_{i,0} = \frac{1}{c_{i,0}^\star}.
 \end{equation}
 For all other powers of $s$ the coefficient comparison delivers
 \begin{equation}
-	0 = \sum_{l = 0}^k d_{j,l} c_{j,k - l}^\star,
+	0 = \sum_{l = 0}^j d_{i,l} c_{i,j - l}^\star,
 \end{equation}
 where we can assume to already know the previous inverse coefficients. Hence, we can extract the last summand
 \begin{equation}
-	0 = \sum_{l = 0}^{k - 1} d_{j,l} c_{j,k - l}^\star + d_{j,k} c_{j,0}^\star
+	0 = \sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star + d_{i,j} c_{j,0}^\star
 \end{equation}
 and transform the result to the explicit formula 
 \begin{equation}
-	d_{j,k} = - \frac{\sum_{l = 0}^{k - 1} d_{j,l} c_{j,k - l}^\star}{c_{j,0}^\star}.
+	d_{i,j} = - \frac{\sum_{l = 0}^{j - 1} d_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}.
 \end{equation}
 With this formula we are now able to reformulate \eqref{helm_series_pq_bus} to
 \begin{equation}
-	\sum_j \left( Y_{ij} \sum_{k = 0}^\infty c_{j,k} s^k \right) = s I_j + s S_j^\star \sum_{k = 0}^\infty d_{j,k} s^k + (1 - s) Y_i.
+	\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + s S_k^\star \sum_{j = 0}^\infty d_{i,j} s^j + (1 - s) Y_k.
 \end{equation}
 Here we apply again a coefficient comparison. For the power $s^0$ we get the linear equation system
 \begin{equation}
-	\sum_j Y_{ij} c_{j,0} = Y_i,
+	\sum_i Y_{ki} c_{i,0} = Y_k,
 	\label{eq:helm_first_coefficients}
 \end{equation}
-which we can solve to get the coefficients $c_{j,0}$. The second coefficients $c_{j,1}$ can be calculated with
+which we can solve to get the coefficients $c_{i,0}$. The second coefficients $c_{i,1}$ can be calculated with
 \begin{equation}
-	\sum_j Y_{ij} c_{j,1} = I_j + S_j^\star d_{j,0} - Y_i,
+	\sum_i Y_{ki} c_{i,1} = I_k + S_k^\star d_{k,0} - Y_k,
 	\label{eq:helm_second_coefficients}
 \end{equation}
-as the coefficients $d_{j,k}$ depend only on the previous $c_{j,k}$. All other coefficients are then the solution of
+as the coefficients $d_{i,j}$ depend only on the previous $c_{i,j}$. All other coefficients are then the solution of
 \begin{equation}
-	\sum_j Y_{ij} c_{j,k} = S_j^\star d_{j,k - 1}.
+	\sum_i Y_{ki} c_{i,j} = S_k^\star d_{k,j - 1}.
 	\label{eq:helm_other_coefficients}
 \end{equation}
 
@@ -650,12 +650,12 @@ How PV-busses can be modelled in HELM was first mentioned in \citep{helmPV}. As 
 
 Starting with the definition of a PQ-bus \eqref{pq_bus} we transform this equation to the explicit definition of the power
 \begin{equation}
-	S_k = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star.
+	S_k = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star.
 	\label{eq:bus_power}
 \end{equation}
 For the PV-bus only the real power is defined, therefore we do not have to consider the reactive power and can reduce this equation to
 \begin{equation}
-	P_k = \Re{U_k \left( \sum_i Y_{ik}^\star U_i^\star - I_k^\star \right)}.
+	P_k = \Re{U_k \left( \sum_i Y_{ki}^\star U_i^\star - I_k^\star \right)}.
 	\label{eq:pv_bus_definition}
 \end{equation}
 This way we end up with only one equation, but actually two parameter of the bus, which are defined. We also bring into the equation system two unknowns, therefore we will also need two equations for the bus. Consequently, we can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
@@ -664,30 +664,30 @@ This way we end up with only one equation, but actually two parameter of the bus
 \end{equation}
 If we insert here the definition of the bus power \eqref{bus_power} we get
 \begin{align}
-	2 P_k 	& = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star + \left( U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star \right)^\star \\
-			& = U_k \left( \sum_i Y_{ik} U_i - I_k \right)^\star + U_k^\star \left( \sum_i Y_{ik} U_i - I_k \right)
+	2 P_k 	& = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star + \left( U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star \right)^\star \\
+			& = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star + U_k^\star \left( \sum_i Y_{ki} U_i - I_k \right)
 \end{align}
 Multiplying this with $U_k$ gives
 \begin{align}
-	2 P_k U_k 	& = U_k^2 \left( \sum_i Y_{ik} U_i - I_k \right)^\star + |U_k|^2 \left( \sum_i Y_{ik} U_i - I_k \right) \\
-				& = U_k^2 \sum_i Y_{ik}^\star U_i^\star - U_k^2 I_k^\star + |U_k|^2 \sum_i Y_{ik} U_i - |U_k|^2 I_k,
+	2 P_k U_k 	& = U_k^2 \left( \sum_i Y_{ki} U_i - I_k \right)^\star + |U_k|^2 \left( \sum_i Y_{ki} U_i - I_k \right) \\
+				& = U_k^2 \sum_i Y_{ki}^\star U_i^\star - U_k^2 I_k^\star + |U_k|^2 \sum_i Y_{ki} U_i - |U_k|^2 I_k,
 \end{align}
 were we have brought into play the voltage magnitude $|U_k|$, which is also defined at the PV-bus. Through moving a few summands to the other side of the equation we get
 \begin{equation}
-	|U_k|^2 \sum_i Y_{ik} U_i = 2 P_k U_k - U_k^2 \sum_i Y_{ik}^\star U_i^\star + U_k^2 I_k^\star + |U_k|^2 I_k,
+	|U_k|^2 \sum_i Y_{ki} U_i = 2 P_k U_k - U_k^2 \sum_i Y_{ki}^\star U_i^\star + U_k^2 I_k^\star + |U_k|^2 I_k,
 \end{equation}
 where we can embedded a complex parameter $s$, so that the voltages $U_i$ turn into holomorphic voltage functions $U_i(s)$. To avoid additional complexity I will still use $U_i$ for the voltage functions. This way we end up with
 \begin{equation}
-	|U_k|^2 \sum_i Y_{ik} U_i = s 2 P_k U_k - s U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 I_k^\star + |U_k|^2 I_k + (1 - s) |U_k|^2 Y_k,
+	|U_k|^2 \sum_i Y_{ki} U_i = s 2 P_k U_k - s U_k^2 \sum_i Y_{ki}^\star U_i^\star + s U_k^2 I_k^\star + |U_k|^2 I_k + (1 - s) |U_k|^2 Y_k,
 \end{equation}
 which is after the division by $|U_k|^2$
 \begin{equation}
-	\sum_i Y_{ik} U_i = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k
+	\sum_i Y_{ki} U_i = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ki}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k
 	\label{eq:pv_bus_helm}
 \end{equation}
 then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation which I want to abbreviate with
 \begin{equation}
-	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ik}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k.
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k - s \frac{1}{|U_k|^2} U_k^2 \sum_i Y_{ki}^\star U_i^\star + s U_k^2 \frac{I_k^\star}{|U_k|^2} + I_k + (1 - s) Y_k.
 	\label{eq:rhs_pv}
 \end{equation}
 Consequently, the counter part for a PQ-bus is
@@ -702,11 +702,11 @@ The important point for this is that all elements in $F_{PQ}(s)$ and $F_{PV}(s)$
 
 Next, I would like to go a little bit more into the details of $F_{PV}(s)$. First, it contains the summand 
 \begin{equation}
-	U_k^2 \sum_i Y_{ik}^\star U_i^\star,
+	U_k^2 \sum_i Y_{ki}^\star U_i^\star,
 \end{equation}
 which has for the implementation to be split up like
 \begin{equation}
-	U_k^2 \sum_{i \ne k} Y_{ik}^\star U_i^\star + U_k^2 U_k^\star = U_k^2 \sum_{i \ne k} Y_{ik}^\star U_i^\star + |U_k|^2 U_k.
+	U_k^2 \sum_{i \ne k} Y_{ki}^\star U_i^\star + U_k^2 U_k^\star = U_k^2 \sum_{i \ne k} Y_{ki}^\star U_i^\star + |U_k|^2 U_k.
 \end{equation}
 The problem here is the first part, which contains the multiplication of three power series. The multiplication of the two power series $\sum_i a_i s^i$ and $\sum_i b_i s^i$ results in the power series $\sum_i c_i s^i$ with the coefficients
 \begin{equation}
@@ -716,37 +716,37 @@ The multiplication of three power series can then be build upon this formula.
 
 To simplify \eqref{rhs_pv} we start with the two substitutions
 \begin{equation}
-	V_k(s) = U_k(s)^2 = \sum_i v_i s^i
+	V_k(s) = U_k(s)^2 = \sum_j v_{k,j} s^j
 \end{equation}
 and
 \begin{equation}
-	X_k(s) = U_k(s)^2 \sum_{i \ne k} Y_{ik}^\star U_i(s)^\star = \sum_i w_i s^i.
+	X_k(s) = U_k(s)^2 \sum_{i \ne k} Y_{ki}^\star U_i(s)^\star = \sum_j x_{k,j} s^j.
 \end{equation}
 The coefficients for $V(s)$ can be calculate with the convolution formula
 \begin{equation}
-	v_i = \sum_{j = 0}^i c_j c_{n - j}
+	v_{k,j} = \sum_{l = 0}^j c_l c_{j - l}
 \end{equation}
 and for $W(s)$ we can convolute and weigh these coefficients again to calculate
 \begin{equation}
-	w_i = \sum_{l \ne k} Y_{lk}^\star \sum_{j = 0}^i v_j c_{n - j}.
+	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
 \end{equation}
 
 With these two substitutions \eqref{rhs_pv} can be simplified to
 \begin{equation}
-	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} W_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) Y_k
+	F_{PV}(s) = s \frac{2 P_k}{|U_k|^2} U_k(s) - s \frac{1}{|U_k|^2} X_k(s) - s |U_k|^2 U_k(s) + s \frac{I_k^\star}{|U_k|^2} V_k(s) + I_k + (1 - s) Y_k
 \end{equation}
 
 For the coefficient comparison, which delivers the right hand side of the linear equation system, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first coefficient $s^0$ we get the expression
 \begin{equation}
-	\sum_j Y_{kj} c_{j,0} = I_k + Y_k,
+	\sum_i Y_{ki} c_{i,0} = I_k + Y_k,
 \end{equation}
 for the second one
 \begin{equation}
-	\sum_j Y_{kj} c_{j,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} w_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k
+	\sum_i Y_{ki} c_{i,1} = \frac{2 P_k}{|U_k|^2} c_{k,0} - \frac{1}{|U_k|^2} x_{k,0} - |U_k|^2 c_{k,0} + \frac{I_k^\star}{|U_k|^2} v_{k,0} - Y_k
 \end{equation}
 and for all other coefficients
 \begin{equation}
-	\sum_j Y_{kj} c_{j,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} w_{k,n-1} - |U_k|^2 c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
+	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - |U_k|^2 c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
 \subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
