@@ -12,6 +12,7 @@ namespace SincalConnector
         private int _countOfCoefficients;
 
         #endregion
+
         #region constructor
 
         public ConnectorData()
@@ -65,7 +66,7 @@ namespace SincalConnector
         public string LoggingOutput
         {
             get { return _loggingOutput; }
-            set
+            private set
             {
                 if (value == _loggingOutput) return;
 
@@ -77,6 +78,15 @@ namespace SincalConnector
         public bool IsValid
         {
             get { return SizeOfDataType > 0 && CountOfCoefficients > 2; }
+        }
+
+        #endregion
+
+        #region public functions
+        
+        public void Log(string message)
+        {
+            LoggingOutput += message + "\n";
         }
 
         #endregion

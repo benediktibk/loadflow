@@ -21,7 +21,7 @@ namespace SincalConnector
             if (_connectorData == null)
                 throw new Exception("could not find static resource");
 
-            Log("starting application");
+            _connectorData.Log("starting application");
         }
 
         private void OpenFileDialogForInputPowerNet(object sender, RoutedEventArgs e)
@@ -44,11 +44,6 @@ namespace SincalConnector
         private void CalculatePowerNet(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
-        }
-
-        private void Log(string message)
-        {
-            _connectorData.LoggingOutput += message + "\n";
         }
     }
 }
