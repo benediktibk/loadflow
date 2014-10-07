@@ -23,7 +23,7 @@ namespace SincalConnector
             while (nameLength > 0 && nameFull[nameLength - 1] == ' ')
                 --nameLength;
 
-            Id = record.Parse<int>("Node_ID");
+            Id = record.Parse<int>("Id");
             Name = nameFull.Substring(0, nameLength);
             NominalVoltage = record.Parse<double>("Un")*1000;
             Voltage = new Complex();
@@ -47,7 +47,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Node_ID,Name,VoltageLevel.Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_II = Node.VoltLevel_II;");
+            return new OleDbCommand("SELECT Node.Node_ID AS Id,Node.Name AS Name,VoltageLevel.Un AS Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_ID = Node.VoltLevel_ID;");
         }
 
         #endregion
