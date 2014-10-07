@@ -62,10 +62,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="testdata\node.sin" />
+    <None Include="testdata\node_10kV.sin" />
+    <None Include="testdata\node_10kV_files\database.001.dia" />
+    <None Include="testdata\node_10kV_files\database.ini" />
     <None Include="testdata\node_files\database.001.dia" />
     <None Include="testdata\node_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="testdata\node_10kV_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\node_10kV_files\LF.001.html" />
     <Content Include="testdata\node_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

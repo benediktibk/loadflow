@@ -38,6 +38,20 @@ namespace SincalConnectorTest
             Assert.AreEqual(1000, nodes[1].NominalVoltage, 0.0001);
         }
 
+        [TestMethod]
+        public void Constructor_NetWithTwoNodesAt10kV_NodeValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/node_10kV_files/database.mdb");
+
+            var nodes = powerNet.Nodes;
+            Assert.AreEqual(1, nodes[0].Id);
+            Assert.AreEqual("N1", nodes[0].Name);
+            Assert.AreEqual(10000, nodes[0].NominalVoltage, 0.0001);
+            Assert.AreEqual(2, nodes[1].Id);
+            Assert.AreEqual("N2", nodes[1].Name);
+            Assert.AreEqual(10000, nodes[1].NominalVoltage, 0.0001);
+        }
+
         #endregion
     }
 }
