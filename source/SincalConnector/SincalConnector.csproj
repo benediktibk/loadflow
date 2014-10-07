@@ -63,6 +63,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ConnectorData.cs" />
+    <Compile Include="FeedIn.cs" />
     <Compile Include="IReadOnlyNode.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="PowerNet.cs" />
