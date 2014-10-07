@@ -53,7 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="SincalConnectorUI.xaml">
+    <Page Include="ConnectorUI.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -63,8 +63,8 @@
     </Compile>
     <Compile Include="ConnectorData.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="SincalConnectorUI.xaml.cs">
-      <DependentUpon>SincalConnectorUI.xaml</DependentUpon>
+    <Compile Include="ConnectorUI.xaml.cs">
+      <DependentUpon>ConnectorUI.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
