@@ -25,10 +25,9 @@ namespace SincalConnectorTest
         #region tests
 
         [TestMethod]
-        [DeploymentItem("testdata/node_files/database.mdb")]
         public void Constructor_NetWithTwoNodes_NodeValuesAreCorrect()
         {
-            var powerNet = new PowerNet("database.mdb");
+            var powerNet = new PowerNet("testdata/node_files/database.mdb");
 
             var nodes = powerNet.Nodes;
             Assert.AreEqual(1, nodes[0].Id);

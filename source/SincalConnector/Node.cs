@@ -47,7 +47,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Node_ID,Name,Un FROM Node;");
+            return new OleDbCommand("SELECT Node_ID,Name,VoltageLevel.Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_II = Node.VoltLevel_II;");
         }
 
         #endregion

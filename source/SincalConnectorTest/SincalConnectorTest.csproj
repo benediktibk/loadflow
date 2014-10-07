@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\node_files\database.mdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\node_files\LF.001.html" />
   </ItemGroup>
