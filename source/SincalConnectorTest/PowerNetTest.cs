@@ -52,6 +52,14 @@ namespace SincalConnectorTest
             Assert.AreEqual(10000, nodes[1].NominalVoltage, 0.0001);
         }
 
+        [TestMethod]
+        public void Constructor_VillageNet_116Nodes()
+        {
+            var powerNet = new PowerNet("testdata/dorfnetz_files/database.mdb");
+
+            Assert.AreEqual(116, powerNet.Nodes.Count);
+        }
+
         #endregion
     }
 }
