@@ -17,6 +17,7 @@ source/*.sdf
 source/*.opensdf
 source/*.sln.DotSettings
 source/**/*.user
+source/SincalConnectorTest/testdata/**/*.ldb
 documents/forschungspraxis/report.pdf
 documents/forschungspraxis/presentation.pdf
 documents/forschungspraxis/*.aux

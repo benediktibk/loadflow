@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
+using DatabaseHelper;
 
 namespace Database
 {
@@ -27,7 +28,7 @@ namespace Database
             Name = "";
         }
 
-        public Generator(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        public Generator(IReadOnlyDictionary<int, Node> nodeIds, ISafeDatabaseRecord reader)
         {
             var nodeId = reader.Parse<int>("Node");
             var node = nodeIds[nodeId];

@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Data.Common;
 
-namespace Database
+namespace DatabaseHelper
 {
-    class SafeSqlDataReader : IDisposable, ISafeDataRecord
+    public class SafeDatabaseReader : IDisposable, ISafeDatabaseRecord
     {
-        private readonly SqlDataReader _internalReader;
+        private readonly DbDataReader _internalReader;
 
-        public SafeSqlDataReader(SqlDataReader dataReader)
+        public SafeDatabaseReader(DbDataReader dataReader)
         {
             if (dataReader == null)
                 throw new ArgumentNullException("dataReader");

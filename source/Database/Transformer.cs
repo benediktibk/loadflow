@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
+using DatabaseHelper;
 
 namespace Database
 {
@@ -36,7 +37,7 @@ namespace Database
             Name = "";
         }
 
-        public Transformer(IReadOnlyDictionary<int, Node> nodeIds, ISafeDataRecord reader)
+        public Transformer(IReadOnlyDictionary<int, Node> nodeIds, ISafeDatabaseRecord reader)
         {
             var upperSideNodeId = reader.Parse<int>("UpperSideNode");
             var upperSideNode = nodeIds[upperSideNodeId];

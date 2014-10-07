@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -62,6 +63,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ConnectorData.cs" />
+    <Compile Include="IReadOnlyNode.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="PowerNet.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ConnectorUI.xaml.cs">
       <DependentUpon>ConnectorUI.xaml</DependentUpon>
@@ -94,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DatabaseHelper\DatabaseHelper.csproj">
+      <Project>{66F8115D-0B40-4C43-97E7-8E14A32767C8}</Project>
+      <Name>DatabaseHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

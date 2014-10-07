@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
+using DatabaseHelper;
 
 namespace Database
 {
@@ -73,7 +74,7 @@ namespace Database
             _calculatorSelection = NodeVoltageCalculatorSelection.CurrentIteration;
         }
 
-        public PowerNet(ISafeDataRecord reader, IConnectionNetElements connection) : 
+        public PowerNet(ISafeDatabaseRecord reader, IConnectionNetElements connection) : 
             this()
         {
             Id = reader.Parse<int>("PowerNetId");

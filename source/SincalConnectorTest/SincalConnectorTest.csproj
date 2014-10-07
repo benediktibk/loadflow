@@ -52,12 +52,24 @@
   <ItemGroup>
     <Compile Include="ConnectorDataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PowerNetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
       <Project>{9f597517-a825-4611-9234-f64b207499d1}</Project>
       <Name>SincalConnector</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="testdata\node.sin" />
+    <None Include="testdata\node_files\database.001.dia" />
+    <None Include="testdata\node_files\database.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="testdata\node_files\database.mdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\node_files\LF.001.html" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

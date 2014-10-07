@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.CompilerServices;
+using DatabaseHelper;
 
 namespace Database
 {
@@ -27,7 +28,7 @@ namespace Database
             Name = "";
         }
 
-        public Node(ISafeDataRecord reader)
+        public Node(ISafeDatabaseRecord reader)
         {
             Id = reader.Parse<int>("NodeId");
             Name = reader.Parse<string>("NodeName");

@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DatabaseHelper;
 
 namespace Database
 {
@@ -138,7 +139,7 @@ namespace Database
             powerNets.Clear();
             var command = new SqlCommand("SELECT * FROM powernets;", _sqlConnection);
 
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNets.Add(new PowerNet(reader, this));
 
@@ -306,7 +307,7 @@ namespace Database
             var command = Node.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
 
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                 {
                     var node = new Node(reader);
@@ -338,7 +339,7 @@ namespace Database
             var command = Load.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
 
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNet.Loads.Add(new Load(nodeIds, reader));
         }
@@ -349,7 +350,7 @@ namespace Database
             var command = TransmissionLine.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
 
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNet.TransmissionLines.Add(new TransmissionLine(nodeIds, reader));
         }
@@ -360,7 +361,7 @@ namespace Database
             var command = FeedIn.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
             
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNet.FeedIns.Add(new FeedIn(nodeIds, reader));
         }
@@ -371,7 +372,7 @@ namespace Database
             var command = Generator.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
             
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNet.Generators.Add(new Generator(nodeIds, reader));
         }
@@ -382,7 +383,7 @@ namespace Database
             var command = Transformer.CreateCommandToFetchAll(powerNet.Id);
             command.Connection = _sqlConnection;
             
-            using (var reader = new SafeSqlDataReader(command.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     powerNet.Transformers.Add(new Transformer(nodeIds, reader));
         }
