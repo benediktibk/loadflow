@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SincalConnectorTest", "Sinc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseHelper", "DatabaseHelper\DatabaseHelper.csproj", "{66F8115D-0B40-4C43-97E7-8E14A32767C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseHelperTest", "DatabaseHelperTest\DatabaseHelperTest.csproj", "{FB199312-CB0F-4CE3-9856-B5D6FE72670F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,16 @@ Global
 		{66F8115D-0B40-4C43-97E7-8E14A32767C8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{66F8115D-0B40-4C43-97E7-8E14A32767C8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{66F8115D-0B40-4C43-97E7-8E14A32767C8}.Release|Win32.ActiveCfg = Release|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FB199312-CB0F-4CE3-9856-B5D6FE72670F}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
