@@ -10,7 +10,7 @@ namespace SincalConnector
     {
         #region constructor
 
-        public FeedIn(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes)
+        public FeedIn(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
             var admittanceType = record.Parse<int>("Flag_Typ");
@@ -20,7 +20,7 @@ namespace SincalConnector
 
             ShortCircuitPower = record.Parse<double>("Sk2");
             RealToImaginaryRatio = record.Parse<double>("R_X");
-            NodeId = record.Parse<int>("Node_ID");
+            NodeId = nodeIdsByElementIds[Id];
             C = record.Parse<double>("cact");
             var voltageAngle = record.Parse<double>("delta");
             var voltageType = record.Parse<int>("Flag_Lf");
@@ -60,7 +60,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Sk2,R_X,Flag_Lf,delta,u,Ug,Node_ID,cact FROM Infeeder;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Sk2,R_X,Flag_Lf,delta,u,Ug,cact FROM Infeeder;");
         }
 
         #endregion
