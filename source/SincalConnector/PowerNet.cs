@@ -11,9 +11,10 @@ namespace SincalConnector
         #region variables
 
         private OleDbConnection _databaseConnection;
+        private readonly IList<Terminal> _terminals; 
         private readonly IList<Node> _nodes;
         private readonly IList<FeedIn> _feedIns;
-        private readonly IList<Terminal> _terminals; 
+        private readonly IList<Load> _loads;
 
         #endregion
 
@@ -21,9 +22,10 @@ namespace SincalConnector
 
         public PowerNet(string database)
         {
+            _terminals = new List<Terminal>();
             _nodes = new List<Node>();
             _feedIns = new List<FeedIn>();
-            _terminals = new List<Terminal>();
+            _loads = new List<Load>();
             var nodesByIds = new Dictionary<int, IReadOnlyNode>();
             var nodeIdsByElementIds = new MultiDictionary<int, int>();
 
@@ -59,11 +61,18 @@ namespace SincalConnector
             using (var reader = new SafeDatabaseReader(feedInFetchCommand.ExecuteReader()))
                 while (reader.Next())
                     _feedIns.Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
+
+            var loadFetchCommand = Load.CreateCommandToFetchAll();
+            loadFetchCommand.Connection = _databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(loadFetchCommand.ExecuteReader()))
+                while (reader.Next())
+                    _loads.Add(new Load(reader, nodeIdsByElementIds));
         }
 
         #endregion
 
-        #region public functions
+        #region properties
 
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
@@ -73,6 +82,11 @@ namespace SincalConnector
         public IReadOnlyList<FeedIn> FeedIns
         {
             get { return new ReadOnlyCollection<FeedIn>(_feedIns); }
+        }
+
+        public IReadOnlyList<Load> Loads
+        {
+            get { return new ReadOnlyCollection<Load>(_loads); }
         }
 
         #endregion

@@ -102,6 +102,17 @@ namespace SincalConnectorTest
             ComplexAssert.AreEqual(voltage, feedIn.Voltage, 0.000001);
         }
 
+        [TestMethod]
+        public void Constructor_NetWithTwoNodes_LoadIsCorrect()
+        {
+            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+
+            var loads = powerNet.Loads;
+            Assert.AreEqual(1, loads.Count);
+            var load = loads[0];
+            ComplexAssert.AreEqual(1e5, 1e4, load.LoadValue, 0.000001);
+        }
+
         #endregion
     }
 }
