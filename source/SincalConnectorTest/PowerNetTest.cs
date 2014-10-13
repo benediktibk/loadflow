@@ -71,11 +71,23 @@ namespace SincalConnectorTest
             var feedIns = powerNet.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
             var feedIn = feedIns[0];
-            var voltage = Complex.FromPolarCoordinates(990, 10*Math.PI/180);
+            var voltage = Complex.FromPolarCoordinates(990, 10 * Math.PI / 180);
             ComplexAssert.AreEqual(voltage, feedIn.Voltage, 0.000001);
             Assert.AreEqual(1e9, feedIn.ShortCircuitPower, 0.000001);
             Assert.AreEqual(0.1, feedIn.RealToImaginaryRatio, 0.000001);
             Assert.AreEqual(1.2, feedIn.C, 0.000001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithTwoNodesAt10kV_FeedInVoltageIsCorrect()
+        {
+            var powerNet = new PowerNet("testdata/node_10kv_files/database.mdb");
+
+            var feedIns = powerNet.FeedIns;
+            Assert.AreEqual(1, feedIns.Count);
+            var feedIn = feedIns[0];
+            var voltage = Complex.FromPolarCoordinates(10100, 0);
+            ComplexAssert.AreEqual(voltage, feedIn.Voltage, 0.000001);
         }
 
         #endregion
