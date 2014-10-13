@@ -73,6 +73,9 @@ namespace SincalConnectorTest
             var feedIn = feedIns[0];
             var voltage = Complex.FromPolarCoordinates(990, 10*Math.PI/180);
             ComplexAssert.AreEqual(voltage, feedIn.Voltage, 0.000001);
+            Assert.AreEqual(1e9, feedIn.ShortCircuitPower, 0.000001);
+            Assert.AreEqual(0.1, feedIn.RealToImaginaryRatio, 0.000001);
+            Assert.AreEqual(1.2, feedIn.C, 0.000001);
         }
 
         #endregion

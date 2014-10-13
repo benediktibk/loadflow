@@ -19,7 +19,12 @@ namespace SincalConnector
             if (admittanceType != 2)
                 throw new InvalidDataException("a feed-in must be specified by R/X and Sk");
 
-            ShortCircuitPower = record.Parse<double>("Sk2");
+            var internalReactance = record.Parse<double>("xi");
+
+            if (internalReactance != 0)
+                throw new InvalidDataException("an internal reactance for a feed-in is not supported");
+
+            ShortCircuitPower = record.Parse<double>("Sk2")*1e6;
             RealToImaginaryRatio = record.Parse<double>("R_X");
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             C = record.Parse<double>("cact");
@@ -61,7 +66,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Sk2,R_X,Flag_Lf,delta,u,Ug,cact FROM Infeeder;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Sk2,R_X,Flag_Lf,delta,u,Ug,cact,xi FROM Infeeder;");
         }
 
         #endregion
