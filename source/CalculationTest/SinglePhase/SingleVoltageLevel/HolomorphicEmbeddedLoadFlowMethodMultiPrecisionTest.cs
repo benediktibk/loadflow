@@ -322,12 +322,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var firstInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(0);
             var secondInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(1);
             var thirdInverseCoefficient = nodeVoltageCalculator.GetInverseCoefficients(2);
-            ComplexAssert.AreEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
-            ComplexAssert.AreEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
-            ComplexAssert.AreEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
-            ComplexAssert.AreEqual(secondInverseCoefficientShouldBe, secondInverseCoefficient, 0.0001);
-            ComplexAssert.AreEqual(thirdCoefficientShouldBe, thirdCoefficient, 0.0001);
-            ComplexAssert.AreEqual(thirdInverseCoefficientShouldBe, thirdInverseCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(secondInverseCoefficientShouldBe, secondInverseCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(thirdCoefficientShouldBe, thirdCoefficient, 0.0001);
+            ComplexAssert.AreAllEqual(thirdInverseCoefficientShouldBe, thirdInverseCoefficient, 0.0001);
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodes, _voltages, _powers, 0.0001, 0.01);
             nodeVoltageCalculator.Dispose();

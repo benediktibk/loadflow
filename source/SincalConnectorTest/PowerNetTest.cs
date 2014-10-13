@@ -1,5 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Numerics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
+using UnitTestHelper;
 
 namespace SincalConnectorTest
 {
@@ -58,6 +61,18 @@ namespace SincalConnectorTest
             var powerNet = new PowerNet("testdata/dorfnetz_files/database.mdb");
 
             Assert.AreEqual(116, powerNet.Nodes.Count);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithTwoNodes_FeedInValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+
+            var feedIns = powerNet.FeedIns;
+            Assert.AreEqual(1, feedIns.Count);
+            var feedIn = feedIns[0];
+            var voltage = Complex.FromPolarCoordinates(990, 10*Math.PI/180);
+            ComplexAssert.AreEqual(voltage, feedIn.Voltage, 0.000001);
         }
 
         #endregion

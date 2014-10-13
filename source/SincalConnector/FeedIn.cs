@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.OleDb;
 using System.IO;
 using System.Numerics;
@@ -22,14 +23,14 @@ namespace SincalConnector
             RealToImaginaryRatio = record.Parse<double>("R_X");
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             C = record.Parse<double>("cact");
-            var voltageAngle = record.Parse<double>("delta");
+            var voltageAngle = record.Parse<double>("delta")*Math.PI/180;
             var voltageType = record.Parse<int>("Flag_Lf");
             double voltageMagnitude;
 
             switch (voltageType)
             {
                 case 3:
-                    var voltageMagnitudeRelative = record.Parse<double>("u");
+                    var voltageMagnitudeRelative = record.Parse<double>("u")/100;
                     var nominalVoltage = nodes[NodeId].NominalVoltage;
                     voltageMagnitude = voltageMagnitudeRelative*nominalVoltage;
                     break;

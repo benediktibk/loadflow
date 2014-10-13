@@ -22,7 +22,7 @@ namespace UnitTestHelper
             AreEqual(new Complex(expectedReal, expectedImaginary), actual, delta);
         }
 
-        public static void AreEqual(Vector<Complex> expected, Vector<Complex> actual, double delta)
+        public static void AreAllEqual(Vector<Complex> expected, Vector<Complex> actual, double delta)
         {
             Assert.AreEqual(expected.Count, actual.Count);
 
