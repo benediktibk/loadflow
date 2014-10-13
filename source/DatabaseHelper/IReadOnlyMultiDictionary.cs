@@ -2,8 +2,9 @@
 
 namespace DatabaseHelper
 {
-    interface IReadOnlyMultiDictionary<Key, Value>
+    public interface IReadOnlyMultiDictionary<in TKey, out TValue>
     {
-        IReadOnlyList<Value> Get(Key key); 
+        IReadOnlyList<TValue> Get(TKey key);
+        TValue GetOnly(TKey key);
     }
 }

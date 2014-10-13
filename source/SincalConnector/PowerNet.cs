@@ -25,7 +25,7 @@ namespace SincalConnector
             _feedIns = new List<FeedIn>();
             _terminals = new List<Terminal>();
             var nodesByIds = new Dictionary<int, IReadOnlyNode>();
-            var nodeIdsByElementIds = new Dictionary<int, int>();
+            var nodeIdsByElementIds = new MultiDictionary<int, int>();
 
             var connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
             _databaseConnection = new OleDbConnection(connectionString);

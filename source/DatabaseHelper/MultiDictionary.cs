@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DatabaseHelper
 {
@@ -24,6 +26,16 @@ namespace DatabaseHelper
         public IReadOnlyList<TValue> Get(TKey key)
         {
             return _values[key];
+        }
+
+        public TValue GetOnly(TKey key)
+        {
+            var values = _values[key];
+
+            if (values.Count > 1)
+                throw new InvalidOperationException("key has more than one value");
+
+            return values.First();
         }
 
         public void Add(TKey key, TValue value)

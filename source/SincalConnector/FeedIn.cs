@@ -10,7 +10,7 @@ namespace SincalConnector
     {
         #region constructor
 
-        public FeedIn(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyDictionary<int, int> nodeIdsByElementIds)
+        public FeedIn(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
             var admittanceType = record.Parse<int>("Flag_Typ");
@@ -20,7 +20,7 @@ namespace SincalConnector
 
             ShortCircuitPower = record.Parse<double>("Sk2");
             RealToImaginaryRatio = record.Parse<double>("R_X");
-            NodeId = nodeIdsByElementIds[Id];
+            NodeId = nodeIdsByElementIds.GetOnly(Id);
             C = record.Parse<double>("cact");
             var voltageAngle = record.Parse<double>("delta");
             var voltageType = record.Parse<int>("Flag_Lf");
