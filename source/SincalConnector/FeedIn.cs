@@ -40,7 +40,7 @@ namespace SincalConnector
                     voltageMagnitude = voltageMagnitudeRelative*nominalVoltage;
                     break;
                 case 6:
-                    voltageMagnitude = record.Parse<double>("Ug");
+                    voltageMagnitude = record.Parse<double>("Ug")*1000;
                     break;
                 default:
                     throw new InvalidDataException("only the voltage types '|uq| und delta' and '|Uq| und delta' are supported for a feed-in");
