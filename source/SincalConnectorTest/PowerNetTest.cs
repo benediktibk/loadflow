@@ -113,6 +113,14 @@ namespace SincalConnectorTest
             ComplexAssert.AreEqual(1e5, 1e4, load.LoadValue, 0.000001);
         }
 
+        [TestMethod]
+        public void Constructor_NetWithTwoNodes_FrequencyIs50()
+        {
+            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+
+            Assert.AreEqual(50, powerNet.Frequency, 0.000001);
+        }
+
         #endregion
     }
 }
