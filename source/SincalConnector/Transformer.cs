@@ -47,6 +47,18 @@ namespace SincalConnector
             var connectionSymbol = record.Parse<int>("VecGrp");
             var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
             PhaseShift = phaseShiftFactor*30*Math.PI/180;
+
+            var upperSideNominalVoltage = record.Parse<double>("Un1") * 1000;
+            var lowerSideNominalVoltage = record.Parse<double>("Un2") * 1000;
+
+            if (!(  (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001) ||
+                    (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001)))
+                throw new InvalidDataException("the nominal voltages at a transformer do not match");
+
+            var additionalPhaseShift = record.Parse<double>("AddRotate");
+
+            if (additionalPhaseShift != 0)
+                throw new NotSupportedException("additional phase shifts at the transformer are not supported");
         }
 
         #endregion
@@ -70,7 +82,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Sn,uk,ur,Vfe,i0,VecGrp,roh FROM TwoWindingTransformer;");
+            return new OleDbCommand("SELECT Element_ID,Sn,uk,ur,Vfe,i0,VecGrp,roh,Un1,Un2,AddRotate FROM TwoWindingTransformer;");
         }
 
         public static int MapConnectionSymbolToPhaseShiftFactor(int connectionSymbol)
