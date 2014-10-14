@@ -19,7 +19,7 @@ namespace SincalConnector
 
             Length = record.Parse<double>("l")*1000;
             SeriesResistancePerUnitLength = record.Parse<double>("r") / 1000;
-            SeriesInductancePerUnitLength = record.Parse<double>("x") / 1000;
+            SeriesInductancePerUnitLength = record.Parse<double>("x") / (2 * Math.PI * frequency * 1000);
             var shuntLosses = record.Parse<double>("va");
             var nominalVoltage = record.Parse<double>("Un")*1000;
             ShuntConductancePerUnitLength = nominalVoltage*nominalVoltage / shuntLosses;

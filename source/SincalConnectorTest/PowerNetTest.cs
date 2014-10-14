@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
@@ -119,6 +120,22 @@ namespace SincalConnectorTest
             var powerNet = new PowerNet("testdata/node_files/database.mdb");
 
             Assert.AreEqual(50, powerNet.Frequency, 0.000001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithTwoNodes_TransmissionLineIsCorrect()
+        {
+            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+
+            var transmissionLines = powerNet.TransmissionLines;
+            Assert.AreEqual(1, transmissionLines.Count);
+            var transmissionLine = transmissionLines.First();
+            Assert.AreEqual(1000, transmissionLine.Length, 0.000001);
+            Assert.AreEqual(1e-4, transmissionLine.SeriesResistancePerUnitLength, 0.000001);
+            Assert.AreEqual(1.273239545e-6, transmissionLine.SeriesInductancePerUnitLength, 0.000001);
+            Assert.AreEqual(2e7, transmissionLine.ShuntConductancePerUnitLength, 0.000001);
+            Assert.AreEqual(0.2e-12, transmissionLine.ShuntCapacityPerUnitLength, 0.000001);
+            Assert.IsTrue(transmissionLine.TransmissionEquationModel);
         }
 
         #endregion
