@@ -146,7 +146,7 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
-        public void Constructor_NetWithTransformer_TransformerValuesCorrect()
+        public void Constructor_NetWithTransformer_TransformerValuesAreCorrect()
         {
             var powerNet = new PowerNet("testdata/transformer_files/database.mdb");
 
@@ -159,6 +159,18 @@ namespace SincalConnectorTest
             Assert.AreEqual(1e3, transformer.IronLosses, 0.000001);
             Assert.AreEqual(Math.PI, transformer.PhaseShift, 0.000001);
             Assert.AreEqual(5e2, transformer.CopperLosses, 0.000001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithGeneratorOne_GeneratorValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/generator1_files/database.mdb");
+
+            var generators = powerNet.Generators;
+            Assert.AreEqual(1, generators.Count);
+            var generator = generators.First();
+            Assert.AreEqual(9e5, generator.RealPower, 0.00001);
+            Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
         }
 
         #endregion

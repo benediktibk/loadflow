@@ -74,6 +74,9 @@
     <None Include="testdata\feedin.sin" />
     <None Include="testdata\feedin_files\database.001.dia" />
     <None Include="testdata\feedin_files\database.ini" />
+    <None Include="testdata\generator1.sin" />
+    <None Include="testdata\generator1_files\database.001.dia" />
+    <None Include="testdata\generator1_files\database.ini" />
     <None Include="testdata\node.sin" />
     <None Include="testdata\node_10kV.sin" />
     <None Include="testdata\node_10kV_files\database.001.dia" />
@@ -95,6 +98,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\feedin_files\LF.001.html" />
+    <Content Include="testdata\generator1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\node_10kV_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

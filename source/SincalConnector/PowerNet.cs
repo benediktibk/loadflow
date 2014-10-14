@@ -17,7 +17,8 @@ namespace SincalConnector
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
         private readonly IList<TransmissionLine> _transmissionLines;
-        private readonly IList<Transformer> _transformers; 
+        private readonly IList<Transformer> _transformers;
+        private readonly IList<Generator> _generators; 
 
         #endregion
 
@@ -42,6 +43,7 @@ namespace SincalConnector
                 FetchLoads(databaseConnection, nodeIdsByElementIds);
                 FetchTransmissionLines(databaseConnection, nodeIdsByElementIds);
                 FetchTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
 
                 if (ContainsNotSupportedElement(databaseConnection))
                     throw new NotSupportedException("the net contains a not supported element");
@@ -56,6 +58,7 @@ namespace SincalConnector
             _loads = new List<Load>();
             _transmissionLines = new List<TransmissionLine>();
             _transformers = new List<Transformer>();
+            _generators = new List<Generator>();
         }
 
         #endregion
@@ -90,6 +93,11 @@ namespace SincalConnector
         public IReadOnlyList<Transformer> Transformers
         {
             get { return new ReadOnlyCollection<Transformer>(_transformers); }
+        }
+
+        public IReadOnlyList<Generator> Generators
+        {
+            get { return new ReadOnlyCollection<Generator>(_generators); }
         }
 
         #endregion
@@ -187,6 +195,16 @@ namespace SincalConnector
                     _feedIns.Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
         }
 
+        private void FetchGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var generatorFetchCommand = Generator.CreateCommandToFetchAll();
+            generatorFetchCommand.Connection = databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(generatorFetchCommand.ExecuteReader()))
+                while (reader.Next())
+                    _generators.Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
         private void DetermineFrequency(OleDbConnection databaseConnection)
         {
             var frequenciesFetchCommand = CreateCommandToFetchAllFrequencies();
@@ -222,13 +240,14 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(_feedIns.Count + _loads.Count + _transformers.Count + _transmissionLines.Count);
+            var result = new List<int>(_feedIns.Count + _loads.Count + _transformers.Count + _transmissionLines.Count + _generators.Count);
             var originalCapacity = result.Capacity;
 
             result.AddRange(_feedIns.Select(element => element.Id));
             result.AddRange(_loads.Select(element => element.Id));
             result.AddRange(_transformers.Select(element => element.Id));
             result.AddRange(_transmissionLines.Select(element => element.Id));
+            result.AddRange(_generators.Select(element => element.Id));
 
             if (originalCapacity != result.Capacity)
                 throw new Exception("not enough space was allocated for the element IDs");
