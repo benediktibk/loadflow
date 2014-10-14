@@ -80,6 +80,9 @@
     <None Include="testdata\node_10kV_files\database.ini" />
     <None Include="testdata\node_files\database.001.dia" />
     <None Include="testdata\node_files\database.ini" />
+    <None Include="testdata\transformer.sin" />
+    <None Include="testdata\transformer_files\database.001.dia" />
+    <None Include="testdata\transformer_files\database.ini" />
     <None Include="testdata\unsupported.sin" />
     <None Include="testdata\unsupported_files\database.001.dia" />
     <None Include="testdata\unsupported_files\database.ini" />
@@ -100,6 +103,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\node_files\LF.001.html" />
+    <Content Include="testdata\transformer_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\unsupported_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

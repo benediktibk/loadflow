@@ -14,10 +14,10 @@ namespace SincalConnector
         {
             Id = record.Parse<int>("Element_ID");
             NominalPower = record.Parse<double>("Sn")*1e6;
-            RelativeShortCircuitVoltage = record.Parse<double>("uk")*100;
+            RelativeShortCircuitVoltage = record.Parse<double>("uk")/100;
             IronLosses = record.Parse<double>("Vfe")*1000;
-            RelativeNoLoadCurrent = record.Parse<double>("i0")*100;
-            var realRelativeShortCircuitVoltge = record.Parse<double>("ur")*100;
+            RelativeNoLoadCurrent = record.Parse<double>("i0")/100;
+            var realRelativeShortCircuitVoltge = record.Parse<double>("ur")/100;
             CopperLosses = NominalPower*realRelativeShortCircuitVoltge;
             Ratio = 1;
             var controlStage = record.Parse<double>("roh");
