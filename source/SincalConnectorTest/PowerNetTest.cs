@@ -173,6 +173,12 @@ namespace SincalConnectorTest
             Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
         }
 
+        [TestMethod]
+        public void Constructor_GermanNet_NoErrors()
+        {
+            var powerNet = new PowerNet("testdata/uebertragungsnetz_deutschland_files/database.mdb");
+        }
+
         #endregion
     }
 }
