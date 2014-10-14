@@ -15,6 +15,7 @@ namespace SincalConnector
         private readonly IList<Node> _nodes;
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
+        private readonly IList<TransmissionLine> _transmissionLines; 
 
         #endregion
 
@@ -26,6 +27,7 @@ namespace SincalConnector
             _nodes = new List<Node>();
             _feedIns = new List<FeedIn>();
             _loads = new List<Load>();
+            _transmissionLines = new List<TransmissionLine>();
             var nodesByIds = new Dictionary<int, IReadOnlyNode>();
             var nodeIdsByElementIds = new MultiDictionary<int, int>();
 
@@ -68,6 +70,13 @@ namespace SincalConnector
             using (var reader = new SafeDatabaseReader(loadFetchCommand.ExecuteReader()))
                 while (reader.Next())
                     _loads.Add(new Load(reader, nodeIdsByElementIds));
+
+            var transmissionLineFetchCommand = TransmissionLine.CreateCommandToFetchAll();
+            transmissionLineFetchCommand.Connection = _databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(transmissionLineFetchCommand.ExecuteReader()))
+                while (reader.Next())
+                    _transmissionLines.Add(new TransmissionLine(reader, nodeIdsByElementIds, 50));
         }
 
         #endregion
@@ -87,6 +96,11 @@ namespace SincalConnector
         public IReadOnlyList<Load> Loads
         {
             get { return new ReadOnlyCollection<Load>(_loads); }
+        }
+
+        public IReadOnlyList<TransmissionLine> TransmissionLines
+        {
+            get { return new ReadOnlyCollection<TransmissionLine>(_transmissionLines); }
         }
 
         #endregion
