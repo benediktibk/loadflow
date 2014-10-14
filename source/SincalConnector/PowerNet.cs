@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
+using System.IO;
 using System.Linq;
 using DatabaseHelper;
 
@@ -11,6 +12,7 @@ namespace SincalConnector
         #region variables
 
         private OleDbConnection _databaseConnection;
+        private readonly double _frequency;
         private readonly IList<Terminal> _terminals; 
         private readonly IList<Node> _nodes;
         private readonly IList<FeedIn> _feedIns;
@@ -34,6 +36,19 @@ namespace SincalConnector
             var connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
             _databaseConnection = new OleDbConnection(connectionString);
             _databaseConnection.Open();
+
+            var frequenciesFetchCommand = CreateCommandToFetchAllFrequencies();
+            frequenciesFetchCommand.Connection = _databaseConnection;
+            var frequencies = new List<double>();
+            
+            using (var reader = new SafeDatabaseReader(frequenciesFetchCommand.ExecuteReader()))
+                while (reader.Next())
+                    frequencies.Add(reader.Parse<double>("f"));
+
+            if (frequencies.Count != 1)
+                throw new InvalidDataException("only one frequency per net is supported");
+
+            _frequency = frequencies.First();
 
             var nodeFetchCommand = Node.CreateCommandToFetchAll();
             nodeFetchCommand.Connection = _databaseConnection;
@@ -76,12 +91,17 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(transmissionLineFetchCommand.ExecuteReader()))
                 while (reader.Next())
-                    _transmissionLines.Add(new TransmissionLine(reader, nodeIdsByElementIds, 50));
+                    _transmissionLines.Add(new TransmissionLine(reader, nodeIdsByElementIds, _frequency));
         }
 
         #endregion
 
         #region properties
+
+        public double Frequency
+        {
+            get { return _frequency; }
+        }
 
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
@@ -101,6 +121,15 @@ namespace SincalConnector
         public IReadOnlyList<TransmissionLine> TransmissionLines
         {
             get { return new ReadOnlyCollection<TransmissionLine>(_transmissionLines); }
+        }
+
+        #endregion
+
+        #region static functions
+
+        public static OleDbCommand CreateCommandToFetchAllFrequencies()
+        {
+            return new OleDbCommand("SELECT f FROM VoltageLevel GROUP BY f");
         }
 
         #endregion
