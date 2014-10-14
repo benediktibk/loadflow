@@ -13,15 +13,7 @@ namespace SincalConnector
         public Load(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
-            var loadTypeOne = record.Parse<int>("Flag_Load");
-            var loadTypeTwo = record.Parse<int>("Flag_LoadType");
             var modelType = record.Parse<int>("Flag_Lf");
-
-            if (loadTypeOne != 1)
-                throw new NotSupportedException("not supported general load type");
-
-            if (loadTypeTwo != 2 && loadTypeTwo != 4)
-                throw new NotSupportedException("not supported load type");
 
             if (modelType != 1)
                 throw new NotSupportedException("not supported load model");
@@ -46,7 +38,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Load,Flag_LoadType,Flag_Lf,P,Q FROM Load;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q FROM Load WHERE (Flag_LoadType = 2 OR Flag_LoadType = 4) AND Flag_Load = 1;");
         }
 
         #endregion

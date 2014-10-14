@@ -55,6 +55,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Generator.cs" />
+    <Compile Include="ImpedanceLoad.cs" />
     <Compile Include="Transformer.cs" />
     <Compile Include="TransmissionLine.cs" />
     <Compile Include="Load.cs" />
