@@ -17,8 +17,14 @@ namespace SincalConnector
             var loadTypeTwo = record.Parse<int>("Flag_LoadType");
             var modelType = record.Parse<int>("Flag_Lf");
 
-            if (loadTypeOne != 1 || loadTypeTwo != 2 || modelType != 1)
+            if (loadTypeOne != 1)
+                throw new NotSupportedException("not supported general load type");
+
+            if (loadTypeTwo != 2 && loadTypeTwo != 4)
                 throw new NotSupportedException("not supported load type");
+
+            if (modelType != 1)
+                throw new NotSupportedException("not supported load model");
 
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var p = record.Parse<double>("P") * 1e6;
