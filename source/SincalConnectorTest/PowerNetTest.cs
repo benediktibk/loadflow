@@ -138,6 +138,13 @@ namespace SincalConnectorTest
             Assert.IsTrue(transmissionLine.TransmissionEquationModel);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void Constructor_NetWithUnsupportedElement_ThrowsException()
+        {
+            var powerNet = new PowerNet("testdata/unsupported_files/database.mdb");
+        }
+
         #endregion
     }
 }

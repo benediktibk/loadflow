@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.IO;
@@ -48,7 +49,7 @@ namespace SincalConnector
                     frequencies.Add(reader.Parse<double>("f"));
 
             if (frequencies.Count != 1)
-                throw new InvalidDataException("only one frequency per net is supported");
+                throw new NotSupportedException("only one frequency per net is supported");
 
             _frequency = frequencies.First();
 

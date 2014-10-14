@@ -17,12 +17,12 @@ namespace SincalConnector
             var admittanceType = record.Parse<int>("Flag_Typ");
 
             if (admittanceType != 2)
-                throw new InvalidDataException("a feed-in must be specified by R/X and Sk");
+                throw new NotSupportedException("a feed-in must be specified by R/X and Sk");
 
             var internalReactance = record.Parse<double>("xi");
 
             if (internalReactance != 0)
-                throw new InvalidDataException("an internal reactance for a feed-in is not supported");
+                throw new NotSupportedException("an internal reactance for a feed-in is not supported");
 
             ShortCircuitPower = record.Parse<double>("Sk2")*1e6;
             RealToImaginaryRatio = record.Parse<double>("R_X");
@@ -43,7 +43,7 @@ namespace SincalConnector
                     voltageMagnitude = record.Parse<double>("Ug")*1000;
                     break;
                 default:
-                    throw new InvalidDataException("only the voltage types '|uq| und delta' and '|Uq| und delta' are supported for a feed-in");
+                    throw new NotSupportedException("only the voltage types '|uq| und delta' and '|Uq| und delta' are supported for a feed-in");
             }
 
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);

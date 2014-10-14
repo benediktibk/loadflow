@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System;
+using System.Data.OleDb;
 using System.IO;
 using System.Numerics;
 using DatabaseHelper;
@@ -17,7 +18,7 @@ namespace SincalConnector
             var modelType = record.Parse<int>("Flag_Lf");
 
             if (loadTypeOne != 1 || loadTypeTwo != 2 || modelType != 1)
-                throw new InvalidDataException("invalid load type");
+                throw new NotSupportedException("not supported load type");
 
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var p = record.Parse<double>("P") * 1e6;

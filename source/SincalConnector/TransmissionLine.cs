@@ -15,7 +15,7 @@ namespace SincalConnector
             var lineType = record.Parse<int>("Flag_LineTyp");
 
             if (lineType != 1 && lineType != 2)
-                throw new InvalidDataException("the selected transmission line type is not supported");
+                throw new NotSupportedException("the selected transmission line type is not supported");
 
             Length = record.Parse<double>("l")*1000;
             SeriesResistancePerUnitLength = record.Parse<double>("r") / 1000;
@@ -34,12 +34,12 @@ namespace SincalConnector
             NodeTwoId = nodes[1];
 
             if (Math.Abs(frequency - record.Parse<double>("fn")) > 0.00001)
-                throw new InvalidDataException("the frequency of a transmission line does not match the net frequency");
+                throw new NotSupportedException("the frequency of a transmission line does not match the net frequency");
 
             var parallelSystems = record.Parse<double>("ParSys");
 
             if (parallelSystems != 1)
-                throw new InvalidDataException("parallel transmission lines are not supported");
+                throw new NotSupportedException("parallel transmission lines are not supported");
         }
 
         #endregion

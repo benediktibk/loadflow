@@ -23,7 +23,7 @@ namespace SincalConnector
             var controlStage = record.Parse<double>("roh");
 
             if (controlStage != 0)
-                throw new InvalidDataException("control stages are not supported");
+                throw new NotSupportedException("control stages are not supported");
 
             var connectedNodes = nodeIdsByElementIds.Get(Id);
 

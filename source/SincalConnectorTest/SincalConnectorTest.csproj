@@ -55,7 +55,7 @@
     <Compile Include="ConnectorDataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PowerNetTest.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="TransformerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
@@ -80,6 +80,9 @@
     <None Include="testdata\node_10kV_files\database.ini" />
     <None Include="testdata\node_files\database.001.dia" />
     <None Include="testdata\node_files\database.ini" />
+    <None Include="testdata\unsupported.sin" />
+    <None Include="testdata\unsupported_files\database.001.dia" />
+    <None Include="testdata\unsupported_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\dorfnetz_files\database.mdb">
@@ -97,6 +100,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\node_files\LF.001.html" />
+    <Content Include="testdata\unsupported_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
