@@ -18,7 +18,8 @@ namespace SincalConnector
         private readonly IList<Load> _loads;
         private readonly IList<TransmissionLine> _transmissionLines;
         private readonly IList<Transformer> _transformers;
-        private readonly IList<Generator> _generators; 
+        private readonly IList<Generator> _generators;
+        private readonly IList<ImpedanceLoad> _impedanceLoads; 
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace SincalConnector
                 FetchTransmissionLines(databaseConnection, nodeIdsByElementIds);
                 FetchTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchImpedanceLoads(databaseConnection, nodesByIds, nodeIdsByElementIds);
 
                 if (ContainsNotSupportedElement(databaseConnection))
                     throw new NotSupportedException("the net contains a not supported element");
@@ -59,6 +61,7 @@ namespace SincalConnector
             _transmissionLines = new List<TransmissionLine>();
             _transformers = new List<Transformer>();
             _generators = new List<Generator>();
+            _impedanceLoads = new List<ImpedanceLoad>();
         }
 
         #endregion
@@ -136,82 +139,92 @@ namespace SincalConnector
 
         private void FetchTerminals(OleDbConnection databaseConnection)
         {
-            var terminalFetchCommand = Terminal.CreateCommandToFetchAll();
-            terminalFetchCommand.Connection = databaseConnection;
+            var command = Terminal.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(terminalFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _terminals.Add(new Terminal(reader));
         }
 
         private void FetchNodes(OleDbConnection databaseConnection)
         {
-            var nodeFetchCommand = Node.CreateCommandToFetchAll();
-            nodeFetchCommand.Connection = databaseConnection;
+            var command = Node.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(nodeFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _nodes.Add(new Node(reader, databaseConnection));
         }
 
-        private void FetchTransformers(OleDbConnection databaseConnection, Dictionary<int, IReadOnlyNode> nodesByIds,
-            MultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
+            IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var transformerFetchCommand = Transformer.CreateCommandToFetchAll();
-            transformerFetchCommand.Connection = databaseConnection;
+            var command = Transformer.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(transformerFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _transformers.Add(new Transformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
-        private void FetchTransmissionLines(OleDbConnection databaseConnection, MultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var transmissionLineFetchCommand = TransmissionLine.CreateCommandToFetchAll();
-            transmissionLineFetchCommand.Connection = databaseConnection;
+            var command = TransmissionLine.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(transmissionLineFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _transmissionLines.Add(new TransmissionLine(reader, nodeIdsByElementIds, _frequency));
         }
 
-        private void FetchLoads(OleDbConnection databaseConnection, MultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchLoads(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var loadFetchCommand = Load.CreateCommandToFetchAll();
-            loadFetchCommand.Connection = databaseConnection;
+            var command = Load.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(loadFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _loads.Add(new Load(reader, nodeIdsByElementIds));
         }
 
-        private void FetchFeedIns(OleDbConnection databaseConnection, Dictionary<int, IReadOnlyNode> nodesByIds, MultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchImpedanceLoads(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var feedInFetchCommand = FeedIn.CreateCommandToFetchAll();
-            feedInFetchCommand.Connection = databaseConnection;
+            var command = ImpedanceLoad.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(feedInFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                while (reader.Next())
+                    _impedanceLoads.Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void FetchFeedIns(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var command = FeedIn.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _feedIns.Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var generatorFetchCommand = Generator.CreateCommandToFetchAll();
-            generatorFetchCommand.Connection = databaseConnection;
+            var command = Generator.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
 
-            using (var reader = new SafeDatabaseReader(generatorFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _generators.Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void DetermineFrequency(OleDbConnection databaseConnection)
         {
-            var frequenciesFetchCommand = CreateCommandToFetchAllFrequencies();
-            frequenciesFetchCommand.Connection = databaseConnection;
+            var command = CreateCommandToFetchAllFrequencies();
+            command.Connection = databaseConnection;
             var frequencies = new List<double>();
 
-            using (var reader = new SafeDatabaseReader(frequenciesFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     frequencies.Add(reader.Parse<double>("f"));
 
@@ -223,12 +236,12 @@ namespace SincalConnector
 
         private bool ContainsNotSupportedElement(OleDbConnection databaseConnection)
         {
-            var elementFetchCommand = CreateCommandToFetchAllElementIdsSorted();
-            elementFetchCommand.Connection = databaseConnection;
+            var command = CreateCommandToFetchAllElementIdsSorted();
+            command.Connection = databaseConnection;
             var allSupportedElements = GetAllSupportedElementIdsSorted();
             var allElements = new List<int>();
 
-            using (var reader = new SafeDatabaseReader(elementFetchCommand.ExecuteReader()))
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     allElements.Add(reader.Parse<int>("Element_ID"));
 
@@ -240,7 +253,7 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(_feedIns.Count + _loads.Count + _transformers.Count + _transmissionLines.Count + _generators.Count);
+            var result = new List<int>(_feedIns.Count + _loads.Count + _transformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count);
             var originalCapacity = result.Capacity;
 
             result.AddRange(_feedIns.Select(element => element.Id));
@@ -248,6 +261,7 @@ namespace SincalConnector
             result.AddRange(_transformers.Select(element => element.Id));
             result.AddRange(_transmissionLines.Select(element => element.Id));
             result.AddRange(_generators.Select(element => element.Id));
+            result.AddRange(_impedanceLoads.Select(element => element.Id));
 
             if (originalCapacity != result.Capacity)
                 throw new Exception("not enough space was allocated for the element IDs");
