@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System;
+using System.Data.OleDb;
 using System.Numerics;
 using DatabaseHelper;
 
@@ -53,6 +54,20 @@ namespace SincalConnector
             Load = load;
         }
 
+        public OleDbCommand CreateCommandToAddResult(double rotationOffset)
+        {
+            var command = new OleDbCommand("INSERT INTO LFNodeResults (Flag_Result,Node_ID,P,Q,S,U,U_Un,phi,phi_rot) VALUES (0,@Id,@P,@Q,@S,@U,@URelative,@phi,@phi_rot)");
+            command.Parameters.AddWithValue("Id", Id);
+            command.Parameters.AddWithValue("P", Load.Real * 1e-6);
+            command.Parameters.AddWithValue("Q", Load.Imaginary * 1e-6);
+            command.Parameters.AddWithValue("S", Load.Magnitude * 1e-6);
+            command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-6);
+            command.Parameters.AddWithValue("URelative", Voltage.Magnitude / NominalVoltage * 100);
+            command.Parameters.AddWithValue("phi", (Voltage.Phase - rotationOffset) * 180 / Math.PI);
+            command.Parameters.AddWithValue("phi_rot", Voltage.Phase * 180 / Math.PI);
+            return command;
+        }
+
         #endregion
 
         #region static functions
@@ -60,6 +75,11 @@ namespace SincalConnector
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Node.Node_ID AS Id,Node.Name AS Name,VoltageLevel.Un AS Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_ID = Node.VoltLevel_ID;");
+        }
+
+        public static OleDbCommand CreateCommandToDeleteAllResults()
+        {
+            return new OleDbCommand("DELETE FROM LFNodeResult;");
         }
 
         #endregion
