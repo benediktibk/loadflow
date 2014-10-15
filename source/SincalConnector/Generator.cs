@@ -17,6 +17,9 @@ namespace SincalConnector
             var machineType = record.Parse<int>("Flag_Machine");
             var nominalVoltage = record.Parse<double>("Un") * 1000;
             var loadFlowType = record.Parse<int>("Flag_Lf");
+            var relativeSynchronousReactance = record.Parse<double>("xi")/100;
+            var nominalPower = record.Parse<double>("Sn")*1e6;
+            SynchronousReactance = relativeSynchronousReactance*nominalVoltage*nominalVoltage/nominalPower;
 
             if (machineType != 1)
                 throw new NotSupportedException("the selected machine type for a generator is not supported");
@@ -27,6 +30,14 @@ namespace SincalConnector
 
             switch (loadFlowType)
             {
+                case 6:
+                    VoltageMagnitude = nominalVoltage * record.Parse<double>("u") / 100;
+                    SynchronousReactance = 0;
+                    break;
+                case 7:
+                    VoltageMagnitude = record.Parse<double>("Ug") * 1000;
+                    SynchronousReactance = 0;
+                    break;
                 case 11:
                     VoltageMagnitude = nominalVoltage*record.Parse<double>("u")/100;
                     break;
@@ -48,6 +59,7 @@ namespace SincalConnector
         public int NodeId { get; private set; }
         public double VoltageMagnitude { get; private set; }
         public double RealPower { get; private set; }
+        public double SynchronousReactance { get; private set; }
 
         #endregion
 
@@ -55,7 +67,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi FROM SynchronousMachine;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,Sn FROM SynchronousMachine;");
         }
 
         #endregion
