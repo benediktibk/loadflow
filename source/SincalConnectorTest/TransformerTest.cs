@@ -12,14 +12,14 @@ namespace SincalConnectorTest
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MapConnectionSymbolToPhaseShiftFactor_0_ThrowsException()
         {
-            Transformer.MapConnectionSymbolToPhaseShiftFactor(0);
+            TwoWindingTransformer.MapConnectionSymbolToPhaseShiftFactor(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MapConnectionSymbolToPhaseShiftFactor_82_ThrowsException()
         {
-            Transformer.MapConnectionSymbolToPhaseShiftFactor(0);
+            TwoWindingTransformer.MapConnectionSymbolToPhaseShiftFactor(0);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace SincalConnectorTest
             var validValues = new List<int>() {0, 1, 5, 6, 7, 11};
             for (var i = 1; i < 81; ++i)
             {
-                var result = Transformer.MapConnectionSymbolToPhaseShiftFactor(i);
+                var result = TwoWindingTransformer.MapConnectionSymbolToPhaseShiftFactor(i);
                 Assert.IsTrue(validValues.Contains(result));
             }
         }

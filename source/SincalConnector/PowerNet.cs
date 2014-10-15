@@ -17,7 +17,7 @@ namespace SincalConnector
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
         private readonly IList<TransmissionLine> _transmissionLines;
-        private readonly IList<Transformer> _transformers;
+        private readonly IList<TwoWindingTransformer> _twoWindingTransformers;
         private readonly IList<Generator> _generators;
         private readonly IList<ImpedanceLoad> _impedanceLoads; 
 
@@ -43,7 +43,7 @@ namespace SincalConnector
                 FetchFeedIns(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchLoads(databaseConnection, nodeIdsByElementIds);
                 FetchTransmissionLines(databaseConnection, nodeIdsByElementIds);
-                FetchTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchTwoWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(databaseConnection, nodesByIds, nodeIdsByElementIds);
 
@@ -59,7 +59,7 @@ namespace SincalConnector
             _feedIns = new List<FeedIn>();
             _loads = new List<Load>();
             _transmissionLines = new List<TransmissionLine>();
-            _transformers = new List<Transformer>();
+            _twoWindingTransformers = new List<TwoWindingTransformer>();
             _generators = new List<Generator>();
             _impedanceLoads = new List<ImpedanceLoad>();
         }
@@ -93,9 +93,9 @@ namespace SincalConnector
             get { return new ReadOnlyCollection<TransmissionLine>(_transmissionLines); }
         }
 
-        public IReadOnlyList<Transformer> Transformers
+        public IReadOnlyList<TwoWindingTransformer> TwoWindingTransformers
         {
-            get { return new ReadOnlyCollection<Transformer>(_transformers); }
+            get { return new ReadOnlyCollection<TwoWindingTransformer>(_twoWindingTransformers); }
         }
 
         public IReadOnlyList<Generator> Generators
@@ -157,15 +157,15 @@ namespace SincalConnector
                     _nodes.Add(new Node(reader, databaseConnection));
         }
 
-        private void FetchTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
+        private void FetchTwoWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
             IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = Transformer.CreateCommandToFetchAll();
+            var command = TwoWindingTransformer.CreateCommandToFetchAll();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _transformers.Add(new Transformer(reader, nodesByIds, nodeIdsByElementIds));
+                    _twoWindingTransformers.Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -253,12 +253,12 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(_feedIns.Count + _loads.Count + _transformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count);
+            var result = new List<int>(_feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count);
             var originalCapacity = result.Capacity;
 
             result.AddRange(_feedIns.Select(element => element.Id));
             result.AddRange(_loads.Select(element => element.Id));
-            result.AddRange(_transformers.Select(element => element.Id));
+            result.AddRange(_twoWindingTransformers.Select(element => element.Id));
             result.AddRange(_transmissionLines.Select(element => element.Id));
             result.AddRange(_generators.Select(element => element.Id));
             result.AddRange(_impedanceLoads.Select(element => element.Id));

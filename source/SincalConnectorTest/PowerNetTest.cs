@@ -150,7 +150,7 @@ namespace SincalConnectorTest
         {
             var powerNet = new PowerNet("testdata/transformer_files/database.mdb");
 
-            var transformers = powerNet.Transformers;
+            var transformers = powerNet.TwoWindingTransformers;
             Assert.AreEqual(1, transformers.Count);
             var transformer = transformers.First();
             Assert.AreEqual(5e5, transformer.NominalPower, 0.00001);

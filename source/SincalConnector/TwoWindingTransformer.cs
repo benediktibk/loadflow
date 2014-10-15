@@ -6,11 +6,11 @@ using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class Transformer
+    public class TwoWindingTransformer
     {
         #region constructor
 
-        public Transformer(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        public TwoWindingTransformer(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
             NominalPower = record.Parse<double>("Sn")*1e6;
