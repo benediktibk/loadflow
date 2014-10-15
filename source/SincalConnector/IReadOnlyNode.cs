@@ -8,5 +8,6 @@ namespace SincalConnector
         string Name { get; }
         double NominalVoltage { get; }
         Complex Voltage { get; }
+        Complex Load { get; }
     }
 }
