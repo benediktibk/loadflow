@@ -28,13 +28,10 @@ namespace SincalConnector
             if (additionalPhaseShift != 0)
                 throw new NotSupportedException("additional phase shifts at the transformer are not supported");
 
+            var connectedNodes = nodeIdsByElementIds.Get(Id);
             var connectionSymbol = record.Parse<int>("VecGrp");
             var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
             PhaseShift = phaseShiftFactor*30*Math.PI/180;
-
-            var upperSideNominalVoltage = record.Parse<double>("Un1") * 1000;
-            var lowerSideNominalVoltage = record.Parse<double>("Un2") * 1000;
-            var connectedNodes = nodeIdsByElementIds.Get(Id);
 
             if (connectedNodes.Count != 2)
                 throw new InvalidDataException("a transformer must be connected to two nodes");
@@ -52,10 +49,6 @@ namespace SincalConnector
                 UpperSideNodeId = connectedNodes[1];
                 LowerSideNodeId = connectedNodes[0];
             }
-
-            if (!(  (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001) ||
-                    (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001)))
-                throw new InvalidDataException("the nominal voltages at a transformer do not match");
         }
 
         #endregion
