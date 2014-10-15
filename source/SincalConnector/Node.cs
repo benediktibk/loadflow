@@ -41,6 +41,18 @@ namespace SincalConnector
 
         public Complex Voltage { get; private set; }
 
+        public Complex Load { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void SetResult(Complex voltage, Complex load)
+        {
+            Voltage = voltage;
+            Load = load;
+        }
+
         #endregion
 
         #region static functions
