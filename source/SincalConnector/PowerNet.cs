@@ -19,7 +19,8 @@ namespace SincalConnector
         private readonly IList<TransmissionLine> _transmissionLines;
         private readonly IList<TwoWindingTransformer> _twoWindingTransformers;
         private readonly IList<Generator> _generators;
-        private readonly IList<ImpedanceLoad> _impedanceLoads; 
+        private readonly IList<ImpedanceLoad> _impedanceLoads;
+        private readonly IList<ThreeWindingTransformer> _threeWindingTransformers; 
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace SincalConnector
                 FetchLoads(databaseConnection, nodeIdsByElementIds);
                 FetchTransmissionLines(databaseConnection, nodeIdsByElementIds);
                 FetchTwoWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchThreeWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(databaseConnection, nodesByIds, nodeIdsByElementIds);
 
@@ -62,6 +64,7 @@ namespace SincalConnector
             _twoWindingTransformers = new List<TwoWindingTransformer>();
             _generators = new List<Generator>();
             _impedanceLoads = new List<ImpedanceLoad>();
+            _threeWindingTransformers = new List<ThreeWindingTransformer>();
         }
 
         #endregion
@@ -168,6 +171,17 @@ namespace SincalConnector
                     _twoWindingTransformers.Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
+        private void FetchThreeWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
+            IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var command = ThreeWindingTransformer.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                while (reader.Next())
+                    _threeWindingTransformers.Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
         private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             var command = TransmissionLine.CreateCommandToFetchAll();
@@ -253,7 +267,7 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(_feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count);
+            var result = new List<int>(_feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count + _threeWindingTransformers.Count);
             var originalCapacity = result.Capacity;
 
             result.AddRange(_feedIns.Select(element => element.Id));
@@ -262,6 +276,7 @@ namespace SincalConnector
             result.AddRange(_transmissionLines.Select(element => element.Id));
             result.AddRange(_generators.Select(element => element.Id));
             result.AddRange(_impedanceLoads.Select(element => element.Id));
+            result.AddRange(_threeWindingTransformers.Select(element => element.Id));
 
             if (originalCapacity != result.Capacity)
                 throw new Exception("not enough space was allocated for the element IDs");

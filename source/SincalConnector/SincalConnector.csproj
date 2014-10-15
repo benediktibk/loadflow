@@ -56,6 +56,7 @@
     </ApplicationDefinition>
     <Compile Include="Generator.cs" />
     <Compile Include="ImpedanceLoad.cs" />
+    <Compile Include="ThreeWindingTransformer.cs" />
     <Compile Include="TwoWindingTransformer.cs" />
     <Compile Include="TransmissionLine.cs" />
     <Compile Include="Load.cs" />

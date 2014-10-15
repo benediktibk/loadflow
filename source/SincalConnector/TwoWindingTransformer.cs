@@ -19,12 +19,21 @@ namespace SincalConnector
             RelativeNoLoadCurrent = record.Parse<double>("i0")/100;
             var realRelativeShortCircuitVoltge = record.Parse<double>("ur")/100;
             CopperLosses = NominalPower*realRelativeShortCircuitVoltge;
-            Ratio = 1;
             var controlStage = record.Parse<double>("roh");
+            var additionalPhaseShift = record.Parse<double>("AddRotate");
 
             if (controlStage != 0)
                 throw new NotSupportedException("control stages are not supported");
 
+            if (additionalPhaseShift != 0)
+                throw new NotSupportedException("additional phase shifts at the transformer are not supported");
+
+            var connectionSymbol = record.Parse<int>("VecGrp");
+            var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
+            PhaseShift = phaseShiftFactor*30*Math.PI/180;
+
+            var upperSideNominalVoltage = record.Parse<double>("Un1") * 1000;
+            var lowerSideNominalVoltage = record.Parse<double>("Un2") * 1000;
             var connectedNodes = nodeIdsByElementIds.Get(Id);
 
             if (connectedNodes.Count != 2)
@@ -44,21 +53,9 @@ namespace SincalConnector
                 LowerSideNodeId = connectedNodes[0];
             }
 
-            var connectionSymbol = record.Parse<int>("VecGrp");
-            var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
-            PhaseShift = phaseShiftFactor*30*Math.PI/180;
-
-            var upperSideNominalVoltage = record.Parse<double>("Un1") * 1000;
-            var lowerSideNominalVoltage = record.Parse<double>("Un2") * 1000;
-
             if (!(  (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001) ||
                     (Math.Abs(upperSideNominalVoltage - nodes[connectedNodes[1]].NominalVoltage) < 0.000001 && Math.Abs(lowerSideNominalVoltage - nodes[connectedNodes[0]].NominalVoltage) < 0.000001)))
                 throw new InvalidDataException("the nominal voltages at a transformer do not match");
-
-            var additionalPhaseShift = record.Parse<double>("AddRotate");
-
-            if (additionalPhaseShift != 0)
-                throw new NotSupportedException("additional phase shifts at the transformer are not supported");
         }
 
         #endregion
@@ -73,7 +70,6 @@ namespace SincalConnector
         public double CopperLosses { get; private set; }
         public double IronLosses { get; private set; }
         public double RelativeNoLoadCurrent { get; private set; }
-        public double Ratio { get; private set; }
         public double PhaseShift { get; private set; }
 
         #endregion
