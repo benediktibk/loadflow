@@ -15,7 +15,7 @@ namespace SincalConnector
             Id = record.Parse<int>("Element_ID");
             var modelType = record.Parse<int>("Flag_Lf");
 
-            if (modelType != 1)
+            if (modelType != 1 && modelType != 2)
                 throw new NotSupportedException("not supported load model");
 
             NodeId = nodeIdsByElementIds.GetOnly(Id);
