@@ -20,7 +20,8 @@ namespace SincalConnector
         private readonly IList<TwoWindingTransformer> _twoWindingTransformers;
         private readonly IList<Generator> _generators;
         private readonly IList<ImpedanceLoad> _impedanceLoads;
-        private readonly IList<ThreeWindingTransformer> _threeWindingTransformers; 
+        private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
+        private readonly IList<SlackGenerator> _slackGenerators; 
 
         #endregion
 
@@ -47,6 +48,7 @@ namespace SincalConnector
                 FetchTwoWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchThreeWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchSlackGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(databaseConnection, nodesByIds, nodeIdsByElementIds);
 
                 if (ContainsNotSupportedElement(databaseConnection))
@@ -63,6 +65,7 @@ namespace SincalConnector
             _transmissionLines = new List<TransmissionLine>();
             _twoWindingTransformers = new List<TwoWindingTransformer>();
             _generators = new List<Generator>();
+            _slackGenerators = new List<SlackGenerator>();
             _impedanceLoads = new List<ImpedanceLoad>();
             _threeWindingTransformers = new List<ThreeWindingTransformer>();
         }
@@ -104,6 +107,11 @@ namespace SincalConnector
         public IReadOnlyList<Generator> Generators
         {
             get { return new ReadOnlyCollection<Generator>(_generators); }
+        }
+
+        public IReadOnlyList<SlackGenerator> SlackGenerators
+        {
+            get { return new ReadOnlyCollection<SlackGenerator>(_slackGenerators); }
         }
 
         #endregion
@@ -232,6 +240,16 @@ namespace SincalConnector
                     _generators.Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
         }
 
+        private void FetchSlackGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var command = SlackGenerator.CreateCommandToFetchAll();
+            command.Connection = databaseConnection;
+
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                while (reader.Next())
+                    _slackGenerators.Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
         private void DetermineFrequency(OleDbConnection databaseConnection)
         {
             var command = CreateCommandToFetchAllFrequencies();
@@ -267,7 +285,9 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(_feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + _impedanceLoads.Count + _threeWindingTransformers.Count);
+            var result = new List<int>(
+                _feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + 
+                _impedanceLoads.Count + _threeWindingTransformers.Count + _slackGenerators.Count);
             var originalCapacity = result.Capacity;
 
             result.AddRange(_feedIns.Select(element => element.Id));
@@ -277,6 +297,7 @@ namespace SincalConnector
             result.AddRange(_generators.Select(element => element.Id));
             result.AddRange(_impedanceLoads.Select(element => element.Id));
             result.AddRange(_threeWindingTransformers.Select(element => element.Id));
+            result.AddRange(_slackGenerators.Select(element => element.Id));
 
             if (originalCapacity != result.Capacity)
                 throw new Exception("not enough space was allocated for the element IDs");
