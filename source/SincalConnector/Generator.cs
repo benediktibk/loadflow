@@ -67,7 +67,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,Sn FROM SynchronousMachine;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,Sn FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
         }
 
         #endregion
