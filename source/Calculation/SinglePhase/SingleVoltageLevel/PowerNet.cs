@@ -47,8 +47,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public bool CalculateMissingInformation(LoadFlowCalculator calculator)
         {
             bool voltageCollapse;
-            _nodes = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, _nodes,
+            var nodeResults = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, _nodes,
                 out voltageCollapse);
+
+            for (var i = 0; i < NodeCount; ++i)
+            {
+                _nodes[i].Voltage = nodeResults[i].Voltage;
+                _nodes[i].Power = nodeResults[i].Power;
+            }
+
             return voltageCollapse;
         }
 

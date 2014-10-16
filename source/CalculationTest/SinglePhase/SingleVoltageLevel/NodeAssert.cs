@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
@@ -10,7 +10,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     public static class NodeAssert
     {
-        public static void AreEqual(IList<Node> nodes, Vector<Complex> voltages, Vector<Complex> powers, double voltageDelta, double powerDelta)
+        public static void AreEqual(IList<NodeResult> nodes, Vector<Complex> voltages, Vector<Complex> powers, double voltageDelta, double powerDelta)
         {
             Assert.AreEqual(nodes.Count(), voltages.Count);
             Assert.AreEqual(nodes.Count(), powers.Count);
