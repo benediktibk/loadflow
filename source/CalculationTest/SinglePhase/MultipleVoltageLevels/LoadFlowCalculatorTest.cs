@@ -45,13 +45,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
 
-            var nodeVoltages = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
+            var nodeResults = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
 
-            Assert.AreEqual(2, nodeVoltages.Count);
-            Assert.IsTrue(nodeVoltages.ContainsKey(0));
-            Assert.IsTrue(nodeVoltages.ContainsKey(1));
-            ComplexAssert.AreEqual(1, 0, nodeVoltages[0], 0.000001);
-            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeVoltages[1], 0.000001);
+            Assert.AreEqual(2, nodeResults.Count);
+            Assert.IsTrue(nodeResults.ContainsKey(0));
+            Assert.IsTrue(nodeResults.ContainsKey(1));
+            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.000001);
+            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeResults[1].Voltage, 0.000001);
         }
 
         [TestMethod]
@@ -63,13 +63,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
 
-            var nodeVoltages = _calculator.CalculateNodeVoltages(_powerNet);
+            var nodeResults = _calculator.CalculateNodeVoltages(_powerNet);
 
-            Assert.AreEqual(2, nodeVoltages.Count);
-            Assert.IsTrue(nodeVoltages.ContainsKey(0));
-            Assert.IsTrue(nodeVoltages.ContainsKey(1));
-            ComplexAssert.AreEqual(1, 0, nodeVoltages[0], 0.000001);
-            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeVoltages[1], 0.000001);
+            Assert.AreEqual(2, nodeResults.Count);
+            Assert.IsTrue(nodeResults.ContainsKey(0));
+            Assert.IsTrue(nodeResults.ContainsKey(1));
+            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.000001);
+            ComplexAssert.AreEqual(0.98989794855663561963945681494118, 0, nodeResults[1].Voltage, 0.000001);
         }
 
         [TestMethod]
@@ -109,13 +109,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 
-            var nodeVoltages = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
+            var nodeResults = _calculatorWithNoPowerScaling.CalculateNodeVoltages(_powerNet);
 
-            Assert.AreEqual(2, nodeVoltages.Count);
-            Assert.IsTrue(nodeVoltages.ContainsKey(0));
-            Assert.IsTrue(nodeVoltages.ContainsKey(1));
-            ComplexAssert.AreEqual(1.05, 0, nodeVoltages[0], 0.001);
-            ComplexAssert.AreEqual(1.0198, -0.019, nodeVoltages[1], 0.001);
+            Assert.AreEqual(2, nodeResults.Count);
+            Assert.IsTrue(nodeResults.ContainsKey(0));
+            Assert.IsTrue(nodeResults.ContainsKey(1));
+            ComplexAssert.AreEqual(1.05, 0, nodeResults[0].Voltage, 0.001);
+            ComplexAssert.AreEqual(1.0198, -0.019, nodeResults[1].Voltage, 0.001);
         }
 
         [TestMethod]
@@ -128,13 +128,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 
-            var nodeVoltages = _calculator.CalculateNodeVoltages(_powerNet);
+            var nodeResults = _calculator.CalculateNodeVoltages(_powerNet);
 
-            Assert.AreEqual(2, nodeVoltages.Count);
-            Assert.IsTrue(nodeVoltages.ContainsKey(0));
-            Assert.IsTrue(nodeVoltages.ContainsKey(1));
-            ComplexAssert.AreEqual(1.05, 0, nodeVoltages[0], 0.001);
-            ComplexAssert.AreEqual(1.0198, -0.019, nodeVoltages[1], 0.001);
+            Assert.AreEqual(2, nodeResults.Count);
+            Assert.IsTrue(nodeResults.ContainsKey(0));
+            Assert.IsTrue(nodeResults.ContainsKey(1));
+            ComplexAssert.AreEqual(1.05, 0, nodeResults[0].Voltage, 0.001);
+            ComplexAssert.AreEqual(1.0198, -0.019, nodeResults[1].Voltage, 0.001);
         }
 
         [TestMethod]
@@ -147,9 +147,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 
-            var nodeVoltages = _calculatorWithDummyMethod.CalculateNodeVoltages(_powerNet);
+            var nodeResults = _calculatorWithDummyMethod.CalculateNodeVoltages(_powerNet);
 
-            Assert.AreEqual(null, nodeVoltages);
+            Assert.AreEqual(null, nodeResults);
         }
     }
 }

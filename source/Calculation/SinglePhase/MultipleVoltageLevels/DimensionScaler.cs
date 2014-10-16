@@ -55,6 +55,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return power/PowerBase;
         }
 
+        public Complex UnscalePower(Complex power)
+        {
+            return power*PowerBase;
+        }
+
         public double ScaleCurrent(double current)
         {
             return current/CurrentBase;

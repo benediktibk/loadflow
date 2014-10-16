@@ -71,13 +71,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             var powerScaling = DeterminePowerScaling();
             var calculator = new LoadFlowCalculator(powerScaling, nodeVoltageCalculator);
-            var voltages = calculator.CalculateNodeVoltages(this);
+            var nodeResults = calculator.CalculateNodeVoltages(this);
 
-            if (voltages == null)
+            if (nodeResults == null)
                 return false;
 
             foreach (var node in _nodes)
-                node.UpdateVoltage(voltages);
+                node.UpdateVoltageAndPower(nodeResults);
 
             return true;
         }

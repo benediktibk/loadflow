@@ -55,6 +55,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
+        public Complex Power { get; private set; }
+
         public bool IsOverdetermined
         {
             get { return _connectedElements.Count(element => element.EnforcesSlackBus) + _connectedElements.Count(element => element.EnforcesPVBus) > 1; }
@@ -161,12 +163,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return Id == other.Id;
         }
 
-        public void UpdateVoltage(IReadOnlyDictionary<long, Complex> voltages)
+        public void UpdateVoltageAndPower(IReadOnlyDictionary<long, NodeResult> nodeResults)
         {
-            Debug.Assert(voltages.ContainsKey(Id));
+            Debug.Assert(nodeResults.ContainsKey(Id));
             var scaler = new DimensionScaler(NominalVoltage, 1);
-            var value = voltages[Id];
-            Voltage = scaler.UnscaleVoltage(value);
+            var nodeResult = nodeResults[Id];
+            Voltage = scaler.UnscaleVoltage(nodeResult.Voltage);
+            Power = scaler.UnscalePower(nodeResult.Power);
         }
 
         #endregion

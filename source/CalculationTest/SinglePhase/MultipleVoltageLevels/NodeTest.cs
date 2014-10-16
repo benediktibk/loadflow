@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -405,9 +406,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void UpdateVoltage_NominalVoltageSetTo2AndVoltage4And5_VoltageIs8And10()
         {
-            var voltages = new Dictionary<long, Complex>() {{_node.Id, new Complex(4, 5)}};
+            var nodeResults = new Dictionary<long, NodeResult>() {{_node.Id, new NodeResult() { Voltage = new Complex(4, 5), Power = new Complex(6, 7)}}};
 
-            _node.UpdateVoltage(voltages);
+            _node.UpdateVoltageAndPower(nodeResults);
 
             ComplexAssert.AreEqual(8, 10, _node.Voltage, 0.00001);
         }
