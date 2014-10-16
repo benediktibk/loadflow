@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
-using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using DatabaseHelper;
@@ -14,7 +13,6 @@ namespace SincalConnector
     {
         #region variables
 
-        private double _frequency;
         private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
         private readonly IList<INetElement> _netElements;
@@ -79,10 +77,7 @@ namespace SincalConnector
 
         #region properties
 
-        public double Frequency
-        {
-            get { return _frequency; }
-        }
+        public double Frequency { get; private set; }
 
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
@@ -125,6 +120,12 @@ namespace SincalConnector
 
         public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
         {
+            var symmetricPowerNet = CreateSymmetricPowerNet();
+            var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
+
+            if (!success)
+                return false;
+
             return true;
         }
 
@@ -223,7 +224,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new TransmissionLine(reader, nodeIdsByElementIds, _frequency));
+                    Add(new TransmissionLine(reader, nodeIdsByElementIds, Frequency));
         }
 
         private void Add(TransmissionLine element)
@@ -325,7 +326,7 @@ namespace SincalConnector
             if (frequencies.Count != 1)
                 throw new NotSupportedException("only one frequency per net is supported");
 
-            _frequency = frequencies.First();
+            Frequency = frequencies.First();
         }
 
         private bool ContainsNotSupportedElement(OleDbConnection databaseConnection)
@@ -352,7 +353,14 @@ namespace SincalConnector
 
         private SymmetricPowerNet CreateSymmetricPowerNet()
         {
-            var result = new SymmetricPowerNet(_frequency);
+            var result = new SymmetricPowerNet(Frequency);
+
+            foreach (var node in _nodes)
+                node.AddTo(result);
+
+            foreach (var element in _netElements)
+                element.AddTo(result);
+
             return result;
         }
 

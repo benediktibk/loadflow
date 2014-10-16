@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.OleDb;
 using System.Numerics;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
@@ -66,6 +67,11 @@ namespace SincalConnector
             command.Parameters.AddWithValue("phi", (Voltage.Phase - rotationOffset) * 180 / Math.PI);
             command.Parameters.AddWithValue("phi_rot", Voltage.Phase * 180 / Math.PI);
             return command;
+        }
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
