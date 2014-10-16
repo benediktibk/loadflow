@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using DatabaseHelper;
@@ -16,6 +17,7 @@ namespace SincalConnector
         private double _frequency;
         private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
+        private readonly IList<INetElement> _netElements;
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
         private readonly IList<TransmissionLine> _transmissionLines;
@@ -62,6 +64,7 @@ namespace SincalConnector
         {
             _terminals = new List<Terminal>();
             _nodes = new List<Node>();
+            _netElements = new List<INetElement>();
             _feedIns = new List<FeedIn>();
             _loads = new List<Load>();
             _transmissionLines = new List<TransmissionLine>();
@@ -84,31 +87,6 @@ namespace SincalConnector
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
             get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
-        }
-
-        public IList<INetElement> NetElements
-        {
-            get
-            {
-                var result = new List<INetElement>(
-                    _feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count +
-                    _impedanceLoads.Count + _threeWindingTransformers.Count + _slackGenerators.Count);
-                var originalCapacity = result.Capacity;
-
-                result.AddRange(_feedIns);
-                result.AddRange(_loads);
-                result.AddRange(_twoWindingTransformers);
-                result.AddRange(_transmissionLines);
-                result.AddRange(_generators);
-                result.AddRange(_impedanceLoads);
-                result.AddRange(_threeWindingTransformers);
-                result.AddRange(_slackGenerators);
-
-                if (originalCapacity != result.Capacity)
-                    throw new Exception("not enough space was allocated for the net elements");
-
-                return result;
-            }
         }
 
         public IReadOnlyList<FeedIn> FeedIns
@@ -212,7 +190,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _twoWindingTransformers.Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(TwoWindingTransformer element)
+        {
+            _netElements.Add(element);
+            _twoWindingTransformers.Add(element);
         }
 
         private void FetchThreeWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
@@ -223,7 +207,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _threeWindingTransformers.Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(ThreeWindingTransformer element)
+        {
+            _netElements.Add(element);
+            _threeWindingTransformers.Add(element);
         }
 
         private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -233,7 +223,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _transmissionLines.Add(new TransmissionLine(reader, nodeIdsByElementIds, _frequency));
+                    Add(new TransmissionLine(reader, nodeIdsByElementIds, _frequency));
+        }
+
+        private void Add(TransmissionLine element)
+        {
+            _netElements.Add(element);
+            _transmissionLines.Add(element);
         }
 
         private void FetchLoads(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -243,7 +239,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _loads.Add(new Load(reader, nodeIdsByElementIds));
+                    Add(new Load(reader, nodeIdsByElementIds));
+        }
+
+        private void Add(Load element)
+        {
+            _netElements.Add(element);
+            _loads.Add(element);
         }
 
         private void FetchImpedanceLoads(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -253,7 +255,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _impedanceLoads.Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(ImpedanceLoad element)
+        {
+            _netElements.Add(element);
+            _impedanceLoads.Add(element);
         }
 
         private void FetchFeedIns(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -263,7 +271,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _feedIns.Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(FeedIn element)
+        {
+            _netElements.Add(element);
+            _feedIns.Add(element);
         }
 
         private void FetchGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -273,7 +287,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _generators.Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(Generator element)
+        {
+            _netElements.Add(element);
+            _generators.Add(element);
         }
 
         private void FetchSlackGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -283,7 +303,13 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _slackGenerators.Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
+                    Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void Add(SlackGenerator element)
+        {
+            _netElements.Add(element);
+            _slackGenerators.Add(element);
         }
 
         private void DetermineFrequency(OleDbConnection databaseConnection)
@@ -321,7 +347,7 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            return NetElements.Select(element => element.Id).OrderBy(id => id).ToList();
+            return _netElements.Select(element => element.Id).OrderBy(id => id).ToList();
         }
 
         private SymmetricPowerNet CreateSymmetricPowerNet()
