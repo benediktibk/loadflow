@@ -188,6 +188,32 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
+        public void Constructor_NetWithGeneratorVersionThree_GeneratorValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/generator3_files/database.mdb");
+
+            var generators = powerNet.Generators;
+            Assert.AreEqual(1, generators.Count);
+            var generator = generators.First();
+            Assert.AreEqual(9e5, generator.RealPower, 0.00001);
+            Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
+            Assert.AreEqual(0, generator.SynchronousReactance, 0.00001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithGeneratorVersionFour_GeneratorValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/generator4_files/database.mdb");
+
+            var generators = powerNet.Generators;
+            Assert.AreEqual(1, generators.Count);
+            var generator = generators.First();
+            Assert.AreEqual(9e5, generator.RealPower, 0.00001);
+            Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
+            Assert.AreEqual(0, generator.SynchronousReactance, 0.00001);
+        }
+
+        [TestMethod]
         public void Constructor_GermanNet_NoErrors()
         {
             var powerNet = new PowerNet("testdata/uebertragungsnetz_deutschland_files/database.mdb");
