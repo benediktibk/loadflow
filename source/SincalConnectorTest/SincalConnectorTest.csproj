@@ -98,6 +98,12 @@
     <None Include="testdata\node_10kV_files\database.ini" />
     <None Include="testdata\node_files\database.001.dia" />
     <None Include="testdata\node_files\database.ini" />
+    <None Include="testdata\slackgenerator1.sin" />
+    <None Include="testdata\slackgenerator1_files\database.001.dia" />
+    <None Include="testdata\slackgenerator1_files\database.ini" />
+    <None Include="testdata\slackgenerator2.sin" />
+    <None Include="testdata\slackgenerator2_files\database.001.dia" />
+    <None Include="testdata\slackgenerator2_files\database.ini" />
     <None Include="testdata\transformer.sin" />
     <None Include="testdata\transformer_files\database.001.dia" />
     <None Include="testdata\transformer_files\database.ini" />
@@ -137,6 +143,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\node_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\slackgenerator1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\slackgenerator2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\transformer_files\database.mdb">
