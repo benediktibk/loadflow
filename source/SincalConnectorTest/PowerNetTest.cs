@@ -162,7 +162,7 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
-        public void Constructor_NetWithGeneratorOne_GeneratorValuesAreCorrect()
+        public void Constructor_NetWithGeneratorVersionOne_GeneratorValuesAreCorrect()
         {
             var powerNet = new PowerNet("testdata/generator1_files/database.mdb");
 
@@ -171,6 +171,20 @@ namespace SincalConnectorTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
+            Assert.AreEqual(0.01, generator.SynchronousReactance, 0.00001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithGeneratorVersionTwo_GeneratorValuesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/generator2_files/database.mdb");
+
+            var generators = powerNet.Generators;
+            Assert.AreEqual(1, generators.Count);
+            var generator = generators.First();
+            Assert.AreEqual(9e5, generator.RealPower, 0.00001);
+            Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
+            Assert.AreEqual(0.01, generator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]

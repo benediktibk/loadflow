@@ -77,6 +77,9 @@
     <None Include="testdata\generator1.sin" />
     <None Include="testdata\generator1_files\database.001.dia" />
     <None Include="testdata\generator1_files\database.ini" />
+    <None Include="testdata\generator2.sin" />
+    <None Include="testdata\generator2_files\database.001.dia" />
+    <None Include="testdata\generator2_files\database.ini" />
     <None Include="testdata\impedanceload1.sin" />
     <None Include="testdata\impedanceload1_files\database.001.dia" />
     <None Include="testdata\impedanceload1_files\database.ini" />
@@ -107,6 +110,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\generator1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\generator2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\impedanceload1_files\database.mdb">
