@@ -179,6 +179,19 @@ namespace SincalConnectorTest
             var powerNet = new PowerNet("testdata/uebertragungsnetz_deutschland_files/database.mdb");
         }
 
+        [TestMethod]
+        public void Constructor_NetWithImpedanceLoadVersionOne_ImpedanceLoadValueseAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/impedanceload1_files/database.mdb");
+
+            var impedanceLoads = powerNet.ImpedanceLoads;
+            Assert.AreEqual(1, impedanceLoads.Count);
+            var impedanceLoad = impedanceLoads.First();
+            var impedance = impedanceLoad.Impedance;
+            var impedanceShouldBe = (1050*1050)/new Complex(1e5, -1e4);
+            ComplexAssert.AreEqual(impedanceShouldBe, impedance, 0.00001);
+        }
+
         #endregion
     }
 }

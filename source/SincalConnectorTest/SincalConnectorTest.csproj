@@ -77,6 +77,9 @@
     <None Include="testdata\generator1.sin" />
     <None Include="testdata\generator1_files\database.001.dia" />
     <None Include="testdata\generator1_files\database.ini" />
+    <None Include="testdata\impedanceload1.sin" />
+    <None Include="testdata\impedanceload1_files\database.001.dia" />
+    <None Include="testdata\impedanceload1_files\database.ini" />
     <None Include="testdata\node.sin" />
     <None Include="testdata\node_10kV.sin" />
     <None Include="testdata\node_10kV_files\database.001.dia" />
@@ -103,6 +106,9 @@
     <Content Include="testdata\generator1_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="testdata\impedanceload1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\node_10kV_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -119,6 +125,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -114,6 +114,11 @@ namespace SincalConnector
             get { return new ReadOnlyCollection<SlackGenerator>(_slackGenerators); }
         }
 
+        public IReadOnlyList<ImpedanceLoad> ImpedanceLoads
+        {
+            get { return new ReadOnlyCollection<ImpedanceLoad>(_impedanceLoads); }
+        }
+
         #endregion
 
         #region public functions

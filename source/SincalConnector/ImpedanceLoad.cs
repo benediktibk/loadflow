@@ -33,7 +33,7 @@ namespace SincalConnector
                     throw new NotSupportedException("model type of impedance load is not supported");
             }
 
-            var powerPerLine = new Complex(realPower, reactivePower)/3;
+            var powerPerLine = new Complex(realPower, reactivePower);
             var current = Complex.Conjugate(powerPerLine/voltage);
             Impedance = voltage/current;
         }
