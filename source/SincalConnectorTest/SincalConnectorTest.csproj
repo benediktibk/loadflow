@@ -80,6 +80,9 @@
     <None Include="testdata\impedanceload1.sin" />
     <None Include="testdata\impedanceload1_files\database.001.dia" />
     <None Include="testdata\impedanceload1_files\database.ini" />
+    <None Include="testdata\impedanceload2.sin" />
+    <None Include="testdata\impedanceload2_files\database.001.dia" />
+    <None Include="testdata\impedanceload2_files\database.ini" />
     <None Include="testdata\node.sin" />
     <None Include="testdata\node_10kV.sin" />
     <None Include="testdata\node_10kV_files\database.001.dia" />
@@ -107,6 +110,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\impedanceload1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\impedanceload2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\node_10kV_files\database.mdb">

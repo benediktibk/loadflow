@@ -192,6 +192,19 @@ namespace SincalConnectorTest
             ComplexAssert.AreEqual(impedanceShouldBe, impedance, 0.00001);
         }
 
+        [TestMethod]
+        public void Constructor_NetWithImpedanceLoadVersionTwo_ImpedanceLoadValueseAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/impedanceload2_files/database.mdb");
+
+            var impedanceLoads = powerNet.ImpedanceLoads;
+            Assert.AreEqual(1, impedanceLoads.Count);
+            var impedanceLoad = impedanceLoads.First();
+            var impedance = impedanceLoad.Impedance;
+            var impedanceShouldBe = (980*980) / new Complex(1e5, -1e4);
+            ComplexAssert.AreEqual(impedanceShouldBe, impedance, 0.00001);
+        }
+
         #endregion
     }
 }
