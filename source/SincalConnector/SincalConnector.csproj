@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SincalConnector</RootNamespace>
     <AssemblyName>SincalConnector</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Generator.cs" />
     <Compile Include="ImpedanceLoad.cs" />
+    <Compile Include="INetElement.cs" />
     <Compile Include="SlackGenerator.cs" />
     <Compile Include="ThreeWindingTransformer.cs" />
     <Compile Include="TwoWindingTransformer.cs" />
@@ -109,6 +111,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DatabaseHelper\DatabaseHelper.csproj">
       <Project>{66F8115D-0B40-4C43-97E7-8E14A32767C8}</Project>
       <Name>DatabaseHelper</Name>

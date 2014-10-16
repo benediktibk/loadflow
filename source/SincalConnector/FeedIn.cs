@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Numerics;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class FeedIn
+    public class FeedIn : INetElement
     {
         #region constructor
 
@@ -58,6 +59,15 @@ namespace SincalConnector
         public double C { get; private set; }
         public int Id { get; private set; }
         public int NodeId { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.IO;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class TwoWindingTransformer
+    public class TwoWindingTransformer : INetElement
     {
         #region constructor
 
@@ -64,6 +65,15 @@ namespace SincalConnector
         public double IronLosses { get; private set; }
         public double RelativeNoLoadCurrent { get; private set; }
         public double PhaseShift { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Data.OleDb;
-using System.IO;
 using System.Numerics;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class Load
+    public class Load : INetElement
     {
         #region constructor
 
@@ -31,6 +31,15 @@ namespace SincalConnector
         public int Id { get; private set; }
         public int NodeId { get; private set; }
         public Complex LoadValue { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

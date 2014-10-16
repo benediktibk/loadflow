@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data.OleDb;
 using System.IO;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class TransmissionLine
+    public class TransmissionLine : INetElement
     {
         #region constructor
 
@@ -55,6 +56,15 @@ namespace SincalConnector
         public double ShuntCapacityPerUnitLength { get; private set; }
         public double Length { get; private set; }
         public bool TransmissionEquationModel { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

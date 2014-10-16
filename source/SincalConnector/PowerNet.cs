@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
@@ -12,7 +14,7 @@ namespace SincalConnector
         #region variables
 
         private double _frequency;
-        private readonly IList<Terminal> _terminals; 
+        private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
@@ -84,6 +86,31 @@ namespace SincalConnector
             get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
         }
 
+        public IList<INetElement> NetElements
+        {
+            get
+            {
+                var result = new List<INetElement>(
+                    _feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count +
+                    _impedanceLoads.Count + _threeWindingTransformers.Count + _slackGenerators.Count);
+                var originalCapacity = result.Capacity;
+
+                result.AddRange(_feedIns);
+                result.AddRange(_loads);
+                result.AddRange(_twoWindingTransformers);
+                result.AddRange(_transmissionLines);
+                result.AddRange(_generators);
+                result.AddRange(_impedanceLoads);
+                result.AddRange(_threeWindingTransformers);
+                result.AddRange(_slackGenerators);
+
+                if (originalCapacity != result.Capacity)
+                    throw new Exception("not enough space was allocated for the net elements");
+
+                return result;
+            }
+        }
+
         public IReadOnlyList<FeedIn> FeedIns
         {
             get { return new ReadOnlyCollection<FeedIn>(_feedIns); }
@@ -112,6 +139,15 @@ namespace SincalConnector
         public IReadOnlyList<SlackGenerator> SlackGenerators
         {
             get { return new ReadOnlyCollection<SlackGenerator>(_slackGenerators); }
+        }
+
+        #endregion
+
+        #region public functions
+
+        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
+        {
+            return true;
         }
 
         #endregion
@@ -285,24 +321,12 @@ namespace SincalConnector
 
         private List<int> GetAllSupportedElementIdsSorted()
         {
-            var result = new List<int>(
-                _feedIns.Count + _loads.Count + _twoWindingTransformers.Count + _transmissionLines.Count + _generators.Count + 
-                _impedanceLoads.Count + _threeWindingTransformers.Count + _slackGenerators.Count);
-            var originalCapacity = result.Capacity;
+            return NetElements.Select(element => element.Id).OrderBy(id => id).ToList();
+        }
 
-            result.AddRange(_feedIns.Select(element => element.Id));
-            result.AddRange(_loads.Select(element => element.Id));
-            result.AddRange(_twoWindingTransformers.Select(element => element.Id));
-            result.AddRange(_transmissionLines.Select(element => element.Id));
-            result.AddRange(_generators.Select(element => element.Id));
-            result.AddRange(_impedanceLoads.Select(element => element.Id));
-            result.AddRange(_threeWindingTransformers.Select(element => element.Id));
-            result.AddRange(_slackGenerators.Select(element => element.Id));
-
-            if (originalCapacity != result.Capacity)
-                throw new Exception("not enough space was allocated for the element IDs");
-
-            result.Sort();
+        private SymmetricPowerNet CreateSymmetricPowerNet()
+        {
+            var result = new SymmetricPowerNet(_frequency);
             return result;
         }
 

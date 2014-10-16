@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.IO;
+using Calculation.ThreePhase;
 using DatabaseHelper;
 
 namespace SincalConnector
 {
-    public class Generator
+    public class Generator : INetElement
     {
         #region constructor
 
@@ -60,6 +61,15 @@ namespace SincalConnector
         public double VoltageMagnitude { get; private set; }
         public double RealPower { get; private set; }
         public double SynchronousReactance { get; private set; }
+
+        #endregion
+
+        #region public functions
+
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
