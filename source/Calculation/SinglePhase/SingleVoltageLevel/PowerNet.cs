@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Generic;
@@ -47,7 +48,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public bool CalculateMissingInformation(LoadFlowCalculator calculator)
         {
             bool voltageCollapse;
-            var nodeResults = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, _nodes,
+            var nodeResults = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, _nodes.Cast<IReadOnlyNode>().ToList(),
                 out voltageCollapse);
 
             for (var i = 0; i < NodeCount; ++i)

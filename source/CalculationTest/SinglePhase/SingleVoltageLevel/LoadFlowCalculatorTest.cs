@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -52,7 +53,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             nodes[0].Voltage = new Complex(1, 2);
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
         }
 
         [TestMethod]
@@ -65,7 +66,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             IList<Node> nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
         }
 
         [TestMethod]
@@ -78,7 +79,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             IList<Node> nodes = new[] { new Node(), new Node() };
             nodes[1].Power = new Complex(0.5, -1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes, out _voltageCollapse);
+            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
         }
 
         [TestMethod]
@@ -90,7 +91,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             nodes[0].Power = _powers.At(0);
             nodes[1].Power = _powers.At(1);
 
-            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
         }
         [TestMethod]
         public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
@@ -124,6 +125,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }
+
         #endregion
 
         #region test creation

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Linq;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -21,7 +22,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -32,7 +33,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.05);
@@ -43,7 +44,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -54,7 +55,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -65,7 +66,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -76,7 +77,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestCollapsingSystem();
 
-            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsTrue(_voltageCollapse);
         }
@@ -86,7 +87,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestNearlyCollapsingSystem();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -97,7 +98,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemWithGroundNodeVersionThree();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -107,7 +108,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFromOneSideSuppliedConnectionWithBigResistance();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -118,7 +119,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFromOneSideSuppliedConnectionWithSmallResistance();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -129,7 +130,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.0001);
@@ -140,7 +141,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFromOneSideSuppliedAndInverseInformationGiven();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.001);
@@ -151,7 +152,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemAndOnlyVoltagesGiven();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.0001);
@@ -162,7 +163,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemAndVoltagesAndPowersGiven();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -173,7 +174,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemAndTwoVoltagesGiven();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -184,7 +185,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemWithGroundNode();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -195,7 +196,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemWithMostlyImaginaryConnections();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -206,7 +207,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemWithMostlyImaginaryConnections();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -217,7 +218,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestTwoNodeProblemWithOnePVBus();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -228,7 +229,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -239,7 +240,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnection();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -250,7 +251,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBus();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -261,7 +262,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -272,7 +273,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -283,7 +284,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemWithDecoupledPQAndPVBus();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -294,7 +295,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -305,7 +306,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -316,7 +317,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
 
-            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes, out _voltageCollapse);
+            var nodeResults = _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
 
             Assert.IsFalse(_voltageCollapse);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);

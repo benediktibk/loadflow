@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class Node
+    public class Node : IReadOnlyNode
     {
         #region variables
 
