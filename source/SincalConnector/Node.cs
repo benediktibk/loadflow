@@ -81,11 +81,6 @@ namespace SincalConnector
             return new OleDbCommand("SELECT Node.Node_ID AS Id,Node.Name AS Name,VoltageLevel.Un AS Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_ID = Node.VoltLevel_ID;");
         }
 
-        public static OleDbCommand CreateCommandToDeleteAllResults()
-        {
-            return new OleDbCommand("DELETE FROM LFNodeResult;");
-        }
-
         #endregion
     }
 }

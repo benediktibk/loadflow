@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
 using UnitTestHelper;
@@ -12,7 +14,7 @@ namespace SincalConnectorTest
     {
         #region variables
 
-        
+        private INodeVoltageCalculator _calculator;
 
         #endregion
 
@@ -21,12 +23,12 @@ namespace SincalConnectorTest
         [TestInitialize]
         public void SetUp()
         {
-           
+            _calculator = new NewtonRaphsonMethod(0.00001, 1000);
         }
 
         #endregion
 
-        #region tests
+        #region read tests
 
         [TestMethod]
         public void Constructor_NetWithTwoNodes_NodeValuesAreCorrect()
@@ -271,6 +273,41 @@ namespace SincalConnectorTest
             var voltageShouldBe = Complex.FromPolarCoordinates(1030, 10 * Math.PI / 180);
             ComplexAssert.AreEqual(voltageShouldBe, voltage, 0.00001);
             Assert.AreEqual(0.01, slackGenerator.SynchronousReactance, 0.00001);
+        }
+
+        #endregion
+
+        #region caculation tests
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionOne_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/calculation_transmissionline1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreEqual(ownResults, sincalResults, 0.00001);
+        }
+
+        #endregion
+
+        #region static functions 
+
+        public static void AreEqual(IList<NodeResult> first, IList<NodeResult> second, double delta)
+        {
+            Assert.AreEqual(first.Count, second.Count);
+
+            var firstById = first.ToDictionary(node => node.NodeId);
+
+            foreach (var secondNode in second)
+            {
+                var firstNode = firstById[secondNode.NodeId];
+                ComplexAssert.AreEqual(firstNode.Voltage, secondNode.Voltage, delta);
+                ComplexAssert.AreEqual(firstNode.Power, secondNode.Power, delta);
+            }
         }
 
         #endregion

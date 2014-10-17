@@ -58,6 +58,10 @@
     <Compile Include="TransformerTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{D019F54A-FB70-4BBC-AB53-102C78E54880}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
       <Project>{9f597517-a825-4611-9234-f64b207499d1}</Project>
       <Name>SincalConnector</Name>
@@ -68,6 +72,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="testdata\calculation_transmissionline1.sin" />
+    <None Include="testdata\calculation_transmissionline1_files\database.001.dia" />
+    <None Include="testdata\calculation_transmissionline1_files\database.ini" />
     <None Include="testdata\dorfnetz.sin" />
     <None Include="testdata\dorfnetz_files\database.001.dia" />
     <None Include="testdata\dorfnetz_files\database.ini" />
@@ -115,6 +122,9 @@
     <None Include="testdata\unsupported_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="testdata\calculation_transmissionline1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\dorfnetz_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

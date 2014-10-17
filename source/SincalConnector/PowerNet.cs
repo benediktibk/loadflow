@@ -23,7 +23,8 @@ namespace SincalConnector
         private readonly IList<Generator> _generators;
         private readonly IList<ImpedanceLoad> _impedanceLoads;
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
-        private readonly IList<SlackGenerator> _slackGenerators; 
+        private readonly IList<SlackGenerator> _slackGenerators;
+        private readonly string _connectionString;
 
         #endregion
 
@@ -31,9 +32,9 @@ namespace SincalConnector
 
         public PowerNet(string database) : this()
         {
-            var connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
+            _connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
 
-            using (var databaseConnection = new OleDbConnection(connectionString))
+            using (var databaseConnection = new OleDbConnection(_connectionString))
             {
                 databaseConnection.Open();
 
@@ -55,6 +56,8 @@ namespace SincalConnector
 
                 if (ContainsNotSupportedElement(databaseConnection))
                     throw new NotSupportedException("the net contains a not supported element");
+
+                databaseConnection.Close();
             }
         }
 
@@ -132,6 +135,27 @@ namespace SincalConnector
                 return false;
 
             return true;
+        }
+
+        public IList<NodeResult> GetNodeResultsFromDatabase()
+        {
+            var results = new List<NodeResult>();
+
+            using (var databaseConnection = new OleDbConnection(_connectionString))
+            {
+                databaseConnection.Open();
+
+                var command = NodeResult.CreateCommandToFetchAll();
+                command.Connection = databaseConnection;
+
+                using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                    while (reader.Next())
+                        results.Add(new NodeResult(reader));
+
+                databaseConnection.Close();
+            }
+
+            return results;
         }
 
         #endregion
