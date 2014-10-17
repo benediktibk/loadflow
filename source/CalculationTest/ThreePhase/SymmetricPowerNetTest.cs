@@ -366,5 +366,31 @@ namespace CalculationTest.ThreePhase
         }
 
         #endregion
+
+        #region other tests
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithOneTransmissionLine_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 1000 * Math.Sqrt(3), "");
+            _powerNet.AddNode(1, 1000 * Math.Sqrt(3), "");
+            _powerNet.AddFeedIn(0, new Complex(1000, 0) * Math.Sqrt(3), 0, 1.1, 1, "");
+            _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
+            _powerNet.AddLoad(1, new Complex(-3e5, 0));
+
+            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+
+            Assert.IsFalse(voltageCollapse);
+            var targetVoltageShouldBe = (0.5 + Math.Sqrt(0.15)) * 1e3 * Math.Sqrt(3);
+            var voltageDrop = 1e3 - targetVoltageShouldBe / Math.Sqrt(3);
+            var powerLoss = voltageDrop * voltageDrop * 3;
+            var loadPowerShouldBe = 3e5 + powerLoss;
+            ComplexAssert.AreEqual(1000 * Math.Sqrt(3), 0, _powerNet.GetNodeVoltage(0), 0.01);
+            ComplexAssert.AreEqual(targetVoltageShouldBe, 0, _powerNet.GetNodeVoltage(1), 0.01);
+            ComplexAssert.AreEqual(loadPowerShouldBe, 0, _powerNet.GetNodePower(0), 0.01);
+            ComplexAssert.AreEqual(-3e5, 0, _powerNet.GetNodePower(1), 0.01);
+        }
+
+        #endregion
     }
 }
