@@ -408,7 +408,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var nodeResults = new Dictionary<long, NodeResult>() {{_node.Id, new NodeResult() { Voltage = new Complex(4, 5), Power = new Complex(6, 7)}}};
 
-            _node.UpdateVoltageAndPower(nodeResults);
+            _node.UpdateVoltageAndPower(nodeResults, 1);
 
             ComplexAssert.AreEqual(8, 10, _node.Voltage, 0.00001);
         }

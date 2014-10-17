@@ -9,6 +9,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
         bool IsOverdetermined { get; }
         Complex Voltage { get; }
+        Complex Power { get; }
         double NominalPhaseShift { get; }
     }
 }
