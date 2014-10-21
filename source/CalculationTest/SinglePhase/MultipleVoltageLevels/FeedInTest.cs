@@ -23,7 +23,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _idGenerator = new IdGenerator();
             _node = new Node(0, 2, 0, "");
-            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, "", _idGenerator);
+            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
         }
 
         [TestMethod]
@@ -42,13 +42,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_ShortCircuitPowerSetToNegativeValue_ThrowsException()
         {
-            new FeedIn(_node, new Complex(4, 3), -4, 1.1, 1, "", _idGenerator);
+            new FeedIn(_node, new Complex(4, 3), -4, 1.1, 1, _idGenerator);
         }
 
         [TestMethod]
         public void Constructor_ShortCircuitPowerSetTo0_ThrowsNoException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, "", _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
 
             Assert.AreEqual(0, feedIn.ShortCircuitPower);
         }
@@ -63,7 +63,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void InputImpedance_ShortCircuitPowerSetTo0_ThrowsException()
         {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, "", _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
             var impedance = feedIn.InputImpedance;
         }
 
@@ -77,7 +77,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, "", _idGenerator);
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             feedIn.AddConnectedNodes(nodes);
@@ -92,12 +92,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void EnforcesSlackBus_Empty_True()
-        {
-            Assert.IsTrue(_feedIn.EnforcesSlackBus);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof (InvalidOperationException))]
         public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
         {
@@ -105,10 +99,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void GetTotalPowerForPQBus_ValidStuff_0()
         {
-            _feedIn.GetTotalPowerForPQBus(3);
+            ComplexAssert.AreEqual(0, 0, _feedIn.GetTotalPowerForPQBus(3), 0.00001);
         }
 
         [TestMethod]
@@ -128,7 +121,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void GetInternalNodes_ShortCircuitPowerSetTo0_EmptyList()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, "", _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
 
             var result = feedIn.GetInternalNodes();
 
@@ -148,7 +141,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_ShortCircuitPowerSetTo0_NothingChanged()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, "", _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
             var dictionary = new Dictionary<IReadOnlyNode, int>();
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new [,]
@@ -192,6 +185,17 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void NeedsGroundNode_Empty_False()
         {
             Assert.IsFalse(_feedIn.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void EnforcesSlackBus_InternalAdmittanceNotZero_False()
+        {
+            var node = new Node(0, 577.35026918962576450915, 0, "");
+            var feedIn = new FeedIn(node, new Complex(562.893231088613, 99.2532638990873), 333333333.33333331, 1.2, 0.1, _idGenerator);
+
+            Assert.IsTrue(feedIn.InternalNodeNecessary);
+            Assert.IsFalse(feedIn.EnforcesSlackBus);
+            Assert.IsFalse(node.MustBePVBus);
         }
     }
 }

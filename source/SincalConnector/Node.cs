@@ -69,7 +69,7 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            throw new NotImplementedException();
+            powerNet.AddNode(Id, NominalVoltage, Name);
         }
 
         #endregion

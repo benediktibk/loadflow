@@ -63,7 +63,9 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            throw new NotImplementedException();
+            powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
+                SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
+                TransmissionEquationModel);
         }
 
         #endregion

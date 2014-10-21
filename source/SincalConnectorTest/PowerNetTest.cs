@@ -23,7 +23,7 @@ namespace SincalConnectorTest
         [TestInitialize]
         public void SetUp()
         {
-            _calculator = new NewtonRaphsonMethod(0.00001, 1000);
+            _calculator = new CurrentIteration(0.00001, 1000);
         }
 
         #endregion

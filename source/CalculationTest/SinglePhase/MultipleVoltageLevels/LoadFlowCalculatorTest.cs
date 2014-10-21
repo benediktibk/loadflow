@@ -41,7 +41,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 100, 0, "");
             _powerNet.AddNode(1, 100, 0, "");
-            _powerNet.AddFeedIn(0, new Complex(100, 0), 0, 1.1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(100, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
 
@@ -59,7 +59,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 100, 0, "");
             _powerNet.AddNode(1, 100, 0, "");
-            _powerNet.AddFeedIn(0, new Complex(100, 0), 0, 1.1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(100, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
 
@@ -104,7 +104,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1, 0, "");
             _powerNet.AddNode(1, 1, 0, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
@@ -123,7 +123,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1, 0, "");
             _powerNet.AddNode(1, 1, 0, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
@@ -142,7 +142,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1, 0, "");
             _powerNet.AddNode(1, 1, 0, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);

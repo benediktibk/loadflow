@@ -38,7 +38,7 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            throw new NotImplementedException();
+            powerNet.AddLoad(NodeId, LoadValue);
         }
 
         #endregion

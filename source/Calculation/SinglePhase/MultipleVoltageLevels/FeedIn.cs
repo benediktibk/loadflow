@@ -19,7 +19,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region constructor
 
-        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, string name, IdGenerator idGenerator)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, IdGenerator idGenerator)
         {
             if (shortCircuitPower < 0)
                 throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
@@ -29,7 +29,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _shortCircuitPower = shortCircuitPower;
             _c = c;
             _realToImaginary = realToImaginary;
-            _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage, name);
+            _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage, "");
         }
 
         #endregion
@@ -73,7 +73,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool EnforcesSlackBus
         {
-            get { return true; }
+            get { return !InternalNodeNecessary; }
         }
 
         public bool EnforcesPVBus
@@ -102,7 +102,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public Complex GetTotalPowerForPQBus(double scaleBasePower)
         {
-            throw new InvalidOperationException();
+            return new Complex();
         }
 
         public Complex GetSlackVoltage(double scaleBasePower)
@@ -110,7 +110,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (NominalVoltage == 0)
                 return new Complex(0, 0);
 
-            var scaler = new DimensionScaler(NominalVoltage, 1);
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return scaler.ScaleVoltage(Voltage);
         }
 

@@ -526,7 +526,7 @@ namespace Database
                 foreach (var feedIn in FeedIns)
                     _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
                         new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary, feedIn.Name);
+                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary);
 
                 foreach (var generator in Generators)
                     _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
