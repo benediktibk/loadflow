@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
