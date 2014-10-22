@@ -245,7 +245,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(5, 400, "");
             _powerNet.AddNode(6, 400, "");
             _powerNet.AddNode(7, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(1000, 0), 1e6, 1.2, 0.1);
+            _powerNet.AddFeedIn(1, new Complex(1000, 0), 0, 1.2, 0.1);
             _powerNet.AddTransformer(2, 4, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5, "");
             _powerNet.AddGenerator(7, 400, 15000);
             _powerNet.AddLoad(3, new Complex(-5000, -1000));
