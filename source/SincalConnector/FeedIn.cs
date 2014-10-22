@@ -24,10 +24,7 @@ namespace SincalConnector
             if (internalReactance != 0)
                 throw new NotSupportedException("an internal reactance for a feed-in is not supported");
 
-            ShortCircuitPower = record.Parse<double>("Sk2")*1e6;
-            RealToImaginaryRatio = record.Parse<double>("R_X");
             NodeId = nodeIdsByElementIds.GetOnly(Id);
-            C = record.Parse<double>("cact");
             var voltageAngle = record.Parse<double>("delta")*Math.PI/180;
             var voltageType = record.Parse<int>("Flag_Lf");
             double voltageMagnitude;
@@ -54,9 +51,6 @@ namespace SincalConnector
         #region properties
 
         public Complex Voltage { get; private set; }
-        public double ShortCircuitPower { get; private set; }
-        public double RealToImaginaryRatio { get; private set; }
-        public double C { get; private set; }
         public int Id { get; private set; }
         public int NodeId { get; private set; }
 
@@ -66,7 +60,7 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            powerNet.AddFeedIn(NodeId, Voltage, ShortCircuitPower, C, RealToImaginaryRatio);
+            powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
         }
 
         #endregion
@@ -75,7 +69,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Sk2,R_X,Flag_Lf,delta,u,Ug,cact,xi FROM Infeeder;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;");
         }
 
         #endregion
