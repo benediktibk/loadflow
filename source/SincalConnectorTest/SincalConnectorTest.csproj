@@ -81,6 +81,9 @@
     <None Include="testdata\calculation_transmissionline3.sin" />
     <None Include="testdata\calculation_transmissionline3_files\database.001.dia" />
     <None Include="testdata\calculation_transmissionline3_files\database.ini" />
+    <None Include="testdata\calculation_transmissionline4.sin" />
+    <None Include="testdata\calculation_transmissionline4_files\database.001.dia" />
+    <None Include="testdata\calculation_transmissionline4_files\database.ini" />
     <None Include="testdata\dorfnetz.sin" />
     <None Include="testdata\dorfnetz_files\database.001.dia" />
     <None Include="testdata\dorfnetz_files\database.ini" />
@@ -135,6 +138,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transmissionline3_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_transmissionline4_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\dorfnetz_files\database.mdb">
