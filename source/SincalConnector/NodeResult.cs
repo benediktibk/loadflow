@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.OleDb;
 using System.Numerics;
+using System.Windows.Media.TextFormatting;
 using DatabaseHelper;
 
 namespace SincalConnector

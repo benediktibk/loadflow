@@ -57,12 +57,12 @@ namespace SincalConnector
 
         public OleDbCommand CreateCommandToAddResult(double rotationOffset)
         {
-            var command = new OleDbCommand("INSERT INTO LFNodeResults (Flag_Result,Node_ID,P,Q,S,U,phi_rot) VALUES (0,@Id,@P,@Q,@S,@U,@phi_rot)");
+            var command = new OleDbCommand("INSERT INTO LFNodeResult (Flag_Result,Node_ID,P,Q,S,U,phi_rot,Result_ID,Variant_ID) VALUES (0,@Id,@P,@Q,@S,@U,@phi_rot,@Id,1)");
             command.Parameters.AddWithValue("Id", Id);
             command.Parameters.AddWithValue("P", Load.Real * 1e-6);
             command.Parameters.AddWithValue("Q", Load.Imaginary * 1e-6);
             command.Parameters.AddWithValue("S", Load.Magnitude * 1e-6);
-            command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-6);
+            command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-3);
             command.Parameters.AddWithValue("phi_rot", (Voltage.Phase - rotationOffset) * 180 / Math.PI);
             return command;
         }

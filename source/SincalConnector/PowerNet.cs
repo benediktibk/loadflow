@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using DatabaseHelper;
@@ -133,6 +134,29 @@ namespace SincalConnector
 
             if (!success)
                 return false;
+
+            foreach (var node in _nodes)
+                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id));
+
+            var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
+            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(0)));
+
+            using (var connection = new OleDbConnection(_connectionString))
+            {
+                connection.Open();
+
+                var deleteCommand = NodeResult.CreateCommandToDeleteAll();
+                deleteCommand.Connection = connection;
+                deleteCommand.ExecuteNonQuery();
+
+                foreach (var command in insertCommands)
+                {
+                    command.Connection = connection;
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
 
             return true;
         }
