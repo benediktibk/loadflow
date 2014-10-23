@@ -32,7 +32,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
             var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
             var voltageCollapse = singleVoltagePowerNet.CalculateMissingInformation(calculator);
-            return voltageCollapse ? null : ExtractNodeVoltages(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
+            return voltageCollapse ? null : ExtractNodeResults(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
         }
 
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, IReadOnlyPowerNet powerNet)
@@ -101,7 +101,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
         }
 
-        private static Dictionary<long, NodeResult> ExtractNodeVoltages(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
+        private static Dictionary<long, NodeResult> ExtractNodeResults(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
         {
             var nodeVoltages = new Dictionary<long, NodeResult>();
 

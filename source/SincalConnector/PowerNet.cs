@@ -136,7 +136,7 @@ namespace SincalConnector
                 return false;
 
             foreach (var node in _nodes)
-                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id));
+                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id)*(-1));
 
             var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
             insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(0)));
