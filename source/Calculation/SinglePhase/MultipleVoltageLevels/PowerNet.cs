@@ -223,6 +223,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _loads.Count; }
         }
 
+        public int ImpedanceLoadCount
+        {
+            get { return _impedanceLoads.Count; }
+        }
+
         public int LineCount
         {
             get { return _transmissionLines.Count; }

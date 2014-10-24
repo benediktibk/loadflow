@@ -7,6 +7,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         #region properties
 
         int LoadCount { get; }
+        int ImpedanceLoadCount { get; }
         int LineCount { get; }
         int FeedInCount { get; }
         int TransformerCount { get; }
