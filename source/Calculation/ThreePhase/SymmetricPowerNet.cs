@@ -56,6 +56,11 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddLoad(nodeId, power/3);
         }
 
+        public void AddImpedanceLoad(int nodeId, Complex impedance)
+        {
+            _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
+        }
+
         #endregion
 
         #region calculations
