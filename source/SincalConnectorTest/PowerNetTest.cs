@@ -255,7 +255,6 @@ namespace SincalConnectorTest
             var voltage = slackGenerator.Voltage;
             var voltageShouldBe = Complex.FromPolarCoordinates(1050, 10*Math.PI/180);
             ComplexAssert.AreEqual(voltageShouldBe, voltage, 0.00001);
-            Assert.AreEqual(0.01, slackGenerator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]
@@ -269,7 +268,6 @@ namespace SincalConnectorTest
             var voltage = slackGenerator.Voltage;
             var voltageShouldBe = Complex.FromPolarCoordinates(1030, 10 * Math.PI / 180);
             ComplexAssert.AreEqual(voltageShouldBe, voltage, 0.00001);
-            Assert.AreEqual(0.01, slackGenerator.SynchronousReactance, 0.00001);
         }
 
         #endregion
