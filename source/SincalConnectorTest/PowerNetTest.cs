@@ -332,6 +332,20 @@ namespace SincalConnectorTest
             ArePowersEqual(ownResults, sincalResults, 0.1);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionFive_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/calculation_transmissionline5_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
+            ArePowersEqual(ownResults, sincalResults, 0.1);
+        }
+
         #endregion
 
         #region static functions 
