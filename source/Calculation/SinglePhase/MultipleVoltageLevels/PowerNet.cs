@@ -12,11 +12,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private readonly double _frequency;
         private readonly List<Load> _loads;
-        private readonly List<TransmissionLine> _lines;
+        private readonly List<ImpedanceLoad> _impedanceLoads;
+        private readonly List<TransmissionLine> _transmissionLines;
         private readonly List<Transformer> _transformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
-        private readonly List<IPowerNetElement> _elements; 
+        private readonly List<IPowerNetElement> _elements;
         private readonly List<Node> _nodes;
         private readonly Dictionary<long, Node> _nodesById;
         private readonly Node _groundNode;
@@ -31,7 +32,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             _frequency = frequency;
             _loads = new List<Load>();
-            _lines = new List<TransmissionLine>();
+            _impedanceLoads = new List<ImpedanceLoad>();
+            _transmissionLines = new List<TransmissionLine>();
             _transformers = new List<Transformer>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
@@ -111,7 +113,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var sourceNode = GetNodeByIdInternal(sourceNodeId);
             var targetNode = GetNodeByIdInternal(targetNodeId);
             var line = new TransmissionLine(sourceNode, targetNode, seriesResistancePerUnitLength, seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, length, _frequency, transmissionEquationModel);
-            _lines.Add(line);
+            _transmissionLines.Add(line);
             _elements.Add(line);
             sourceNode.Connect(line);
             targetNode.Connect(line);
@@ -153,6 +155,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _loads.Add(load);
             _elements.Add(load);
             node.Connect(load);
+        }
+
+        public void AddImpedanceLoad(long nodeId, Complex impedance)
+        {
+            var node = GetNodeByIdInternal(nodeId);
+            var impedanceLoad = new ImpedanceLoad(node, impedance);
+            _impedanceLoads.Add(impedanceLoad);
+            _elements.Add(impedanceLoad);
+            node.Connect(impedanceLoad);
         }
 
         #endregion
@@ -214,7 +225,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public int LineCount
         {
-            get { return _lines.Count; }
+            get { return _transmissionLines.Count; }
         }
 
         public int FeedInCount
