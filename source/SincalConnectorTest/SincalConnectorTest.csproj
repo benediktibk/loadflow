@@ -75,6 +75,9 @@
     <None Include="testdata\calculation_impedanceload1.sin" />
     <None Include="testdata\calculation_impedanceload1_files\database.001.dia" />
     <None Include="testdata\calculation_impedanceload1_files\database.ini" />
+    <None Include="testdata\calculation_impedanceload2.sin" />
+    <None Include="testdata\calculation_impedanceload2_files\database.001.dia" />
+    <None Include="testdata\calculation_impedanceload2_files\database.ini" />
     <None Include="testdata\calculation_slackgenerator1.sin" />
     <None Include="testdata\calculation_slackgenerator1_files\database.001.dia" />
     <None Include="testdata\calculation_slackgenerator1_files\database.ini" />
@@ -141,6 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\calculation_impedanceload1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_impedanceload2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_slackgenerator1_files\database.mdb">
