@@ -571,6 +571,26 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(-1e5, 0, targetNode.Power, 0.01);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_OneImpedanceLoad_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 230, 0, "");
+            _powerNet.AddNode(1, 230, 0, "");
+            _powerNet.AddFeedIn(0, new Complex(230, 0), 0, 0, 0);
+            _powerNet.AddImpedanceLoad(1, new Complex(22, 0));
+            _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
+
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var sourceNode = _powerNet.GetNodeById(0);
+            var targetNode = _powerNet.GetNodeById(1);
+            ComplexAssert.AreEqual(230, 0, sourceNode.Voltage, 0.00001);
+            ComplexAssert.AreEqual(220, 0, targetNode.Voltage, 0.00001);
+            ComplexAssert.AreEqual(2300, 0, sourceNode.Power, 0.00001);
+            ComplexAssert.AreEqual(0, 0, targetNode.Power, 0.00001);
+        }
+
         #endregion
     }
 }
