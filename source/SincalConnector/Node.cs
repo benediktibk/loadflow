@@ -57,7 +57,7 @@ namespace SincalConnector
             foreach (var impedanceLoad in impedanceLoads)
             {
                 var impedance = impedanceLoad.Impedance;
-                var loadByImpedance = Voltage*Voltage/impedance;
+                var loadByImpedance = voltage * voltage / impedance;
                 loadByImpedances = loadByImpedances + loadByImpedance;
             }
 
