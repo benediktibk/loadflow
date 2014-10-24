@@ -21,7 +21,7 @@ namespace SincalConnector
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var p = record.Parse<double>("P") * 1e6;
             var q = record.Parse<double>("Q") * 1e6;
-            LoadValue = new Complex(p, q);
+            LoadValue = new Complex(p, q)*(-1);
         }
 
         #endregion

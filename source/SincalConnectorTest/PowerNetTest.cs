@@ -110,7 +110,7 @@ namespace SincalConnectorTest
             var loads = powerNet.Loads;
             Assert.AreEqual(1, loads.Count);
             var load = loads[0];
-            ComplexAssert.AreEqual(1e5, 1e4, load.LoadValue, 0.000001);
+            ComplexAssert.AreEqual(-1e5, -1e4, load.LoadValue, 0.000001);
         }
 
         [TestMethod]
