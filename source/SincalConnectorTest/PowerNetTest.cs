@@ -346,6 +346,19 @@ namespace SincalConnectorTest
             ArePowersEqual(ownResults, sincalResults, 0.1);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithSlackGeneratorVersionOne_PowersAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/calculation_slackgenerator1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            ArePowersEqual(ownResults, sincalResults, 0.1);
+        }
+
         #endregion
 
         #region static functions 

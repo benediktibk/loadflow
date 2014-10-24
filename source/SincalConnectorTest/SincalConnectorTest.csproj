@@ -72,6 +72,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="testdata\calculation_slackgenerator1.sin" />
+    <None Include="testdata\calculation_slackgenerator1_files\database.001.dia" />
+    <None Include="testdata\calculation_slackgenerator1_files\database.ini" />
     <None Include="testdata\calculation_transmissionline1.sin" />
     <None Include="testdata\calculation_transmissionline1_files\database.001.dia" />
     <None Include="testdata\calculation_transmissionline1_files\database.ini" />
@@ -134,6 +137,9 @@
     <None Include="testdata\unsupported_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="testdata\calculation_slackgenerator1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\calculation_transmissionline1_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
