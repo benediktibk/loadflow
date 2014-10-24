@@ -356,9 +356,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
@@ -374,9 +374,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
@@ -392,9 +392,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
@@ -410,9 +410,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
@@ -429,9 +429,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(0, 0));
             var calculator = new NodePotentialMethod();
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1.95, 0, sourceNode.Voltage, 0.0001);
@@ -447,9 +447,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 4000, 0.02, 30, 50, 0.05, 1.95, "");
             _powerNet.AddLoad(1, new Complex(0, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1.95, 0, sourceNode.Voltage, 0.0001);
@@ -466,9 +466,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(0, 0));
             var calculator = new NodePotentialMethod();
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(calculator);
+            var success = _powerNet.CalculateNodeVoltages(calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1.95, 0, sourceNode.Voltage, 0.0001);
@@ -484,9 +484,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.01);
@@ -502,9 +502,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 4000, 0.02, 30, 50, 0.05, 2.495, "");
             _powerNet.AddLoad(1, new Complex(0, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.0001);
@@ -520,9 +520,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, "");
             _powerNet.AddLoad(1, new Complex(-200, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
@@ -538,9 +538,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, "");
             _powerNet.AddLoad(1, new Complex(0, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
@@ -556,9 +556,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
             _powerNet.AddLoad(1, new Complex(-1e5, 0));
 
-            var voltageCollapse = !_powerNet.CalculateNodeVoltages(_calculator);
+            var success = _powerNet.CalculateNodeVoltages(_calculator);
 
-            Assert.IsFalse(voltageCollapse);
+            Assert.IsTrue(success);
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             var targetVoltageShouldBe = (0.5 + Math.Sqrt(0.15))*1e3;
