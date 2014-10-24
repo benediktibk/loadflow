@@ -41,6 +41,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         #endregion
 
         #region basic tests
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
