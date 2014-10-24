@@ -130,13 +130,15 @@ namespace SincalConnector
         public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet();
+            var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
             var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
 
             if (!success)
                 return false;
 
             foreach (var node in _nodes)
-                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id));
+                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id),
+                    impedanceLoadsByNodeId.Get(node.Id));
 
             var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
             insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(0)));
@@ -199,6 +201,16 @@ namespace SincalConnector
         #endregion
 
         #region private functions
+
+        private MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
+        {
+            var result = new MultiDictionary<int, ImpedanceLoad>();
+
+            foreach (var impedanceLoad in _impedanceLoads)
+                result.Add(impedanceLoad.NodeId, impedanceLoad);
+
+            return result;
+        }
 
         private MultiDictionary<int, int> CreateDictionaryNodeIdsByElementIds()
         {

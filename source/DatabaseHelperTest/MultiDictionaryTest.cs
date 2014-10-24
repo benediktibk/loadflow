@@ -72,5 +72,16 @@ namespace DatabaseHelperTest
 
             Assert.AreEqual('a', result);
         }
+
+        [TestMethod]
+        public void Get_NotYetAddedKey_EmptyList()
+        {
+            var dictionary = new MultiDictionary<int, char>();
+            dictionary.Add(5, 'a');
+
+            var result = dictionary.Get(134);
+
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }

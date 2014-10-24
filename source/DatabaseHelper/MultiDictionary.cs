@@ -25,7 +25,9 @@ namespace DatabaseHelper
 
         public IReadOnlyList<TValue> Get(TKey key)
         {
-            return _values[key];
+            List<TValue> result;
+            var found = _values.TryGetValue(key, out result);
+            return found ? _values[key] : new List<TValue>();
         }
 
         public TValue GetOnly(TKey key)

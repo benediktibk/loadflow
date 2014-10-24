@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
@@ -49,10 +50,19 @@ namespace SincalConnector
 
         #region public functions
 
-        public void SetResult(Complex voltage, Complex load)
+        public void SetResult(Complex voltage, Complex load, IReadOnlyList<ImpedanceLoad> impedanceLoads)
         {
+            var loadByImpedances = new Complex();
+
+            foreach (var impedanceLoad in impedanceLoads)
+            {
+                var impedance = impedanceLoad.Impedance;
+                var loadByImpedance = Voltage*Voltage/impedance;
+                loadByImpedances = loadByImpedances + loadByImpedance;
+            }
+
             Voltage = voltage;
-            Load = load;
+            Load = load - loadByImpedances;
         }
 
         public OleDbCommand CreateCommandToAddResult(double rotationOffset)
