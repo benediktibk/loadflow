@@ -284,8 +284,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(ownResults, sincalResults, 0.001);
-            ArePowersEqual(ownResults, sincalResults, 0.1);
+            AreVoltagesEqual(sincalResults, ownResults, 0.001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         [TestMethod]
@@ -298,8 +298,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
-            ArePowersEqual(ownResults, sincalResults, 0.00001);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.00001);
         }
 
         [TestMethod]
@@ -312,8 +312,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
-            ArePowersEqual(ownResults, sincalResults, 0.1);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         [TestMethod]
@@ -326,8 +326,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
-            ArePowersEqual(ownResults, sincalResults, 0.1);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         [TestMethod]
@@ -340,8 +340,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
-            ArePowersEqual(ownResults, sincalResults, 0.1);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         [TestMethod]
@@ -354,7 +354,7 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            ArePowersEqual(ownResults, sincalResults, 0.1);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         #endregion
