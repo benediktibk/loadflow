@@ -286,7 +286,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreEqual(ownResults, sincalResults, 0.00001);
+            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
+            ArePowersEqual(ownResults, sincalResults, 0.00001);
         }
 
         [TestMethod]
@@ -299,7 +300,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreEqual(ownResults, sincalResults, 0.00001);
+            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
+            ArePowersEqual(ownResults, sincalResults, 0.00001);
         }
 
         [TestMethod]
@@ -312,7 +314,8 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreEqual(ownResults, sincalResults, 0.00001);
+            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
+            ArePowersEqual(ownResults, sincalResults, 0.1);
         }
 
         [TestMethod]
@@ -325,14 +328,15 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreEqual(ownResults, sincalResults, 0.00001);
+            AreVoltagesEqual(ownResults, sincalResults, 0.00001);
+            ArePowersEqual(ownResults, sincalResults, 0.0001);
         }
 
         #endregion
 
         #region static functions 
 
-        public static void AreEqual(IList<NodeResult> first, IList<NodeResult> second, double delta)
+        public static void AreVoltagesEqual(IList<NodeResult> first, IList<NodeResult> second, double delta)
         {
             Assert.AreEqual(first.Count, second.Count);
 
@@ -342,6 +346,18 @@ namespace SincalConnectorTest
             {
                 var firstNode = firstById[secondNode.NodeId];
                 ComplexAssert.AreEqual(firstNode.Voltage, secondNode.Voltage, delta);
+            }
+        }
+
+        public static void ArePowersEqual(IList<NodeResult> first, IList<NodeResult> second, double delta)
+        {
+            Assert.AreEqual(first.Count, second.Count);
+
+            var firstById = first.ToDictionary(node => node.NodeId);
+
+            foreach (var secondNode in second)
+            {
+                var firstNode = firstById[secondNode.NodeId];
                 ComplexAssert.AreEqual(firstNode.Power, secondNode.Power, delta);
             }
         }
