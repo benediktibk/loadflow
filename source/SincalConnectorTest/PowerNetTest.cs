@@ -156,7 +156,7 @@ namespace SincalConnectorTest
             Assert.AreEqual(0.08, transformer.RelativeShortCircuitVoltage, 0.000001);
             Assert.AreEqual(0.02, transformer.RelativeNoLoadCurrent, 0.000001);
             Assert.AreEqual(1e3, transformer.IronLosses, 0.000001);
-            Assert.AreEqual(Math.PI, transformer.PhaseShift, 0.000001);
+            Assert.AreEqual(Math.PI, transformer.PhaseShift.Radiant, 0.000001);
             Assert.AreEqual(5e2, transformer.CopperLosses, 0.000001);
         }
 

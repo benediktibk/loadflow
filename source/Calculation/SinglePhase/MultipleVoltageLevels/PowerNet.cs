@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -93,18 +94,18 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return segments;
         }
 
-        public IReadOnlyDictionary<IExternalReadOnlyNode, double> GetNominalPhaseShiftPerNode()
+        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
         {
             if (_feedIns.Count != 1)
                 throw new InvalidOperationException("there must exist exact one feed in");
 
             var feedIn = _feedIns.First();
-            var result = new Dictionary<IExternalReadOnlyNode, double>();
+            var result = new Dictionary<IExternalReadOnlyNode, Angle>();
             var segments = GetSetsOfConnectedNodesOnSameVoltageLevel();
-            var phaseShiftBySegment = new Dictionary<ISet<IExternalReadOnlyNode>, double>();
+            var phaseShiftBySegment = new Dictionary<ISet<IExternalReadOnlyNode>, Angle>();
             var feedInNode = feedIn.Node;
             var segmentWithFeedIn = GetSegmentWhichContains(segments, feedInNode);
-            var phaseShiftsPerTransformer = new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, double>();
+            var phaseShiftsPerTransformer = new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>();
 
             foreach (var transformer in _transformers)
             {
@@ -117,20 +118,20 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 if (phaseShiftsPerTransformer.ContainsKey(segmentPair))
                 {
                     var previousPhaseShift = phaseShiftsPerTransformer[segmentPair];
-                    if (Math.Abs(previousPhaseShift - phaseShift) > 0.000001)
+                    if ((previousPhaseShift - phaseShift).Radiant > 0.000001)
                         throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
                 }
                 else if (phaseShiftsPerTransformer.ContainsKey(segmentPairInverse))
                 {
                     var previousPhaseShift = phaseShiftsPerTransformer[segmentPairInverse];
-                    if (Math.Abs(previousPhaseShift - (-1)*phaseShift) > 0.000001)
+                    if ((previousPhaseShift + phaseShift).Radiant > 0.000001)
                         throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
                 }
                 else
                     phaseShiftsPerTransformer.Add(segmentPair, phaseShift);
             }
 
-            var phaseShiftBySegmentToAllSegments = new MultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, double>> ();
+            var phaseShiftBySegmentToAllSegments = new MultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, Angle>>();
 
             foreach (var connection in phaseShiftsPerTransformer)
             {
@@ -138,12 +139,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var secondSegment = connection.Key.Item2;
                 var phaseShift = connection.Value;
                 phaseShiftBySegmentToAllSegments.Add(firstSegment,
-                    new Tuple<ISet<IExternalReadOnlyNode>, double>(secondSegment, phaseShift));
+                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(secondSegment, phaseShift));
                 phaseShiftBySegmentToAllSegments.Add(secondSegment,
-                    new Tuple<ISet<IExternalReadOnlyNode>, double>(firstSegment, phaseShift));
+                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(firstSegment, phaseShift));
             }
 
-            phaseShiftBySegment.Add(segmentWithFeedIn, 0);
+            phaseShiftBySegment.Add(segmentWithFeedIn, new Angle(0));
             var lastSegments = new List<ISet<IExternalReadOnlyNode>>() {segmentWithFeedIn};
 
             do
@@ -159,11 +160,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     {
                         var phaseShift = element.Item2 + ownPhaseShift;
                         var otherSegment = element.Item1;
-                        double previousPhaseShift;
+                        Angle previousPhaseShift;
 
                         if (phaseShiftBySegment.TryGetValue(otherSegment, out previousPhaseShift))
                         {
-                            if (Math.Abs(previousPhaseShift - phaseShift) > 0.000001)
+                            if ((previousPhaseShift - phaseShift).Radiant > 0.000001)
                                 throw new InvalidDataException("the phase shifts do not match");
                         }
                         else
@@ -275,7 +276,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, double nominalPhaseShift, string name)
+        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
         {
             var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
             var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);

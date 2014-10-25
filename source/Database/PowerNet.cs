@@ -12,6 +12,7 @@ using System.Threading;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace Database
 {
@@ -537,7 +538,7 @@ namespace Database
                 foreach (var transformer in Transformers)
                     _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
                         transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
-                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, 0, transformer.Name);
+                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, new Angle(), transformer.Name);
             }
             catch (Exception exception)
             {

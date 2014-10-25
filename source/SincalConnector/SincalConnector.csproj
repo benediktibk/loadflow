@@ -130,6 +130,10 @@
       <Project>{66F8115D-0B40-4C43-97E7-8E14A32767C8}</Project>
       <Name>DatabaseHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MathExtensions\MathExtensions.csproj">
+      <Project>{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}</Project>
+      <Name>MathExtensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

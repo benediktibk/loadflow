@@ -62,6 +62,10 @@
       <Project>{D019F54A-FB70-4BBC-AB53-102C78E54880}</Project>
       <Name>Calculation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MathExtensions\MathExtensions.csproj">
+      <Project>{D6BD0D66-5370-49B6-AE0B-AC6B80BE9AFB}</Project>
+      <Name>MathExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
       <Project>{9f597517-a825-4611-9234-f64b207499d1}</Project>
       <Name>SincalConnector</Name>

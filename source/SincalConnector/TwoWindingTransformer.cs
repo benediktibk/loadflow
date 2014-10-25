@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.IO;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace SincalConnector
 {
@@ -32,7 +33,7 @@ namespace SincalConnector
             var connectedNodes = nodeIdsByElementIds.Get(Id);
             var connectionSymbol = record.Parse<int>("VecGrp");
             var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
-            PhaseShift = phaseShiftFactor*30*Math.PI/180;
+            PhaseShift = Angle.FromDegree(phaseShiftFactor*30);
 
             if (connectedNodes.Count != 2)
                 throw new InvalidDataException("a transformer must be connected to two nodes");
@@ -68,7 +69,7 @@ namespace SincalConnector
         public double CopperLosses { get; private set; }
         public double IronLosses { get; private set; }
         public double RelativeNoLoadCurrent { get; private set; }
-        public double PhaseShift { get; private set; }
+        public Angle PhaseShift { get; private set; }
         public double Ratio { get; private set; }
 
         #endregion

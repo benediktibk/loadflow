@@ -26,6 +26,16 @@ namespace MathExtensions
             }
         }
 
+        public Angle()
+        {
+            _value = 0;
+        }
+
+        public static Angle FromDegree(double degree)
+        {
+            return new Angle(degree*Math.PI/180);
+        }
+
         #endregion
 
         #region properties

@@ -68,5 +68,21 @@ namespace MathExtensionsTest
 
             Assert.AreEqual(-7 + 4 * Math.PI, result.Radiant, 0.00001);
         }
+
+        [TestMethod]
+        public void Constructor_Empty_0()
+        {
+            var angle = new Angle();
+
+            Assert.AreEqual(0, angle.Radiant, 0.00001);
+        }
+
+        [TestMethod]
+        public void FromDegree_90_HalfPi()
+        {
+            var angle = Angle.FromDegree(90);
+
+            Assert.AreEqual(Math.PI/2, angle.Radiant, 0.00001);
+        }
     }
 }
