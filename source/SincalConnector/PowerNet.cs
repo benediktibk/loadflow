@@ -60,6 +60,9 @@ namespace SincalConnector
 
                 databaseConnection.Close();
             }
+
+            if (_feedIns.Count + _slackGenerators.Count != 1)
+                throw new NotSupportedException("only one feedin and/or slack generator is supported");
         }
 
         private PowerNet()
