@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathNet.Numerics;
 
 namespace SincalConnector
 {
@@ -57,7 +58,7 @@ namespace SincalConnector
             foreach (var impedanceLoad in impedanceLoads)
             {
                 var impedance = impedanceLoad.Impedance;
-                var loadByImpedance = voltage * voltage / impedance;
+                var loadByImpedance = voltage * (voltage / impedance).Conjugate();
                 loadByImpedances = loadByImpedances + loadByImpedance;
             }
 
