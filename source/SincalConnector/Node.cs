@@ -75,7 +75,7 @@ namespace SincalConnector
             command.Parameters.AddWithValue("Q", Load.Imaginary * 1e-6);
             command.Parameters.AddWithValue("S", Load.Magnitude * 1e-6);
             command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-3);
-            command.Parameters.AddWithValue("phi_rot", (new Angle(Voltage.Phase) + phaseShift).Degree);
+            command.Parameters.AddWithValue("phi_rot", (new Angle(Voltage.Phase) - phaseShift).Degree);
             return command;
         }
 
