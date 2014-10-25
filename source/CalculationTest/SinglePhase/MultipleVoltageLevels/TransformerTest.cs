@@ -13,12 +13,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class TransformerTest
     {
+        #region variables
+
         private Node _upperSideNode;
         private Node _lowerSideNode;
         private Node _groundNode;
         private Transformer _transformerWithNotNominalRatio;
         private Transformer _transformerWithNominalRatio;
         private IdGenerator _idGenerator;
+
+        #endregion
+
+        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -30,6 +36,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, 0.4, "", _idGenerator);
             _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, 6, "", _idGenerator);
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void UpperSideNominalVoltage_UpperSideNodeHasNominalVoltage10_10()
@@ -178,5 +188,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             admittanceMatrix.Verify(x => x.AddIdealTransformer(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>(), It.IsAny<double>()),
                 Times.Once);
         }
+
+        #endregion
     }
 }
