@@ -130,8 +130,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                           relativeShortCircuitVoltageReal * relativeShortCircuitVoltageReal);
             var relativeShortCircuitVoltageComplex = new Complex(relativeShortCircuitVoltageReal,
                 relativeShortCircuitVoltageImaginary);
-            _lengthAdmittance = new Complex(nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage), 0) /
-                                relativeShortCircuitVoltageComplex;
+            _lengthAdmittance = (nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage)) / relativeShortCircuitVoltageComplex;
             _shuntAdmittance = new Complex(ironLosses, (-1) * relativeNoLoadCurrent * nominalPower) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
         }
 
