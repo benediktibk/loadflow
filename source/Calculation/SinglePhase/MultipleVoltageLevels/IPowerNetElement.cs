@@ -7,6 +7,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     public interface IPowerNetElement
     {
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
+        void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);
         bool EnforcesSlackBus { get; }
         bool EnforcesPVBus { get; }
         Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);

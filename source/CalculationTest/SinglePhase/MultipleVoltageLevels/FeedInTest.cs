@@ -14,9 +14,15 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class FeedInTest
     {
+        #region variables
+
         private Node _node;
         private FeedIn _feedIn;
         private IdGenerator _idGenerator;
+
+        #endregion
+
+        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -25,6 +31,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node = new Node(0, 2, 0, "");
             _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void Constructor_ValidVoltageSet_VoltageIsCorrect()
@@ -83,6 +93,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             feedIn.AddConnectedNodes(nodes);
 
             node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_EmptySet_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var node = new Mock<IExternalReadOnlyNode>();
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, _idGenerator);
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            feedIn.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            node.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
 
         [TestMethod]
@@ -197,5 +219,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.IsFalse(feedIn.EnforcesSlackBus);
             Assert.IsFalse(node.MustBePVBus);
         }
+
+        #endregion
     }
 }

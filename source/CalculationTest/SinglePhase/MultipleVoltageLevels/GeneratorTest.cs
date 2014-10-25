@@ -14,8 +14,14 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class GeneratorTest
     {
+        #region variables
+
         private Node _node;
         private Generator _generator;
+
+        #endregion
+
+        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -23,6 +29,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node = new Node(0, 103, 0, "");
             _generator = new Generator(_node, 5, 7);
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void Constructor_VoltageMagnitudeSetTo5_VoltageMagnitudeIs5()
@@ -90,6 +100,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_EmptySet_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var node = new Mock<IExternalReadOnlyNode>();
+            var generator = new Generator(node.Object, 67, 3);
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            generator.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            node.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
         public void NominalVoltagesMatch_Empty_True()
         {
             Assert.IsTrue(_generator.NominalVoltagesMatch);
@@ -127,5 +149,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsFalse(_generator.NeedsGroundNode);
         }
+
+        #endregion
     }
 }

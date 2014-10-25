@@ -88,6 +88,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _lowerSideNode.AddConnectedNodes(visitedNodes);
         }
 
+        public void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes)
+        { }
+
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
             var scalerUpperSide = new DimensionScaler(UpperSideNominalVoltage, scaleBasisPower);

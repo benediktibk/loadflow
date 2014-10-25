@@ -59,6 +59,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_ValidSet_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var node = new Mock<IExternalReadOnlyNode>();
+            var impedanceLoad = new ImpedanceLoad(node.Object, new Complex(123, 3));
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            impedanceLoad.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            node.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
         public void EnforcesSlackBus_Empty_False()
         {
             Assert.IsFalse(_impedanceLoad.EnforcesSlackBus);

@@ -13,13 +13,23 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class NodeTest
     {
+        #region variables
+
         private Node _node;
+
+        #endregion
+
+        #region initialize
 
         [TestInitialize]
         public void SetUp()
         {
             _node = new Node(0, 2, 0, "");
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void Constructor_0And2_IdIs0()
@@ -67,7 +77,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void AddConnectedElements_ItselfNotContained_ItselfContained()
+        public void AddConnectedNodes_ItselfNotContained_ItselfContained()
         {
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
@@ -77,7 +87,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void AddConnectedElements_ItselfContained_ItselfContained()
+        public void AddConnectedNodes_ItselfContained_ItselfContained()
         {
             var nodes = new HashSet<IExternalReadOnlyNode> { _node };
 
@@ -87,7 +97,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void AddConnectedElements_ItselfContained_ConnectedElementGetsNoCallToAddConnectedElements()
+        public void AddConnectedNodes_ItselfContained_ConnectedElementGetsNoCallToAddConnectedNodes()
         {
             var nodes = new HashSet<IExternalReadOnlyNode> { _node };
             var otherElement = new Mock<IPowerNetElement>();
@@ -99,7 +109,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void AddConnectedElements_ItselfNotContained_ConnectedElementGetsCallToAddConnectedElements()
+        public void AddConnectedNodes_ItselfNotContained_ConnectedElementGetsCallToAddConnectedNodes()
         {
             var nodes = new HashSet<IExternalReadOnlyNode>();
             var otherElement = new Mock<IPowerNetElement>();
@@ -108,6 +118,50 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodes(nodes);
 
             otherElement.Verify(x => x.AddConnectedNodes(new HashSet<IExternalReadOnlyNode> { _node }), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_ItselfNotContained_ItselfContained()
+        {
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            _node.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            Assert.IsTrue(nodes.Contains(_node));
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_ItselfContained_ItselfContained()
+        {
+            var nodes = new HashSet<IExternalReadOnlyNode> { _node };
+
+            _node.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            Assert.IsTrue(nodes.Contains(_node));
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_ItselfContained_ConnectedElementGetsNoCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var nodes = new HashSet<IExternalReadOnlyNode> { _node };
+            var otherElement = new Mock<IPowerNetElement>();
+            _node.Connect(otherElement.Object);
+
+            _node.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            otherElement.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_ItselfNotContained_ConnectedElementGetsCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+            var otherElement = new Mock<IPowerNetElement>();
+            _node.Connect(otherElement.Object);
+
+            _node.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            otherElement.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(new HashSet<IExternalReadOnlyNode> { _node }), Times.Once);
         }
 
         [TestMethod]
@@ -412,5 +466,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             ComplexAssert.AreEqual(8, 10, _node.Voltage, 0.00001);
         }
+
+        #endregion
     }
 }

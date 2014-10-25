@@ -14,6 +14,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class TransmissionLineTest
     {
+        #region variables
+
         private TransmissionLine _transmissionLineInvalid;
         private Node _sourceNodeInvalid;
         private Node _targetNodeInvalid;
@@ -21,6 +23,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         private TransmissionLine _transmissionLineWithLengthAndShuntValues;
         private Node _sourceNodeValid;
         private Node _targetNodeValid;
+
+        #endregion
+
+        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -33,6 +39,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _transmissionLineWithOnlyLengthValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
             _transmissionLineWithLengthAndShuntValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void Constructor_OnlyLengthValues_LengthImpedanceIsCorrect()
@@ -71,6 +81,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             source.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
             target.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_EmptySet_SourceAndTargetGetCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 5, 4, 3, 2, 1, 10, true);
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            line.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            source.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            target.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
 
         [TestMethod]
@@ -192,5 +216,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsTrue(_transmissionLineWithLengthAndShuntValues.NeedsGroundNode);
         }
+
+        #endregion
     }
 }

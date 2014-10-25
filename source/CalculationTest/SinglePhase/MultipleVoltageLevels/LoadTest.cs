@@ -14,8 +14,14 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class LoadTest
     {
+        #region variables
+
         private Node _node;
         private Load _load;
+
+        #endregion
+
+        #region initialize
 
         [TestInitialize]
         public void SetUp()
@@ -23,6 +29,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node = new Node(0, 3, 0, "");
             _load = new Load(new Complex(4, 1), _node);
         }
+
+        #endregion
+
+        #region tests
 
         [TestMethod]
         public void Constructor_ValidLoad_LoadIsCorrect()
@@ -52,6 +62,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             load.AddConnectedNodes(nodes);
 
             node.Verify(x => x.AddConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_EmptySet_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var node = new Mock<IExternalReadOnlyNode>();
+            var load = new Load(new Complex(123, 3), node.Object);
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            load.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            node.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
 
         [TestMethod]
@@ -134,5 +156,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsFalse(_load.NeedsGroundNode);
         }
+
+        #endregion
     }
 }

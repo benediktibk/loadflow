@@ -121,6 +121,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 element.AddConnectedNodes(visitedNodes);
         }
 
+        public void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes)
+        {
+            if (visitedNodes.Contains(this))
+                return;
+
+            visitedNodes.Add(this);
+            foreach (var element in _connectedElements)
+                element.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+        }
+
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
             var enforcingElements = _connectedElements.Where(x => x.EnforcesPVBus).ToList();

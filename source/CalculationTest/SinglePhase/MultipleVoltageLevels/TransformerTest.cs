@@ -68,6 +68,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void AddConnectedNodesOnSameVoltageLevel_EmptySet_SourceAndTargetGetNoCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var upperSideNode = new Mock<IExternalReadOnlyNode>();
+            var lowerSideNode = new Mock<IExternalReadOnlyNode>();
+            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, 0, "", _idGenerator);
+            var nodes = new HashSet<IExternalReadOnlyNode>();
+
+            transformer.AddConnectedNodesOnSameVoltageLevel(nodes);
+
+            upperSideNode.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+            lowerSideNode.Verify(x => x.AddConnectedNodesOnSameVoltageLevel(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+        }
+
+        [TestMethod]
         public void EnforcesPVBus_Empty_False()
         {
             Assert.IsFalse(_transformerWithNotNominalRatio.EnforcesPVBus);

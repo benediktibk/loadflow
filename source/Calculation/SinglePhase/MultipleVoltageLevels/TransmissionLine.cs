@@ -115,6 +115,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _targetNode.AddConnectedNodes(visitedNodes);
         }
 
+        public void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes)
+        {
+            _sourceNode.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            _targetNode.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+        }
+
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
             Debug.Assert(!NeedsGroundNode || groundNode != null);
