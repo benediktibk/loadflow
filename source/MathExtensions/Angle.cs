@@ -74,6 +74,11 @@ namespace MathExtensions
             return new Angle(angle.Radiant * factor);
         }
 
+        public static bool Equal(Angle one, Angle two, double delta)
+        {
+            return Math.Abs(one.Radiant - two.Radiant) < delta;
+        }
+
         #endregion
     }
 }

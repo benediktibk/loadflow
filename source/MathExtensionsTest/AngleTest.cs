@@ -104,5 +104,32 @@ namespace MathExtensionsTest
 
             Assert.AreEqual(3 * Math.PI / 2, result.Radiant, 0.00001);
         }
+
+        [TestMethod]
+        public void Equal_OneSlightlyBiggerThanTwo_True()
+        {
+            var one = new Angle(2);
+            var two = new Angle(2.00001);
+
+            Assert.IsTrue(Angle.Equal(one, two, 0.001));
+        }
+
+        [TestMethod]
+        public void Equal_TwoSlightlyBiggerThanOne_True()
+        {
+            var one = new Angle(2.00001);
+            var two = new Angle(2);
+
+            Assert.IsTrue(Angle.Equal(one, two, 0.001));
+        }
+
+        [TestMethod]
+        public void Equal_TotallyDifferentValues_False()
+        {
+            var one = new Angle(3);
+            var two = new Angle(2);
+
+            Assert.IsFalse(Angle.Equal(one, two, 0.001));
+        }
     }
 }
