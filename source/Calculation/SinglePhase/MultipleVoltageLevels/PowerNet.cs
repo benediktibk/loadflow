@@ -69,6 +69,28 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return segments;
         }
 
+        public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodesOnSameVoltageLevel()
+        {
+            var segments = new List<ISet<IExternalReadOnlyNode>>();
+
+            if (_nodes.Count == 0)
+                return segments;
+
+            foreach (var node in _nodes)
+            {
+                var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
+
+                if (alreadyContained)
+                    continue;
+
+                var newSegment = new HashSet<IExternalReadOnlyNode>();
+                node.AddConnectedNodesOnSameVoltageLevel(newSegment);
+                segments.Add(newSegment);
+            }
+
+            return segments;
+        }
+
         public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
             var powerScaling = DeterminePowerScaling();
