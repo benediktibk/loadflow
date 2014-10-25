@@ -189,6 +189,12 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 Times.Once);
         }
 
+        [TestMethod]
+        public void Constructor_NominalPhaseShiftOf6_NominalPhaseShiftIs6()
+        {
+            Assert.AreEqual(6, _transformerWithNominalRatio.NominalPhaseShift, 0.00001);
+        }
+
         #endregion
     }
 }
