@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
-using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace SincalConnector
 {
@@ -134,6 +134,8 @@ namespace SincalConnector
         {
             var symmetricPowerNet = CreateSymmetricPowerNet();
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
+            var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
+            var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
 
             if (!success)
@@ -143,8 +145,9 @@ namespace SincalConnector
                 node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id),
                     impedanceLoadsByNodeId.Get(node.Id));
 
+
             var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
-            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(0)));
+            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(nominalPhaseShiftByIds[node.Id])));
 
             using (var connection = new OleDbConnection(_connectionString))
             {

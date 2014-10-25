@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathExtensions;
 using MathNet.Numerics;
 
 namespace SincalConnector
@@ -66,7 +67,7 @@ namespace SincalConnector
             Load = load - loadByImpedances;
         }
 
-        public OleDbCommand CreateCommandToAddResult(double rotationOffset)
+        public OleDbCommand CreateCommandToAddResult(Angle phaseShift)
         {
             var command = new OleDbCommand("INSERT INTO LFNodeResult (Flag_Result,Node_ID,P,Q,S,U,phi_rot,Result_ID,Variant_ID) VALUES (0,@Id,@P,@Q,@S,@U,@phi_rot,@Id,1)");
             command.Parameters.AddWithValue("Id", Id);
@@ -74,7 +75,7 @@ namespace SincalConnector
             command.Parameters.AddWithValue("Q", Load.Imaginary * 1e-6);
             command.Parameters.AddWithValue("S", Load.Magnitude * 1e-6);
             command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-3);
-            command.Parameters.AddWithValue("phi_rot", (Voltage.Phase - rotationOffset) * 180 / Math.PI);
+            command.Parameters.AddWithValue("phi_rot", (new Angle(Voltage.Phase) + phaseShift).Degree);
             return command;
         }
 
