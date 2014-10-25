@@ -537,7 +537,7 @@ namespace Database
                 foreach (var transformer in Transformers)
                     _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
                         transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
-                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, transformer.Name);
+                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, 0, transformer.Name);
             }
             catch (Exception exception)
             {

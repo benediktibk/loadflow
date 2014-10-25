@@ -78,7 +78,7 @@ namespace SincalConnector
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddTransformer(UpperSideNodeId, LowerSideNodeId, NominalPower, RelativeShortCircuitVoltage,
-                CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, "");
+                CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift, "");
         }
 
         #endregion

@@ -15,13 +15,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private Complex _shuntAdmittance;
         private readonly double _ratio;
         private readonly double _nominalPower;
+        private readonly double _nominalPhaseShift;
         private readonly List<DerivedInternalPQNode> _internalNodes;
 
         #endregion
 
         #region public functions
 
-        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, string name, IdGenerator idGenerator)
+        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, double nominalPhaseShift, string name, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");
@@ -47,10 +48,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (ironLosses <= 0 && relativeNoLoadCurrent == 0)
                 throw new ArgumentOutOfRangeException("ironLosses", "must be positive");
 
+            if (nominalPhaseShift < 0 || nominalPhaseShift > 2*Math.PI)
+                throw new ArgumentOutOfRangeException("nominalPhaseShift", "must be within 0 and 2*pi");
+
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
             _ratio = ratio;
             _nominalPower = nominalPower;
+            _nominalPhaseShift = nominalPhaseShift;
             _internalNodes = new List<DerivedInternalPQNode>();
             CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
                 relativeNoLoadCurrent);
@@ -196,6 +201,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public bool HasNotNominalRatio
         {
             get { return Math.Abs(RelativeRatio - 1) > 0.000001; } 
+        }
+
+        public double NominalPhaseShift
+        {
+            get { return _nominalPhaseShift; }
         }
 
         #endregion
