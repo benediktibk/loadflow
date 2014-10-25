@@ -41,11 +41,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (copperLosses <= 0)
                 throw new ArgumentOutOfRangeException("copperLosses", "must be positive");
 
-            if (ironLosses <= 0)
-                throw new ArgumentOutOfRangeException("ironLosses", "must be positive");
-
-            if (relativeNoLoadCurrent <= 0 || relativeNoLoadCurrent > 1)
+            if (relativeNoLoadCurrent < 0 || relativeNoLoadCurrent > 1)
                 throw new ArgumentOutOfRangeException("relativeNoLoadCurrent", "must be positive and smaller than 1");
+
+            if (ironLosses <= 0 && relativeNoLoadCurrent == 0)
+                throw new ArgumentOutOfRangeException("ironLosses", "must be positive");
 
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
@@ -122,7 +122,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent)
         {
             var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
-            if (relativeShortCircuitVoltageReal >= relativeShortCircuitVoltage)
+            if (relativeShortCircuitVoltageReal > relativeShortCircuitVoltage)
                 throw new ArgumentException("the copper losses are too high compared to the nominal power");
 
             var relativeShortCircuitVoltageImaginary =
