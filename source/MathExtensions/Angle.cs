@@ -64,6 +64,16 @@ namespace MathExtensions
             return new Angle(lhs.Radiant - rhs.Radiant);
         }
 
+        public static Angle operator *(Angle angle, double factor)
+        {
+            return new Angle(angle.Radiant * factor);
+        }
+
+        public static Angle operator *(double factor, Angle angle)
+        {
+            return new Angle(angle.Radiant * factor);
+        }
+
         #endregion
     }
 }

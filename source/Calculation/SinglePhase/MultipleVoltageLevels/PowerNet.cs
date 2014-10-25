@@ -462,7 +462,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 phaseShiftBySegmentToAllSegments.Add(firstSegment,
                     new Tuple<ISet<IExternalReadOnlyNode>, Angle>(secondSegment, phaseShift));
                 phaseShiftBySegmentToAllSegments.Add(secondSegment,
-                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(firstSegment, phaseShift));
+                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(firstSegment, (-1)*phaseShift));
             }
             return phaseShiftBySegmentToAllSegments;
         }

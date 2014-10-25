@@ -84,5 +84,25 @@ namespace MathExtensionsTest
 
             Assert.AreEqual(Math.PI/2, angle.Radiant, 0.00001);
         }
+
+        [TestMethod]
+        public void OperatorMultiply_AngleAndDouble_CorrectValue()
+        {
+            var angle = new Angle(Math.PI / 2);
+
+            var result = angle*(-1);
+
+            Assert.AreEqual(3 * Math.PI / 2, result.Radiant, 0.00001);
+        }
+
+        [TestMethod]
+        public void OperatorMultiply_DoubleAndAngle_CorrectValue()
+        {
+            var angle = new Angle(Math.PI / 2);
+
+            var result = (-1) * angle;
+
+            Assert.AreEqual(3 * Math.PI / 2, result.Radiant, 0.00001);
+        }
     }
 }
