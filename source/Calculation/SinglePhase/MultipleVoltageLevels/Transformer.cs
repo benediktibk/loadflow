@@ -14,6 +14,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private Complex _lengthAdmittance;
         private Complex _shuntAdmittance;
         private readonly double _ratio;
+        private readonly double _nominalPower;
         private readonly List<DerivedInternalPQNode> _internalNodes;
 
         #endregion
@@ -49,6 +50,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _upperSideNode = upperSideNode;
             _lowerSideNode = lowerSideNode;
             _ratio = ratio;
+            _nominalPower = nominalPower;
             _internalNodes = new List<DerivedInternalPQNode>();
             CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
                 relativeNoLoadCurrent);
@@ -87,7 +89,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             if (HasNotNominalRatio)
             {
-                var idealTransformerWeight = expectedLoadFlow > 0 ? UpperSideNominalVoltage / expectedLoadFlow : 1;
+                var idealTransformerWeight = expectedLoadFlow == 0 ? 1 : UpperSideNominalVoltage / _nominalPower;
                 var idealTransformerUpperSideNode = _internalNodes[0];
                 var idealTransformerInternalNode = _internalNodes[1];
                 var lengthAdmittanceScaled = scalerUpperSide.ScaleAdmittance(LengthAdmittance);
