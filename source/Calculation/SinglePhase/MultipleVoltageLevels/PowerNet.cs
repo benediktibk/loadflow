@@ -130,6 +130,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary)
         {
+            if (_feedIns.Count > 0)
+                throw new NotSupportedException("only one slack bus is supported");
+
             var node = GetNodeByIdInternal(nodeId);
             var feedIn = new FeedIn(node, voltage, shortCircuitPower, c, realToImaginary, _idGeneratorNodes);
             _feedIns.Add(feedIn);
