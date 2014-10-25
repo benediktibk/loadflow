@@ -292,10 +292,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var phaseShifts = _powerNet.GetNominalPhaseShiftPerNode();
 
-            Assert.AreEqual(0, phaseShifts[_powerNet.GetNodeById(0)].Radiant, 0.000001);
-            Assert.AreEqual(0.3, phaseShifts[_powerNet.GetNodeById(1)].Radiant, 0.000001);
-            Assert.AreEqual(-1.5, phaseShifts[_powerNet.GetNodeById(2)].Radiant, 0.000001);
-            Assert.AreEqual(-1.3, phaseShifts[_powerNet.GetNodeById(3)].Radiant, 0.000001);
+            Assert.IsTrue(Angle.Equal(new Angle(), phaseShifts[_powerNet.GetNodeById(0)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(0.3), phaseShifts[_powerNet.GetNodeById(1)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(-1.5), phaseShifts[_powerNet.GetNodeById(2)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(-1.3), phaseShifts[_powerNet.GetNodeById(3)], 0.000001));
         }
 
         [TestMethod]

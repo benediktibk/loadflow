@@ -76,7 +76,13 @@ namespace MathExtensions
 
         public static bool Equal(Angle one, Angle two, double delta)
         {
-            return Math.Abs(one.Radiant - two.Radiant) < delta;
+            var difference = one.Radiant - two.Radiant;
+            var absoluteDifference = Math.Abs(difference);
+
+            if (absoluteDifference > Math.PI)
+                absoluteDifference -= 2*Math.PI;
+
+            return absoluteDifference < delta;
         }
 
         #endregion
