@@ -84,6 +84,9 @@
     <None Include="testdata\calculation_slackgenerator1.sin" />
     <None Include="testdata\calculation_slackgenerator1_files\database.001.dia" />
     <None Include="testdata\calculation_slackgenerator1_files\database.ini" />
+    <None Include="testdata\calculation_transformer1.sin" />
+    <None Include="testdata\calculation_transformer1_files\database.001.dia" />
+    <None Include="testdata\calculation_transformer1_files\database.ini" />
     <None Include="testdata\calculation_transmissionline1.sin" />
     <None Include="testdata\calculation_transmissionline1_files\database.001.dia" />
     <None Include="testdata\calculation_transmissionline1_files\database.ini" />
@@ -156,6 +159,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_slackgenerator1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_transformer1_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transmissionline1_files\database.mdb">

@@ -50,6 +50,10 @@ namespace SincalConnector
                 UpperSideNodeId = connectedNodes[1];
                 LowerSideNodeId = connectedNodes[0];
             }
+
+            var upperSideNode = nodes[UpperSideNodeId];
+            var lowerSideNode = nodes[LowerSideNodeId];
+            Ratio = upperSideNode.NominalVoltage/lowerSideNode.NominalVoltage;
         }
 
         #endregion
@@ -65,6 +69,7 @@ namespace SincalConnector
         public double IronLosses { get; private set; }
         public double RelativeNoLoadCurrent { get; private set; }
         public double PhaseShift { get; private set; }
+        public double Ratio { get; private set; }
 
         #endregion
 
@@ -72,7 +77,8 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            throw new NotImplementedException();
+            powerNet.AddTransformer(UpperSideNodeId, LowerSideNodeId, NominalPower, RelativeShortCircuitVoltage,
+                CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, "");
         }
 
         #endregion
