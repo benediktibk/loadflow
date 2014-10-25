@@ -410,6 +410,20 @@ namespace SincalConnectorTest
             ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithTransformerVersionTwo_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/calculation_transformer2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
         #endregion
 
         #region static functions 
