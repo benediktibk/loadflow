@@ -433,7 +433,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
                         if (phaseShiftBySegment.TryGetValue(otherSegment, out previousPhaseShift))
                         {
-                            if ((previousPhaseShift - phaseShift).Radiant > 0.000001)
+                            if (!Angle.Equal(previousPhaseShift, phaseShift, 0.000001))
                                 throw new InvalidDataException("the phase shifts do not match");
                         }
                         else

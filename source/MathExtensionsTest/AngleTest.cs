@@ -131,5 +131,14 @@ namespace MathExtensionsTest
 
             Assert.IsFalse(Angle.Equal(one, two, 0.001));
         }
+
+        [TestMethod]
+        public void Equal_0AndTwoPi_True()
+        {
+            var one = new Angle(0);
+            var two = new Angle(2*Math.PI-0.0001);
+
+            Assert.IsTrue(Angle.Equal(one, two, 0.001));
+        }
     }
 }
