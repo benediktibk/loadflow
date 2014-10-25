@@ -1,0 +1,59 @@
+﻿using System;
+
+namespace MathExtensions
+{
+    public class Angle
+    {
+        #region variables
+
+        private readonly double _value;
+
+        #endregion
+
+        #region constructor
+
+        public Angle(double radiant)
+        {
+            if (radiant > 0)
+            {
+                var factor = (int)(radiant / (2 * Math.PI));
+                _value = radiant - factor*2*Math.PI;
+            }
+            else
+            {
+                var factor = (int)((-1) * radiant / (2 * Math.PI)) + 1;
+                _value = radiant + factor*2*Math.PI;
+            }
+        }
+
+        #endregion
+
+        #region properties
+
+        public double Radiant
+        {
+            get { return _value; }
+        }
+
+        public double Degree
+        {
+            get { return _value*180/Math.PI; }
+        }
+
+        #endregion
+
+        #region operators
+
+        public static Angle operator +(Angle lhs, Angle rhs)
+        {
+            return new Angle(lhs.Radiant + rhs.Radiant);
+        }
+
+        public static Angle operator -(Angle lhs, Angle rhs)
+        {
+            return new Angle(lhs.Radiant - rhs.Radiant);
+        }
+
+        #endregion
+    }
+}

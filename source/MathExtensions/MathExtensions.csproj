@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Angle.cs" />
     <Compile Include="CalculatorComplex.cs" />
     <Compile Include="CalculatorDecimalComplex.cs" />
     <Compile Include="CalculatorDouble.cs" />
