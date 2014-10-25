@@ -23,7 +23,7 @@ namespace SincalConnectorTest
         [TestInitialize]
         public void SetUp()
         {
-            _calculator = new CurrentIteration(0.00001, 1000);
+            _calculator = new CurrentIteration(0.0000001, 10000);
         }
 
         #endregion
@@ -170,7 +170,6 @@ namespace SincalConnectorTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
-            Assert.AreEqual(0.01, generator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]
@@ -183,7 +182,6 @@ namespace SincalConnectorTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
-            Assert.AreEqual(0.01, generator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]
@@ -196,7 +194,6 @@ namespace SincalConnectorTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1050, generator.VoltageMagnitude, 0.00001);
-            Assert.AreEqual(0, generator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]
@@ -209,7 +206,6 @@ namespace SincalConnectorTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
-            Assert.AreEqual(0, generator.SynchronousReactance, 0.00001);
         }
 
         [TestMethod]
@@ -396,7 +392,7 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
             ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 

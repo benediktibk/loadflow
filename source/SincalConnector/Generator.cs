@@ -19,8 +19,7 @@ namespace SincalConnector
             var nominalVoltage = record.Parse<double>("Un") * 1000;
             var loadFlowType = record.Parse<int>("Flag_Lf");
             var relativeSynchronousReactance = record.Parse<double>("xi")/100;
-            var nominalPower = record.Parse<double>("Sn")*1e6;
-            SynchronousReactance = relativeSynchronousReactance*nominalVoltage*nominalVoltage/nominalPower;
+            var powerFactor = record.Parse<double>("fP");
 
             if (machineType != 1)
                 throw new NotSupportedException("the selected machine type for a generator is not supported");
@@ -29,21 +28,19 @@ namespace SincalConnector
                 throw new InvalidDataException(
                     "the nominal voltage of a generator does not match the nominal voltage of the connected node");
 
+            if (relativeSynchronousReactance != 0)
+                throw new NotSupportedException("internal reactances for a generator are not supported");
+
+            if (powerFactor != 1)
+                throw new NotSupportedException("a power factor (fP) different than 1 is not supported");
+
             switch (loadFlowType)
             {
-                case 6:
+                case 6: case 11:
                     VoltageMagnitude = nominalVoltage * record.Parse<double>("u") / 100;
-                    SynchronousReactance = 0;
                     break;
-                case 7:
+                case 7: case 12:
                     VoltageMagnitude = record.Parse<double>("Ug") * 1000;
-                    SynchronousReactance = 0;
-                    break;
-                case 11:
-                    VoltageMagnitude = nominalVoltage*record.Parse<double>("u")/100;
-                    break;
-                case 12:
-                    VoltageMagnitude = record.Parse<double>("Ug")*1000;
                     break;
                 default:
                     throw new NotSupportedException("the selected load flow type of a generator is not supported");
@@ -60,7 +57,6 @@ namespace SincalConnector
         public int NodeId { get; private set; }
         public double VoltageMagnitude { get; private set; }
         public double RealPower { get; private set; }
-        public double SynchronousReactance { get; private set; }
 
         #endregion
 
@@ -77,7 +73,7 @@ namespace SincalConnector
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,Sn FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
+            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,fP FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
         }
 
         #endregion
