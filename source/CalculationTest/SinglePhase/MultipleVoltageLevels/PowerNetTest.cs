@@ -261,18 +261,40 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetSetsOfConnectedNodesOnSameVoltageLevel_ThreeInACircleByTransformersConnectedNodes_ThreeElements()
+        public void GetSetsOfConnectedNodesOnSameVoltageLevel_ThreeInACircleByTransformersConnectedConnectedNodes_ThreeElements()
         {
             _powerNet.AddNode(0, 123, 0, "");
             _powerNet.AddNode(1, 120, 0, "");
             _powerNet.AddNode(2, 120, 0, "");
-            _powerNet.AddTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, 0, "");
-            _powerNet.AddTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, 0, "");
-            _powerNet.AddTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, 0, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, -1.8, "");
+            _powerNet.AddTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, -1.5, "");
+            _powerNet.AddTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, 0.3, "");
 
             var sets = _powerNet.GetSetsOfConnectedNodesOnSameVoltageLevel();
 
             Assert.AreEqual(3, sets.Count);
+        }
+
+        [TestMethod]
+        public void GetNominalPhaseShiftPerNode_AFewNodesConnectedByTransformers_PhaseShiftsAreCorrect()
+        {
+            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, -1.8, "");
+            _powerNet.AddTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, -1.5, "");
+            _powerNet.AddTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, 0.3, "");
+            _powerNet.AddTransformer(2, 3, 3, 0.5, 0.1, 0, 1, 1, 0.2, "");
+
+            var phaseShifts = _powerNet.GetNominalPhaseShiftPerNode();
+
+            Assert.AreEqual(0, phaseShifts[_powerNet.GetNodeById(0)], 0.000001);
+            Assert.AreEqual(0.3, phaseShifts[_powerNet.GetNodeById(1)], 0.000001);
+            Assert.AreEqual(-1.5, phaseShifts[_powerNet.GetNodeById(2)], 0.000001);
+            Assert.AreEqual(-1.3, phaseShifts[_powerNet.GetNodeById(3)], 0.000001);
         }
 
         [TestMethod]

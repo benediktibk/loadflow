@@ -91,6 +91,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return false; }
         }
 
+        public IExternalReadOnlyNode Node
+        {
+            get { return _node; }
+        }
+
         #endregion
 
         #region public functions

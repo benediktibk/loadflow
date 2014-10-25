@@ -218,6 +218,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _nominalPhaseShift; }
         }
 
+        public IExternalReadOnlyNode UpperSideNode
+        {
+            get { return _upperSideNode; }
+        }
+
+        public IExternalReadOnlyNode LowerSideNode
+        {
+            get { return _lowerSideNode; }
+        }
+
         #endregion
     }
 }

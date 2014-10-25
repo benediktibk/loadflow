@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using DatabaseHelper;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -89,6 +91,117 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
 
             return segments;
+        }
+
+        public IReadOnlyDictionary<IExternalReadOnlyNode, double> GetNominalPhaseShiftPerNode()
+        {
+            if (_feedIns.Count != 1)
+                throw new InvalidOperationException("there must exist exact one feed in");
+
+            var feedIn = _feedIns.First();
+            var result = new Dictionary<IExternalReadOnlyNode, double>();
+            var segments = GetSetsOfConnectedNodesOnSameVoltageLevel();
+            var phaseShiftBySegment = new Dictionary<ISet<IExternalReadOnlyNode>, double>();
+            var feedInNode = feedIn.Node;
+            var segmentWithFeedIn = GetSegmentWhichContains(segments, feedInNode);
+            var phaseShiftsPerTransformer = new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, double>();
+
+            foreach (var transformer in _transformers)
+            {
+                var upperSegment = GetSegmentWhichContains(segments, transformer.UpperSideNode);
+                var lowerSegment = GetSegmentWhichContains(segments, transformer.LowerSideNode);
+                var segmentPair = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(upperSegment, lowerSegment);
+                var segmentPairInverse = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(lowerSegment, upperSegment);
+                var phaseShift = transformer.NominalPhaseShift;
+
+                if (phaseShiftsPerTransformer.ContainsKey(segmentPair))
+                {
+                    var previousPhaseShift = phaseShiftsPerTransformer[segmentPair];
+                    if (Math.Abs(previousPhaseShift - phaseShift) > 0.000001)
+                        throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
+                }
+                else if (phaseShiftsPerTransformer.ContainsKey(segmentPairInverse))
+                {
+                    var previousPhaseShift = phaseShiftsPerTransformer[segmentPairInverse];
+                    if (Math.Abs(previousPhaseShift - (-1)*phaseShift) > 0.000001)
+                        throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
+                }
+                else
+                    phaseShiftsPerTransformer.Add(segmentPair, phaseShift);
+            }
+
+            var phaseShiftBySegmentToAllSegments = new MultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, double>> ();
+
+            foreach (var connection in phaseShiftsPerTransformer)
+            {
+                var firstSegment = connection.Key.Item1;
+                var secondSegment = connection.Key.Item2;
+                var phaseShift = connection.Value;
+                phaseShiftBySegmentToAllSegments.Add(firstSegment,
+                    new Tuple<ISet<IExternalReadOnlyNode>, double>(secondSegment, phaseShift));
+                phaseShiftBySegmentToAllSegments.Add(secondSegment,
+                    new Tuple<ISet<IExternalReadOnlyNode>, double>(firstSegment, phaseShift));
+            }
+
+            phaseShiftBySegment.Add(segmentWithFeedIn, 0);
+            var lastSegments = new List<ISet<IExternalReadOnlyNode>>() {segmentWithFeedIn};
+
+            do
+            {
+                var nextSegments = new List<ISet<IExternalReadOnlyNode>>();
+
+                foreach (var lastSegment in lastSegments)
+                {
+                    var phaseShiftsToOtherSegments = phaseShiftBySegmentToAllSegments.Get(lastSegment);
+                    var ownPhaseShift = phaseShiftBySegment[lastSegment];
+
+                    foreach (var element in phaseShiftsToOtherSegments)
+                    {
+                        var phaseShift = element.Item2 + ownPhaseShift;
+                        var otherSegment = element.Item1;
+                        double previousPhaseShift;
+
+                        if (phaseShiftBySegment.TryGetValue(otherSegment, out previousPhaseShift))
+                        {
+                            if (Math.Abs(previousPhaseShift - phaseShift) > 0.000001)
+                                throw new InvalidDataException("the phase shifts do not match");
+                        }
+                        else
+                        {
+                            phaseShiftBySegment.Add(otherSegment, phaseShift);
+                            nextSegments.Add(otherSegment);
+                        }
+                    }
+                }
+
+                lastSegments = nextSegments;
+            } while (lastSegments.Count > 0);
+
+            foreach (var node in _nodes)
+            {
+                var segment = GetSegmentWhichContains(segments, node);
+                result.Add(node, phaseShiftBySegment[segment]);
+            }
+
+            return result;
+        }
+
+        private static ISet<IExternalReadOnlyNode> GetSegmentWhichContains(IList<ISet<IExternalReadOnlyNode>> segments, IExternalReadOnlyNode node)
+        {
+            ISet<IExternalReadOnlyNode> segmentWithFeedIn = null;
+
+            for (var i = 0; i < segments.Count && segmentWithFeedIn == null; ++i)
+            {
+                var segment = segments[i];
+
+                if (segment.Contains(node))
+                    segmentWithFeedIn = segment;
+            }
+
+            if (segmentWithFeedIn == null)
+                throw new InvalidDataException("the node is not part of the segments");
+
+            return segmentWithFeedIn;
         }
 
         public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)

@@ -48,6 +48,20 @@ namespace DatabaseHelper
             _values[key].Add(value);
         }
 
+        public bool Contains(TKey key)
+        {
+            return _values.ContainsKey(key);
+        }
+
+        #endregion
+
+        #region properties
+
+        public int Count
+        {
+            get { return _values.Count; }
+        }
+
         #endregion
     }
 }
