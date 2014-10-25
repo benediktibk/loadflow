@@ -406,7 +406,7 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
             ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
@@ -420,7 +420,7 @@ namespace SincalConnectorTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
             ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
