@@ -89,7 +89,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         }
 
         public void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes)
-        { }
+        {
+            if (visitedNodes.Contains(_upperSideNode))
+                _upperSideNode.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            else if (visitedNodes.Contains(_lowerSideNode))
+                _lowerSideNode.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            else
+                throw new ArgumentException("neither the upper side nor the lower side node have been visited yet");
+        }
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
