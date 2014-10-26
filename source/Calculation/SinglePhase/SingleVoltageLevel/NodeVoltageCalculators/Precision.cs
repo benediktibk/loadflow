@@ -49,5 +49,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         #endregion
+
+        #region static functions
+
+        public static Precision Create(int bitPrecision)
+        {
+            if (bitPrecision <= 64)
+                return new PrecisionLongDouble();
+            else
+                return new PrecisionMulti(bitPrecision);
+        }
+
+        #endregion
     }
 }

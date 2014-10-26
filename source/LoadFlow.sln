@@ -43,6 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseUI", "DatabaseUI\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SincalConnector", "SincalConnector\SincalConnector.csproj", "{9F597517-A825-4611-9234-F64B207499D1}"
 	ProjectSection(ProjectDependencies) = postProject
+		{484F301D-5A80-460C-8267-189C879A2FEA} = {484F301D-5A80-460C-8267-189C879A2FEA}
 		{D019F54A-FB70-4BBC-AB53-102C78E54880} = {D019F54A-FB70-4BBC-AB53-102C78E54880}
 	EndProjectSection
 EndProject
