@@ -466,6 +466,90 @@ namespace SincalConnectorTest
             ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetWithOverheadLine1_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/landnetz_freileitung1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetWithOverheadLine2_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/landnetz_freileitung2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetWithCable1_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/landnetz_kabel1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetWithCable2_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/landnetz_kabel2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_SuburbanNetWithCable1_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/vorstadtnetz_kabel1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_SuburbanNetWithCable2_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/vorstadtnetz_kabel2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
         #endregion
 
         #region static functions 

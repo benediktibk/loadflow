@@ -142,6 +142,18 @@
     <None Include="testdata\impedanceload2.sin" />
     <None Include="testdata\impedanceload2_files\database.001.dia" />
     <None Include="testdata\impedanceload2_files\database.ini" />
+    <None Include="testdata\landnetz_freileitung1.sin" />
+    <None Include="testdata\landnetz_freileitung1_files\database.001.dia" />
+    <None Include="testdata\landnetz_freileitung1_files\database.ini" />
+    <None Include="testdata\landnetz_freileitung2.sin" />
+    <None Include="testdata\landnetz_freileitung2_files\database.001.dia" />
+    <None Include="testdata\landnetz_freileitung2_files\database.ini" />
+    <None Include="testdata\landnetz_kabel1.sin" />
+    <None Include="testdata\landnetz_kabel1_files\database.001.dia" />
+    <None Include="testdata\landnetz_kabel1_files\database.ini" />
+    <None Include="testdata\landnetz_kabel2.sin" />
+    <None Include="testdata\landnetz_kabel2_files\database.001.dia" />
+    <None Include="testdata\landnetz_kabel2_files\database.ini" />
     <None Include="testdata\node.sin" />
     <None Include="testdata\node_10kV.sin" />
     <None Include="testdata\node_10kV_files\database.001.dia" />
@@ -163,6 +175,12 @@
     <None Include="testdata\unsupported.sin" />
     <None Include="testdata\unsupported_files\database.001.dia" />
     <None Include="testdata\unsupported_files\database.ini" />
+    <None Include="testdata\vorstadtnetz_kabel1.sin" />
+    <None Include="testdata\vorstadtnetz_kabel1_files\database.001.dia" />
+    <None Include="testdata\vorstadtnetz_kabel1_files\database.ini" />
+    <None Include="testdata\vorstadtnetz_kabel2.sin" />
+    <None Include="testdata\vorstadtnetz_kabel2_files\database.001.dia" />
+    <None Include="testdata\vorstadtnetz_kabel2_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\calculation_generator1_files\database.mdb">
@@ -231,6 +249,18 @@
     <Content Include="testdata\impedanceload2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="testdata\landnetz_freileitung1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\landnetz_freileitung2_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\landnetz_kabel1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\landnetz_kabel2_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="testdata\node_10kV_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -250,6 +280,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\unsupported_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\vorstadtnetz_kabel1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\vorstadtnetz_kabel2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
