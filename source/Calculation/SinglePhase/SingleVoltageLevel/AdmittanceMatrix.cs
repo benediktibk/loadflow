@@ -116,7 +116,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public ISolver<Complex> CalculateFactorization()
         {
-            return _values.QR();
+            return _values.LU();
         }
 
         public Vector<Complex> GetRow(int row)
