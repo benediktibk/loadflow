@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
 using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
-using ExtensionMethods = MathNet.Numerics.LinearAlgebra.Double.ExtensionMethods;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -62,7 +61,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             DenseMatrix changeMatrix)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var factorization = ExtensionMethods.LU(changeMatrix);
+            var factorization = changeMatrix.LU();
             var voltageChanges = factorization.Solve(rightSide);
             return voltageChanges;
         }

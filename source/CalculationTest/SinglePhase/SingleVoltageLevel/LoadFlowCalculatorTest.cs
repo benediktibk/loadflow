@@ -4,8 +4,8 @@ using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 

@@ -8,8 +8,8 @@ using System.Windows.Threading;
 using CalculationComparison.AlgorithmSettings;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.Statistics;
 
 namespace CalculationComparison

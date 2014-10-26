@@ -1,5 +1,5 @@
 ﻿using System;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 

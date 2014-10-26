@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {

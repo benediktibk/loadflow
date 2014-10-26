@@ -1,6 +1,6 @@
 ﻿using System;
 using MathExtensions;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace AnalyticContinuation
 {
@@ -50,8 +50,8 @@ namespace AnalyticContinuation
 
         private void CalculateCoefficientsForQ(PowerSeries<T> powerSeries)
         {
-            Matrix<T> matrix = _calculator.CreateDenseMatrix(M, M);
-            Vector<T> rightSide = _calculator.CreateDenseVector(M);
+            var matrix = _calculator.CreateDenseMatrix(M, M);
+            var rightSide = _calculator.CreateDenseVector(M);
             var minusOne = _calculator.AssignFromDouble(-1);
 
             var tempArray = new T[M];

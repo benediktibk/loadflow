@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -158,12 +159,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             var result = new SparseVector(NodeCount);
 
-            foreach (var row in _values.RowEnumerator())
+            var rowIndex = 0;
+            foreach (var row in _values.EnumerateRows())
             {
-                var rowIndex = row.Item1;
-
-                foreach (var value in row.Item2)
+                foreach (var value in row)
                     result[rowIndex] += value;
+
+                ++rowIndex;
             }
 
             return result;

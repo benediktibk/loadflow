@@ -1,6 +1,6 @@
 ﻿using System;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace MathExtensions
 {

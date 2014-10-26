@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using Calculation;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 

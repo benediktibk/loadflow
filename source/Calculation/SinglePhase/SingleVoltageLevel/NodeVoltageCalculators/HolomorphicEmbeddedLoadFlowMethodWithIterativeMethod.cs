@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitTestHelper;
 
