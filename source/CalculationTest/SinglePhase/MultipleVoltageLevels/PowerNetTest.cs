@@ -533,7 +533,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
-            ComplexAssert.AreEqual(397.055749878654, -4.5771515495886, targetNode.Voltage, 0.0001);
+            ComplexAssert.AreEqual(397.065516574289, -4.58278572856559, targetNode.Voltage, 0.0001);
         }
 
         [TestMethod]
@@ -551,7 +551,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.0001);
-            ComplexAssert.AreEqual(397.055749878654, -4.5771515495886, targetNode.Voltage, 0.0001);
+            ComplexAssert.AreEqual(397.065516574289, -4.58278572856559, targetNode.Voltage, 0.0001);
         }
 
         [TestMethod]
@@ -607,7 +607,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1002, 0, sourceNode.Voltage, 0.01);
-            ComplexAssert.AreEqual(395.0648210267077, -8.5049094628884152, targetNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(395.07823654009, -8.51263248957149, targetNode.Voltage, 0.01);
         }
 
         [TestMethod]
@@ -625,7 +625,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
-            ComplexAssert.AreEqual(399.003154084021, -0.724983731967074, targetNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(399.016841711796, -0.732873636155886, targetNode.Voltage, 0.01);
         }
 
         [TestMethod]
@@ -643,7 +643,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = _powerNet.GetNodeById(0);
             var targetNode = _powerNet.GetNodeById(1);
             ComplexAssert.AreEqual(1000, 0, sourceNode.Voltage, 0.01);
-            ComplexAssert.AreEqual(399.505050326552, 0.14139627154429, targetNode.Voltage, 0.01);
+            ComplexAssert.AreEqual(399.518772194282, 0.133486530903931, targetNode.Voltage, 0.01);
         }
 
         [TestMethod]
