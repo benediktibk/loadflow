@@ -169,5 +169,29 @@ namespace MathExtensionsTest
 
             Assert.IsFalse(Angle.Equal(one, two, 1e-6));
         }
+
+        [TestMethod]
+        public void Degree_270DegreeAsValue_270()
+        {
+            var angle = Angle.FromDegree(270);
+
+            Assert.AreEqual(270, angle.Degree, 0.000001);
+        }
+
+        [TestMethod]
+        public void DegreeAroundZero_270DegreeAsValue_Minus90()
+        {
+            var angle = Angle.FromDegree(270);
+
+            Assert.AreEqual(-90, angle.DegreeAroundZero, 0.000001);
+        }
+
+        [TestMethod]
+        public void DegreeAroundZero_90DegreeAsValue_90()
+        {
+            var angle = Angle.FromDegree(90);
+
+            Assert.AreEqual(90, angle.DegreeAroundZero, 0.000001);
+        }
     }
 }

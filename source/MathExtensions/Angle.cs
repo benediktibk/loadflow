@@ -50,6 +50,15 @@ namespace MathExtensions
             get { return _value*180/Math.PI; }
         }
 
+        public double DegreeAroundZero
+        {
+            get
+            {
+                var degree = Degree;
+                return degree < 180 ? degree : degree - 360;
+            }
+        }
+
         #endregion
 
         #region operators
