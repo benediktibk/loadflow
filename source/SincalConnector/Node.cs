@@ -73,12 +73,6 @@ namespace SincalConnector
             var voltagePhaseShifted = voltagePhase - phaseShift;
             var voltagePhaseSlackShifted = voltagePhase - slackPhaseShift;
 
-            if (Angle.Equal(voltagePhaseShifted, new Angle(), 1e-6))
-                voltagePhaseShifted = new Angle();
-
-            if (Angle.Equal(voltagePhaseSlackShifted, new Angle(), 1e-6))
-                voltagePhaseSlackShifted = new Angle();
-
             var command = new OleDbCommand("INSERT INTO LFNodeResult (Node_ID,Result_ID,Variant_ID,Flag_Result,Flag_State,P,Q,S,U,U_Un,Uph,Uph_Unph,phi,phi_rot,phi_ph,phi_ph_rot) " +
                                            "VALUES (@Node_ID,@Result_ID,@Variant_ID,@Flag_Result,@Flag_State,@P,@Q,@S,@U,@U_Un,@Uph,@Uph_Unph,@phi,@phi_rot,@phi_ph,@phi_ph_rot);");
             command.Parameters.AddWithValue("@Node_ID", Id);
