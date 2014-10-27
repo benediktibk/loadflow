@@ -82,7 +82,7 @@ namespace MathExtensions
             if (absoluteDifference > Math.PI)
                 absoluteDifference -= 2*Math.PI;
 
-            return absoluteDifference < delta;
+            return Math.Abs(absoluteDifference) < delta;
         }
 
         #endregion

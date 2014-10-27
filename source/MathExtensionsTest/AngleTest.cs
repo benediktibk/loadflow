@@ -70,6 +70,17 @@ namespace MathExtensionsTest
         }
 
         [TestMethod]
+        public void OperatorMinus_10DegreeAnd30Degree_CorrectValue()
+        {
+            var one = Angle.FromDegree(10.523127391536455);
+            var two = Angle.FromDegree(30);
+
+            var result = one - two;
+
+            Assert.AreEqual(10.523127391536455 - 30 + 360, result.Degree, 0.00001);
+        }
+
+        [TestMethod]
         public void Constructor_Empty_0()
         {
             var angle = new Angle();
@@ -148,6 +159,15 @@ namespace MathExtensionsTest
             var two = new Angle(6.2831853071795862);
 
             Assert.IsTrue(Angle.Equal(one, two, 0.000001));
+        }
+
+        [TestMethod]
+        public void Equal_Minus10DegreeAndZero_False()
+        {
+            var one = Angle.FromDegree(-10);
+            var two = new Angle();
+
+            Assert.IsFalse(Angle.Equal(one, two, 1e-6));
         }
     }
 }
