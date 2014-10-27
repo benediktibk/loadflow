@@ -564,6 +564,19 @@ namespace SincalConnectorTest
             AreEqual(sincalResults, ownResults, 1e-6, 1e-5, 1e-3, 1e-2);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithTransmissionLineVersionSix_AllTableEntriesAreCorrect()
+        {
+            var powerNet = new PowerNet("testdata/calculation_transmissionline6_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultTableEntriesFromDatabase();
+            AreEqual(sincalResults, ownResults, 1e-6, 1e-5, 1e-3, 1e-2);
+        }
+
         #endregion
 
         #region static functions 
