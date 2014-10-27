@@ -126,6 +126,11 @@ namespace SincalConnector
             get { return new ReadOnlyCollection<ImpedanceLoad>(_impedanceLoads); }
         }
 
+        public bool ContainsTransformers
+        {
+            get { return _twoWindingTransformers.Count + _threeWindingTransformers.Count > 0; }
+        }
+
         #endregion
 
         #region public functions
@@ -135,7 +140,7 @@ namespace SincalConnector
             var symmetricPowerNet = CreateSymmetricPowerNet();
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
             var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
-            var slackPhaseShift = symmetricPowerNet.GetSlackPhaseShift();
+            var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.GetSlackPhaseShift() : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
 
