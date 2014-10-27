@@ -70,7 +70,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadFlowCalculator.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Node.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNet.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\Transformer.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\TwoWindingTransformer.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\LoadFlowCalculator.cs" />

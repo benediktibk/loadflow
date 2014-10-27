@@ -536,7 +536,7 @@ namespace Database
                     _calculationPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
 
                 foreach (var transformer in Transformers)
-                    _calculationPowerNet.AddTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
+                    _calculationPowerNet.AddTwoWindingTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
                         transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
                         transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, new Angle(), transformer.Name);
             }

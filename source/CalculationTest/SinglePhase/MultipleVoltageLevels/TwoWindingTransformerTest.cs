@@ -12,15 +12,15 @@ using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmitta
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
-    public class TransformerTest
+    public class TwoWindingTransformerTest
     {
         #region variables
 
         private Node _upperSideNode;
         private Node _lowerSideNode;
         private Node _groundNode;
-        private Transformer _transformerWithNotNominalRatio;
-        private Transformer _transformerWithNominalRatio;
+        private TwoWindingTransformer _transformerWithNotNominalRatio;
+        private TwoWindingTransformer _transformerWithNominalRatio;
         private IdGenerator _idGenerator;
 
         #endregion
@@ -34,8 +34,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _upperSideNode = new Node(0, 10, 0, "");
             _lowerSideNode = new Node(1, 0.25, 0, "");
             _groundNode = new Node(2, 0, 0, "");
-            _transformerWithNotNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, new Angle(0.4), "", _idGenerator);
-            _transformerWithNominalRatio = new Transformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, new Angle(6), "", _idGenerator);
+            _transformerWithNotNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, new Angle(0.4), "", _idGenerator);
+            _transformerWithNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, new Angle(6), "", _idGenerator);
         }
 
         #endregion
@@ -59,7 +59,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
+            var transformer = new TwoWindingTransformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             transformer.AddConnectedNodes(nodes);
@@ -73,7 +73,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
+            var transformer = new TwoWindingTransformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>() {upperSideNode.Object};
 
             transformer.AddConnectedNodesOnSameVoltageLevel(nodes);
@@ -87,7 +87,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var upperSideNode = new Mock<IExternalReadOnlyNode>();
             var lowerSideNode = new Mock<IExternalReadOnlyNode>();
-            var transformer = new Transformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
+            var transformer = new TwoWindingTransformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>() { lowerSideNode.Object };
 
             transformer.AddConnectedNodesOnSameVoltageLevel(nodes);

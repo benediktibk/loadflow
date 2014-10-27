@@ -6,7 +6,7 @@ using MathExtensions;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Transformer : IPowerNetElement
+    public class TwoWindingTransformer : IPowerNetElement
     {
         #region variables
 
@@ -23,7 +23,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region public functions
 
-        public Transformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name, IdGenerator idGenerator)
+        public TwoWindingTransformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name, IdGenerator idGenerator)
         {
             if (upperSideNode == null)
                 throw new ArgumentOutOfRangeException("upperSideNode", "must not be null");

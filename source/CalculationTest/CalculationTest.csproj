@@ -74,7 +74,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNetTest.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\TransformerTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\TwoWindingTransformerTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalNodeTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalSlackNodeTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\DerivedInternalPVNodeTest.cs" />

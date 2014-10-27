@@ -160,7 +160,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400, "");
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI/180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5, new Angle(), "");
+            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5, new Angle(), "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -179,7 +179,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400, "");
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, new Angle(), "");
+            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, new Angle(), "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 
@@ -198,7 +198,7 @@ namespace CalculationTest.ThreePhase
             _powerNet.AddNode(2, 400, "");
             _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
             _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, new Angle(), "");
+            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, new Angle(), "");
 
             _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
 

@@ -17,7 +17,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly List<Load> _loads;
         private readonly List<ImpedanceLoad> _impedanceLoads;
         private readonly List<TransmissionLine> _transmissionLines;
-        private readonly List<Transformer> _transformers;
+        private readonly List<TwoWindingTransformer> _twoWindingTransformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
         private readonly List<IPowerNetElement> _elements;
@@ -37,7 +37,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _loads = new List<Load>();
             _impedanceLoads = new List<ImpedanceLoad>();
             _transmissionLines = new List<TransmissionLine>();
-            _transformers = new List<Transformer>();
+            _twoWindingTransformers = new List<TwoWindingTransformer>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
             _elements = new List<IPowerNetElement>();
@@ -189,12 +189,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
+        public void AddTwoWindingTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
         {
             var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
             var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);
-            var transformer = new Transformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, nominalPhaseShift, name, _idGeneratorNodes);
-            _transformers.Add(transformer);
+            var transformer = new TwoWindingTransformer(upperSideNode, lowerSideNode, nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses, relativeNoLoadCurrent, ratio, nominalPhaseShift, name, _idGeneratorNodes);
+            _twoWindingTransformers.Add(transformer);
             _elements.Add(transformer);
             upperSideNode.Connect(transformer);
             lowerSideNode.Connect(transformer);
@@ -292,7 +292,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public int TransformerCount
         {
-            get { return _transformers.Count; }
+            get { return _twoWindingTransformers.Count; }
         }
 
         public int GeneratorCount
@@ -375,7 +375,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var phaseShiftsPerTransformer =
                 new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>();
 
-            foreach (var transformer in _transformers)
+            foreach (var transformer in _twoWindingTransformers)
             {
                 var upperSegment = FindSegmentWhichContains(segments, transformer.UpperSideNode);
                 var lowerSegment = FindSegmentWhichContains(segments, transformer.LowerSideNode);

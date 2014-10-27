@@ -46,9 +46,9 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddFeedIn(nodeId, voltage/Math.Sqrt(3), shortCircuitPower/3, c, realToImaginary);
         }
 
-        public void AddTransformer(int upperSideNodeId, int lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
+        public void AddTwoWindingTransformer(int upperSideNodeId, int lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
         {
-            _singlePhasePowerNet.AddTransformer(upperSideNodeId, lowerSideNodeId, nominalPower/3,
+            _singlePhasePowerNet.AddTwoWindingTransformer(upperSideNodeId, lowerSideNodeId, nominalPower/3,
                 relativeShortCircuitVoltage, copperLosses/3, ironLosses/3, relativeNoLoadCurrent, ratio, nominalPhaseShift, name);
         }
 
