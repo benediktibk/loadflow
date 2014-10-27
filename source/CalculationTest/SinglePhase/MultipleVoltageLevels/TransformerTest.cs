@@ -169,7 +169,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void ShuntAdmittance_Empty_CorrectResult()
         {
-            ComplexAssert.AreEqual(0.025, -0.025, _transformerWithNotNominalRatio.ShuntAdmittance, 0.00001);
+            ComplexAssert.AreEqual(0.025, 0, _transformerWithNotNominalRatio.ShuntAdmittance, 0.00001);
         }
 
         [TestMethod]
