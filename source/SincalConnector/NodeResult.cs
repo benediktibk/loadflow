@@ -2,6 +2,7 @@
 using System.Data.OleDb;
 using System.Numerics;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace SincalConnector
 {
@@ -12,11 +13,11 @@ namespace SincalConnector
         public NodeResult(ISafeDatabaseRecord record)
         {
             var voltageMagnitude = record.Parse<double>("U")*1e3;
-            var voltageAngle = record.Parse<double>("phi_rot")*Math.PI/180;
+            var voltageAngle = Angle.FromDegree(record.Parse<double>("phi_rot"));
             var realPower = record.Parse<double>("P") * 1e6;
             var reactivePower = record.Parse<double>("Q") * 1e6;
             NodeId = record.Parse<int>("Node_ID");
-            Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);
+            Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle.Radiant);
             Power = new Complex(realPower, reactivePower);
         }
 
