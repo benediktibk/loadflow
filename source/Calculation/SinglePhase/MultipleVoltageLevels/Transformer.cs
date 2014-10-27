@@ -12,8 +12,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
-        private Complex _lengthAdmittance;
-        private Complex _shuntAdmittance;
+        private readonly Complex _lengthAdmittance;
+        private readonly Complex _shuntAdmittance;
         private readonly double _ratio;
         private readonly double _nominalPower;
         private readonly Angle _nominalPhaseShift;
@@ -56,7 +56,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nominalPhaseShift = nominalPhaseShift;
             _internalNodes = new List<DerivedInternalPQNode>();
             CalculateAdmittances(nominalPower, relativeShortCircuitVoltage, copperLosses, ironLosses,
-                relativeNoLoadCurrent);
+                relativeNoLoadCurrent, out _lengthAdmittance, out _shuntAdmittance);
 
             if (!HasNotNominalRatio) 
                 return;
@@ -132,7 +132,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         #region private functions
 
-        private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent)
+        private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, out Complex lengthAdmittance, out Complex shuntAdmittance)
         {
             var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
             var idleLosses = relativeNoLoadCurrent * nominalPower;
@@ -149,8 +149,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var relativeShortCircuitVoltageComplex = new Complex(relativeShortCircuitVoltageReal,
                 relativeShortCircuitVoltageImaginary);
             var idleLossesWithoutIronLosses = Math.Sqrt(idleLosses*idleLosses - ironLosses*ironLosses);
-            _lengthAdmittance = (nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage)) / relativeShortCircuitVoltageComplex;
-            _shuntAdmittance = new Complex(ironLosses, (-1) * idleLossesWithoutIronLosses) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
+            lengthAdmittance = (nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage)) / relativeShortCircuitVoltageComplex;
+            shuntAdmittance = new Complex(ironLosses, (-1) * idleLossesWithoutIronLosses) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
         }
 
         #endregion
