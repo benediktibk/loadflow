@@ -135,16 +135,22 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent)
         {
             var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
+            var idleLosses = relativeNoLoadCurrent * nominalPower;
+
             if (relativeShortCircuitVoltageReal > relativeShortCircuitVoltage)
                 throw new ArgumentException("the copper losses are too high compared to the nominal power");
+
+            if (ironLosses > idleLosses)
+                throw new ArgumentException("the iron losses are too high compared to the relative no load current");
 
             var relativeShortCircuitVoltageImaginary =
                 Math.Sqrt(relativeShortCircuitVoltage * relativeShortCircuitVoltage -
                           relativeShortCircuitVoltageReal * relativeShortCircuitVoltageReal);
             var relativeShortCircuitVoltageComplex = new Complex(relativeShortCircuitVoltageReal,
                 relativeShortCircuitVoltageImaginary);
+            var idleLossesWithoutIronLosses = Math.Sqrt(idleLosses*idleLosses - ironLosses*ironLosses);
             _lengthAdmittance = (nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage)) / relativeShortCircuitVoltageComplex;
-            _shuntAdmittance = new Complex(ironLosses, (-1) * relativeNoLoadCurrent * nominalPower) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
+            _shuntAdmittance = new Complex(ironLosses, (-1) * idleLossesWithoutIronLosses) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
         }
 
         #endregion
