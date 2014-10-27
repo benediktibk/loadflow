@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.IO;
 using Calculation.ThreePhase;
 using DatabaseHelper;
+using MathExtensions;
 
 namespace SincalConnector
 {
@@ -47,9 +48,9 @@ namespace SincalConnector
             var phaseShiftFactorOneToTwo = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolOneToTwo);
             var phaseShiftFactorTwoToThree = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolTwoToThree);
             var phaseShiftFactorThreeToOne = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolThreeToOne);
-            PhaseShiftOneToTwo = phaseShiftFactorOneToTwo * 30 * Math.PI / 180;
-            PhaseShiftTwoToThree = phaseShiftFactorTwoToThree * 30 * Math.PI / 180;
-            PhaseShiftThreeToOne = phaseShiftFactorThreeToOne * 30 * Math.PI / 180;
+            PhaseShiftOneToTwo = Angle.FromDegree(phaseShiftFactorOneToTwo * 30);
+            PhaseShiftTwoToThree = Angle.FromDegree(phaseShiftFactorTwoToThree * 30);
+            PhaseShiftThreeToOne = Angle.FromDegree(phaseShiftFactorThreeToOne * 30);
 
             var nominalVoltageOne = record.Parse<int>("Un1")*1000;
             var nominalVoltageTwo = record.Parse<int>("Un2")*1000;
@@ -102,9 +103,9 @@ namespace SincalConnector
         public double CopperLossesThreeToOne { get; private set; }
         public double IronLosses { get; private set; }
         public double RelativeNoLoadCurrent { get; private set; }
-        public double PhaseShiftOneToTwo { get; private set; }
-        public double PhaseShiftTwoToThree { get; private set; }
-        public double PhaseShiftThreeToOne { get; private set; }
+        public Angle PhaseShiftOneToTwo { get; private set; }
+        public Angle PhaseShiftTwoToThree { get; private set; }
+        public Angle PhaseShiftThreeToOne { get; private set; }
 
         #endregion
 
