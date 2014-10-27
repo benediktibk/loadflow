@@ -52,32 +52,6 @@ namespace SincalConnector
 
         #region static functions
 
-        public static bool AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase)
-        {
-            return Math.Abs(one.VoltageMagnitude - two.VoltageMagnitude) < deltaVoltageMagnitude &&
-                   Math.Abs(one.VoltageMagnitudeToNominalVoltage - two.VoltageMagnitudeToNominalVoltage) < deltaVoltageMagnitude &&
-                   Math.Abs(one.VoltagePhase - two.VoltagePhase) < deltaVoltagePhase &&
-                   Math.Abs(one.RealPower - two.RealPower) < deltaPower &&
-                   Math.Abs(one.ImaginaryPower - two.ImaginaryPower) < deltaPower &&
-                   Math.Abs(one.PowerMagnitude - two.PowerMagnitude) < deltaPower &&
-                   Math.Abs(one.StringVoltageMagnitude - two.StringVoltageMagnitude) < deltaVoltageMagnitude &&
-                   Math.Abs(one.StringVoltageMagnitudeToNominalStringVoltage - two.StringVoltageMagnitudeToNominalStringVoltage) < deltaVoltageMagnitude &&
-                   Math.Abs(one.StringVoltagePhase - two.StringVoltagePhase) < deltaVoltagePhase &&
-                   Math.Abs(one.VoltagePhaseWithRotation - two.VoltagePhaseWithRotation) < deltaVoltagePhase &&
-                   Math.Abs(one.StringVoltagePhaseWithRotation - two.StringVoltagePhaseWithRotation) < deltaVoltagePhase &&
-                   one.ResultType == two.ResultType &&
-                   one.ResultState == two.ResultState;
-        }
-
-        public static bool AreEqual(IList<NodeResultTableEntry> one, IList<NodeResultTableEntry> two, double deltaPower,
-            double deltaVoltageMagnitude, double deltaVoltagePhase)
-        {
-            if (one.Count != two.Count)
-                return false;
-
-            return !one.Where((t, i) => !AreEqual(t, two[i], deltaPower, deltaVoltageMagnitude, deltaVoltagePhase)).Any();
-        }
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT U,U_Un,phi,P,Q,S,Flag_Result,Flag_State,Uph,Uph_Unph,phi_ph,phi_rot,phi_ph_rot FROM LFNodeResult ORDER BY Result_ID;");

@@ -94,6 +94,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return segments;
         }
 
+        public Angle GetSlackPhaseShift()
+        {
+            if (_feedIns.Count != 1)
+                throw new InvalidOperationException("there must exist exact one feed in");
+
+            var feedIn = _feedIns.First();
+            return new Angle(feedIn.Voltage.Phase);
+        }
+
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
         {
             if (_feedIns.Count != 1)

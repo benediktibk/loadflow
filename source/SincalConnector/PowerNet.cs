@@ -135,6 +135,7 @@ namespace SincalConnector
             var symmetricPowerNet = CreateSymmetricPowerNet();
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
             var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
+            var slackPhaseShift = symmetricPowerNet.GetSlackPhaseShift();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
 
@@ -145,9 +146,8 @@ namespace SincalConnector
                 node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id),
                     impedanceLoadsByNodeId.Get(node.Id));
 
-
             var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
-            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(nominalPhaseShiftByIds[node.Id])));
+            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
 
             using (var connection = new OleDbConnection(_connectionString))
             {

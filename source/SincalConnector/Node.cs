@@ -67,15 +67,33 @@ namespace SincalConnector
             Load = load - loadByImpedances;
         }
 
-        public OleDbCommand CreateCommandToAddResult(Angle phaseShift)
+        public OleDbCommand CreateCommandToAddResult(Angle phaseShift, Angle slackPhaseShift)
         {
-            var command = new OleDbCommand("INSERT INTO LFNodeResult (Flag_Result,Node_ID,P,Q,S,U,phi_rot,Result_ID,Variant_ID) VALUES (0,@Id,@P,@Q,@S,@U,@phi_rot,@Id,1)");
-            command.Parameters.AddWithValue("Id", Id);
+            var voltagePhase = new Angle(Voltage.Phase);
+            var voltagePhaseShifted = voltagePhase - phaseShift;
+            var voltagePhaseSlackShifted = voltagePhase - slackPhaseShift;
+
+            if (Angle.Equal(voltagePhaseShifted, new Angle(), 1e-6))
+                voltagePhaseShifted = new Angle();
+
+            if (Angle.Equal(voltagePhaseSlackShifted, new Angle(), 1e-6))
+                voltagePhaseSlackShifted = new Angle();
+            
+            var command = new OleDbCommand("INSERT INTO LFNodeResult (  Flag_Result,    Node_ID,    P,  Q,  S,  U,  phi_rot,    Result_ID,  Variant_ID, U_Un,   phi,    Flag_State, Uph,    Uph_Unph,   phi_ph, phi_ph_rot) VALUES (" +
+                                           "                            0,              @Node_ID,   @P, @Q, @S, @U, @phi_rot,   @Result_ID, 1,          @U_Un,  @phi,   1,          @Uph,   @Uph_Unph,  @phi_ph,@phi_ph_rot)");
+            command.Parameters.AddWithValue("Node_ID", Id);
+            command.Parameters.AddWithValue("Result_ID", Id);
             command.Parameters.AddWithValue("P", Load.Real * 1e-6);
             command.Parameters.AddWithValue("Q", Load.Imaginary * 1e-6);
             command.Parameters.AddWithValue("S", Load.Magnitude * 1e-6);
             command.Parameters.AddWithValue("U", Voltage.Magnitude * 1e-3);
-            command.Parameters.AddWithValue("phi_rot", (new Angle(Voltage.Phase) - phaseShift).Degree);
+            command.Parameters.AddWithValue("U_Un", Voltage.Magnitude / NominalVoltage * 100);
+            command.Parameters.AddWithValue("Uph", Voltage.Magnitude/Math.Sqrt(3)*1e-3);
+            command.Parameters.AddWithValue("Uph_Unph", Voltage.Magnitude / NominalVoltage * 100);
+            command.Parameters.AddWithValue("phi", voltagePhaseSlackShifted.Degree);
+            command.Parameters.AddWithValue("phi_rot", voltagePhaseShifted.Degree);
+            command.Parameters.AddWithValue("phi_ph", voltagePhaseSlackShifted.Degree);
+            command.Parameters.AddWithValue("phi_ph_rot", voltagePhaseShifted.Degree);
             return command;
         }
 

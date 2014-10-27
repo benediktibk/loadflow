@@ -88,6 +88,11 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
         }
 
+        public Angle GetSlackPhaseShift()
+        {
+            return _singlePhasePowerNet.GetSlackPhaseShift();
+        }
+
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
         {
             return _singlePhasePowerNet.GetNominalPhaseShiftPerNode();

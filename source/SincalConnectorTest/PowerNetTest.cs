@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Remoting;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
@@ -551,21 +552,47 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltages_NetWithTransformerVersionSig_AllTableEntriesAreCorrect()
+        public void CalculateNodeVoltages_NetWithTransformerVersionSix_AllTableEntriesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer3_files/database.mdb");
+            var powerNet = new PowerNet("testdata/calculation_transformer6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultTableEntriesFromDatabase();
-            Assert.IsTrue(NodeResultTableEntry.AreEqual(sincalResults, ownResults, 0.1, 0.0001, 0.001));
+            AreEqual(sincalResults, ownResults, 1e-6, 1e-5, 1e-3, 1e-2);
         }
 
         #endregion
 
         #region static functions 
+
+        public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
+        {
+            Assert.AreEqual(one.VoltageMagnitude, two.VoltageMagnitude, deltaVoltageMagnitude);
+            Assert.AreEqual(one.VoltageMagnitudeToNominalVoltage, two.VoltageMagnitudeToNominalVoltage, deltaVoltagePercentage);
+            Assert.AreEqual(one.VoltagePhase, two.VoltagePhase, deltaVoltagePhase);
+            Assert.AreEqual(one.RealPower, two.RealPower, deltaPower);
+            Assert.AreEqual(one.ImaginaryPower, two.ImaginaryPower, deltaPower);
+            Assert.AreEqual(one.PowerMagnitude, two.PowerMagnitude, deltaPower);
+            Assert.AreEqual(one.StringVoltageMagnitude, two.StringVoltageMagnitude, deltaVoltageMagnitude);
+            Assert.AreEqual(one.StringVoltageMagnitudeToNominalStringVoltage, two.StringVoltageMagnitudeToNominalStringVoltage, deltaVoltagePercentage);
+            Assert.AreEqual(one.StringVoltagePhase, two.StringVoltagePhase, deltaVoltagePhase);
+            Assert.AreEqual(one.VoltagePhaseWithRotation, two.VoltagePhaseWithRotation, deltaVoltagePhase);
+            Assert.AreEqual(one.StringVoltagePhaseWithRotation, two.StringVoltagePhaseWithRotation, deltaVoltagePhase);
+            Assert.AreEqual(one.ResultType, two.ResultType);
+            Assert.AreEqual(one.ResultState, two.ResultState);
+        }
+
+        public static void AreEqual(IList<NodeResultTableEntry> one, IList<NodeResultTableEntry> two, double deltaPower,
+            double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
+        {
+            Assert.AreEqual(one.Count, two.Count);
+
+            for (var i = 0; i < one.Count; ++i)
+                AreEqual(one[i], two[i], deltaPower, deltaVoltageMagnitude, deltaVoltagePhase, deltaVoltagePercentage);
+        }
 
         public static void AreVoltagesEqual(IList<NodeResult> first, IList<NodeResult> second, double delta)
         {
