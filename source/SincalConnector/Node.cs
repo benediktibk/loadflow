@@ -94,7 +94,7 @@ namespace SincalConnector
             command.Parameters.AddWithValue("@Uph", Voltage.Magnitude / Math.Sqrt(3) * 1e-3);
             command.Parameters.AddWithValue("@Uph_Unph", Voltage.Magnitude / NominalVoltage * 100);
             command.Parameters.AddWithValue("@phi", voltagePhaseSlackShifted.Degree);
-            command.Parameters.AddWithValue("@phi_rota", voltagePhaseShifted.Degree);
+            command.Parameters.AddWithValue("@phi_rot", voltagePhaseShifted.Degree);
             command.Parameters.AddWithValue("@phi_ph", voltagePhaseSlackShifted.Degree);
             command.Parameters.AddWithValue("@phi_ph_rot", voltagePhaseShifted.Degree);
             return command;
