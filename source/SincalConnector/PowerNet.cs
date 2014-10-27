@@ -190,6 +190,27 @@ namespace SincalConnector
             return results;
         }
 
+        public IList<NodeResultTableEntry> GetNodeResultTableEntriesFromDatabase()
+        {
+            var results = new List<NodeResultTableEntry>();
+
+            using (var databaseConnection = new OleDbConnection(_connectionString))
+            {
+                databaseConnection.Open();
+
+                var command = NodeResultTableEntry.CreateCommandToFetchAll();
+                command.Connection = databaseConnection;
+
+                using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                    while (reader.Next())
+                        results.Add(new NodeResultTableEntry(reader));
+
+                databaseConnection.Close();
+            }
+
+            return results;
+        }
+
         #endregion
 
         #region static functions

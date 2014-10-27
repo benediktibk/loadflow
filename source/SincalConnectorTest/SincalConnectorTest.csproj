@@ -103,6 +103,9 @@
     <None Include="testdata\calculation_transformer5.sin" />
     <None Include="testdata\calculation_transformer5_files\database.001.dia" />
     <None Include="testdata\calculation_transformer5_files\database.ini" />
+    <None Include="testdata\calculation_transformer6.sin" />
+    <None Include="testdata\calculation_transformer6_files\database.001.dia" />
+    <None Include="testdata\calculation_transformer6_files\database.ini" />
     <None Include="testdata\calculation_transmissionline1.sin" />
     <None Include="testdata\calculation_transmissionline1_files\database.001.dia" />
     <None Include="testdata\calculation_transmissionline1_files\database.ini" />
@@ -208,6 +211,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transformer5_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_transformer6_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transmissionline1_files\database.mdb">
