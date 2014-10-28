@@ -387,7 +387,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
             Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
-            Assert.AreEqual(1, _powerNet.TransformerCount);
+            Assert.AreEqual(1, _powerNet.TwoWindingTransformerCount);
         }
 
         [TestMethod]

@@ -18,6 +18,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly List<ImpedanceLoad> _impedanceLoads;
         private readonly List<TransmissionLine> _transmissionLines;
         private readonly List<TwoWindingTransformer> _twoWindingTransformers;
+        private readonly List<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
         private readonly List<IPowerNetElement> _elements;
@@ -38,6 +39,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _impedanceLoads = new List<ImpedanceLoad>();
             _transmissionLines = new List<TransmissionLine>();
             _twoWindingTransformers = new List<TwoWindingTransformer>();
+            _threeWindingTransformers = new List<ThreeWindingTransformer>();
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
             _elements = new List<IPowerNetElement>();
@@ -200,6 +202,26 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             lowerSideNode.Connect(transformer);
         }
 
+        public void AddThreeWindingTransformer(long nodeOneId, long nodeTwoId, long nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne,
+            double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree, double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo, 
+            double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses, double relativeNoLoadCurrent, Angle nominalPhaseShiftOneToTwo, 
+            Angle nominalPhaseShiftTwoToThree, Angle nominalPhaseShiftThreeToOne, string name)
+        {
+            var nodeOne = GetNodeByIdInternal(nodeOneId);
+            var nodeTwo = GetNodeByIdInternal(nodeTwoId);
+            var nodeThree = GetNodeByIdInternal(nodeThreeId);
+            var transformer = new ThreeWindingTransformer(nodeOne, nodeTwo, nodeThree, nominalPowerOneToTwo, nominalPowerTwoToThree,
+                nominalPowerThreeToOne, relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
+                relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo, copperLossesTwoToThree, copperLossesThreeToOne,
+                ironLosses, relativeNoLoadCurrent, nominalPhaseShiftOneToTwo, nominalPhaseShiftTwoToThree, nominalPhaseShiftThreeToOne,
+                name, _idGeneratorNodes);
+            _threeWindingTransformers.Add(transformer);
+            _elements.Add(transformer);
+            nodeOne.Connect(transformer);
+            nodeTwo.Connect(transformer);
+            nodeThree.Connect(transformer);
+        }
+
         public void AddLoad(long nodeId, Complex power)
         {
             var node = GetNodeByIdInternal(nodeId);
@@ -290,9 +312,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _feedIns.Count; }
         }
 
-        public int TransformerCount
+        public int TwoWindingTransformerCount
         {
             get { return _twoWindingTransformers.Count; }
+        }
+
+        public int ThreeWindingTransformerCount
+        {
+            get { return _threeWindingTransformers.Count; }
         }
 
         public int GeneratorCount

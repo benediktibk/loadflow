@@ -52,6 +52,21 @@ namespace Calculation.ThreePhase
                 relativeShortCircuitVoltage, copperLosses/3, ironLosses/3, relativeNoLoadCurrent, ratio, nominalPhaseShift, name);
         }
 
+        public void AddThreeWindingTransformer(long nodeOneId, long nodeTwoId, long nodeThreeId, double nominalPowerOneToTwo,
+            double nominalPowerTwoToThree, double nominalPowerThreeToOne,
+            double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree,
+            double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo,
+            double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses,
+            double relativeNoLoadCurrent, Angle nominalPhaseShiftOneToTwo,
+            Angle nominalPhaseShiftTwoToThree, Angle nominalPhaseShiftThreeToOne, string name)
+        {
+            _singlePhasePowerNet.AddThreeWindingTransformer(nodeOneId, nodeTwoId, nodeThreeId, nominalPowerOneToTwo/3, nominalPowerTwoToThree/3,
+                nominalPowerThreeToOne/3, relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
+                relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo/3, copperLossesTwoToThree/3, copperLossesThreeToOne/3,
+                ironLosses/3, relativeNoLoadCurrent, nominalPhaseShiftOneToTwo, nominalPhaseShiftTwoToThree, nominalPhaseShiftThreeToOne,
+                name);
+        }
+
         public void AddLoad(int nodeId, Complex power)
         {
             _singlePhasePowerNet.AddLoad(nodeId, power/3);

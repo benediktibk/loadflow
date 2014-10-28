@@ -113,7 +113,11 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            throw new NotImplementedException();
+            powerNet.AddThreeWindingTransformer(NodeOneId, NodeTwoId, NodeThreeId, NominalPowerOneToTwo,
+                NominalPowerTwoToThree, NominalPowerThreeToOne, RelativeShortCircuitVoltageOneToTwo,
+                RelativeShortCircuitVoltageTwoToThree, RelativeShortCircuitVoltageThreeToOne, CopperLossesOneToTwo,
+                CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOneToTwo,
+                PhaseShiftTwoToThree, PhaseShiftThreeToOne, "");
         }
 
         #endregion

@@ -14,7 +14,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Complex _lengthAdmittanceOne;
         private readonly Complex _lengthAdmittanceTwo;
         private readonly Complex _lengthAdmittanceThree;
-        private readonly double _averageNominalPower;
         private readonly Angle _nominalPhaseShiftOneToTwo;
         private readonly Angle _nominalPhaseShiftTwoToThree;
         private readonly Angle _nominalPhaseShiftThreeToOne;
@@ -22,7 +21,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public ThreeWindingTransformer(
             IExternalReadOnlyNode nodeOne, IExternalReadOnlyNode nodeTwo, IExternalReadOnlyNode nodeThree,
-            double nominalPowerOne, double nominalPowerTwo, double nominalPowerThree,
+            double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne,
             double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree,
             double relativeShortCircuitVoltageThreeToOne,
             double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne,
@@ -33,16 +32,30 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodeOne = nodeOne;
             _nodeTwo = nodeTwo;
             _nodeThree = nodeThree;
-            _averageNominalPower = (nominalPowerOne + nominalPowerTwo + nominalPowerThree)/3;
             _nominalPhaseShiftOneToTwo = nominalPhaseShiftOneToTwo;
             _nominalPhaseShiftTwoToThree = nominalPhaseShiftTwoToThree;
             _nominalPhaseShiftThreeToOne = nominalPhaseShiftThreeToOne;
             _internalNode = new DerivedInternalPQNode(nodeTwo, idGenerator.Generate(), new Complex(), name + "#internal");
-            CalculateAdmittances(nominalPowerOne, nominalPowerTwo, nominalPowerThree,
+            CalculateAdmittances(nominalPowerOneToTwo, nominalPowerTwoToThree, nominalPowerThreeToOne,
                 relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
                 relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo, copperLossesTwoToThree,
                 copperLossesThreeToOne, ironLosses, relativeNoLoadCurrent, out _shuntAdmittance,
                 out _lengthAdmittanceOne, out _lengthAdmittanceTwo, out _lengthAdmittanceThree);
+        }
+
+        public Angle NominalPhaseShiftOneToTwo
+        {
+            get { return _nominalPhaseShiftOneToTwo; }
+        }
+
+        public Angle NominalPhaseShiftTwoToThree
+        {
+            get { return _nominalPhaseShiftTwoToThree; }
+        }
+
+        public Angle NominalPhaseShiftThreeToOne
+        {
+            get { return _nominalPhaseShiftThreeToOne; }
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

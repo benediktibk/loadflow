@@ -10,7 +10,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         int ImpedanceLoadCount { get; }
         int LineCount { get; }
         int FeedInCount { get; }
-        int TransformerCount { get; }
+        int TwoWindingTransformerCount { get; }
+        int ThreeWindingTransformerCount { get; }
         int GeneratorCount { get; }
         int NodeCount { get; }
         IReadOnlyNode GroundNode { get; }
