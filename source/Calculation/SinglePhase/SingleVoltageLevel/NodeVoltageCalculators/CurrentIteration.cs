@@ -11,24 +11,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class CurrentIteration : INodeVoltageCalculator
     {
-        #region variables
-
         private readonly int _maximumIterations;
         private readonly double _targetPrecision;
-
-        #endregion
-
-        #region constructor
 
         public CurrentIteration(double targetPrecision, int maximumIterations)
         {
             _targetPrecision = targetPrecision;
             _maximumIterations = maximumIterations;
         }
-
-        #endregion
-
-        #region public functions
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
@@ -61,9 +51,29 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 0.1;
         }
 
-        #endregion
+        private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, int nodeCount, IList<Complex> powers,
+            IList<Complex> voltages)
+        {
+            var rightHandSide = new DenseVector(nodeCount);
 
-        #region private functions
+            for (var i = 0; i < nodeCount; ++i)
+                rightHandSide[i] = constantCurrents[i] + (powers[i] / voltages[i]).Conjugate();
+
+            return rightHandSide;
+        }
+
+        private static DenseVector CollectPowers(IEnumerable<PQBus> pqBuses, IEnumerable<PVBus> pvBuses, int nodeCount)
+        {
+            var powers = new DenseVector(nodeCount);
+
+            foreach (var bus in pqBuses)
+                powers[bus.ID] = bus.Power;
+
+            foreach (var bus in pvBuses)
+                powers[bus.ID] = new Complex(bus.RealPower, 0);
+
+            return powers;
+        }
 
         private bool CheckAccuracy(AdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses,
             IList<PVBus> pvBuses, Vector<Complex> newVoltages, Vector<Complex> voltages, double totalAbsolutePowerSum, bool powerErrorTooBig)
@@ -76,9 +86,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var relativePowerError = totalAbsolutePowerSum != 0
                 ? absolutePowerError/totalAbsolutePowerSum
                 : absolutePowerError;
-            var result = voltageChange/nominalVoltage < _targetPrecision/10 && !powerErrorTooBig &&
+            return voltageChange/nominalVoltage < _targetPrecision/10 && !powerErrorTooBig &&
                          relativePowerError < GetMaximumPowerError();
-            return result;
         }
 
         private Vector<Complex> CalculateImprovedVoltagesAndPowers(AdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PVBus> pvBuses,
@@ -99,6 +108,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
                 powers[bus.ID] = new Complex(bus.RealPower, newPower.Imaginary);
             }
+
             return newVoltages;
         }
 
@@ -112,36 +122,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var totalCurrents = branchCurrent - constantCurrent;
             return voltage * totalCurrents.Conjugate();
         }
-
-        #endregion
-
-        #region private static functions
-
-        private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, int nodeCount, IList<Complex> powers,
-            IList<Complex> voltages)
-        {
-            var rightHandSide = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-                rightHandSide[i] = constantCurrents[i] + (powers[i]/voltages[i]).Conjugate();
-
-            return rightHandSide;
-        }
-
-        private static DenseVector CollectPowers(IEnumerable<PQBus> pqBuses, IEnumerable<PVBus> pvBuses, int nodeCount)
-        {
-            var powers = new DenseVector(nodeCount);
-
-            foreach (var bus in pqBuses)
-                powers[bus.ID] = bus.Power;
-
-            foreach (var bus in pvBuses)
-                powers[bus.ID] = new Complex(bus.RealPower, 0);
-
-            return powers;
-        }
-
-        #endregion
-
     }
 }
