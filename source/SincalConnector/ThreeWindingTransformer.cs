@@ -29,14 +29,14 @@ namespace SincalConnector
             CopperLossesOneToTwo = NominalPowerOneToTwo * realRelativeShortCircuitVoltageOneToTwo;
             CopperLossesTwoToThree = NominalPowerTwoToThree * realRelativeShortCircuitVoltageTwoToThree;
             CopperLossesThreeToOne = NominalPowerThreeToOne * realRelativeShortCircuitVoltageThreeToOne;
-            var controlStageOneToTwo = record.Parse<double>("roh12");
-            var controlStageTwoToThree = record.Parse<double>("roh23");
-            var controlStageThreeToOne = record.Parse<double>("roh31");
+            var controlStageOne = record.Parse<double>("roh1");
+            var controlStageTwo = record.Parse<double>("roh2");
+            var controlStageThree = record.Parse<double>("roh3");
             var additionalPhaseShiftOneToTwo = record.Parse<double>("AddRotate1");
             var additionalPhaseShiftTwoToThree = record.Parse<double>("AddRotate2");
             var additionalPhaseShiftThreeToOne = record.Parse<double>("AddRotate3");
 
-            if (controlStageOneToTwo != 0 || controlStageTwoToThree != 0 || controlStageThreeToOne != 0)
+            if (controlStageOne != 0 || controlStageTwo != 0 || controlStageThree != 0)
                 throw new NotSupportedException("control stages are not supported");
 
             if (additionalPhaseShiftOneToTwo != 0 || additionalPhaseShiftTwoToThree != 0 || additionalPhaseShiftThreeToOne != 0)
@@ -52,9 +52,9 @@ namespace SincalConnector
             PhaseShiftTwoToThree = Angle.FromDegree(phaseShiftFactorTwoToThree * 30);
             PhaseShiftThreeToOne = Angle.FromDegree(phaseShiftFactorThreeToOne * 30);
 
-            var nominalVoltageOne = record.Parse<int>("Un1")*1000;
-            var nominalVoltageTwo = record.Parse<int>("Un2")*1000;
-            var nominalVoltageThree = record.Parse<int>("Un3")*1000;
+            var nominalVoltageOne = record.Parse<double>("Un1")*1000;
+            var nominalVoltageTwo = record.Parse<double>("Un2") * 1000;
+            var nominalVoltageThree = record.Parse<double>("Un3") * 1000;
             var nominalVoltages = new List<double>() {nominalVoltageOne, nominalVoltageTwo, nominalVoltageThree};
             var connectedNodeIdsSorted = new List<int>() {-1, -1, -1};
             var connectedNodeIds = new List<int>(nodeIdsByElementIds.Get(Id));
