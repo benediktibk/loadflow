@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using UnitTestHelper;
+using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
+using LoadFlowCalculator = Calculation.SinglePhase.MultipleVoltageLevels.LoadFlowCalculator;
+using PowerNet = Calculation.SinglePhase.MultipleVoltageLevels.PowerNet;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
@@ -13,7 +20,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     {
         private LoadFlowCalculator _calculator;
         private LoadFlowCalculator _calculatorWithNoPowerScaling;
-        private LoadFlowCalculator _calculatorWithDummyMethod;
         private PowerNet _powerNet;
         private Mock<IReadOnlyPowerNet> _powerNetMock;
 
@@ -22,7 +28,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _calculator = new LoadFlowCalculator(2, new CurrentIteration(0.00001, 1000));
             _calculatorWithNoPowerScaling = new LoadFlowCalculator(1, new CurrentIteration(0.00001, 1000));
-            _calculatorWithDummyMethod = new LoadFlowCalculator(1, new DummyMethod());
             _powerNet = new PowerNet(50);
             _powerNetMock = new Mock<IReadOnlyPowerNet>();
             _powerNetMock.Setup(x => x.CheckIfFloatingNodesExists()).Returns(false);
@@ -150,8 +155,17 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
+            var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();
+            nodeVoltageCalculator.Setup(
+                c =>
+                    c.CalculateUnknownVoltages(
+                        It.IsAny<Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix>(),
+                        It.IsAny<IList<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(),
+                        It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>()))
+                .Returns(DenseVector.Create(2, i => new Complex(0, 0)));
+            var calculator = new LoadFlowCalculator(1, nodeVoltageCalculator.Object);
 
-            var nodeResults = _calculatorWithDummyMethod.CalculateNodeVoltages(_powerNet);
+            var nodeResults = calculator.CalculateNodeVoltages(_powerNet);
 
             Assert.AreEqual(null, nodeResults);
         }
