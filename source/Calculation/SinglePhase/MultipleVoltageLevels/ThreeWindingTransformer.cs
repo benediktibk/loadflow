@@ -7,8 +7,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class ThreeWindingTransformer : IPowerNetElement
     {
-        #region variables
-
         private readonly IExternalReadOnlyNode _nodeOne;
         private readonly IExternalReadOnlyNode _nodeTwo;
         private readonly IExternalReadOnlyNode _nodeThree;
@@ -20,10 +18,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Angle _nominalPhaseShiftOneToTwo;
         private readonly Angle _nominalPhaseShiftTwoToThree;
         private readonly Angle _nominalPhaseShiftThreeToOne;
-
-        #endregion
-
-        #region constructor
+        private readonly DerivedInternalPQNode _internalNode;
 
         public ThreeWindingTransformer(
             IExternalReadOnlyNode nodeOne, IExternalReadOnlyNode nodeTwo, IExternalReadOnlyNode nodeThree,
@@ -35,21 +30,38 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             Angle nominalPhaseShiftOneToTwo, Angle nominalPhaseShiftTwoToThree, Angle nominalPhaseShiftThreeToOne,
             string name, IdGenerator idGenerator)
         {
-            
+            _nodeOne = nodeOne;
+            _nodeTwo = nodeTwo;
+            _nodeThree = nodeThree;
+            _averageNominalPower = (nominalPowerOne + nominalPowerTwo + nominalPowerThree)/3;
+            _nominalPhaseShiftOneToTwo = nominalPhaseShiftOneToTwo;
+            _nominalPhaseShiftTwoToThree = nominalPhaseShiftTwoToThree;
+            _nominalPhaseShiftThreeToOne = nominalPhaseShiftThreeToOne;
+            _internalNode = new DerivedInternalPQNode(nodeTwo, idGenerator.Generate(), new Complex(), name + "#internal");
+            CalculateAdmittances(nominalPowerOne, nominalPowerTwo, nominalPowerThree,
+                relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
+                relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo, copperLossesTwoToThree,
+                copperLossesThreeToOne, ironLosses, relativeNoLoadCurrent, out _shuntAdmittance,
+                out _lengthAdmittanceOne, out _lengthAdmittanceTwo, out _lengthAdmittanceThree);
         }
-
-        #endregion
-
-        #region IPowerNetElement
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
-            throw new NotImplementedException();
+            _nodeOne.AddConnectedNodes(visitedNodes);
+            _nodeTwo.AddConnectedNodes(visitedNodes);
+            _nodeThree.AddConnectedNodes(visitedNodes);
         }
 
         public void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes)
         {
-            throw new NotImplementedException();
+            if (visitedNodes.Contains(_nodeOne))
+                _nodeOne.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            else if (visitedNodes.Contains(_nodeTwo))
+                _nodeTwo.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            else if (visitedNodes.Contains(_nodeThree))
+                _nodeThree.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
+            else
+                throw new ArgumentException("none of the nodes have been visited yet");
         }
 
         public bool EnforcesSlackBus
@@ -79,18 +91,27 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public IList<IReadOnlyNode> GetInternalNodes()
         {
-            throw new NotImplementedException();
+            return new IReadOnlyNode[] { _internalNode };
         }
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode,
             double expectedLoadFlow)
         {
-            throw new NotImplementedException();
+            var scaler = new DimensionScaler(_nodeOne.NominalVoltage, scaleBasisPower);
+            var shuntAdmittanceScaled = scaler.ScaleAdmittance(_shuntAdmittance);
+            var lengthAdmittanceOneScaled = scaler.ScaleAdmittance(_lengthAdmittanceOne);
+            var lengthAdmittanceTwoScaled = scaler.ScaleAdmittance(_lengthAdmittanceTwo);
+            var lengthAdmittanceThreeScaled = scaler.ScaleAdmittance(_lengthAdmittanceThree);
+            admittances.AddConnection(_nodeOne, groundNode, shuntAdmittanceScaled);
+            admittances.AddConnection(_internalNode, groundNode, shuntAdmittanceScaled);
+            admittances.AddConnection(_nodeOne, _internalNode, lengthAdmittanceOneScaled);
+            admittances.AddConnection(_nodeTwo, _internalNode, lengthAdmittanceTwoScaled);
+            admittances.AddConnection(_nodeThree, _internalNode, lengthAdmittanceThreeScaled);
         }
 
         public bool NominalVoltagesMatch
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         public bool NeedsGroundNode
@@ -98,6 +119,52 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return true; }
         }
 
-        #endregion
+        private void CalculateAdmittances(double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne,
+            double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree,
+            double relativeShortCircuitVoltageThreeToOne,
+            double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne,
+            double ironLosses, double relativeNoLoadCurrent,
+            out Complex shuntAdmittance, out Complex lengthAdmittanceOne, out Complex lengthAdmittanceTwo,
+            out Complex lengthAdmittanceThree)
+        {
+            var nominalVoltage = _nodeOne.NominalVoltage;
+            var idleLosses = relativeNoLoadCurrent * (nominalPowerOneToTwo + nominalPowerTwoToThree + nominalPowerThreeToOne);
+
+            if (ironLosses > idleLosses)
+                throw new ArgumentException("the iron losses are too high compared to the relative no load current");
+
+            var lengthAdmittanceOneToTwo = CalculateLenghtAdmittance(nominalPowerOneToTwo, relativeShortCircuitVoltageOneToTwo, copperLossesOneToTwo, nominalVoltage);
+            var lengthAdmittanceTwoToThree = CalculateLenghtAdmittance(nominalPowerTwoToThree, relativeShortCircuitVoltageTwoToThree, copperLossesTwoToThree, nominalVoltage);
+            var lengthAdmittanceThreeToOne = CalculateLenghtAdmittance(nominalPowerThreeToOne, relativeShortCircuitVoltageThreeToOne, copperLossesThreeToOne, nominalVoltage);
+            lengthAdmittanceOne = 2 / (lengthAdmittanceOneToTwo + lengthAdmittanceThreeToOne - lengthAdmittanceTwoToThree);
+            lengthAdmittanceTwo = 2 / (lengthAdmittanceOneToTwo - lengthAdmittanceThreeToOne + lengthAdmittanceTwoToThree);
+            lengthAdmittanceThree = 2 / (lengthAdmittanceThreeToOne - lengthAdmittanceOneToTwo + lengthAdmittanceTwoToThree);
+            shuntAdmittance = new Complex(ironLosses, (-1)*Math.Sqrt(idleLosses*idleLosses - ironLosses*ironLosses))/
+                              (2*nominalVoltage*nominalVoltage);
+        }
+
+        private static Complex CalculateLenghtAdmittance(double nominalPower, double relativeShortCircuitVoltage,
+            double copperLossesOneToTwo, double nominalVoltage)
+        {
+            var relativeShortCircuitVoltageOneToTwoComplex = CalculateRelativeShortCircuitVoltage(nominalPower,
+                relativeShortCircuitVoltage, copperLossesOneToTwo);
+            return (nominalVoltage*nominalVoltage/nominalPower)*
+                                   relativeShortCircuitVoltageOneToTwoComplex;
+        }
+
+        private static Complex CalculateRelativeShortCircuitVoltage(double nominalPower, double relativeShortCircuitVoltage,
+            double copperLosses)
+        {
+            var relativeShortCircuitVoltageReal = copperLosses/nominalPower;
+
+            if (relativeShortCircuitVoltageReal > relativeShortCircuitVoltage)
+                throw new ArgumentException("the copper losses are too high compared to the nominal power");
+
+            var relativeShortCircuitVoltageImaginary =
+                Math.Sqrt(relativeShortCircuitVoltage*relativeShortCircuitVoltage -
+                          relativeShortCircuitVoltageReal*relativeShortCircuitVoltageReal);
+            return new Complex(relativeShortCircuitVoltageReal,
+                relativeShortCircuitVoltageImaginary);
+        }
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\DimensionScalerTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\FeedInTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\GeneratorTest.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\ThreeWindingTransformerTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\TransmissionLineTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadFlowCalculatorTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\LoadTest.cs" />
