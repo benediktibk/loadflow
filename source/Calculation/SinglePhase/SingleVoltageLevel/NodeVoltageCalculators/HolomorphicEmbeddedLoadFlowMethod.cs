@@ -9,17 +9,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
-        #region variables
-
         private readonly double _targetPrecision;
         private readonly int _numberOfCoefficients;
         private readonly Precision _precision;
         private int _calculator;
         private bool _disposed;
-
-        #endregion
-
-        #region constructor/destructor
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
         {
@@ -41,6 +35,54 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Dispose(false);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        {
+            if (_calculator >= 0)
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
+
+            var nodeCount = admittances.NodeCount;
+            CreateNewCalculator(nominalVoltage, pqBuses, pvBuses, nodeCount);
+            SetAdmittanceValues(admittances, totalAdmittanceRowSums);
+            SetRightHandSideValues(constantCurrents, pqBuses, pvBuses, nodeCount);
+
+            HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(_calculator);
+
+            return FetchVoltages(nodeCount);
+        }
+
+        public double GetMaximumPowerError()
+        {
+            return 0.1;
+        }
+
+        public Vector<Complex> GetCoefficients(int step)
+        {
+            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(_calculator);
+            var result = new DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+                result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientReal(_calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientImaginary(_calculator, step, i));
+
+            return result;
+        }
+
+        public Vector<Complex> GetInverseCoefficients(int step)
+        {
+            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(_calculator);
+            var result = new DenseVector(nodeCount);
+
+            for (var i = 0; i < nodeCount; ++i)
+                result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientReal(_calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientImaginary(_calculator, step, i));
+
+            return result;
+        }
+
         protected virtual void Dispose(bool disposeManaged)
         {
             if (_disposed)
@@ -53,65 +95,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _disposed = true;
         }
 
-        public void Dispose()
+        private Vector<Complex> FetchVoltages(int nodeCount)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        #region public functions
-
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
-        {
-            if (_calculator >= 0)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
-
-            var nodeCount = admittances.NodeCount;
-
-            switch (_precision.Type)
-            {
-                case DataType.LongDouble:
-                    _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage);
-                    break;
-                case DataType.MultiPrecision:
-                    _calculator = HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(_targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                        pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
-                    break;
-            }
-
-            if (_calculator < 0)
-                throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
-
-            for (var row = 0; row < admittances.NodeCount; ++row)
-            {
-                for (var column = 0; column < admittances.NodeCount; ++column)
-                {
-                    var admittance = admittances[row, column];
-
-                    if (admittance == new Complex())
-                        continue;
-
-                    HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittance(_calculator, row, column, admittance.Real, admittance.Imaginary);
-                }
-
-                var totalRowSum = totalAdmittanceRowSums[row];
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(_calculator, row, totalRowSum.Real, totalRowSum.Imaginary);
-            }
-
-            for (var i = 0; i < nodeCount; ++i)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConstantCurrent(_calculator, i, constantCurrents[i].Real, constantCurrents[i].Imaginary);
-
-            for (var i = 0; i < pqBuses.Count; ++i)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPQBus(_calculator, i, pqBuses[i].ID, pqBuses[i].Power.Real, pqBuses[i].Power.Imaginary);
-
-            for (var i = 0; i < pvBuses.Count; ++i)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPVBus(_calculator, i, pvBuses[i].ID, pvBuses[i].RealPower, pvBuses[i].VoltageMagnitude);
-
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(_calculator);
-
             var voltages = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
@@ -124,35 +109,62 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltages;
         }
 
-        public double GetMaximumPowerError()
+        private void SetRightHandSideValues(Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses, int nodeCount)
         {
-            return 0.1;
-        }
-
-        public Vector<Complex> GetCoefficients(int step)
-        {
-            Debug.Assert(_calculator >= 0);
-            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(_calculator);
-            var result = new DenseVector(nodeCount);
-
             for (var i = 0; i < nodeCount; ++i)
-                result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientReal(_calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientImaginary(_calculator, step, i));
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConstantCurrent(_calculator, i, constantCurrents[i].Real,
+                    constantCurrents[i].Imaginary);
 
-            return result;
+            for (var i = 0; i < pqBuses.Count; ++i)
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPQBus(_calculator, i, pqBuses[i].ID, pqBuses[i].Power.Real,
+                    pqBuses[i].Power.Imaginary);
+
+            for (var i = 0; i < pvBuses.Count; ++i)
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPVBus(_calculator, i, pvBuses[i].ID, pvBuses[i].RealPower,
+                    pvBuses[i].VoltageMagnitude);
         }
 
-        public Vector<Complex> GetInverseCoefficients(int step)
+        private void SetAdmittanceValues(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums)
         {
-            Debug.Assert(_calculator >= 0);
-            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(_calculator);
-            var result = new DenseVector(nodeCount);
+            for (var row = 0; row < admittances.NodeCount; ++row)
+            {
+                for (var column = 0; column < admittances.NodeCount; ++column)
+                {
+                    var admittance = admittances[row, column];
 
-            for (var i = 0; i < nodeCount; ++i)
-                result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientReal(_calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientImaginary(_calculator, step, i));
+                    if (admittance == new Complex())
+                        continue;
 
-            return result;
+                    HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittance(_calculator, row, column, admittance.Real,
+                        admittance.Imaginary);
+                }
+
+                var totalRowSum = totalAdmittanceRowSums[row];
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(_calculator, row, totalRowSum.Real,
+                    totalRowSum.Imaginary);
+            }
         }
 
-        #endregion
+        private void CreateNewCalculator(double nominalVoltage, IList<PQBus> pqBuses, IList<PVBus> pvBuses, int nodeCount)
+        {
+            switch (_precision.Type)
+            {
+                case DataType.LongDouble:
+                    _calculator =
+                        HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(
+                            _targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+                            pqBuses.Count, pvBuses.Count, nominalVoltage);
+                    break;
+                case DataType.MultiPrecision:
+                    _calculator =
+                        HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(
+                            _targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+                            pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
+                    break;
+            }
+
+            if (_calculator < 0)
+                throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");
+        }
     }
 }
