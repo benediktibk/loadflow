@@ -43,6 +43,21 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 out _lengthAdmittanceOne, out _lengthAdmittanceTwo, out _lengthAdmittanceThree);
         }
 
+        public IExternalReadOnlyNode NodeOne
+        {
+            get { return _nodeOne; }
+        }
+
+        public IExternalReadOnlyNode NodeTwo
+        {
+            get { return _nodeTwo; }
+        }
+
+        public IExternalReadOnlyNode NodeThree
+        {
+            get { return _nodeThree; }
+        }
+
         public Angle NominalPhaseShiftOneToTwo
         {
             get { return _nominalPhaseShiftOneToTwo; }
