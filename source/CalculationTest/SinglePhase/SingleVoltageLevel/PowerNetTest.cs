@@ -41,6 +41,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Integration")]
         public void CalculateMissingInformation_TwoNodeSystem_CorrectVoltagesAndPowers()
         {
             var powerNet = new PowerNet(2, 1);
@@ -69,6 +70,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Integration")]
         public void RelativePowerError_StableTwoNodeSystem_0()
         {
             var powerNet = new PowerNet(2, 1);
@@ -89,6 +91,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Integration")]
         public void RelativePowerError_CollapsingSystem_Not0()
         {
             var powerNet = new PowerNet(3, 1);
@@ -113,7 +116,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void CalculateMissingInformation_CollapsingSystem_InitalSetValuesAreCorrect()
+        [TestCategory("Integration")]
+        public void CalculateMissingInformation_CollapsingSystem_InitialSetValuesAreCorrect()
         {
             var powerNet = new PowerNet(3, 1);
             var supplyNode = new Node();

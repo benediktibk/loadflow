@@ -302,6 +302,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPQBusses_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();

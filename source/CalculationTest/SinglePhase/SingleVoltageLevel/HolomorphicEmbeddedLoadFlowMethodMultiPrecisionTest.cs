@@ -191,6 +191,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithMostlyImaginaryConnections();
@@ -213,6 +214,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
         {
             var nodes = CreateTestTwoNodeProblemWithOnePVBus();
@@ -223,6 +225,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
             var nodeVoltageCalculator =  new HolomorphicEmbeddedLoadFlowMethod(0.000000001, 150, new PrecisionMulti(400));
@@ -237,6 +240,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var nodes = CreateTestThreeNodeProblemWithTwoPVBuses();
@@ -357,6 +361,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
             var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
@@ -381,6 +386,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
             var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
@@ -405,6 +411,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
+        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
             var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(500));
