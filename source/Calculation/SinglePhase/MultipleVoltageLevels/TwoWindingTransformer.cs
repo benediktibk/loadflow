@@ -40,13 +40,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (relativeShortCircuitVoltage <= 0 || relativeShortCircuitVoltage > 1)
                 throw new ArgumentOutOfRangeException("relativeShortCircuitVoltage", "must be positive and smaller than 1");
 
-            if (copperLosses <= 0)
+            if (copperLosses < 0)
                 throw new ArgumentOutOfRangeException("copperLosses", "must be positive");
 
             if (relativeNoLoadCurrent < 0 || relativeNoLoadCurrent > 1)
                 throw new ArgumentOutOfRangeException("relativeNoLoadCurrent", "must be positive and smaller than 1");
 
-            if (ironLosses <= 0 && relativeNoLoadCurrent == 0)
+            if (ironLosses < 0 && relativeNoLoadCurrent == 0)
                 throw new ArgumentOutOfRangeException("ironLosses", "must be positive");
 
             _upperSideNode = upperSideNode;
