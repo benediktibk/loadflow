@@ -8,9 +8,9 @@ source/*/obj/**
 source/packages/**
 source/TestResults/**
 source/Debug/**
-source/*/Debug/**
+source/**/Debug/**
 source/Release/**
-source/*/Release/**
+source/**/Release/**
 source/*.user
 source/*.suo
 source/*.sdf

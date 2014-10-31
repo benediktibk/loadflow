@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{484F301D-5A80-460C-8267-189C879A2FEA}</ProjectGuid>
+    <RootNamespace>HELM</RootNamespace>
+    <ProjectName>HELM</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)external\mpir\include;$(SolutionDir)external\eigen;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\mpir\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)external\mpir\include;$(SolutionDir)external\eigen;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\mpir\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>mpir.lib;mpirxx.lib</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>call $(SolutionDir)killvstest.bat
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>mpir.lib;mpirxx.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>call $(SolutionDir)killvstest.bat
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AnalyticContinuation.cpp" />
+    <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="CalculatorLongDouble.cpp" />
+    <ClCompile Include="CalculatorMulti.cpp" />
+    <ClCompile Include="CalculatorRegister.cpp" />
+    <ClCompile Include="CoefficientStorage.cpp" />
+    <ClCompile Include="Complex.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="MultiPrecision.cpp" />
+    <ClCompile Include="PQBus.cpp" />
+    <ClCompile Include="PVBus.cpp" />
+    <ClCompile Include="Decomposition.cpp" />
+    <ClCompile Include="UnitTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnalyticContinuation.h" />
+    <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CalculatorLongDouble.h" />
+    <ClInclude Include="CalculatorMulti.h" />
+    <ClInclude Include="CalculatorRegister.h" />
+    <ClInclude Include="CoefficientStorage.h" />
+    <ClInclude Include="Complex.h" />
+    <ClInclude Include="ConsoleOutput.h" />
+    <ClInclude Include="ICalculator.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="MultiPrecision.h" />
+    <ClInclude Include="PQBus.h" />
+    <ClInclude Include="PVBus.h" />
+    <ClInclude Include="Decomposition.h" />
+    <ClInclude Include="UnitTest.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
