@@ -161,7 +161,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                     c.CalculateUnknownVoltages(
                         It.IsAny<Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix>(),
                         It.IsAny<IList<Complex>>(), It.IsAny<double>(), It.IsAny<Vector<Complex>>(),
-                        It.IsAny<Vector<Complex>>(), It.IsAny<IList<PQBus>>(), It.IsAny<IList<PVBus>>()))
+                        It.IsAny<Vector<Complex>>(), It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()))
                 .Returns(DenseVector.Create(2, i => new Complex(0, 0)));
             var calculator = new LoadFlowCalculator(1, nodeVoltageCalculator.Object);
 

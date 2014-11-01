@@ -3,22 +3,22 @@ using System.Numerics;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class PQBus
+    public class PqBus
     {
         private readonly int _id;
         private readonly Complex _power;
 
-        public PQBus(int ID, Complex power)
+        public PqBus(int id, Complex power)
         {
 
-            if (ID < 0)
-                throw new ArgumentOutOfRangeException("ID", "mustn't be negative");
+            if (id < 0)
+                throw new ArgumentOutOfRangeException("id", "mustn't be negative");
 
-            _id = ID;
+            _id = id;
             _power = power;
         }
 
-        public int ID
+        public int Id
         {
             get { return _id; }
         }

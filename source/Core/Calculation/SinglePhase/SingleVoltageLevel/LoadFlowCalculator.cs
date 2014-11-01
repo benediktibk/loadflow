@@ -71,14 +71,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         }
 
         public static double CalculatePowerError(AdmittanceMatrix admittances, Vector<Complex> voltages,
-            Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+            Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
             double sum = 0;
 
             foreach (var bus in pqBuses)
             {
-                var id = bus.ID;
+                var id = bus.Id;
                 var power = bus.Power;
                 sum += Math.Abs(power.Real - powers[id].Real);
                 sum += Math.Abs(power.Imaginary - powers[id].Imaginary);
@@ -86,7 +86,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             foreach (var bus in pvBuses)
             {
-                var id = bus.ID;
+                var id = bus.Id;
                 var power = bus.RealPower;
                 sum += Math.Abs(power - powers[id].Real);
             }
@@ -145,10 +145,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PQBus> ExtractPQBuses(IList<IReadOnlyNode> nodes,
+        private static List<PqBus> ExtractPQBuses(IList<IReadOnlyNode> nodes,
             IEnumerable<int> indexes)
         {
-            var result = new List<PQBus>(nodes.Count);
+            var result = new List<PqBus>(nodes.Count);
             var newIndex = 0;
 
             foreach (var index in indexes)
@@ -156,17 +156,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 if (!nodes[index].IsPQBus)
                     throw new ArgumentOutOfRangeException("indexes", "selected node is not a PQ-bus");
 
-                result.Add(new PQBus(newIndex, nodes[index].Power));
+                result.Add(new PqBus(newIndex, nodes[index].Power));
                 ++newIndex;
             }
 
             return result;
         }
 
-        private static List<PVBus> ExtractPVBuses(IList<IReadOnlyNode> nodes,
+        private static List<PvBus> ExtractPVBuses(IList<IReadOnlyNode> nodes,
             IEnumerable<int> indexes, int countOfPQBuses)
         {
-            var result = new List<PVBus>(nodes.Count);
+            var result = new List<PvBus>(nodes.Count);
             var newIndex = countOfPQBuses;
 
             foreach (var index in indexes)
@@ -174,7 +174,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 if (!nodes[index].IsPVBus)
                     throw new ArgumentOutOfRangeException("indexes", "selected node is not a PV-bus");
 
-                result.Add(new PVBus(newIndex, nodes[index].RealPower, nodes[index].VoltageMagnitude));
+                result.Add(new PvBus(newIndex, nodes[index].RealPower, nodes[index].VoltageMagnitude));
                 ++newIndex;
             }
 

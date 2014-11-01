@@ -87,8 +87,8 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionLongDouble.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionMulti.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNet.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\PQBus.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\PVBus.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PqBus.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PvBus.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNet.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
@@ -17,7 +17,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 knownPowers = new DenseVector(pqBuses.Count);
 
                 foreach (var bus in pqBuses)
-                    knownPowers[bus.ID] = bus.Power;
+                    knownPowers[bus.Id] = bus.Power;
 
                 return CalculateUnknownVoltagesInternal(admittances, initialVoltages, constantCurrents,
                     knownPowers);
@@ -42,15 +42,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             for (var i = 0; i < pqBuses.Count; ++i)
             {
                 var bus = pqBuses[i];
-                knownPowers[bus.ID] = bus.Power;
-                indexOfNodesWithUnkownVoltage.Add(bus.ID);
-                reducedNominalVoltages[i] = initialVoltages[bus.ID];
+                knownPowers[bus.Id] = bus.Power;
+                indexOfNodesWithUnkownVoltage.Add(bus.Id);
+                reducedNominalVoltages[i] = initialVoltages[bus.Id];
             }
 
             for (var i = 0; i < pvBuses.Count; ++i)
             {
                 var bus = pvBuses[i];
-                indexOfNodesWithKnownVoltage.Add(bus.ID);
+                indexOfNodesWithKnownVoltage.Add(bus.Id);
                 knownVoltages[i] = new Complex(bus.VoltageMagnitude, 0);
             }
 

@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _maximumIterations = maximumIterations;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             var nodeCount = admittances.NodeCount;
             Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
@@ -62,21 +62,21 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return rightHandSide;
         }
 
-        private static DenseVector CollectPowers(IEnumerable<PQBus> pqBuses, IEnumerable<PVBus> pvBuses, int nodeCount)
+        private static DenseVector CollectPowers(IEnumerable<PqBus> pqBuses, IEnumerable<PvBus> pvBuses, int nodeCount)
         {
             var powers = new DenseVector(nodeCount);
 
             foreach (var bus in pqBuses)
-                powers[bus.ID] = bus.Power;
+                powers[bus.Id] = bus.Power;
 
             foreach (var bus in pvBuses)
-                powers[bus.ID] = new Complex(bus.RealPower, 0);
+                powers[bus.Id] = new Complex(bus.RealPower, 0);
 
             return powers;
         }
 
-        private bool CheckAccuracy(AdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PQBus> pqBuses,
-            IList<PVBus> pvBuses, Vector<Complex> newVoltages, Vector<Complex> voltages, double totalAbsolutePowerSum, bool powerErrorTooBig)
+        private bool CheckAccuracy(AdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqBus> pqBuses,
+            IList<PvBus> pvBuses, Vector<Complex> newVoltages, Vector<Complex> voltages, double totalAbsolutePowerSum, bool powerErrorTooBig)
         {
             var voltageDifference = newVoltages.Subtract(voltages);
             var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
@@ -90,7 +90,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                          relativePowerError < GetMaximumPowerError();
         }
 
-        private Vector<Complex> CalculateImprovedVoltagesAndPowers(AdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PVBus> pvBuses,
+        private Vector<Complex> CalculateImprovedVoltagesAndPowers(AdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvBus> pvBuses,
             ISolver<Complex> factorization, Vector<Complex> rightHandSide, IList<Complex> powers, out bool powerErrorTooBig)
         {
             powerErrorTooBig = false;
@@ -98,15 +98,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             foreach (var bus in pvBuses)
             {
-                var newVoltage = newVoltages[bus.ID];
+                var newVoltage = newVoltages[bus.Id];
                 newVoltage = Complex.FromPolarCoordinates(bus.VoltageMagnitude, newVoltage.Phase);
-                newVoltages[bus.ID] = newVoltage;
-                var newPower = CalculatePower(bus.ID, admittances, constantCurrents, newVoltages);
+                newVoltages[bus.Id] = newVoltage;
+                var newPower = CalculatePower(bus.Id, admittances, constantCurrents, newVoltages);
 
                 if (Math.Abs((newPower.Real - bus.RealPower)/bus.RealPower) > _targetPrecision)
                     powerErrorTooBig = true;
 
-                powers[bus.ID] = new Complex(bus.RealPower, newPower.Imaginary);
+                powers[bus.Id] = new Complex(bus.RealPower, newPower.Imaginary);
             }
 
             return newVoltages;

@@ -2,26 +2,26 @@
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class PVBus
+    public class PvBus
     {
         private readonly int _id;
         private readonly double _realPower;
         private readonly double _voltageMagnitude;
 
-        public PVBus(int ID, double realPower, double voltageMagnitude)
+        public PvBus(int id, double realPower, double voltageMagnitude)
         {
-            if (ID < 0)
-                throw new ArgumentOutOfRangeException("ID", "mustn't be negative");
+            if (id < 0)
+                throw new ArgumentOutOfRangeException("id", "mustn't be negative");
 
             if (voltageMagnitude < 0)
                 throw new ArgumentOutOfRangeException("voltageMagnitude", "mustn't be negative");
 
-            _id = ID;
+            _id = id;
             _realPower = realPower;
             _voltageMagnitude = voltageMagnitude;
         }
 
-        public int ID
+        public int Id
         {
             get { return _id; }
         }

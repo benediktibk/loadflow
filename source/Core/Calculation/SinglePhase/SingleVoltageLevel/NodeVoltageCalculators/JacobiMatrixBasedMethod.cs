@@ -21,7 +21,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public abstract Vector<Complex> CalculateImprovedVoltages(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfVector(initialVoltages);
             var iterations = 0;
@@ -33,8 +33,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusIds = new List<int>(pvBuses.Count);
             var pqBusIds = new List<int>(pqBuses.Count);
             pvBusVoltages.AddRange(pvBuses.Select(bus => bus.VoltageMagnitude));
-            pvBusIds.AddRange(pvBuses.Select(bus => bus.ID));
-            pqBusIds.AddRange(pqBuses.Select(bus => bus.ID));
+            pvBusIds.AddRange(pvBuses.Select(bus => bus.Id));
+            pqBusIds.AddRange(pqBuses.Select(bus => bus.Id));
 
             do
             {
@@ -55,7 +55,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 0.1;
         }
 
-        private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
+        private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses,
             Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
         {
             var powersCurrent = LoadFlowCalculator.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
