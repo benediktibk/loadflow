@@ -11,14 +11,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class PowerNetTest
     {
-        #region variables
-
         private PowerNet _powerNet;
         private INodeVoltageCalculator _calculator;
-
-        #endregion
-
-        #region initialize
 
         [TestInitialize]
         public void SetUp()
@@ -26,10 +20,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet = new PowerNet(50);
             _calculator = new CurrentIteration(0.00000001, 1000);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -689,6 +679,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             ComplexAssert.AreEqual(0, 0, targetNode.Power, 0.00001);
         }
 
-        #endregion
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddNode_NegativeId_ThrowsException()
+        {
+            _powerNet.AddNode(-1, 230, 0, "");
+        }
     }
 }
