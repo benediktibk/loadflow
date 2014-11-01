@@ -17,10 +17,10 @@ source/*.sdf
 source/*.opensdf
 source/*.sln.DotSettings
 source/**/*.user
-source/SincalConnectorTest/testdata/**/*.ldb
-source/SincalConnectorTest/testdata/~*~.sin
-source/SincalConnectorTest/testdata/~*~_files/*
-source/SincalConnectorTest/testdata/*_files/*.html
+source/Interfaces/SincalConnectorTest/testdata/**/*.ldb
+source/Interfaces/SincalConnectorTest/testdata/~*~.sin
+source/Interfaces/SincalConnectorTest/testdata/~*~_files/*
+source/Interfaces/SincalConnectorTest/testdata/*_files/*.html
 documents/forschungspraxis/report.pdf
 documents/forschungspraxis/presentation.pdf
 documents/forschungspraxis/*.aux
