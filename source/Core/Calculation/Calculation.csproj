@@ -71,6 +71,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNet.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\TwoWindingTransformer.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrix.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyAdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputable.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\Node.cs" />

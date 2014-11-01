@@ -49,7 +49,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
         }
 
-        public AdmittanceMatrix Admittances
+        public IReadOnlyAdmittanceMatrix Admittances
         {
            get { return _admittances; }
         }

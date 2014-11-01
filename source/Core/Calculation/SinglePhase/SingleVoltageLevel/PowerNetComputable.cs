@@ -53,7 +53,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return voltageCollapse ? null : nodeResults;
         }
 
-        public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
+        public static Complex CalculatePowerLoss(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var powerLoss = new Complex();
 
@@ -94,7 +94,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return sum;
         }
 
-        public static Vector<Complex> CalculateAllPowers(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
+        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
             var currents = admittances.CalculateCurrents(allVoltages);
             var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
@@ -234,7 +234,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allVoltagesFixed;
         }
 
-        private static Vector<Complex> DeterminePowers(AdmittanceMatrix admittances, IReadOnlyList<IReadOnlyNode> nodes, Vector<Complex> allVoltages,
+        private static Vector<Complex> DeterminePowers(IReadOnlyAdmittanceMatrix admittances, IReadOnlyList<IReadOnlyNode> nodes, Vector<Complex> allVoltages,
             IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
         {
             var allPowers = CalculateAllPowers(admittances, allVoltages);
@@ -267,7 +267,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return nominalVoltages;
         }
 
-        private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        private bool CheckForVoltageCollapse(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             var inputPowerSum = allPowers.Sum();
             var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
@@ -280,7 +280,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<IReadOnlyNode> nodes,
+        private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<IReadOnlyNode> nodes,
             IReadOnlyList<int> indexOfSlackBuses, IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses, IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
             int countOfUnknownVoltages)
         {

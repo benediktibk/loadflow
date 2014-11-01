@@ -8,7 +8,7 @@ using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class AdmittanceMatrix
+    public class AdmittanceMatrix : IReadOnlyAdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
 
@@ -106,7 +106,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public Vector<Complex> GetRow(int row)
         {
-            return _values.Row(row);
+            var result = new SparseVector(NodeCount);
+            _values.Row(row).CopyTo(result);
+            return result;
         }
 
         public AdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
