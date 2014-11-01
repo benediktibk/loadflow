@@ -30,9 +30,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 nominalVoltage, improvedInitialVoltages, constantCurrents, pqBuses, pvBuses);
         }
 
-        public double GetMaximumPowerError()
+        public double MaximumRelativePowerError
         {
-            return _iterativeMethod.GetMaximumPowerError();
+            get { return _iterativeMethod.MaximumRelativePowerError; }
         }
     }
 }

@@ -55,9 +55,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return FetchVoltages(nodeCount);
         }
 
-        public double GetMaximumPowerError()
+        public double MaximumRelativePowerError
         {
-            return 0.1;
+            get { return 0.1; }
         }
 
         public Vector<Complex> GetCoefficients(int step)

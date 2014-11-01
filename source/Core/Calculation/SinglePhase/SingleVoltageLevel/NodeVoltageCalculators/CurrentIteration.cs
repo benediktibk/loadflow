@@ -45,9 +45,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltages;
         }
 
-        public double GetMaximumPowerError()
+        public double MaximumRelativePowerError
         {
-            return 0.1;
+            get { return 0.1; }
         }
 
         private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, IList<Complex> powers, IList<Complex> voltages)
@@ -87,7 +87,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 ? absolutePowerError/totalAbsolutePowerSum
                 : absolutePowerError;
             return voltageChange/nominalVoltage < _targetPrecision/10 && !powerErrorTooBig &&
-                         relativePowerError < GetMaximumPowerError();
+                         relativePowerError < MaximumRelativePowerError;
         }
 
         private Vector<Complex> CalculateImprovedVoltagesAndPowers(AdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvBus> pvBuses,

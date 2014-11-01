@@ -70,9 +70,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
         }
 
-        public double GetMaximumPowerError()
+        public double MaximumRelativePowerError
         {
-            return 10;
+            get { return 10; }
         }
 
         private Vector<Complex> CalculateUnknownVoltagesInternal(AdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,

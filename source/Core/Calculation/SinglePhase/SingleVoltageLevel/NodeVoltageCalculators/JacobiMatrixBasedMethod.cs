@@ -50,9 +50,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return currentVoltages;
         }
 
-        public double GetMaximumPowerError()
+        public double MaximumRelativePowerError
         {
-            return 0.1;
+            get { return 0.1; }
         }
 
         public static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,

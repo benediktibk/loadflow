@@ -7,6 +7,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     public interface INodeVoltageCalculator
     {
         Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses);
-        double GetMaximumPowerError();
+        double MaximumRelativePowerError { get; }
     }
 }

@@ -275,7 +275,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
 
-            var result = relativePowerError > _nodeVoltageCalculator.GetMaximumPowerError() || Double.IsNaN(relativePowerError) ||
+            var result = relativePowerError > _nodeVoltageCalculator.MaximumRelativePowerError || Double.IsNaN(relativePowerError) ||
                          Double.IsInfinity(relativePowerError);
             return result;
         }
