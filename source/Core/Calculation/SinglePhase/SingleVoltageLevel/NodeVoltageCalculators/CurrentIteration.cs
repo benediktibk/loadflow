@@ -22,9 +22,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
-            var nodeCount = admittances.NodeCount;
             Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
-            var powers = CollectPowers(pqBuses, pvBuses, nodeCount);
+            var powers = CollectPowers(pqBuses, pvBuses);
             var totalAbsolutePowerSum = powers.Sum(x => Math.Abs(x.Real) + Math.Abs(x.Imaginary));
             var iterations = 0;
             bool accurateEnough;
@@ -33,7 +32,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             do
             {
                 bool powerErrorTooBig;
-                var rightHandSide = CalculateRightHandSide(constantCurrents, nodeCount, powers, voltages);
+                var rightHandSide = CalculateRightHandSide(constantCurrents, powers, voltages);
 
                 var newVoltages = CalculateImprovedVoltagesAndPowers(admittances, constantCurrents, pvBuses, factorization,
                     rightHandSide, powers, out powerErrorTooBig);
@@ -51,9 +50,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 0.1;
         }
 
-        private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, int nodeCount, IList<Complex> powers,
-            IList<Complex> voltages)
+        private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, IList<Complex> powers, IList<Complex> voltages)
         {
+            var nodeCount = constantCurrents.Count;
             var rightHandSide = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
@@ -62,8 +61,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return rightHandSide;
         }
 
-        private static DenseVector CollectPowers(IEnumerable<PqBus> pqBuses, IEnumerable<PvBus> pvBuses, int nodeCount)
+        private static DenseVector CollectPowers(IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
+            var nodeCount = pqBuses.Count() + pvBuses.Count();
             var powers = new DenseVector(nodeCount);
 
             foreach (var bus in pqBuses)
