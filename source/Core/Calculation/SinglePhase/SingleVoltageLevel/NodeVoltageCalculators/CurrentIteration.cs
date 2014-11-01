@@ -81,7 +81,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageDifference = newVoltages.Subtract(voltages);
             var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
             var voltageChange = maximumVoltageDifference.Magnitude/nominalVoltage;
-            var absolutePowerError = LoadFlowCalculator.CalculatePowerError(admittances, newVoltages, constantCurrents,
+            var absolutePowerError = PowerNetComputable.CalculatePowerError(admittances, newVoltages, constantCurrents,
                 pqBuses, pvBuses);
             var relativePowerError = totalAbsolutePowerSum != 0
                 ? absolutePowerError/totalAbsolutePowerSum

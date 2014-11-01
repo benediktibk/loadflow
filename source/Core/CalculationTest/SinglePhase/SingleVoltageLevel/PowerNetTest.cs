@@ -45,99 +45,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             supplyNode.Voltage = new Complex(1, 0);
             loadNode.Power = new Complex((-1)*load, 0);
             admittanceMatrix.AddConnection(0, 1, new Complex(admittance, 0));
-            var powerNet = new PowerNet(admittanceMatrix, 1);
+            var nodeVoltageCalculator = new CurrentIteration(0.000000001, 1000000);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, admittanceMatrix, 1);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
 
-            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
+            var nodeResults = powerNet.CalculateMissingInformation();
 
-            var voltages = powerNet.NodeVoltages;
-            var powers = powerNet.NodePowers;
-            Assert.IsFalse(voltageCollapse);
-            Assert.AreEqual(2, voltages.Count);
-            Assert.AreEqual(2, powers.Count);
+            Assert.IsNotNull(nodeResults);
+            Assert.AreEqual(2, nodeResults.Count);
             var loadVoltage = (1 + Math.Sqrt(1 - 4*load/admittance))/2;
-            ComplexAssert.AreEqual(1, 0, voltages[0], 0.0001);
-            ComplexAssert.AreEqual(loadVoltage, 0, voltages[1], 0.0001);
-            ComplexAssert.AreEqual((1 - loadVoltage) * admittance, 0, powers[0], 0.0001);
-            ComplexAssert.AreEqual(-0.1, 0, powers[1], 0.0001);
-        }
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void RelativePowerError_StableTwoNodeSystem_0()
-        {
-            var admittanceMatrix = new AdmittanceMatrix(2);
-            var supplyNode = new Node();
-            var loadNode = new Node();
-            const double admittance = 100;
-            const double load = 0.1;
-            supplyNode.Voltage = new Complex(1, 0);
-            loadNode.Power = new Complex((-1) * load, 0);
-            admittanceMatrix.AddConnection(0, 1, new Complex(admittance, 0));
-            var powerNet = new PowerNet(admittanceMatrix, 1);
-            powerNet.SetNode(0, supplyNode);
-            powerNet.SetNode(1, loadNode);
-            powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
-
-            var relativePowerError = powerNet.RelativePowerError;
-
-            Assert.AreEqual(0, relativePowerError , 0.0000001);
-        }
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void RelativePowerError_CollapsingSystem_Not0()
-        {
-            var admittanceMatrix = new AdmittanceMatrix(3);
-            var supplyNode = new Node();
-            var loadNodeOne = new Node();
-            var loadNodeTwo = new Node();
-            supplyNode.Voltage = new Complex(1, 0);
-            loadNodeOne.Power = new Complex(-100, 0);
-            loadNodeTwo.Power = new Complex(-100, 0);
-            admittanceMatrix.AddConnection(0, 1, new Complex(1, 0));
-            admittanceMatrix.AddConnection(0, 2, new Complex(2, 0));
-            admittanceMatrix.AddConnection(1, 2, new Complex(3, 0));
-            var powerNet = new PowerNet(admittanceMatrix, 1);
-            powerNet.SetNode(0, supplyNode);
-            powerNet.SetNode(1, loadNodeOne);
-            powerNet.SetNode(2, loadNodeTwo);
-            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
-
-            var relativePowerError = powerNet.RelativePowerError;
-
-            Assert.IsTrue(voltageCollapse);
-            Assert.AreNotEqual(0, relativePowerError, 0.0000001);
-        }
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void CalculateMissingInformation_CollapsingSystem_InitialSetValuesAreCorrect()
-        {
-            var admittanceMatrix = new AdmittanceMatrix(3);
-            var supplyNode = new Node();
-            var loadNodeOne = new Node();
-            var loadNodeTwo = new Node();
-            supplyNode.Voltage = new Complex(1, 0);
-            loadNodeOne.Power = new Complex(-100, 0);
-            loadNodeTwo.Power = new Complex(-200, 0);
-            admittanceMatrix.AddConnection(0, 1, new Complex(1, 0));
-            admittanceMatrix.AddConnection(0, 2, new Complex(2, 0));
-            admittanceMatrix.AddConnection(1, 2, new Complex(3, 0));
-            var powerNet = new PowerNet(admittanceMatrix, 1);
-            powerNet.SetNode(0, supplyNode);
-            powerNet.SetNode(1, loadNodeOne);
-            powerNet.SetNode(2, loadNodeTwo);
-
-            var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
-
-            var voltages = powerNet.NodeVoltages;
-            var powers = powerNet.NodePowers;
-            Assert.IsTrue(voltageCollapse);
-            ComplexAssert.AreEqual(1, 0, voltages[0], 0.000001);
-            ComplexAssert.AreEqual(-100, 0, powers[1], 0.000001);
-            ComplexAssert.AreEqual(-200, 0, powers[2], 0.000001);
+            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.0001);
+            ComplexAssert.AreEqual(loadVoltage, 0, nodeResults[1].Voltage, 0.0001);
+            ComplexAssert.AreEqual((1 - loadVoltage) * admittance, 0, nodeResults[0].Power, 0.0001);
+            ComplexAssert.AreEqual(-0.1, 0, nodeResults[1].Power, 0.0001);
         }
     }
 }

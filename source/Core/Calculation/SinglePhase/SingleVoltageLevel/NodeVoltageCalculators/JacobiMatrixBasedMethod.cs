@@ -376,7 +376,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses,
             Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
         {
-            var powersCurrent = LoadFlowCalculator.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
+            var powersCurrent = PowerNetComputable.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
             powersRealDifference = new List<double>(pqBuses.Count + pvBuses.Count);
             powersImaginaryDifference = new List<double>(pqBuses.Count);
 

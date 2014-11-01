@@ -14,31 +14,14 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     [TestClass]
     abstract public class LoadFlowCalculatorTest
     {
-        #region variables
-        protected LoadFlowCalculator _calculator;
+        protected PowerNetComputable _calculator;
         protected AdmittanceMatrix _admittances;
         protected Vector<Complex> _voltages;
         protected Vector<Complex> _powers;
         protected double _nominalVoltage;
         protected bool _voltageCollapse;
-        #endregion
 
-        #region helper functions
         abstract protected INodeVoltageCalculator CreateNodeVoltageCalculator();
-
-        protected LoadFlowCalculator CreateLoadFlowCalculator()
-        {
-            return new LoadFlowCalculator(CreateNodeVoltageCalculator());
-        }
-        #endregion
-
-        #region test initalization
-        [TestInitialize]
-        public void SetUp()
-        {
-            _calculator = CreateLoadFlowCalculator();
-        }
-        #endregion
 
         #region basic tests
 
@@ -49,12 +32,11 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new [,] {   {new Complex(2, -1),    new Complex(-2, 1)},
                             {new Complex(-2, 1), new Complex(2, -1)}}));
-            IList<Node> nodes = new[]{new Node(), new Node()};
-            nodes[0].Power = new Complex(-1, 2);
-            nodes[0].Voltage = new Complex(1, 2);
-            nodes[1].Power = new Complex(0.5, -1);
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), admittances, 1);
+            powerNet.SetNode(0, new Node() { Power = new Complex(-1, 2), Voltage = new Complex(1, 2) });
+            powerNet.SetNode(1, new Node() { Power = new Complex(0.5, -1) });
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
+            powerNet.CalculateMissingInformation();
         }
 
         [TestMethod]
@@ -64,23 +46,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(-2, 1)},
                             {new Complex(-2, 1), new Complex(2, -1)}}));
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[1].Power = new Complex(0.5, -1);
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), admittances, 1);
+            powerNet.SetNode(1, new Node() { Power = new Complex(0.5, -1) });
 
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void CalculateNodeVoltagesAndPowers_NotSymmetricAdmittanceMatrix_ExceptionThrown()
-        {
-            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
-                new[,] {   {new Complex(2, -1),    new Complex(0.1, 0.2)},
-                            {new Complex(0, 0.2), new Complex(1, -0.5)}}));
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[1].Power = new Complex(0.5, -1);
-
-            _calculator.CalculateNodeVoltagesAndPowers(admittances, 1, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
+            powerNet.CalculateMissingInformation();
         }
 
         [TestMethod]
@@ -88,11 +57,11 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeVoltagesAndPowers_OnlyPowersKnown_ThrowsException()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Power = _powers.At(1);
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, 1);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Power = _powers.At(1) });
 
-            _calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, nodes.Cast<IReadOnlyNode>().ToList(), out _voltageCollapse);
+            powerNet.CalculateMissingInformation();
         }
         [TestMethod]
         public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
@@ -102,7 +71,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 {{new Complex(1, 0), new Complex(-1, 0)}, {new Complex(-1, 0), new Complex(1, 0)}}));
             var voltages = new DenseVector(new[] {new Complex(1, 0), new Complex(0.5, 0)});
 
-            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(admittances, voltages);
+            var powerLoss = PowerNetComputable.CalculatePowerLoss(admittances, voltages);
 
             ComplexAssert.AreEqual(0.25, 0, powerLoss, 0.0001);
         }
@@ -122,7 +91,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances[2, 1] = new Complex(-0.5, 0);
             admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
 
-            var powerLoss = LoadFlowCalculator.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
+            var powerLoss = PowerNetComputable.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }
@@ -131,370 +100,357 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
         #region test creation
         #region five nodes
-        protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo()
+        protected PowerNetComputable CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne()
+        protected PowerNetComputable CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Power = _powers.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() {Power = _powers.At(4)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo()
+        protected PowerNetComputable CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Power = _powers.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionTwo()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithGroundNodeVersionTwo()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Power = _powers.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithGroundNodeVersionThree()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithGroundNodeVersionThree()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Power = _powers.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemAndOnlyVoltagesGiven()
+        protected PowerNetComputable CreateTestFiveNodeProblemAndOnlyVoltagesGiven()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Voltage = _voltages.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() { Voltage = _voltages.At(3) });
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemAndVoltagesAndPowersGiven()
+        protected PowerNetComputable CreateTestFiveNodeProblemAndVoltagesAndPowersGiven()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithGroundNode()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithGroundNode()
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Voltage = _voltages.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() { Voltage = _voltages.At(3) });
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithMostlyImaginaryConnections()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithMostlyImaginaryConnections()
         {
             CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            nodes[3].Power = _powers.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            powerNet.SetNode(3, new Node() {Power = _powers.At(3)});
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus()
         {
             CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
-            nodes[3].Voltage = _voltages.At(3);
-            nodes[4].Voltage = _voltages.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { Power = _powers.At(1) });
+            powerNet.SetNode(2, new Node() { VoltageMagnitude = _voltages.At(2).Magnitude, RealPower = _powers.At(2).Real});
+            powerNet.SetNode(3, new Node() { Voltage = _voltages.At(3) });
+            powerNet.SetNode(4, new Node() { Voltage = _voltages.At(4) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFiveNodeProblemWithTwoPVBusses()
+        protected PowerNetComputable CreateTestFiveNodeProblemWithTwoPVBusses()
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
-            nodes[3].VoltageMagnitude = _voltages.At(3).Magnitude;
-            nodes[3].RealPower = _powers.At(3).Real;
-            nodes[4].Power = _powers.At(4);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            powerNet.SetNode(2, new Node() { VoltageMagnitude = _voltages.At(2).Magnitude, RealPower = _powers.At(2).Real });
+            powerNet.SetNode(3, new Node() { VoltageMagnitude = _voltages.At(3).Magnitude, RealPower = _powers.At(3).Real });
+            powerNet.SetNode(4, new Node() {Power = _powers.At(4)});
+            return powerNet;
         }
         #endregion
 
         #region three nodes
-        protected IList<Node> CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus()
+        protected PowerNetComputable CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus()
         {
             CreateThreeNodeProblemWithImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].Voltage = _voltages.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Power = _powers.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
+        protected PowerNetComputable CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo()
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemAndTwoVoltagesGiven()
+        protected PowerNetComputable CreateTestThreeNodeProblemAndTwoVoltagesGiven()
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithMostlyImaginaryConnections()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithMostlyImaginaryConnections()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Voltage = _voltages.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() { Voltage = _voltages.At(2) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].Power = _powers.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithTwoPVBuses()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithTwoPVBuses()
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() { VoltageMagnitude = _voltages.At(2).Magnitude, RealPower = _powers.At(2).Real });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithOnePVAndOnePQBus()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithOnePVAndOnePQBus()
         {
             CreateThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var supplyNode = new Node { Voltage = _voltages[0] };
-            var pvNode = new Node() { RealPower = _powers[1].Real, VoltageMagnitude = _voltages[1].Magnitude };
-            var pqNode = new Node() { Power = _powers[2] };
-            return new[] { supplyNode, pvNode, pqNode };
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() { Power = _powers.At(2) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses()
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            nodes[2].Power = _powers.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses()
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].VoltageMagnitude = _voltages.At(2).Magnitude;
-            nodes[2].RealPower = _powers.At(2).Real;
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() { VoltageMagnitude = _voltages.At(2).Magnitude, RealPower = _powers.At(2).Real });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithDecoupledPQAndPVBus()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithDecoupledPQAndPVBus()
         {
             CreateThreeNodeProblemWithTwoDecoupledNodes(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].Power = _powers.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus()
+        protected PowerNetComputable CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus()
         {
             CreateThreeNodeProblemWithRealValues(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            nodes[2].Power = _powers.At(2);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            powerNet.SetNode(2, new Node() {Power = _powers.At(2)});
+            return powerNet;
         }
         #endregion
 
         #region collapse
-         protected IList<Node> CreateTestCollapsingSystem()
+        protected PowerNetComputable CreateTestCollapsingSystem()
         {
             CreateCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            return powerNet;
         }
 
-         protected IList<Node> CreateTestNearlyCollapsingSystem()
+         protected PowerNetComputable CreateTestNearlyCollapsingSystem()
         {
             CreateNearlyCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            return powerNet;
         }
         #endregion
 
         #region from one side supplied connection
-        protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithBigResistance()
+        protected PowerNetComputable CreateTestFromOneSideSuppliedConnectionWithBigResistance()
         {
             CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { Power = _powers.At(1) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFromOneSideSuppliedConnectionWithSmallResistance()
+        protected PowerNetComputable CreateTestFromOneSideSuppliedConnectionWithSmallResistance()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown()
+        protected PowerNetComputable CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestFromOneSideSuppliedAndInverseInformationGiven()
+        protected PowerNetComputable CreateTestFromOneSideSuppliedAndInverseInformationGiven()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Power = _powers.At(0);
-            nodes[1].Voltage = _voltages.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
+            powerNet.SetNode(1, new Node() { Voltage = _voltages.At(1) });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestTwoNodeProblemWithOnePVBus()
+        protected PowerNetComputable CreateTestTwoNodeProblemWithOnePVBus()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestTwoNodesWithImaginaryConnection()
+        protected PowerNetComputable CreateTestTwoNodesWithImaginaryConnection()
         {
             CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPVBus()
+        protected PowerNetComputable CreateTestTwoNodesWithImaginaryConnectionWithPVBus()
         {
             CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo()
+        protected PowerNetComputable CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo()
         {
             CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].VoltageMagnitude = _voltages.At(1).Magnitude;
-            nodes[1].RealPower = _powers.At(1).Real;
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() { VoltageMagnitude = _voltages.At(1).Magnitude, RealPower = _powers.At(1).Real });
+            return powerNet;
         }
 
-        protected IList<Node> CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo()
+        protected PowerNetComputable CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo()
         {
             CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            IList<Node> nodes = new[] { new Node(), new Node() };
-            nodes[0].Voltage = _voltages.At(0);
-            nodes[1].Power = _powers.At(1);
-            return nodes;
+            var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), _admittances, _nominalVoltage);
+            powerNet.SetNode(0, new Node() { Voltage = _voltages.At(0) });
+            powerNet.SetNode(1, new Node() {Power = _powers.At(1)});
+            return powerNet;
         }
         #endregion
         #endregion
@@ -585,7 +541,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(700, 500));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -599,7 +555,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(10, -5));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -613,7 +569,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(1, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.1), new Complex(0.97, -0.15), new Complex(1.01, -0.02) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -647,7 +603,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(0, 500), new Complex(0, 0), new Complex(0, -600));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -659,7 +615,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
             
             voltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -669,7 +625,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
 
             voltages = new DenseVector(new []{new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0)});
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -679,7 +635,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(5, 500), new Complex(20, -300), new Complex(10, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -703,7 +659,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0.2);
             voltages[1] = new Complex(1.1, -0.1);
             voltages[2] = new Complex(0.8, 0);
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -716,7 +672,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0.1);
             voltages[1] = new Complex(0.95, 0.08);
             voltages[2] = new Complex(0.9, 0.12);
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -729,7 +685,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0);
             voltages[1] = new Complex(0.5, 0);
             voltages[2] = new Complex(0.5, 0);
-            powers = LoadFlowCalculator.CalculateAllPowers(admittances, voltages);
+            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
         #endregion

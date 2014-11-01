@@ -7,14 +7,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class LoadFlowCalculator
     {
-        #region variables
-
         private readonly double _scaleBasePower;
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
-
-        #endregion
-
-        #region public functions
 
         public LoadFlowCalculator(double scaleBasePower, INodeVoltageCalculator nodeVoltageCalculator)
         {
@@ -30,9 +24,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
-            var calculator = new SingleVoltageLevel.LoadFlowCalculator(_nodeVoltageCalculator);
-            var voltageCollapse = singleVoltagePowerNet.CalculateMissingInformation(calculator);
-            return voltageCollapse ? null : ExtractNodeResults(nodes, nodeIndexes, singleVoltagePowerNet.GetNodes());
+            var nodeResults = singleVoltagePowerNet.CalculateMissingInformation();
+            return nodeResults == null ? null : ExtractNodeResults(nodes, nodeIndexes, nodeResults);
         }
 
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, IReadOnlyPowerNet powerNet)
@@ -43,22 +36,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             nodeNames = nodes.Select(node => node.Name).ToList();
         }
 
-        #endregion
-
-        #region public properties
-
         public double ScaleBasePower
         {
             get { return _scaleBasePower; }
         }
 
-        #endregion
-
-        #region private functions
-
-        private SingleVoltageLevel.PowerNet CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances)
+        private SingleVoltageLevel.PowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances)
         {
-            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNet(admittances.GetSingleVoltageAdmittanceMatrix(), 1);
+            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNetComputable(_nodeVoltageCalculator, admittances.GetSingleVoltageAdmittanceMatrix(), 1);
 
             foreach (var node in nodes)
             {
@@ -76,10 +61,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             powerNet.FillInAdmittances(admittances, ScaleBasePower);
             return admittances;
         }
-
-        #endregion
-
-        #region private static functions
 
         private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
         {
@@ -101,7 +82,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentOutOfRangeException("powerNet", "one node is overdetermined");
         }
 
-        private static Dictionary<long, NodeResult> ExtractNodeResults(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyList<SingleVoltageLevel.Node> singleVoltageNodesWithResults)
+        private static Dictionary<long, NodeResult> ExtractNodeResults(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IList<NodeResult> nodeResults)
         {
             var nodeVoltages = new Dictionary<long, NodeResult>();
 
@@ -109,17 +90,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             {
                 var index = nodeIndexes[node];
                 var name = node.Id;
-                var nodeResult = new NodeResult()
-                {
-                    Power = singleVoltageNodesWithResults[index].Power,
-                    Voltage = singleVoltageNodesWithResults[index].Voltage
-                };
+                var nodeResult = nodeResults[index];
                 nodeVoltages.Add(name, nodeResult);
             }
 
             return nodeVoltages;
         }
-
-        #endregion
     }
 }

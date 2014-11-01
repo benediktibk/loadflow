@@ -25,19 +25,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodes = InitializeNodes();
         }
 
-        public bool CalculateMissingInformation(LoadFlowCalculator calculator)
+        public void SetNodeResults(IList<NodeResult> nodeResults)
         {
-            bool voltageCollapse;
-            var nodeResults = calculator.CalculateNodeVoltagesAndPowers(_admittances, _nominalVoltage, _nodes.Cast<IReadOnlyNode>().ToList(),
-                out voltageCollapse);
-
             for (var i = 0; i < NodeCount; ++i)
             {
                 _nodes[i].Voltage = nodeResults[i].Voltage;
                 _nodes[i].Power = nodeResults[i].Power;
             }
-
-            return voltageCollapse;
         }
 
         public void SetNode(int i, Node node)
@@ -50,9 +44,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return _nodes[node].VoltageIsKnown;
         }
 
-        public IReadOnlyList<Node> GetNodes()
+        public IReadOnlyList<IReadOnlyNode> Nodes
         {
-            return (IReadOnlyList<Node>) _nodes;
+            get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
         }
 
         public double RelativePowerError
@@ -60,7 +54,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             get
             {
                 var powerSum = NodePowers.Sum();
-                var powerLoss = LoadFlowCalculator.CalculatePowerLoss(_admittances, NodeVoltages);
+                var powerLoss = PowerNetComputable.CalculatePowerLoss(_admittances, NodeVoltages);
                 var absolutePowerError = powerSum - powerLoss;
                 return absolutePowerError.Magnitude/powerSum.Magnitude;
             }

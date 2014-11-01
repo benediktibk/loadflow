@@ -66,7 +66,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, reducedNominalVoltages, totalConstantCurrents,
                 knownPowers);
-            return LoadFlowCalculator.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
+            return PowerNetComputable.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
         }
 
