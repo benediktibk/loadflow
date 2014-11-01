@@ -55,35 +55,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 0.1;
         }
 
-        private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses,
-            Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
-        {
-            var powersCurrent = LoadFlowCalculator.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
-            powersRealDifference = new List<double>(pqBuses.Count + pvBuses.Count);
-            powersImaginaryDifference = new List<double>(pqBuses.Count);
-
-            for (var i = 0; i < pqBuses.Count; ++i)
-            {
-                var powerIs = powersCurrent[i].Real;
-                var powerShouldBe = pqBuses[i].Power.Real;
-                powersRealDifference.Add(powerShouldBe - powerIs);
-            }
-
-            for (var i = 0; i < pvBuses.Count; ++i)
-            {
-                var powerIs = powersCurrent[pqBuses.Count + i].Real;
-                var powerShouldBe = pvBuses[i].RealPower;
-                powersRealDifference.Add(powerShouldBe - powerIs);
-            }
-
-            for (var i = 0; i < pqBuses.Count; ++i)
-            {
-                var powerIs = powersCurrent[i].Imaginary;
-                var powerShouldBe = pqBuses[i].Power.Imaginary;
-                powersImaginaryDifference.Add(powerShouldBe - powerIs);
-            }
-        }
-
         public static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,
             IList<double> imaginaryParts)
         {
@@ -173,12 +144,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
                     if (i != k)
                         result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
-                                                                voltages[k].Magnitude*
+                                                                voltages[k].Magnitude *
                                                                 Math.Sin(admittances[i, k].Phase + voltages[k].Phase -
                                                                          voltages[i].Phase);
                     else
                     {
-                        var diagonalPart = (-1)*voltages[i].Magnitude*currents[i].Magnitude*
+                        var diagonalPart = (-1) * voltages[i].Magnitude * currents[i].Magnitude *
                                                                 Math.Sin(currents[i].Phase - voltages[i].Phase);
                         var offDiagonalPart = 0.0;
 
@@ -206,13 +177,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     var k = columns[column];
 
                     if (i != k)
-                        result[startRow + row, startColumn + column] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
-                                                                voltages[k].Magnitude*
+                        result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
+                                                                voltages[k].Magnitude *
                                                                 Math.Cos(admittances[i, k].Phase + voltages[k].Phase -
                                                                          voltages[i].Phase);
                     else
                     {
-                        var diagonalPart = (-1)*voltages[i].Magnitude*currents[i].Magnitude*
+                        var diagonalPart = (-1) * voltages[i].Magnitude * currents[i].Magnitude *
                                                                 Math.Cos(currents[i].Phase - voltages[i].Phase);
                         var offDiagonalPart = 0.0;
 
@@ -241,19 +212,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     var k = columns[column];
 
                     if (i != k)
-                        result[startRow + row, startColumn + column] = (-1)*admittances[i, k].Magnitude*voltages[i].Magnitude*
+                        result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
                                                       Math.Sin(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
                     else
                     {
-                        var diagonalPart = currents[i].Magnitude*Math.Sin(currents[i].Phase - voltages[i].Phase) -
-                                           2*admittances[i, k].Magnitude*voltages[i].Magnitude*Math.Sin(admittances[i, k].Phase);
+                        var diagonalPart = currents[i].Magnitude * Math.Sin(currents[i].Phase - voltages[i].Phase) -
+                                           2 * admittances[i, k].Magnitude * voltages[i].Magnitude * Math.Sin(admittances[i, k].Phase);
 
                         var offDiagonalPart = 0.0;
 
                         for (var j = 0; j < admittances.NodeCount; ++j)
                         {
                             if (j != i)
-                                offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
+                                offDiagonalPart += admittances[i, j].Magnitude * voltages[j].Magnitude *
                                                    Math.Sin(admittances[i, j].Phase + voltages[j].Phase -
                                                             voltages[i].Phase);
                         }
@@ -286,7 +257,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
                         for (var j = 0; j < admittances.NodeCount; ++j)
                             if (j != i)
-                                offDiagonalPart += admittances[i, j].Magnitude*voltages[j].Magnitude*
+                                offDiagonalPart += admittances[i, j].Magnitude * voltages[j].Magnitude *
                                                    Math.Cos(admittances[i, j].Phase + voltages[j].Phase - voltages[i].Phase);
 
                         result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
@@ -305,7 +276,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var sum = 0.0;
 
                 for (var k = 0; k < nodeCount; ++k)
-                    sum += admittances[i, k].Real*voltages[k].Imaginary + admittances[i, k].Imaginary*voltages[k].Real;
+                    sum += admittances[i, k].Real * voltages[k].Imaginary + admittances[i, k].Imaginary * voltages[k].Real;
 
                 currents[i] = sum;
             }
@@ -400,6 +371,35 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 }
 
             return busIdToAmplitudeIndex;
+        }
+
+        private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses,
+            Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
+        {
+            var powersCurrent = LoadFlowCalculator.CalculateAllPowers(admittances, currentVoltages, constantCurrents);
+            powersRealDifference = new List<double>(pqBuses.Count + pvBuses.Count);
+            powersImaginaryDifference = new List<double>(pqBuses.Count);
+
+            for (var i = 0; i < pqBuses.Count; ++i)
+            {
+                var powerIs = powersCurrent[i].Real;
+                var powerShouldBe = pqBuses[i].Power.Real;
+                powersRealDifference.Add(powerShouldBe - powerIs);
+            }
+
+            for (var i = 0; i < pvBuses.Count; ++i)
+            {
+                var powerIs = powersCurrent[pqBuses.Count + i].Real;
+                var powerShouldBe = pvBuses[i].RealPower;
+                powersRealDifference.Add(powerShouldBe - powerIs);
+            }
+
+            for (var i = 0; i < pqBuses.Count; ++i)
+            {
+                var powerIs = powersCurrent[i].Imaginary;
+                var powerShouldBe = pqBuses[i].Power.Imaginary;
+                powersImaginaryDifference.Add(powerShouldBe - powerIs);
+            }
         }
     }
 }
