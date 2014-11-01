@@ -14,41 +14,52 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override Vector<Complex> CalculateImprovedVoltages(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
-            Debug.Assert(pqBuses.Count + pvBuses.Count == admittances.NodeCount);
-            Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
-
             var unknownAngles = pqBuses.Count + pvBuses.Count;
             var unknownMagnitudes = pqBuses.Count;
             var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
+            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
 
-            var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);
-            CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0,
-                0, allNodes, allNodes);
-            var factorizationRealPower = changeMatrixRealPower.LU();
-            var angleChange = factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
-            Vector<double> amplitudeChange = null;
+            var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, unknownAngles, allNodes);
 
             if (pqBuses.Count > 0)
             {
-                var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
-                CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages,
-                    constantCurrents, 0, 0, pqBuses, pqBuses);
-                var factorizationImaginaryPower = changeMatrixImaginaryPower.LU();
-                amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
+                var amplitudeChange = CalculateAmplitudeChange(admittances, voltages, constantCurrents, powersImaginaryError,
+                    pqBuses, unknownMagnitudes);
+
+                foreach (var bus in pqBuses)
+                    improvedVoltages[bus] =
+                        Complex.FromPolarCoordinates(
+                            voltages[bus].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus]],
+                            voltages[bus].Phase + angleChange[bus]);
             }
-
-            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
-
-            foreach (var bus in pqBuses)
-                improvedVoltages[bus] = Complex.FromPolarCoordinates(voltages[bus].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus]], voltages[bus].Phase + angleChange[bus]);
 
             for(var i = 0; i < pvBuses.Count; ++i)
                 improvedVoltages[pvBuses[i]] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i]].Phase + angleChange[pvBuses[i]]);
 
             return improvedVoltages;
+        }
+
+        private static Vector<double> CalculateAmplitudeChange(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+            IEnumerable<double> powersImaginaryError, IList<int> pqBuses, int unknownMagnitudes)
+        {
+            var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
+            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages,
+                constantCurrents, 0, 0, pqBuses, pqBuses);
+            var factorizationImaginaryPower = changeMatrixImaginaryPower.LU();
+            return factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
+        }
+
+        private static Vector<double> CalculateAngleChange(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+            IEnumerable<double> powersRealError, int unknownAngles, IList<int> allNodes)
+        {
+            var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);
+            CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0,
+                0, allNodes, allNodes);
+            var factorizationRealPower = changeMatrixRealPower.LU();
+            return factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
         }
     }
 }
