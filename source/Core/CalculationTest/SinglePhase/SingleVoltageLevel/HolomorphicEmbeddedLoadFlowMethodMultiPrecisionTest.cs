@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -11,9 +10,19 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     [TestClass]
     public class HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest : HolomorphicEmbeddedLoadFlowMethodTest
     {
+        private int _coefficientCount;
+        private int _bitPrecision;
+
         protected override HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300));
+            return new HolomorphicEmbeddedLoadFlowMethod(0.00001, _coefficientCount, new PrecisionMulti(_bitPrecision));
+        }
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            _coefficientCount = 100;
+            _bitPrecision = 300;
         }
 
         [TestMethod]
@@ -360,6 +369,62 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithDecoupledPQAndPVBus_CorrectResults()
         {
             var powerNet = CreateTestThreeNodeProblemWithDecoupledPQAndPVBus();
+
+            var nodeResults = powerNet.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        [TestCategory("Unit, slow")]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
+        {
+            _coefficientCount = 150;
+            _bitPrecision = 400;
+            var powerNet = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+
+            var nodeResults = powerNet.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.02, 0.2);
+        }
+
+        [TestMethod]
+        [TestCategory("Unit, slow")]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
+        {
+            _coefficientCount = 200;
+            _bitPrecision = 400;
+            var powerNet = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+
+            var nodeResults = powerNet.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0002, 0.05);
+        }
+
+        [TestMethod]
+        [TestCategory("Unit, slow")]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
+        {
+            _coefficientCount = 200;
+            _bitPrecision = 400;
+            var powerNet = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
+
+            var nodeResults = powerNet.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+        }
+
+        [TestMethod]
+        [TestCategory("Unit, slow")]
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
+        {
+            _coefficientCount = 200;
+            _bitPrecision = 500;
+            var powerNet = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
 
             var nodeResults = powerNet.CalculateNodeResults();
 
