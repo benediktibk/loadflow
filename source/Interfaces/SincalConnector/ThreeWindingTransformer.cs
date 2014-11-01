@@ -9,8 +9,6 @@ namespace SincalConnector
 {
     public class ThreeWindingTransformer : INetElement
     {
-        #region constructor
-
         public ThreeWindingTransformer(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -83,45 +81,41 @@ namespace SincalConnector
             NodeThreeId = connectedNodeIdsSorted[2];
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
+
         public int NodeOneId { get; private set; }
+
         public int NodeTwoId { get; private set; }
+
         public int NodeThreeId { get; private set; }
+
         public double NominalPowerOneToTwo { get; private set; }
+
         public double NominalPowerTwoToThree { get; private set; }
+
         public double NominalPowerThreeToOne { get; private set; }
+
         public double RelativeShortCircuitVoltageOneToTwo { get; private set; }
+
         public double RelativeShortCircuitVoltageTwoToThree { get; private set; }
+
         public double RelativeShortCircuitVoltageThreeToOne { get; private set; }
+
         public double CopperLossesOneToTwo { get; private set; }
+
         public double CopperLossesTwoToThree { get; private set; }
+
         public double CopperLossesThreeToOne { get; private set; }
+
         public double IronLosses { get; private set; }
+
         public double RelativeNoLoadCurrent { get; private set; }
+
         public Angle PhaseShiftOneToTwo { get; private set; }
+
         public Angle PhaseShiftTwoToThree { get; private set; }
+
         public Angle PhaseShiftThreeToOne { get; private set; }
-
-        #endregion
-
-        #region public functions
-
-        public void AddTo(SymmetricPowerNet powerNet)
-        {
-            powerNet.AddThreeWindingTransformer(NodeOneId, NodeTwoId, NodeThreeId, NominalPowerOneToTwo,
-                NominalPowerTwoToThree, NominalPowerThreeToOne, RelativeShortCircuitVoltageOneToTwo,
-                RelativeShortCircuitVoltageTwoToThree, RelativeShortCircuitVoltageThreeToOne, CopperLossesOneToTwo,
-                CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOneToTwo,
-                PhaseShiftTwoToThree, PhaseShiftThreeToOne, "");
-        }
-
-        #endregion
-
-        #region static functions
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
@@ -132,23 +126,40 @@ namespace SincalConnector
         {
             switch (connectionSymbol)
             {
-                case 1: case 2:
+                case 1:
+                case 2:
                     return 0;
-                case 3: case 4:
+                case 3:
+                case 4:
                     return 6;
-                case 5: case 9: case 10:
+                case 5:
+                case 9:
+                case 10:
                     return 1;
-                case 6: case 11: case 12:
+                case 6:
+                case 11:
+                case 12:
                     return 5;
-                case 7: case 13: case 14:
+                case 7:
+                case 13:
+                case 14:
                     return 7;
-                case 8: case 15: case 16:
+                case 8:
+                case 15:
+                case 16:
                     return 11;
                 default:
                     throw new NotSupportedException("connection type of transformer is not supported");
             }
         }
 
-        #endregion
+        public void AddTo(SymmetricPowerNet powerNet)
+        {
+            powerNet.AddThreeWindingTransformer(NodeOneId, NodeTwoId, NodeThreeId, NominalPowerOneToTwo,
+                NominalPowerTwoToThree, NominalPowerThreeToOne, RelativeShortCircuitVoltageOneToTwo,
+                RelativeShortCircuitVoltageTwoToThree, RelativeShortCircuitVoltageThreeToOne, CopperLossesOneToTwo,
+                CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOneToTwo,
+                PhaseShiftTwoToThree, PhaseShiftThreeToOne, "");
+        }
     }
 }
