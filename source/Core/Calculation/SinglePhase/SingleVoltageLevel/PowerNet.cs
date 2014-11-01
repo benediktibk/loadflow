@@ -10,7 +10,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     public class PowerNet
     {
         private readonly int _nodeCount;
-        private IList<Node> _nodes;
+        private readonly IList<Node> _nodes;
         private readonly AdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
 
@@ -25,7 +25,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nominalVoltage = nominalVoltage;
             _nodeCount = nodeCount;
             _admittances = new AdmittanceMatrix(nodeCount);
-            InitializeNodes();
+            _nodes = InitializeNodes();
         }
 
         public PowerNet(AdmittanceMatrix admittances, double nominalVoltage)
@@ -36,7 +36,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nominalVoltage = nominalVoltage;
             _nodeCount = admittances.NodeCount;
             _admittances = admittances;
-            InitializeNodes();
+            _nodes = InitializeNodes();
         }
 
         public bool CalculateMissingInformation(LoadFlowCalculator calculator)
@@ -67,14 +67,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public IReadOnlyList<Node> GetNodes()
         {
             return (IReadOnlyList<Node>) _nodes;
-        }
-
-        private void InitializeNodes()
-        {
-            _nodes = new List<Node>(_nodeCount);
-
-            for (var i = 0; i < _nodeCount; ++i)
-                _nodes.Add(new Node());
         }
 
         public double RelativePowerError
@@ -127,6 +119,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public double NominalVoltage
         {
             get { return _nominalVoltage; }
+        }
+
+        private IList<Node> InitializeNodes()
+        {
+            var result = new List<Node>(_nodeCount);
+
+            for (var i = 0; i < _nodeCount; ++i)
+                result.Add(new Node());
+
+            return result;
         }
     }
 }
