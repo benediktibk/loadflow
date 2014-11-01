@@ -13,23 +13,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class NodeTest
     {
-        #region variables
-
         private Node _node;
-
-        #endregion
-
-        #region initialize
 
         [TestInitialize]
         public void SetUp()
         {
             _node = new Node(0, 2, 0, "");
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_0And2_IdIs0()
@@ -466,7 +456,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             ComplexAssert.AreEqual(8, 10, _node.Voltage, 0.00001);
         }
-
-        #endregion
     }
 }

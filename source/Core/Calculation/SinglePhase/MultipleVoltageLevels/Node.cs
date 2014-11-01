@@ -8,15 +8,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Node : IExternalReadOnlyNode
     {
-        #region variables
-
         private readonly List<IPowerNetElement> _connectedElements;
         private Complex _voltage;
         private bool _voltageSet;
-
-        #endregion
-
-        #region constructor
 
         public Node(int id, double nominalVoltage, double nominalPhaseShift, string name)
         {
@@ -28,10 +22,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _voltageSet = false;
             Name = name;
         }
-
-        #endregion
-
-        #region properties
 
         public double NominalVoltage { get; private set; }
 
@@ -73,10 +63,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         }
 
         public string Name { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void Connect(IPowerNetElement element)
         {
@@ -181,7 +167,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             Voltage = scaler.UnscaleVoltage(nodeResult.Voltage);
             Power = scaler.UnscalePower(nodeResult.Power);
         }
-
-        #endregion
     }
 }
