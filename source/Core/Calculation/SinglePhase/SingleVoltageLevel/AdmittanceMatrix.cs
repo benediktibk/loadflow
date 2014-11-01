@@ -116,6 +116,22 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return new AdmittanceMatrix(admittancesToUnknownVoltages);
         }
 
+        public Vector<Complex> CalculateRowSums()
+        {
+            var result = new SparseVector(NodeCount);
+
+            var rowIndex = 0;
+            foreach (var row in _values.EnumerateRows())
+            {
+                foreach (var value in row)
+                    result[rowIndex] += value;
+
+                ++rowIndex;
+            }
+
+            return result;
+        }
+
         private Matrix<Complex> Extract(IReadOnlyList<int> rows, IReadOnlyList<int> columns)
         {
             var matrix = new SparseMatrix(rows.Count, columns.Count);
@@ -135,22 +151,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             }
 
             return matrix;
-        }
-
-        public Vector<Complex> CalculateRowSums()
-        {
-            var result = new SparseVector(NodeCount);
-
-            var rowIndex = 0;
-            foreach (var row in _values.EnumerateRows())
-            {
-                foreach (var value in row)
-                    result[rowIndex] += value;
-
-                ++rowIndex;
-            }
-
-            return result;
         }
     }
 }
