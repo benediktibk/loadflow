@@ -49,43 +49,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
         }
 
-        public double RelativePowerError
-        {
-            get
-            {
-                var powerSum = NodePowers.Sum();
-                var powerLoss = PowerNetComputable.CalculatePowerLoss(_admittances, NodeVoltages);
-                var absolutePowerError = powerSum - powerLoss;
-                return absolutePowerError.Magnitude/powerSum.Magnitude;
-            }
-        }
-
-        public Vector<Complex> NodeVoltages
-        {
-            get
-            {
-                var voltages = new DenseVector(_nodeCount);
-
-                for (var i = 0; i < _nodeCount; ++i)
-                    voltages[i] = _nodes[i].Voltage;
-
-                return voltages;
-            }
-        }
-
-        public Vector<Complex> NodePowers
-        {
-            get
-            {
-                var powers = new DenseVector(_nodeCount);
-
-                for (var i = 0; i < _nodeCount; ++i)
-                    powers[i] = _nodes[i].Power;
-
-                return powers;
-            }
-        }
-
         public AdmittanceMatrix Admittances
         {
            get { return _admittances; }
