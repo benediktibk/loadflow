@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
-using System.IO;
 using Calculation.ThreePhase;
 using Misc;
 
@@ -53,32 +52,23 @@ namespace SincalConnector
             var nominalVoltageTwo = record.Parse<double>("Un2") * 1000;
             var nominalVoltageThree = record.Parse<double>("Un3") * 1000;
             var nominalVoltages = new List<double>() {nominalVoltageOne, nominalVoltageTwo, nominalVoltageThree};
-            var connectedNodeIdsSorted = new List<int>() {-1, -1, -1};
             var connectedNodeIds = new List<int>(nodeIdsByElementIds.Get(Id));
 
             if (connectedNodeIds.Count != 3)
-                throw new NotSupportedException("a three winding transformer must be connected two exactly three nodes");
+                throw new NotSupportedException("a three winding transformer must be connected to exactly three nodes");
+
+            NodeOneId = connectedNodeIds[0];
+            NodeTwoId = connectedNodeIds[1];
+            NodeThreeId = connectedNodeIds[2];
 
             for (var i = 0; i < 3; ++i)
             {
-                var nodeId = connectedNodeIds[i];
-                var node = nodes[nodeId];
-                var found = false;
-                var j = 0;
+                var nominalVoltage = nominalVoltages[i];
+                var node = nodes[connectedNodeIds[i]];
 
-                for (; j < 3 && !found; ++j)
-                    if (Math.Abs(nominalVoltages[j] - node.NominalVoltage) > 0.000001)
-                        found = true;
-
-                if (!found && connectedNodeIdsSorted[j] == -1)
-                    throw new InvalidDataException("nominal voltages of three winding transformer do not match");
-
-                connectedNodeIdsSorted[j] = nodeId;
+                if (Math.Abs(node.NominalVoltage - nominalVoltage) > 0.00001)
+                    throw new NotSupportedException("only nominal ratios are supported");
             }
-
-            NodeOneId = connectedNodeIdsSorted[0];
-            NodeTwoId = connectedNodeIdsSorted[1];
-            NodeThreeId = connectedNodeIdsSorted[2];
         }
 
         public int Id { get; private set; }
