@@ -36,7 +36,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             powerNet.SetNode(0, new Node() { Power = new Complex(-1, 2), Voltage = new Complex(1, 2) });
             powerNet.SetNode(1, new Node() { Power = new Complex(0.5, -1) });
 
-            powerNet.CalculateMissingInformation();
+            powerNet.CalculateNodeResults();
         }
 
         [TestMethod]
@@ -49,11 +49,11 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var powerNet = new PowerNetComputable(CreateNodeVoltageCalculator(), admittances, 1);
             powerNet.SetNode(1, new Node() { Power = new Complex(0.5, -1) });
 
-            powerNet.CalculateMissingInformation();
+            powerNet.CalculateNodeResults();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void CalculateNodeVoltagesAndPowers_OnlyPowersKnown_ThrowsException()
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
@@ -61,7 +61,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             powerNet.SetNode(0, new Node() {Power = _powers.At(0)});
             powerNet.SetNode(1, new Node() { Power = _powers.At(1) });
 
-            powerNet.CalculateMissingInformation();
+            powerNet.CalculateNodeResults();
         }
         [TestMethod]
         public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()

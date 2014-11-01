@@ -11,13 +11,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PowerNetComputable : PowerNet
     {
-        private readonly double _maximumPowerError;
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
         public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, AdmittanceMatrix admittances, double nominalVoltage) : base(admittances, nominalVoltage)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
-            _maximumPowerError = nodeVoltageCalculator.GetMaximumPowerError();
         }
 
         public INodeVoltageCalculator NodeVoltageCalculator
@@ -25,10 +23,33 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
              get { return _nodeVoltageCalculator; }
         }
 
-        public IList<NodeResult> CalculateMissingInformation()
+        public IList<NodeResult> CalculateNodeResults()
         {
-            bool voltageCollapse;
-            var nodeResults = CalculateNodeResults(Admittances, NominalVoltage, Nodes, out voltageCollapse);
+            var nodes = Nodes;
+            List<int> indexOfSlackBuses;
+            List<int> indexOfPqBuses;
+            List<int> indexOfPvBuses;
+            SeperateNodesInBusTypes(nodes, out indexOfSlackBuses,
+                out indexOfPqBuses, out indexOfPvBuses);
+
+            var countOfKnownVoltages = indexOfSlackBuses.Count;
+            var countOfUnknownVoltages = indexOfPqBuses.Count + indexOfPvBuses.Count;
+
+            var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
+            indexOfNodesWithUnknownVoltage.AddRange(indexOfPqBuses);
+            indexOfNodesWithUnknownVoltage.AddRange(indexOfPvBuses);
+
+            if (countOfKnownVoltages == 0)
+                throw new ArgumentException("there must be at least one slack bus");
+
+            var allVoltages = countOfUnknownVoltages == 0 ?
+                ExtractKnownVoltages(nodes, indexOfSlackBuses) :
+                CalculateUnknownVoltages(Admittances, NominalVoltage, nodes, indexOfSlackBuses, indexOfPqBuses, indexOfPvBuses, indexOfNodesWithUnknownVoltage, countOfUnknownVoltages);
+
+            var allPowers = DeterminePowers(Admittances, nodes, allVoltages, indexOfPqBuses, indexOfPvBuses);
+            allVoltages = DetermineFixedVoltages(nodes, allVoltages, indexOfPvBuses, indexOfSlackBuses);
+            var voltageCollapse = CheckForVoltageCollapse(Admittances, allPowers, allVoltages);
+            var nodeResults = CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
             return voltageCollapse ? null : nodeResults;
         }
 
@@ -246,39 +267,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return nominalVoltages;
         }
 
-        private IList<NodeResult> CalculateNodeResults(AdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<IReadOnlyNode> nodes, out bool voltageCollapse)
-        {
-            if (admittances.NodeCount != nodes.Count())
-                throw new ArgumentOutOfRangeException("nodes",
-                    "the count of nodes does not match the dimensions of the admittance matrix");
-
-            List<int> indexOfSlackBuses;
-            List<int> indexOfPQBuses;
-            List<int> indexOfPVBuses;
-            SeperateNodesInBusTypes(nodes, out indexOfSlackBuses,
-                out indexOfPQBuses, out indexOfPVBuses);
-
-            var countOfKnownVoltages = indexOfSlackBuses.Count;
-            var countOfUnknownVoltages = indexOfPQBuses.Count + indexOfPVBuses.Count;
-
-            var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
-            indexOfNodesWithUnknownVoltage.AddRange(indexOfPQBuses);
-            indexOfNodesWithUnknownVoltage.AddRange(indexOfPVBuses);
-
-            if (countOfKnownVoltages == 0)
-                throw new ArgumentOutOfRangeException("nodes", "there must be at least one slack bus");
-
-            var allVoltages = countOfUnknownVoltages == 0 ?
-                ExtractKnownVoltages(nodes, indexOfSlackBuses) :
-                CalculateUnknownVoltages(admittances, nominalVoltage, nodes, indexOfSlackBuses, indexOfPQBuses, indexOfPVBuses, indexOfNodesWithUnknownVoltage, countOfUnknownVoltages);
-
-            var allPowers = DeterminePowers(admittances, nodes, allVoltages, indexOfPQBuses, indexOfPVBuses);
-            allVoltages = DetermineFixedVoltages(nodes, allVoltages, indexOfPVBuses, indexOfSlackBuses);
-            voltageCollapse = CheckForVoltageCollapse(admittances, allPowers, allVoltages);
-
-            return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
-        }
-
         private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             var inputPowerSum = allPowers.Sum();
@@ -287,7 +275,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
 
-            var result = relativePowerError > _maximumPowerError || Double.IsNaN(relativePowerError) ||
+            var result = relativePowerError > _nodeVoltageCalculator.GetMaximumPowerError() || Double.IsNaN(relativePowerError) ||
                          Double.IsInfinity(relativePowerError);
             return result;
         }

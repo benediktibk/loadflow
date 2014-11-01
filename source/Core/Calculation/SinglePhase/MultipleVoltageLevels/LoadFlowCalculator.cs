@@ -24,7 +24,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerNet);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances);
-            var nodeResults = singleVoltagePowerNet.CalculateMissingInformation();
+            var nodeResults = singleVoltagePowerNet.CalculateNodeResults();
             return nodeResults == null ? null : ExtractNodeResults(nodes, nodeIndexes, nodeResults);
         }
 

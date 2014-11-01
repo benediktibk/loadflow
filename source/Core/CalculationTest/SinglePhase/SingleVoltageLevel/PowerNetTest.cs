@@ -50,7 +50,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             Assert.AreEqual(2, nodeResults.Count);

@@ -18,7 +18,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -29,7 +29,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -40,7 +40,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -51,7 +51,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -62,7 +62,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemWithGroundNodeVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -73,7 +73,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestCollapsingSystem();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNull(nodeResults);
         }
@@ -83,7 +83,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestNearlyCollapsingSystem();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.001, 0.01);
@@ -94,7 +94,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemWithGroundNodeVersionThree();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -104,7 +104,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFromOneSideSuppliedConnectionWithBigResistance();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -115,7 +115,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFromOneSideSuppliedConnectionWithSmallResistance();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -126,7 +126,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -137,7 +137,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFromOneSideSuppliedAndInverseInformationGiven();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -148,7 +148,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemAndOnlyVoltagesGiven();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -159,7 +159,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemAndVoltagesAndPowersGiven();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -170,7 +170,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemAndTwoVoltagesGiven();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -181,7 +181,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemWithGroundNode();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -192,7 +192,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemWithMostlyImaginaryConnections();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -203,7 +203,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestFiveNodeProblemWithMostlyImaginaryConnections();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -214,7 +214,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestTwoNodesWithImaginaryConnection();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -225,7 +225,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestTwoNodesWithImaginaryConnectionWithPVBus();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -236,7 +236,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -247,7 +247,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.001, 0.02);
@@ -258,7 +258,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 10);
@@ -269,7 +269,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
@@ -280,7 +280,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.02, 10);
@@ -291,7 +291,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var powerNet = CreateTestThreeNodeProblemWithDecoupledPQAndPVBus();
 
-            var nodeResults = powerNet.CalculateMissingInformation();
+            var nodeResults = powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.02, 20);
