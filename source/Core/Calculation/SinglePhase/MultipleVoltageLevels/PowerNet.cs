@@ -380,20 +380,20 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private static ISet<IExternalReadOnlyNode> FindSegmentWhichContains(IList<ISet<IExternalReadOnlyNode>> segments, IExternalReadOnlyNode node)
         {
-            ISet<IExternalReadOnlyNode> segmentWithFeedIn = null;
+            ISet<IExternalReadOnlyNode> segmentWhichContainsNode = null;
 
-            for (var i = 0; i < segments.Count && segmentWithFeedIn == null; ++i)
+            for (var i = 0; i < segments.Count && segmentWhichContainsNode == null; ++i)
             {
                 var segment = segments[i];
 
                 if (segment.Contains(node))
-                    segmentWithFeedIn = segment;
+                    segmentWhichContainsNode = segment;
             }
 
-            if (segmentWithFeedIn == null)
+            if (segmentWhichContainsNode == null)
                 throw new InvalidDataException("the node is not part of the segments");
 
-            return segmentWithFeedIn;
+            return segmentWhichContainsNode;
         }
 
         private IEnumerable<KeyValuePair<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>> CreatePhaseShiftsPerTransformer(IList<ISet<IExternalReadOnlyNode>> segments)
