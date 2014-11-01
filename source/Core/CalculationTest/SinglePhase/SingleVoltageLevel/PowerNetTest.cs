@@ -12,22 +12,15 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_NodeCount0_ThrowsException()
-        {
-            var powerNet = new PowerNet(0, 2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_NominalVoltage0_ThrowsException()
         {
-            var powerNet = new PowerNet(2, 0);
+            var powerNet = new PowerNet(new AdmittanceMatrix(2), 0);
         }
 
         [TestMethod]
-        public void Constructor_NodeCount3_NodeCountIs3()
+        public void Constructor_AdmittanceMatrixWithThreeNodes_NodeCountIs3()
         {
-            var powerNet = new PowerNet(3, 2);
+            var powerNet = new PowerNet(new AdmittanceMatrix(3), 2);
 
             Assert.AreEqual(3, powerNet.NodeCount);
         }
@@ -35,7 +28,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void Constructor_NominalVoltage2_NominalVoltageIs2()
         {
-            var powerNet = new PowerNet(3, 2);
+            var powerNet = new PowerNet(new AdmittanceMatrix(3), 2);
 
             Assert.AreEqual(2, powerNet.NominalVoltage);
         }
@@ -44,16 +37,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestCategory("Integration")]
         public void CalculateMissingInformation_TwoNodeSystem_CorrectVoltagesAndPowers()
         {
-            var powerNet = new PowerNet(2, 1);
+            var admittanceMatrix = new AdmittanceMatrix(2);
             var supplyNode = new Node();
             var loadNode = new Node();
             const double admittance = 100;
             const double load = 0.1;
             supplyNode.Voltage = new Complex(1, 0);
             loadNode.Power = new Complex((-1)*load, 0);
+            admittanceMatrix.AddConnection(0, 1, new Complex(admittance, 0));
+            var powerNet = new PowerNet(admittanceMatrix, 1);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
-            powerNet.Admittances.AddConnection(0, 1, new Complex(admittance, 0));
 
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
@@ -73,16 +67,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestCategory("Integration")]
         public void RelativePowerError_StableTwoNodeSystem_0()
         {
-            var powerNet = new PowerNet(2, 1);
+            var admittanceMatrix = new AdmittanceMatrix(2);
             var supplyNode = new Node();
             var loadNode = new Node();
             const double admittance = 100;
             const double load = 0.1;
             supplyNode.Voltage = new Complex(1, 0);
             loadNode.Power = new Complex((-1) * load, 0);
+            admittanceMatrix.AddConnection(0, 1, new Complex(admittance, 0));
+            var powerNet = new PowerNet(admittanceMatrix, 1);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNode);
-            powerNet.Admittances.AddConnection(0, 1, new Complex(admittance, 0));
             powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000000001, 1000000)));
 
             var relativePowerError = powerNet.RelativePowerError;
@@ -94,19 +89,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestCategory("Integration")]
         public void RelativePowerError_CollapsingSystem_Not0()
         {
-            var powerNet = new PowerNet(3, 1);
+            var admittanceMatrix = new AdmittanceMatrix(3);
             var supplyNode = new Node();
             var loadNodeOne = new Node();
             var loadNodeTwo = new Node();
             supplyNode.Voltage = new Complex(1, 0);
             loadNodeOne.Power = new Complex(-100, 0);
             loadNodeTwo.Power = new Complex(-100, 0);
+            admittanceMatrix.AddConnection(0, 1, new Complex(1, 0));
+            admittanceMatrix.AddConnection(0, 2, new Complex(2, 0));
+            admittanceMatrix.AddConnection(1, 2, new Complex(3, 0));
+            var powerNet = new PowerNet(admittanceMatrix, 1);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNodeOne);
             powerNet.SetNode(2, loadNodeTwo);
-            powerNet.Admittances.AddConnection(0, 1, new Complex(1, 0));
-            powerNet.Admittances.AddConnection(0, 2, new Complex(2, 0));
-            powerNet.Admittances.AddConnection(1, 2, new Complex(3, 0));
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 
             var relativePowerError = powerNet.RelativePowerError;
@@ -119,19 +115,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestCategory("Integration")]
         public void CalculateMissingInformation_CollapsingSystem_InitialSetValuesAreCorrect()
         {
-            var powerNet = new PowerNet(3, 1);
+            var admittanceMatrix = new AdmittanceMatrix(3);
             var supplyNode = new Node();
             var loadNodeOne = new Node();
             var loadNodeTwo = new Node();
             supplyNode.Voltage = new Complex(1, 0);
             loadNodeOne.Power = new Complex(-100, 0);
             loadNodeTwo.Power = new Complex(-200, 0);
+            admittanceMatrix.AddConnection(0, 1, new Complex(1, 0));
+            admittanceMatrix.AddConnection(0, 2, new Complex(2, 0));
+            admittanceMatrix.AddConnection(1, 2, new Complex(3, 0));
+            var powerNet = new PowerNet(admittanceMatrix, 1);
             powerNet.SetNode(0, supplyNode);
             powerNet.SetNode(1, loadNodeOne);
             powerNet.SetNode(2, loadNodeTwo);
-            powerNet.Admittances.AddConnection(0, 1, new Complex(1, 0));
-            powerNet.Admittances.AddConnection(0, 2, new Complex(2, 0));
-            powerNet.Admittances.AddConnection(1, 2, new Complex(3, 0));
 
             var voltageCollapse = powerNet.CalculateMissingInformation(new LoadFlowCalculator(new CurrentIteration(0.000001, 1)));
 

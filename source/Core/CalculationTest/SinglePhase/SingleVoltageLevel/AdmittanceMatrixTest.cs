@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra;
@@ -11,18 +12,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     [TestClass]
     public class AdmittanceMatrixTest
     {
-        #region variables
-
         private AdmittanceMatrix _admittances;
         private List<int> _knownVoltageIndex;
         private List<int> _unknownVoltageIndex;
         private Vector<Complex> _knownVoltages;
         private Vector<Complex> _unknownVoltages;
         private Vector<Complex> _constantCurrents;
-
-        #endregion
-
-        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -34,10 +29,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _unknownVoltages = null;
             _constantCurrents = null;
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void CreateReducedAdmittanceMatrix_OneIdealTransformerWithTwoConnectionsAndInputVoltageKnown_CurrentsAreCorrect()
@@ -151,6 +142,11 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             ComplexAssert.AreEqual(Complex.FromPolarCoordinates(1, 0.5), currentRatio, 0.0001);
         }
 
-        #endregion
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_NegativeNodeCount_ThrowsException()
+        {
+            var admittanceMatrix = new AdmittanceMatrix(-5);
+        }
     }
 }

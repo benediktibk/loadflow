@@ -14,20 +14,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         private readonly AdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
 
-        public PowerNet(int nodeCount, double nominalVoltage)
-        {
-            if (nodeCount <= 0)
-                throw new ArgumentOutOfRangeException("nodeCount", "there must be at least one node");
-
-            if (nominalVoltage <= 0)
-                throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
-
-            _nominalVoltage = nominalVoltage;
-            _nodeCount = nodeCount;
-            _admittances = new AdmittanceMatrix(nodeCount);
-            _nodes = InitializeNodes();
-        }
-
         public PowerNet(AdmittanceMatrix admittances, double nominalVoltage)
         {
             if (nominalVoltage <= 0)

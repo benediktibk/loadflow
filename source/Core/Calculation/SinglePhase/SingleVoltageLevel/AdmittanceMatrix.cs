@@ -14,6 +14,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public AdmittanceMatrix(int nodeCount)
         {
+            if (nodeCount <= 0)
+                throw new ArgumentOutOfRangeException("nodeCount", "must be positive");
+
             _values = new SparseMatrix(nodeCount, nodeCount);
         }
 
