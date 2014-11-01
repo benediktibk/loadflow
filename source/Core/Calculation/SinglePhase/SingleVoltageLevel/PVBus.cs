@@ -4,15 +4,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PVBus
     {
-        #region variables
-
         private readonly int _id;
         private readonly double _realPower;
         private readonly double _voltageMagnitude;
-
-        #endregion
-
-        #region constructor
 
         public PVBus(int ID, double realPower, double voltageMagnitude)
         {
@@ -26,10 +20,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _realPower = realPower;
             _voltageMagnitude = voltageMagnitude;
         }
-
-        #endregion
-
-        #region properties
 
         public int ID
         {
@@ -45,7 +35,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get { return _voltageMagnitude; }
         }
-
-        #endregion
     }
 }

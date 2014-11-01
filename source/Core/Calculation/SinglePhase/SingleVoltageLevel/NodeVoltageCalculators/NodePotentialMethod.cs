@@ -7,8 +7,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        #region public functions
-
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
             Vector<Complex> knownPowers;
@@ -77,10 +75,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return 10;
         }
 
-        #endregion
-
-        #region private functions
-
         private Vector<Complex> CalculateUnknownVoltagesInternal(AdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
@@ -89,7 +83,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var factorization = admittances.CalculateFactorization();
             return factorization.Solve(totalCurrents);
         }
-
-        #endregion
     }
 }

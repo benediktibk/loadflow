@@ -11,14 +11,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class LoadFlowCalculator
     {
-        #region variables
-
         private readonly double _maximumPowerError;
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
-
-        #endregion
-
-        #region constructor
 
         public LoadFlowCalculator(INodeVoltageCalculator nodeVoltageCalculator)
         {
@@ -26,18 +20,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _maximumPowerError = nodeVoltageCalculator.GetMaximumPowerError();
         }
 
-        #endregion
-
-        #region public functions
-
-        /// <summary>
-        /// calculates the missing node voltages and powers
-        /// </summary>
-        /// <param id="admittances"></param>
-        /// <param id="nominalVoltage"></param>
-        /// <param id="nodes"></param>
-        /// <param id="voltageCollapse">the relability of this param depends on the used method, e.g. for CurrentIteration it could also just mean that the solution did not converge</param>
-        /// <returns></returns>
         public IList<NodeResult> CalculateNodeVoltagesAndPowers(AdmittanceMatrix admittances, double nominalVoltage, IList<IReadOnlyNode> nodes, out bool voltageCollapse)
         {
             if (admittances.NodeCount != nodes.Count())
@@ -70,10 +52,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             return CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
         }
-
-        #endregion
-
-        #region public static functions
 
         public static Complex CalculatePowerLoss(AdmittanceMatrix admittances, Vector<Complex> allVoltages)
         {
@@ -148,10 +126,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var allVoltages = new DenseVector(voltagesArray);
             return allVoltages;
         }
-
-        #endregion
-
-        #region private static functions
 
         private static IList<NodeResult> CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
         {
@@ -293,10 +267,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return nominalVoltages;
         }
 
-        #endregion
-
-        #region private functions
-
         private bool CheckForVoltageCollapse(AdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             var inputPowerSum = allPowers.Sum();
@@ -332,7 +302,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 indexOfNodesWithUnknownVoltage, unknownVoltages);
             return result;
         }
-
-        #endregion
     }
 }

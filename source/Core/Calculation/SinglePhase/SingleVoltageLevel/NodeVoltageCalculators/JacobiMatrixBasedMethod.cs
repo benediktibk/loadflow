@@ -10,14 +10,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {
-        #region variables
-
         private readonly double _targetPrecision;
         private readonly int _maximumIterations;
-
-        #endregion
-
-        #region constructor
 
         protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
         {
@@ -25,15 +19,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _maximumIterations = maximumIterations;
         }
 
-        #endregion
-
-        #region abstract functions
-
         public abstract Vector<Complex> CalculateImprovedVoltages(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
-
-        #endregion
-
-        #region INodeVoltageCalculator
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
         {
@@ -68,10 +54,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             return 0.1;
         }
-
-        #endregion
-
-        #region static functions
 
         private static void CalculatePowerDifferences(AdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses,
             Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
@@ -419,7 +401,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             return busIdToAmplitudeIndex;
         }
-
-        #endregion
     }
 }

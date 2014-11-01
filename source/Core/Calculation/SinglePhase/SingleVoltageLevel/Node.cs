@@ -5,15 +5,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class Node : IReadOnlyNode
     {
-        #region variables
-
         private Complex _power;
         private Complex _voltage;
         private double _voltageMagnitude;
-
-        #endregion
-
-        #region constructor
 
         public Node()
         {
@@ -23,10 +17,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             VoltageMagnitudeIsKnown = false;
             NominalPhaseShift = 0;
         }
-
-        #endregion
-
-        #region properties
 
         public Complex Power
         {
@@ -124,7 +114,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         }
 
         public double NominalPhaseShift { get; set; }
-
-        #endregion
     }
 }

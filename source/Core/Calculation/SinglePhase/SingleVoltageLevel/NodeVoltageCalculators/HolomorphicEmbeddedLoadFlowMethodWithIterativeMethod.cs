@@ -7,14 +7,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod : INodeVoltageCalculator
     {
-        #region variables
-
         private readonly double _targetPrecision;
         private readonly INodeVoltageCalculator _iterativeMethod;
-
-        #endregion
-
-        #region constructor
 
         public HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(double targetPrecision,
             INodeVoltageCalculator iterativeMethod)
@@ -25,10 +19,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _targetPrecision = targetPrecision;
             _iterativeMethod = iterativeMethod;
         }
-
-        #endregion
-
-        #region INodeVoltageCalculator
 
         public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage,
             Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PQBus> pqBuses, IList<PVBus> pvBuses)
@@ -44,7 +34,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             return _iterativeMethod.GetMaximumPowerError();
         }
-
-        #endregion
     }
 }

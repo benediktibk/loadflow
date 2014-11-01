@@ -9,8 +9,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {
-        #region public functions
-
         public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
         { }
 
@@ -21,10 +19,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix);
             return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBuses, pvBuses, pvBusVoltages, voltageChanges);
         }
-
-        #endregion
-
-        #region public static functions
 
         public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IList<int> pqBuses, IList<int> pvBuses,
             IList<double> pvBusVoltages, IList<double> voltageChanges)
@@ -38,7 +32,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Debug.Assert(pqBuses.Count == voltageChangesImaginary.Count);
             Debug.Assert(pvBuses.Count == voltageChangesAngle.Count);
             var nodeCount = pqBuses.Count + pvBuses.Count;
-            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(nodeCount);
+            var improvedVoltages = new DenseVector(nodeCount);
             var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, nodeCount);
             var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, nodeCount);
 
@@ -88,7 +82,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 pqBuses.Count*2, pqBuses, pvBuses);
             return changeMatrix;
         }
-
-        #endregion
     }
 }

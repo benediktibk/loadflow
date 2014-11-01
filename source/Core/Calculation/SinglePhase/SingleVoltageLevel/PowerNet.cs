@@ -9,16 +9,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PowerNet
     {
-        #region variables
-
         private readonly int _nodeCount;
         private IList<Node> _nodes;
         private readonly AdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
-
-        #endregion
-
-        #region public functions
 
         public PowerNet(int nodeCount, double nominalVoltage)
         {
@@ -75,10 +69,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return (IReadOnlyList<Node>) _nodes;
         }
 
-        #endregion
-
-        #region private functions
-
         private void InitializeNodes()
         {
             _nodes = new List<Node>(_nodeCount);
@@ -86,10 +76,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             for (var i = 0; i < _nodeCount; ++i)
                 _nodes.Add(new Node());
         }
-
-        #endregion
-
-        #region properties
 
         public double RelativePowerError
         {
@@ -142,7 +128,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             get { return _nominalVoltage; }
         }
-
-        #endregion
     }
 }

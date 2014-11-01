@@ -10,13 +10,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class AdmittanceMatrix
     {
-        #region variables
-
         private readonly Matrix<Complex> _values;
-
-        #endregion
-
-        #region constructors
 
         public AdmittanceMatrix(int nodeCount)
         {
@@ -30,10 +24,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             _values = values.Clone();
         }
-
-        #endregion
-
-        #region add functions
 
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
         {
@@ -90,18 +80,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             AddGyrator(internalNode, inputTargetNode, outputSourceNode, outputTargetNode, resistanceWeight);
         }
 
-        #endregion
-
-        #region properties
-
         public int NodeCount
         {
             get { return _values.ColumnCount; }
         }
-
-        #endregion
-
-        #region other public functions
 
         public Vector<Complex> CalculateCurrents(Vector<Complex> voltages)
         {
@@ -170,7 +152,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             return result;
         }
-
-        #endregion
     }
 }
