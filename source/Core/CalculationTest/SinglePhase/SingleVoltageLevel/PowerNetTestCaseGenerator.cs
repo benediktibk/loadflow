@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
-    class PowerNetTestCaseGenerator
+    public class PowerNetTestCaseGenerator
     {
         private static AdmittanceMatrix _admittances;
         private static Vector<Complex> _voltages;

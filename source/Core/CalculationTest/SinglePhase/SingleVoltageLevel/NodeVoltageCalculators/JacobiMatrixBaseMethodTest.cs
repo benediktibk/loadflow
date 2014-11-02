@@ -6,7 +6,7 @@ using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
     public class JacobiMatrixBaseMethodTest

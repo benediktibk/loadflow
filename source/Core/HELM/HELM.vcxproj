@@ -67,6 +67,8 @@
       <Command>call $(SolutionDir)killvstest.bat
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\DatabaseUI\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\

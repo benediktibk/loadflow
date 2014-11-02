@@ -1,7 +1,8 @@
 ﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using CalculationTest.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
     public class FastDecoupledLoadFlowMethodTest

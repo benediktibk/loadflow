@@ -1,26 +1,18 @@
-﻿using System.Numerics;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using MathNet.Numerics.LinearAlgebra.Complex;
+﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using CalculationTest.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Misc;
 
-namespace CalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class HolomorphicEmbeddedLoadFlowMethodLongDoubleTest
+    public class NewtonRaphsonMethodTest
     {
-        private HolomorphicEmbeddedLoadFlowMethod _nodeVoltageCalculator;
+        private NewtonRaphsonMethod _nodeVoltageCalculator;
 
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, new PrecisionLongDouble());
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            _nodeVoltageCalculator.Dispose();
+            _nodeVoltageCalculator = new NewtonRaphsonMethod(0.0001, 1000);
         }
 
         [TestMethod]
@@ -31,7 +23,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.1);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -42,7 +34,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 30);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -53,7 +45,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.025, 10);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -75,7 +67,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 2);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -96,7 +88,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.001, 0.01);
         }
 
         [TestMethod]
@@ -107,7 +99,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 2);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
@@ -139,7 +131,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.0001);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -150,7 +142,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.001);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -161,7 +153,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.0001);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -172,7 +164,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.1);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -216,29 +208,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.2);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithTwoPVBuses(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.03, 5);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithSlackBusAtTheEndAndPVBus_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.025, 20);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
@@ -264,14 +234,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_ThrowsNoException()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculator);
@@ -290,56 +252,18 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.001, 0.02);
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
+        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculator);
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
-            Assert.IsNotNull(_nodeVoltageCalculator);
-            var firstCoefficientShouldBe = new DenseVector(new[] { new Complex(1.05, 0) });
-            var secondCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0289649928938644, -0.019047619047619) });
-            var thirdCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0011445548616427, 1.14628982339312E-100) });
-            var firstInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.952380952380952, 0) });
-            var secondInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.0262721023980629, 0.0172767519706295) });
-            var thirdInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.00144946906527004, 0.00095318285344446) });
-            var firstCoefficient = _nodeVoltageCalculator.GetCoefficients(0);
-            var secondCoefficient = _nodeVoltageCalculator.GetCoefficients(1);
-            var thirdCoefficient = _nodeVoltageCalculator.GetCoefficients(2);
-            var firstInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(0);
-            var secondInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(1);
-            var thirdInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(2);
-            ComplexAssert.AreAllEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(secondInverseCoefficientShouldBe, secondInverseCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(thirdCoefficientShouldBe, thirdCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(thirdInverseCoefficientShouldBe, thirdInverseCoefficient, 0.0001);
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectCoefficients()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo(_nodeVoltageCalculator);
-
-            powerNetTestCase.CalculateNodeResults();
-
-            Complex a;
-            Complex b;
-            Complex c;
-            HolomorphicEmbeddedLoadFlowMethodTest.CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out a, out b, out c);
-            var firstCoefficient = _nodeVoltageCalculator.GetCoefficients(0)[0];
-            var secondCoefficient = _nodeVoltageCalculator.GetCoefficients(1)[0];
-            var thirdCoefficient = _nodeVoltageCalculator.GetCoefficients(2)[0];
-            ComplexAssert.AreEqual(a, firstCoefficient, 0.00001);
-            ComplexAssert.AreEqual(b, secondCoefficient, 0.00001);
-            ComplexAssert.AreEqual(c, thirdCoefficient, 0.00001);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 10);
         }
 
         [TestMethod]
@@ -361,7 +285,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 20);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 10);
         }
 
         [TestMethod]
@@ -372,18 +296,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 0.2);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 20);
         }
     }
 }

@@ -6,7 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
-    class PowerNetTestCase
+    public class PowerNetTestCase
     {
         private readonly PowerNetComputable _powerNet;
         private readonly Vector<Complex> _correctVoltages;

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace CalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     class HolomorphicEmbeddedLoadFlowMethodTestNativeMethods
     {

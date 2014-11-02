@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+﻿using System.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CalculationTest.SinglePhase.SingleVoltageLevel
+namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
     public class HolomorphicEmbeddedLoadFlowMethodTest

@@ -32,33 +32,5 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
             Assert.AreEqual(2, powerNet.NominalVoltage);
         }
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void CalculateMissingInformation_TwoNodeSystem_CorrectVoltagesAndPowers()
-        {
-            var admittanceMatrix = new AdmittanceMatrix(2);
-            var supplyNode = new Node();
-            var loadNode = new Node();
-            const double admittance = 100;
-            const double load = 0.1;
-            supplyNode.Voltage = new Complex(1, 0);
-            loadNode.Power = new Complex((-1)*load, 0);
-            admittanceMatrix.AddConnection(0, 1, new Complex(admittance, 0));
-            var nodeVoltageCalculator = new CurrentIteration(0.000000001, 1000000);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, admittanceMatrix, 1);
-            powerNet.SetNode(0, supplyNode);
-            powerNet.SetNode(1, loadNode);
-
-            var nodeResults = powerNet.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            Assert.AreEqual(2, nodeResults.Count);
-            var loadVoltage = (1 + Math.Sqrt(1 - 4*load/admittance))/2;
-            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.0001);
-            ComplexAssert.AreEqual(loadVoltage, 0, nodeResults[1].Voltage, 0.0001);
-            ComplexAssert.AreEqual((1 - loadVoltage) * admittance, 0, nodeResults[0].Power, 0.0001);
-            ComplexAssert.AreEqual(-0.1, 0, nodeResults[1].Power, 0.0001);
-        }
     }
 }
