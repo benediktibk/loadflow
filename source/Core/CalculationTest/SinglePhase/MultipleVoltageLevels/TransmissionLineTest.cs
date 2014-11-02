@@ -98,57 +98,32 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_OnlyLengthImpedanceAndNoScaling_CorrectValuesInMatrix()
+        public void FillInAdmittances_OnlyLengthImpedance_OneCallToAddConnection()
         {
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
-            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } }), nodeIndexes);
+            var admittances = new Mock<IAdmittanceMatrix>();
+            var scaler = new DimensionScaler(_sourceNodeValid.NominalVoltage, 10);
+            var lengthAdmittanceScaled = scaler.ScaleAdmittance(1/_transmissionLineWithOnlyLengthValues.LengthImpedance);
 
-            _transmissionLineWithOnlyLengthValues.FillInAdmittances(admittances, 1, null, 1);
+            _transmissionLineWithOnlyLengthValues.FillInAdmittances(admittances.Object, 10, null, 1);
 
-            ComplexAssert.AreEqual(1.79125857823813, -37.772994183725, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(-2.79125857823813, 42.772994183725, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3.79125857823813, 43.772994183725, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(2.79125857823813, -38.772994183725, admittances[1, 1], 0.00001);
+            admittances.Verify(x => x.AddConnection(_sourceNodeValid, _targetNodeValid, lengthAdmittanceScaled),
+                Times.Once);
+            admittances.Verify(
+                x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Once);
         }
 
         [TestMethod]
-        public void FillInAdmittances_OnlyLengthImpedanceAndScaling_CorrectValuesInMatrix()
-        {
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 } };
-            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(1, 2), new Complex(-2, 3) }, { new Complex(-3, 4), new Complex(2, 1) } }), nodeIndexes);
-
-            _transmissionLineWithOnlyLengthValues.FillInAdmittances(admittances, 10, null, 1);
-
-            ComplexAssert.AreEqual(1.079125857823813, -1.9772994183725, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(-2.079125857823813, 6.9772994183725, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3.079125857823813, 7.9772994183725, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(2.079125857823813, -2.9772994183725, admittances[1, 1], 0.00001);
-        }
-
-        [TestMethod]
-        public void FillInAdmittances_LengthAdmittanceAndShuntAdmittance_CorrectValuesInMatrix()
+        public void FillInAdmittances_LengthAdmittanceAndShuntAdmittance_ThreeCallsToAddConnection()
         {
             var groundNode = new Node(-1, 0, 0, "");
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int> { { _sourceNodeValid, 0 }, { _targetNodeValid, 1 }, { groundNode, 2 } };
-            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
-                new[,]
-                {
-                    { new Complex(1, 2), new Complex(-2, 3), new Complex(-3, 2) }, 
-                    { new Complex(-3, 4), new Complex(2, 1), new Complex(1, 4) }, 
-                    {new Complex(-3, 1), new Complex(10, 43), new Complex(-3, -4) }
-                }), nodeIndexes);
+            var admittances = new Mock<IAdmittanceMatrix>();
 
-            _transmissionLineWithLengthAndShuntValues.FillInAdmittances(admittances, 10, groundNode, 1);
+            _transmissionLineWithLengthAndShuntValues.FillInAdmittances(admittances.Object, 10, groundNode, 1);
 
-            ComplexAssert.AreEqual(413.923430413114, 27.1297865313719, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(36.6523198083696, -44.4587206322193, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(-455.575750221483, 24.3289341008474, admittances[2, 0], 0.00001);
-            ComplexAssert.AreEqual(37.6523198083696, -45.4587206322193, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(414.923430413114, 26.1297865313719, admittances[1, 1], 0.00001);
-            ComplexAssert.AreEqual(-442.575750221483, 66.3289341008474, admittances[2, 1], 0.00001);
-            ComplexAssert.AreEqual(-455.575750221483, 25.3289341008474, admittances[0, 2], 0.00001);
-            ComplexAssert.AreEqual(-451.575750221483, 27.3289341008474, admittances[1, 2], 0.00001);
-            ComplexAssert.AreEqual(902.151500442966, -50.6578682016948, admittances[2, 2], 0.00001);
+            admittances.Verify(
+                x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Exactly(3));
         }
 
         [TestMethod]
