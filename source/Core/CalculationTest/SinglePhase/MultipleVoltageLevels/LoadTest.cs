@@ -14,14 +14,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class LoadTest
     {
-        #region variables
-
         private Node _node;
         private Load _load;
-
-        #endregion
-
-        #region initialize
 
         [TestInitialize]
         public void SetUp()
@@ -29,10 +23,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node = new Node(0, 3, 0, "");
             _load = new Load(new Complex(4, 1), _node);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_ValidLoad_LoadIsCorrect()
@@ -133,22 +123,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_ValidNode_NothingChanged()
+        public void FillInAdmittances_ValidNode_NoChangeInAdmittanceMatrix()
         {
-            var dictionary = new Dictionary<IReadOnlyNode, int>();
-            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
-                new[,]
-                {
-                    {new Complex(2, 4), new Complex(3, 1)}, 
-                    {new Complex(-3, 9), new Complex(0.3, 0.4)}
-                }), dictionary);
-
-            _load.FillInAdmittances(admittances, 1, null, 1);
-
-            ComplexAssert.AreEqual(2, 4, admittances[0, 0], 0.00001);
-            ComplexAssert.AreEqual(3, 1, admittances[0, 1], 0.00001);
-            ComplexAssert.AreEqual(-3, 9, admittances[1, 0], 0.00001);
-            ComplexAssert.AreEqual(0.3, 0.4, admittances[1, 1], 0.00001);
+            _load.FillInAdmittances(null, 1, null, 1);
         }
 
         [TestMethod]
@@ -156,7 +133,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsFalse(_load.NeedsGroundNode);
         }
-
-        #endregion
     }
 }

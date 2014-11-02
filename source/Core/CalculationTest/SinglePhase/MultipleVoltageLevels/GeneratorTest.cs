@@ -116,7 +116,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_ValidNode_NothingChanged()
+        public void FillInAdmittances_ValidNode_NoChangeInAdmittanceMatrix()
         {
             _generator.FillInAdmittances(null, 1, null, 1);
         }

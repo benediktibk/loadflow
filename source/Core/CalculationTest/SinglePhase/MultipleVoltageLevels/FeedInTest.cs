@@ -161,7 +161,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_ShortCircuitPowerSetTo0_NoCallToAddConnection()
+        public void FillInAdmittances_ShortCircuitPowerSetTo0_NoChangeInAdmittanceMatrix()
         {
             var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
 
