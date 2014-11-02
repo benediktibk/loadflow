@@ -28,8 +28,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _nodeIndexes = new Dictionary<IReadOnlyNode, int>()
             {
                 {_firstNode, 0},
-                {_secondNode, 1},
-                {_thirdNode, 2},
+                {_secondNode, 2},
+                {_thirdNode, 1},
             };
             _singleVoltageAdmittanceMatrix = new Mock<IAdmittanceMatrix>();
             _matrix = new AdmittanceMatrix(_singleVoltageAdmittanceMatrix.Object, _nodeIndexes);
@@ -42,7 +42,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             _matrix.AddConnection(_firstNode, _thirdNode, admittance);
 
-            _singleVoltageAdmittanceMatrix.Verify(x => x.AddConnection(0, 2, admittance), Times.Once);
+            _singleVoltageAdmittanceMatrix.Verify(x => x.AddConnection(0, 1, admittance), Times.Once);
         }
     }
 }
