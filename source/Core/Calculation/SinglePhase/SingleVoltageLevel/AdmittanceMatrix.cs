@@ -8,7 +8,7 @@ using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class AdmittanceMatrix : IReadOnlyAdmittanceMatrix
+    public class AdmittanceMatrix : IAdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
 
