@@ -40,7 +40,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {_secondNode, 1},
                 {_thirdNode, 2},
             };
-            _matrix = new AdmittanceMatrix(3, _nodeIndexes);
+            _matrix = new AdmittanceMatrix(_nodeIndexes);
         }
 
         [TestMethod]
@@ -73,7 +73,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {thirdNode, 2},
                 {fourthNode, 3}
             };
-            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddVoltageControlledCurrentSource(firstNode, secondNode, thirdNode, fourthNode, 2);
 
@@ -97,7 +97,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {firstNode, 0},
                 {secondNode, 1},
             };
-            var matrix = new AdmittanceMatrix(2, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddConnection(firstNode, secondNode, new Complex(1, 0));
 
@@ -137,7 +137,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 1);
             matrix.AddConnection(output, ground, 1);
@@ -166,7 +166,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 100);
             matrix.AddConnection(output, ground, 1);
@@ -195,7 +195,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(4, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 1, 100);
             matrix.AddConnection(output, ground, 1);
@@ -228,7 +228,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 {internalNode, 4},
                 {ground, 5}
             };
-            var matrix = new AdmittanceMatrix(6, nodeIndexes);
+            var matrix = new AdmittanceMatrix(nodeIndexes);
 
             matrix.AddConnection(input, inputTransformer, 0.1);
             matrix.AddIdealTransformer(inputTransformer, ground, outputTransformer, ground, internalNode, 2, 1);

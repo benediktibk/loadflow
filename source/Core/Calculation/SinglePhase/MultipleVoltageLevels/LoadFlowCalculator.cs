@@ -57,7 +57,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private AdmittanceMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
         {
-            var admittances = new AdmittanceMatrix(nodes.Count, nodeIndexes);
+            var admittances = new AdmittanceMatrix(nodeIndexes);
             powerNet.FillInAdmittances(admittances, ScaleBasePower);
             return admittances;
         }

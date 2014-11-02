@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -9,15 +8,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly SingleVoltageLevel.AdmittanceMatrix _values;
         private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
 
-        public AdmittanceMatrix(int nodeCount, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        public AdmittanceMatrix(IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
-            _values = new SingleVoltageLevel.AdmittanceMatrix(nodeCount);
-            _nodeIndexes = nodeIndexes;
-        }
-
-        public AdmittanceMatrix(Matrix<Complex> values, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
-        {
-            _values = new SingleVoltageLevel.AdmittanceMatrix(values);
+            _values = new SingleVoltageLevel.AdmittanceMatrix(nodeIndexes.Count);
             _nodeIndexes = nodeIndexes;
         }
 
