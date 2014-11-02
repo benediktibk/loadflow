@@ -6,28 +6,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
-    public abstract class HolomorphicEmbeddedLoadFlowMethodTest : LoadFlowCalculatorTest
+    public class HolomorphicEmbeddedLoadFlowMethodTest
     {
-        private readonly List<HolomorphicEmbeddedLoadFlowMethod> _highAccuracyCalculator = new List<HolomorphicEmbeddedLoadFlowMethod>();
-
-        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
-        {
-            var calculator = CreateHELMNodeVoltageCalculator();
-            _highAccuracyCalculator.Add(calculator);
-            return calculator;
-        }
-
-        protected abstract HolomorphicEmbeddedLoadFlowMethod CreateHELMNodeVoltageCalculator();
-
-        [TestCleanup]
-        public void CleanUp()
-        {
-            foreach (var calculator in _highAccuracyCalculator)
-                calculator.Dispose();
-
-            _highAccuracyCalculator.Clear();
-        }
-
         [TestMethod]
         public void CppUnitTests()
         {
@@ -35,7 +15,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             Assert.IsTrue(result);
         }
 
-        protected static void CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out Complex a,
+        public static void CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out Complex a,
             out Complex b, out Complex c)
         {
             a = new Complex(1.05, 0);

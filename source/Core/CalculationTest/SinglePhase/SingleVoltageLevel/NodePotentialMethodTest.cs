@@ -1,280 +1,281 @@
-﻿using System.Linq;
-using Calculation.SinglePhase.SingleVoltageLevel;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
-    public class NodePotentialMethodTest : LoadFlowCalculatorTest
+    public class NodePotentialMethodTest
     {
-        protected override INodeVoltageCalculator CreateNodeVoltageCalculator()
+        private NodePotentialMethod _nodeVoltageCalculator;
+
+        [TestInitialize]
+        public void SetUp()
         {
-            return new NodePotentialMethod();
+            _nodeVoltageCalculator = new NodePotentialMethod();
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithBigResistance_CorrectResults()
         {
-            var powerNet = CreateTestFromOneSideSuppliedConnectionWithBigResistance();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFromOneSideSuppliedConnectionWithBigResistance(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 1);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 1);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionWithSmallResistance_CorrectResults()
         {
-            var powerNet = CreateTestFromOneSideSuppliedConnectionWithSmallResistance();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFromOneSideSuppliedConnectionWithSmallResistance(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedConnectionAndOnlyVoltagesKnown_CorrectResults()
         {
-            var powerNet = CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FromOneSideSuppliedAndInverseInformationGiven_CorrectResults()
         {
-            var powerNet = CreateTestFromOneSideSuppliedAndInverseInformationGiven();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFromOneSideSuppliedAndInverseInformationGiven(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndOnlyVoltagesGiven_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemAndOnlyVoltagesGiven();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemAndOnlyVoltagesGiven(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemAndVoltagesAndPowersGiven_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemAndVoltagesAndPowersGiven();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemAndVoltagesAndPowersGiven(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 50);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 50);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemAndTwoVoltagesGiven_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemAndTwoVoltagesGiven();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemAndTwoVoltagesGiven(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.02, 30);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 30);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithGroundNode_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemWithGroundNode();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemWithGroundNode(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 30);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 30);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithMostlyImaginaryConnections();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithMostlyImaginaryConnections(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.01, 20);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 20);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemWithMostlyImaginaryConnections();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemWithMostlyImaginaryConnections(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 30);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 30);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
         {
-            var powerNet = CreateTestTwoNodeProblemWithOnePVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodeProblemWithOnePVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.2, 20);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.2, 20);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithTwoPVBuses();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithTwoPVBuses(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.1, 120);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 120);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithSlackBusAtTheEndAndPVBus_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemWithSlackBusAtTheEndAndPVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.1, 60);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 60);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_FiveNodeProblemWithTwoPVBuses_CorrectResults()
         {
-            var powerNet = CreateTestFiveNodeProblemWithTwoPVBusses();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestFiveNodeProblemWithTwoPVBusses(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.2, 200);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.2, 200);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBus_CorrectResults()
         {
-            var powerNet = CreateTestTwoNodesWithImaginaryConnection();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnection(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.01, 0.05);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 0.05);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBus_CorrectResults()
         {
-            var powerNet = CreateTestTwoNodesWithImaginaryConnectionWithPVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeSystemWithImaginaryConnectionsAndOnePVBus_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.2, 10);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.2, 10);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
         {
-            var powerNet = CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.01, 0.1);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.01, 0.1);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.2, 10);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.2, 10);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPQBusses_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.05, 10);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 10);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.1, 50);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 50);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithDecoupledPQAndPVBus_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithDecoupledPQAndPVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithDecoupledPQAndPVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.1, 100);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 100);
         }
 
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
-            var powerNet = CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus();
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus(_nodeVoltageCalculator);
 
-            var nodeResults = powerNet.CalculateNodeResults();
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, _voltages, _powers, 0.15, 0.5);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.15, 0.5);
         }
     }
 }

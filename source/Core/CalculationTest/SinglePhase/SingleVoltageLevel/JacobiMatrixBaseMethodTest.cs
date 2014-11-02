@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
-    public abstract class JacobiMatrixBaseMethodTest : LoadFlowCalculatorTest
+    public class JacobiMatrixBaseMethodTest
     {
         [TestMethod]
         public void CalculateChangeMatrixRealPowerByAngle_OneConnection_CorrectResults()
