@@ -13,7 +13,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
-        public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, AdmittanceMatrix admittances, double nominalVoltage) : base(admittances, nominalVoltage)
+        public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, IAdmittanceMatrix admittances, double nominalVoltage) : base(admittances, nominalVoltage)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }

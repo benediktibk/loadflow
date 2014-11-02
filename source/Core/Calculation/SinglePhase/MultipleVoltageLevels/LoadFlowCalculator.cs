@@ -43,7 +43,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private SingleVoltageLevel.PowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances)
         {
-            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNetComputable(_nodeVoltageCalculator, admittances.GetSingleVoltageAdmittanceMatrix(), 1);
+            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNetComputable(_nodeVoltageCalculator, admittances.SingleVoltageAdmittanceMatrix, 1);
 
             foreach (var node in nodes)
             {
@@ -57,7 +57,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private AdmittanceMatrix CalculateAdmittanceMatrix(IReadOnlyCollection<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IReadOnlyPowerNet powerNet)
         {
-            var admittances = new AdmittanceMatrix(nodeIndexes);
+            var admittances = new AdmittanceMatrix(new SingleVoltageLevel.AdmittanceMatrix(nodes.Count), nodeIndexes);
             powerNet.FillInAdmittances(admittances, ScaleBasePower);
             return admittances;
         }

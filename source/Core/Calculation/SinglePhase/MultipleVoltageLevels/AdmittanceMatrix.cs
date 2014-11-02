@@ -5,13 +5,28 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class AdmittanceMatrix : IAdmittanceMatrix
     {
-        private readonly SingleVoltageLevel.AdmittanceMatrix _values;
+        private readonly SingleVoltageLevel.IAdmittanceMatrix _values;
         private readonly IReadOnlyDictionary<IReadOnlyNode, int> _nodeIndexes;
 
-        public AdmittanceMatrix(IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
+        public AdmittanceMatrix(SingleVoltageLevel.IAdmittanceMatrix values, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes)
         {
-            _values = new SingleVoltageLevel.AdmittanceMatrix(nodeIndexes.Count);
+            _values = values;
             _nodeIndexes = nodeIndexes;
+        }
+
+        public SingleVoltageLevel.IAdmittanceMatrix SingleVoltageAdmittanceMatrix
+        {
+            get { return _values; }
+        }
+
+        public int NodeCount
+        {
+            get { return _values.NodeCount; }
+        }
+
+        public Complex this[int row, int column]
+        {
+            get { return _values[row, column]; }
         }
 
         public void AddConnection(IReadOnlyNode sourceNode, IReadOnlyNode targetNode, Complex admittance)
@@ -51,21 +66,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var internalNodeIndex = _nodeIndexes[internalNode];
             _values.AddIdealTransformer(inputSourceNodeIndex, inputTargetNodeIndex, outputSourceNodeIndex,
                 outputTargetNodeIndex, internalNodeIndex, ratio, resistanceWeight);
-        }
-
-        public SingleVoltageLevel.AdmittanceMatrix GetSingleVoltageAdmittanceMatrix()
-        {
-            return _values;
-        }
-
-        public int NodeCount
-        {
-            get { return _values.NodeCount; }
-        }
-
-        public Complex this[int row, int column]
-        {
-            get { return _values[row, column]; }
         }
     }
 }

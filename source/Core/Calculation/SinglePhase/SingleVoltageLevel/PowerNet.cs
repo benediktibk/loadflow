@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -11,10 +8,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         private readonly int _nodeCount;
         private readonly IList<Node> _nodes;
-        private readonly AdmittanceMatrix _admittances;
+        private readonly IAdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
 
-        public PowerNet(AdmittanceMatrix admittances, double nominalVoltage)
+        public PowerNet(IAdmittanceMatrix admittances, double nominalVoltage)
         {
             if (nominalVoltage <= 0)
                 throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
