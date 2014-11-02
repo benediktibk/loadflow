@@ -164,13 +164,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void FillInAdmittances_ShortCircuitPowerSetTo0_NoCallToAddConnection()
         {
             var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
-            var admittances = new Mock<IAdmittanceMatrix>();
 
-            feedIn.FillInAdmittances(admittances.Object, 1, null, 1);
-
-            admittances.Verify(
-                x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
-                Times.Never);
+            feedIn.FillInAdmittances(null, 1, null, 1);
         }
 
         [TestMethod]
