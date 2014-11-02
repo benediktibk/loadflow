@@ -10,7 +10,7 @@ using Moq;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
     [TestClass]
-    public class LoadFlowCalculatorTest
+    public class PowerNetComputableTest
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]

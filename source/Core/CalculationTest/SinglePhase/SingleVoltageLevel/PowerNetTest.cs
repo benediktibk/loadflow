@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Misc;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {
