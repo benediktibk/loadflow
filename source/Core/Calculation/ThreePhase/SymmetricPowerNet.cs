@@ -16,12 +16,6 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet = new PowerNetComputable(nodeVoltageCalculator, frequency);
         }
 
-        public INodeVoltageCalculator NodeVoltageCalculator
-        {
-            get { return _singlePhasePowerNet.NodeVoltageCalculator; }
-            set { _singlePhasePowerNet.NodeVoltageCalculator = value; }
-        }
-
         public void AddNode(int id, double nominalVoltage, string name)
         {
             _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), 0, name);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -8,17 +7,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class PowerNetComputable : PowerNet
     {
-        private INodeVoltageCalculator _nodeVoltageCalculator;
+        private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
         public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, double frequency) : base(frequency)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
-        }
-
-        public INodeVoltageCalculator NodeVoltageCalculator
-        {
-            get { return _nodeVoltageCalculator; }
-            set { _nodeVoltageCalculator = value; }
         }
 
         public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
