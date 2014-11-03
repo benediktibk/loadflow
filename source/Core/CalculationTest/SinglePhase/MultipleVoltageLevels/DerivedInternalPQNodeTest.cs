@@ -8,11 +8,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class DerivedInternalPQNodeTest : DerivedInternalNodeTest
     {
-        protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
-        {
-            return new DerivedInternalPQNode(sourceNode, id, new Complex(4, -2), "");
-        }
-
         [TestMethod]
         public void CreateSingleVoltageNode_2AsScaleBaseForPower_PowerOfPQBusIsCorrectScaled()
         {
@@ -23,6 +18,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.IsTrue(result.IsPQBus);
             ComplexAssert.AreEqual(2, -1, result.Power, 0.00001);
+        }
+
+        protected override DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id)
+        {
+            return new DerivedInternalPQNode(sourceNode, id, new Complex(4, -2), "");
         }
     }
 }

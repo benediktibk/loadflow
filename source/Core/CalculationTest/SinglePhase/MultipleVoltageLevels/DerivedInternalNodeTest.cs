@@ -8,8 +8,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         private Node _sourceNode;
         private DerivedInternalNode _node;
 
-        protected abstract DerivedInternalNode CreateNode(Node sourceNode, int id);
-
         [TestInitialize]
         public void SetUp()
         {
@@ -36,5 +34,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.IsTrue(result.IsPQBus || result.IsPVBus || result.IsSlackBus);
         }
+
+        protected abstract DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id);
     }
 }

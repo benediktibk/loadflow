@@ -6,7 +6,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class DerivedInternalPVNodeTest : DerivedInternalNodeTest
     {
-        protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
+        protected override DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id)
         {
             return new DerivedInternalPVNode(sourceNode, id, 5, 4, "");
         }

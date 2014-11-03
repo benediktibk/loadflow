@@ -8,7 +8,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class DerivedInternalSlackNodeTest : DerivedInternalNodeTest
     {
-        protected override DerivedInternalNode CreateNode(Node sourceNode, int id)
+        protected override DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id)
         {
             return new DerivedInternalSlackNode(sourceNode, id, new Complex(10, 1), "");
         }
