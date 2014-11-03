@@ -22,7 +22,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Node _groundNode;
         private readonly FeedIn _groundFeedIn;
         private readonly IdGenerator _idGeneratorNodes;
-        private readonly NodeGraph _nodeGraph;
+        private readonly INodeGraph _nodeGraph;
 
         public PowerNet(double frequency)
         {

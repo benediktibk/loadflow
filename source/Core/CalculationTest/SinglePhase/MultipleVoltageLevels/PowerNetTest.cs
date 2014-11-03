@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
