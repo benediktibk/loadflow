@@ -100,13 +100,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _groundNode; }
         }
 
-        public Angle GetSlackPhaseShift()
+        public Angle SlackPhaseShift
         {
-            if (_feedIns.Count != 1)
-                throw new InvalidOperationException("there must exist exactly one feed in");
+            get
+            {
+                if (_feedIns.Count != 1)
+                    throw new InvalidOperationException("there must exist exactly one feed in");
 
-            var feedIn = _feedIns.First();
-            return new Angle(feedIn.Voltage.Phase);
+                var feedIn = _feedIns.First();
+                return new Angle(feedIn.Voltage.Phase);
+            }
         }
 
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
@@ -252,17 +255,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
         }
 
-        private Node GetNodeByIdInternal(long name)
-        {
-            Node result;
-            _nodesById.TryGetValue(name, out result);
-
-            if (result == default(Node))
-                throw new ArgumentOutOfRangeException("name", "specified node does not exist");
-
-            return result;
-        }
-
         public double CalculateAverageLoadFlow()
         {
             var absoluteSum = 
@@ -291,6 +283,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var maximumPower = GetMaximumPower();
             var powerScaling = maximumPower > 0 ? maximumPower : 1;
             return powerScaling;
+        }
+
+        private Node GetNodeByIdInternal(long name)
+        {
+            Node result;
+            _nodesById.TryGetValue(name, out result);
+
+            if (result == default(Node))
+                throw new ArgumentOutOfRangeException("name", "specified node does not exist");
+
+            return result;
         }
     }
 }

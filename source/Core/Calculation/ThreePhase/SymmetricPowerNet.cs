@@ -90,7 +90,7 @@ namespace Calculation.ThreePhase
 
         public Angle GetSlackPhaseShift()
         {
-            return _singlePhasePowerNet.GetSlackPhaseShift();
+            return _singlePhasePowerNet.SlackPhaseShift;
         }
 
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
