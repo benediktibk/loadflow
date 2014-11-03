@@ -7,14 +7,8 @@ namespace SincalConnectorTest
     [TestClass]
     public class ConnectorDataTest
     {
-        #region variables
-
         private ConnectorData _connectorData;
         private List<string> _changedProperties;
-
-        #endregion
-
-        #region set up
 
         [TestInitialize]
         public void SetUp()
@@ -28,10 +22,6 @@ namespace SincalConnectorTest
         {
             _changedProperties.Add(e.PropertyName);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_Empty_IsValid()
@@ -112,7 +102,5 @@ namespace SincalConnectorTest
 
             Assert.AreEqual("asdf\nfd3\n 34\n", _connectorData.LoggingOutput);
         }
-
-        #endregion
     }
 }
