@@ -30,7 +30,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoad_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
@@ -51,7 +50,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndTransmissionEquationModel_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
@@ -72,7 +70,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistance_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
@@ -92,7 +89,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistanceAndGroundLosses_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
@@ -112,7 +108,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistanceAndShuntCapacity_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
@@ -132,7 +127,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndSimplifiedModel_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
@@ -153,7 +147,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_Transformer_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
@@ -173,7 +166,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLosses_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
@@ -193,7 +185,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLossesAndNoInductance_CorrectResults()
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
@@ -212,7 +203,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_Generator_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
@@ -239,7 +229,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_MinimalExampleWithGeneratorAndLoad_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
@@ -269,7 +258,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_MinimalExampleWithLoad_CorrectResults()
         {
             var threePhaseFactor = Math.Sqrt(3);
@@ -286,7 +274,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_MinimalExampleWithGenerator_CorrectResults()
         {
             var threePhaseFactor = Math.Sqrt(3);
@@ -304,7 +291,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_MinimalExampleWithGeneratorAndNewtonRaphson_CorrectResults()
         {
             var threePhaseFactor = Math.Sqrt(3);
@@ -322,7 +308,6 @@ namespace CalculationIntegrationTest.ThreePhase
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_MinimalExampleWithGeneratorAndHELM_CorrectResults()
         {
             var threePhaseFactor = Math.Sqrt(3);

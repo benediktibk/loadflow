@@ -19,7 +19,6 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneFeedInAndOneLoad_CorrectResults()
         {
             _powerNet.AddNode(0, 100, 0, "");
@@ -38,7 +37,6 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
         public void CalculateNodeVoltages_GeneratorAndLoad_CorrectResults()
         {
             _powerNet.AddNode(0, 1, 0, "");

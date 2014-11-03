@@ -200,7 +200,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithMostlyImaginaryConnections_CorrectResults()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithMostlyImaginaryConnections(_nodeVoltageCalculator);
@@ -223,7 +222,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_TwoNodeProblemWithOnePVBus_CorrectResults()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodeProblemWithOnePVBus(_nodeVoltageCalculator);
@@ -234,7 +232,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithTwoPVBuses_CorrectResults()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithTwoPVBuses(_nodeVoltageCalculator);
@@ -373,7 +370,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
@@ -387,7 +383,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
@@ -401,7 +396,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
@@ -415,7 +409,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        [TestCategory("Unit, slow")]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
