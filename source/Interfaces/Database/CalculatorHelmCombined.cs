@@ -35,17 +35,20 @@ namespace Database
         public IReadOnlyDictionary<long, NodeResult> Calculate(SymmetricPowerNet powerNet)
         {
             _log("trying to calculate the node voltages with the iterative method");
-            var nodeResults = powerNet.CalculateNodeVoltages(_iterativeNodeVoltageCalculator);
+            powerNet.NodeVoltageCalculator = _iterativeNodeVoltageCalculator;
+            var nodeResults = powerNet.CalculateNodeVoltages();
             if (nodeResults != null)
                 return nodeResults;
 
             _log("iterative method reported voltage collapse, trying HELM combined with the iterative method");
-            nodeResults = powerNet.CalculateNodeVoltages(_helmCombined);
+            powerNet.NodeVoltageCalculator = _helmCombined;
+            nodeResults = powerNet.CalculateNodeVoltages();
             if (nodeResults != null)
                 return nodeResults;
 
             _log("HELM combined with the iterative method reported voltage collapse, trying HELM with multi precision");
-            return powerNet.CalculateNodeVoltages(_helmMulti);
+            powerNet.NodeVoltageCalculator = _helmMulti;
+            return powerNet.CalculateNodeVoltages();
         }
     }
 }

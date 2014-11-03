@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -10,11 +9,17 @@ namespace Calculation.ThreePhase
 {
     public class SymmetricPowerNet
     {
-        private readonly PowerNet _singlePhasePowerNet;
+        private readonly PowerNetComputable _singlePhasePowerNet;
 
-        public SymmetricPowerNet(double frequency)
+        public SymmetricPowerNet(double frequency, INodeVoltageCalculator nodeVoltageCalculator)
         {
-            _singlePhasePowerNet = new PowerNet(frequency);
+            _singlePhasePowerNet = new PowerNetComputable(nodeVoltageCalculator, frequency);
+        }
+
+        public INodeVoltageCalculator NodeVoltageCalculator
+        {
+            get { return _singlePhasePowerNet.NodeVoltageCalculator; }
+            set { _singlePhasePowerNet.NodeVoltageCalculator = value; }
         }
 
         public void AddNode(int id, double nominalVoltage, string name)
@@ -68,22 +73,25 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
         {
-            var nodeResults = _singlePhasePowerNet.CalculateNodeVoltages(nodeVoltageCalculator);
+            var nodeResults = _singlePhasePowerNet.CalculateNodeVoltages();
+            var nodeResultsUnscaled = new Dictionary<long, NodeResult>();
 
-            foreach (var nodeResult in nodeResults.Select(nodeResultWithId => nodeResultWithId.Value))
+            foreach (var nodeResultWithId in nodeResults)
             {
-                nodeResult.Voltage = nodeResult.Voltage*Math.Sqrt(3);
-                nodeResult.Power = nodeResult.Power*3;
+                var nodeResult = nodeResultWithId.Value;
+                var nodeResultUnscaled = new NodeResult(nodeResult.Voltage*Math.Sqrt(3), nodeResult.Power*3);
+                nodeResultsUnscaled.Add(nodeResultWithId.Key, nodeResultUnscaled);
             }
 
-            return nodeResults;
+            return nodeResultsUnscaled;
         }
 
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
         {
-            _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+            powerBase = _singlePhasePowerNet.DeterminePowerScaling();
+            _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, powerBase);
         }
 
         public Angle GetSlackPhaseShift()

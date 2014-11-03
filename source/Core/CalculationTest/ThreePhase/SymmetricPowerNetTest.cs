@@ -11,18 +11,22 @@ namespace CalculationTest.ThreePhase
     [TestClass]
     public class SymmetricPowerNetTest
     {
-        private SymmetricPowerNet _powerNet;
         private INodeVoltageCalculator _newtonRaphsonCalculator;
         private INodeVoltageCalculator _helmCalculator;
         private INodeVoltageCalculator _currentIterationCalculator;
+        private SymmetricPowerNet _powerNetWithNewtonRaphson;
+        private SymmetricPowerNet _powerNetWithHelm;
+        private SymmetricPowerNet _powerNetWithCurrentIteration;
 
         [TestInitialize]
         public void SetUp()
         {
-            _powerNet = new SymmetricPowerNet(50);
             _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.0000001, 1000);
             _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00000001, 80, new PrecisionMulti(200));
             _currentIterationCalculator = new CurrentIteration(0.0000001, 1000);
+            _powerNetWithNewtonRaphson = new SymmetricPowerNet(50, _newtonRaphsonCalculator);
+            _powerNetWithHelm = new SymmetricPowerNet(50, _helmCalculator);
+            _powerNetWithCurrentIteration = new SymmetricPowerNet(50, _currentIterationCalculator);
         }
 
         [TestMethod]
@@ -30,13 +34,13 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoad_CorrectResults()
         {
             const double omega = 2*Math.PI*50;
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, -2000));
-            _powerNet.AddTransmissionLine(1, 2, 0.1, 0.4/omega, 100.0/(400*400), 1e-10, 1, true);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -51,13 +55,13 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndTransmissionEquationModel_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, -2000));
-            _powerNet.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, true);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -71,13 +75,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistance_CorrectResults()
         {
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, 0));
-            _powerNet.AddTransmissionLine(1, 2, 0.1, 0, 0, 0, 1, false);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 0));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0, 0, 0, 1, false);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -91,13 +95,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistanceAndGroundLosses_CorrectResults()
         {
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, 0));
-            _powerNet.AddTransmissionLine(1, 2, 0.05, 0, 50000.0 / (400 * 400), 0, 1, false);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 0));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.05, 0, 50000.0 / (400 * 400), 0, 1, false);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -111,13 +115,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndOnlyResistanceAndShuntCapacity_CorrectResults()
         {
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, 20000));
-            _powerNet.AddTransmissionLine(1, 2, 0.05, 0, 0, 1e-5, 1, false);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 20000));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.05, 0, 0, 1e-5, 1, false);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -132,13 +136,13 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_OneLineBetweenFeedInAndLoadAndSimplifiedModel_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-20000, -2000));
-            _powerNet.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, false);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, false);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -152,13 +156,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_Transformer_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI/180), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001*3000, 10, 0.01, 2.5, new Angle(), "");
+            _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
+            _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5, new Angle(), "");
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -172,13 +176,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLosses_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, new Angle(), "");
+            _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
+            _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, new Angle(), "");
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -192,13 +196,13 @@ namespace CalculationTest.ThreePhase
         [TestCategory("Integration")]
         public void CalculateNodeVoltages_TransformerWithNearlyNoIronLossesAndNoInductance_CorrectResults()
         {
-            _powerNet.AddNode(1, 1000, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
-            _powerNet.AddLoad(2, new Complex(-2000, 0));
-            _powerNet.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, new Angle(), "");
+            _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
+            _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, new Angle(), "");
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var sourceVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -212,16 +216,16 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_Generator_CorrectResults()
         {
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, 400, "");
-            _powerNet.AddNode(2, 400, "");
-            _powerNet.AddNode(3, 400, "");
-            _powerNet.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), 0, 1.1, 1);
-            _powerNet.AddGenerator(3, 400, 15000);
-            _powerNet.AddLoad(2, new Complex(-20000, -2000));
-            _powerNet.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
-            _powerNet.AddTransmissionLine(2, 3, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
+            _powerNetWithNewtonRaphson.AddNode(1, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(2, 400, "");
+            _powerNetWithNewtonRaphson.AddNode(3, 400, "");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddGenerator(3, 400, 15000);
+            _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
+            _powerNetWithNewtonRaphson.AddTransmissionLine(2, 3, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             var feedInVoltage = nodeResults[1].Voltage;
             var loadVoltage = nodeResults[2].Voltage;
@@ -248,16 +252,16 @@ namespace CalculationTest.ThreePhase
             var I2 = (U2 - U3)/Z;
             var load = (-1)*U3*I2.Conjugate();
             var generatorLoad = U2*(I2 - I1).Conjugate();
-            _powerNet.AddNode(1, threePhaseFactor, "feed in");
-            _powerNet.AddNode(2, threePhaseFactor, "generator");
-            _powerNet.AddNode(3, threePhaseFactor, "load");
-            _powerNet.AddFeedIn(1, U1 * threePhaseFactor, 0, 1, 1);
-            _powerNet.AddGenerator(2, U2.Magnitude * threePhaseFactor, generatorLoad.Real * 3);
-            _powerNet.AddLoad(3, load * 3);
-            _powerNet.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
-            _powerNet.AddTransmissionLine(2, 3, 1, 1 / omega, 0, 0, 1, true);
+            _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
+            _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "generator");
+            _powerNetWithCurrentIteration.AddNode(3, threePhaseFactor, "load");
+            _powerNetWithCurrentIteration.AddFeedIn(1, U1 * threePhaseFactor, 0, 1, 1);
+            _powerNetWithCurrentIteration.AddGenerator(2, U2.Magnitude * threePhaseFactor, generatorLoad.Real * 3);
+            _powerNetWithCurrentIteration.AddLoad(3, load * 3);
+            _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
+            _powerNetWithCurrentIteration.AddTransmissionLine(2, 3, 1, 1 / omega, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
+            var nodeResults = _powerNetWithCurrentIteration.CalculateNodeVoltages();
 
             ComplexAssert.AreEqual(U1, nodeResults[1].Voltage / threePhaseFactor, 0.000001);
             ComplexAssert.AreEqual(U2, nodeResults[2].Voltage / threePhaseFactor, 0.000001);
@@ -269,13 +273,13 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_MinimalExampleWithLoad_CorrectResults()
         {
             var threePhaseFactor = Math.Sqrt(3);
-            _powerNet.AddNode(1, threePhaseFactor, "feed in");
-            _powerNet.AddNode(2, threePhaseFactor, "load");
-            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
-            _powerNet.AddLoad(2, new Complex(-0.1425, 0));
-            _powerNet.AddTransmissionLine(1, 2, 1, 0, 0, 0, 1, true);
+            _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
+            _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "load");
+            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithCurrentIteration.AddLoad(2, new Complex(-0.1425, 0));
+            _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 0, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
+            var nodeResults = _powerNetWithCurrentIteration.CalculateNodeVoltages();
 
             ComplexAssert.AreEqual(1, 0, nodeResults[1].Voltage / threePhaseFactor, 0.000001);
             ComplexAssert.AreEqual(0.95, 0, nodeResults[2].Voltage / threePhaseFactor, 0.000001);
@@ -287,13 +291,13 @@ namespace CalculationTest.ThreePhase
         {
             var threePhaseFactor = Math.Sqrt(3);
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, threePhaseFactor, "feed in");
-            _powerNet.AddNode(2, threePhaseFactor, "generator");
-            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
-            _powerNet.AddGenerator(2, Math.Sqrt(0.95*0.95 + 0.1*0.1) * threePhaseFactor, 0.09375);
-            _powerNet.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
+            _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
+            _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "generator");
+            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithCurrentIteration.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
+            _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_currentIterationCalculator);
+            var nodeResults = _powerNetWithCurrentIteration.CalculateNodeVoltages();
 
             ComplexAssert.AreEqual(1, 0, nodeResults[1].Voltage / threePhaseFactor, 0.00001);
             ComplexAssert.AreEqual(0.95, 0.1, nodeResults[2].Voltage / threePhaseFactor, 0.00001);
@@ -305,13 +309,13 @@ namespace CalculationTest.ThreePhase
         {
             var threePhaseFactor = Math.Sqrt(3);
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, threePhaseFactor, "feed in");
-            _powerNet.AddNode(2, threePhaseFactor, "generator");
-            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
-            _powerNet.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
-            _powerNet.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
+            _powerNetWithNewtonRaphson.AddNode(1, threePhaseFactor, "feed in");
+            _powerNetWithNewtonRaphson.AddNode(2, threePhaseFactor, "generator");
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithNewtonRaphson.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
+            _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             ComplexAssert.AreEqual(1, 0, nodeResults[1].Voltage / threePhaseFactor, 0.001);
             ComplexAssert.AreEqual(0.95, 0.1, nodeResults[2].Voltage / threePhaseFactor, 0.001);
@@ -323,13 +327,13 @@ namespace CalculationTest.ThreePhase
         {
             var threePhaseFactor = Math.Sqrt(3);
             const double omega = 2 * Math.PI * 50;
-            _powerNet.AddNode(1, threePhaseFactor, "feed in");
-            _powerNet.AddNode(2, threePhaseFactor, "generator");
-            _powerNet.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
-            _powerNet.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
-            _powerNet.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
+            _powerNetWithHelm.AddNode(1, threePhaseFactor, "feed in");
+            _powerNetWithHelm.AddNode(2, threePhaseFactor, "generator");
+            _powerNetWithHelm.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithHelm.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
+            _powerNetWithHelm.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_helmCalculator);
+            var nodeResults = _powerNetWithHelm.CalculateNodeVoltages();
 
             ComplexAssert.AreEqual(1, 0, nodeResults[1].Voltage / threePhaseFactor, 0.00001);
             ComplexAssert.AreEqual(0.95, 0.1, nodeResults[2].Voltage / threePhaseFactor, 0.00001);
@@ -338,13 +342,13 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLine_VoltagesAndPowersAreCorrect()
         {
-            _powerNet.AddNode(0, 1000 * Math.Sqrt(3), "");
-            _powerNet.AddNode(1, 1000 * Math.Sqrt(3), "");
-            _powerNet.AddFeedIn(0, new Complex(1000, 0) * Math.Sqrt(3), 0, 1.1, 1);
-            _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
-            _powerNet.AddLoad(1, new Complex(-3e5, 0));
+            _powerNetWithNewtonRaphson.AddNode(0, 1000 * Math.Sqrt(3), "");
+            _powerNetWithNewtonRaphson.AddNode(1, 1000 * Math.Sqrt(3), "");
+            _powerNetWithNewtonRaphson.AddFeedIn(0, new Complex(1000, 0) * Math.Sqrt(3), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
+            _powerNetWithNewtonRaphson.AddLoad(1, new Complex(-3e5, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages(_newtonRaphsonCalculator);
+            var nodeResults = _powerNetWithNewtonRaphson.CalculateNodeVoltages();
 
             Assert.IsNotNull(nodeResults);
             var targetVoltageShouldBe = (0.5 + Math.Sqrt(0.15)) * 1e3 * Math.Sqrt(3);

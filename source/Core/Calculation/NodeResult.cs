@@ -1,18 +1,23 @@
 ﻿using System.Numerics;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 
 namespace Calculation
 {
     public class NodeResult
     {
-        public NodeResult()
+        public NodeResult(Complex voltage, Complex power)
         {
-            Voltage = new Complex();
-            Power = new Complex();
-            Id = 0;
+            Voltage = voltage;
+            Power = power;
         }
 
-        public int Id { get; set; }
-        public Complex Voltage { get; set; }
-        public Complex Power { get; set; }
+        public Complex Voltage { get; private set; }
+        public Complex Power { get; private set; }
+
+        public NodeResult Unscale(double voltageBase, double powerBase)
+        {
+            var scaler = new DimensionScaler(voltageBase, powerBase);
+            return new NodeResult(scaler.UnscaleVoltage(Voltage), scaler.UnscalePower(Power));
+        }
     }
 }

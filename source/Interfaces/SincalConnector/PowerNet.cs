@@ -122,12 +122,12 @@ namespace SincalConnector
 
         public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
         {
-            var symmetricPowerNet = CreateSymmetricPowerNet();
+            var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
             var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
             var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.GetSlackPhaseShift() : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            var nodeResults = symmetricPowerNet.CalculateNodeVoltages(calculator);
+            var nodeResults = symmetricPowerNet.CalculateNodeVoltages();
 
             if (nodeResults == null)
                 return false;
@@ -425,9 +425,9 @@ namespace SincalConnector
             return _netElements.Select(element => element.Id).OrderBy(id => id).ToList();
         }
 
-        private SymmetricPowerNet CreateSymmetricPowerNet()
+        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var result = new SymmetricPowerNet(Frequency);
+            var result = new SymmetricPowerNet(Frequency, nodeVoltageCalculator);
 
             foreach (var node in _nodes)
                 node.AddTo(result);

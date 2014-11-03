@@ -232,6 +232,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _lowerSideNode; }
         }
 
+        public double NominalPower
+        {
+            get { return _nominalPower; }
+        }
+
         #endregion
     }
 }

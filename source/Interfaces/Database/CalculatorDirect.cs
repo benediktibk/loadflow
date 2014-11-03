@@ -20,7 +20,8 @@ namespace Database
 
         public IReadOnlyDictionary<long, NodeResult> Calculate(SymmetricPowerNet powerNet)
         {
-            return powerNet.CalculateNodeVoltages(_nodeVoltageCalculator);
+            powerNet.NodeVoltageCalculator = _nodeVoltageCalculator;
+            return powerNet.CalculateNodeVoltages();
         }
     }
 }

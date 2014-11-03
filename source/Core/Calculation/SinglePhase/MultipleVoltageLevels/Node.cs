@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 
@@ -157,14 +156,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public bool Equals(IReadOnlyNode other)
         {
             return Id == other.Id;
-        }
-
-        public void UnscaleNodeResult(IReadOnlyDictionary<long, NodeResult> nodeResults, double powerScaling)
-        {
-            var scaler = new DimensionScaler(NominalVoltage, powerScaling);
-            var nodeResult = nodeResults[Id];
-            nodeResult.Voltage = scaler.UnscaleVoltage(nodeResult.Voltage);
-            nodeResult.Power = scaler.UnscalePower(nodeResult.Power);
         }
     }
 }

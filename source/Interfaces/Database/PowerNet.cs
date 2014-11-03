@@ -511,7 +511,7 @@ namespace Database
         {
             Log("creating symmetric power net");
 
-            _calculationPowerNet = new SymmetricPowerNet(Frequency);
+            _calculationPowerNet = new SymmetricPowerNet(Frequency, null);
 
             try
             {

@@ -136,11 +136,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var result = new NodeResult[nodeCount];
 
             for (var i = 0; i < nodeCount; ++i)
-                result[i] = new NodeResult()
-                {
-                    Power = allPowers[i],
-                    Voltage = allVoltages[i]
-                };
+                result[i] = new NodeResult(allVoltages[i], allPowers[i]);
 
             return result;
         }

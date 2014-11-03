@@ -66,7 +66,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\ThreeWindingTransformer.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\TransmissionLine.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Load.cs" />
-    <Compile Include="SinglePhase\MultipleVoltageLevels\LoadFlowCalculator.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNetComputable.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Node.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\PowerNet.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\TwoWindingTransformer.cs" />

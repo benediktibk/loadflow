@@ -45,6 +45,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodesById.Add(_groundNode.Id, _groundNode);
         }
 
+        public IReadOnlyList<IExternalReadOnlyNode> Nodes
+        {
+            get { return _nodes.Cast<IExternalReadOnlyNode>().ToList(); }
+        }
+
         public int LoadCount
         {
             get { return _loads.Count; }
@@ -158,31 +163,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return CreateDictionaryPhaseShiftByNode(segments, phaseShiftBySegment);
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
-        {
-            var powerScaling = DeterminePowerScaling();
-            var calculator = new LoadFlowCalculator(powerScaling, nodeVoltageCalculator);
-            var nodeResults = calculator.CalculateNodeVoltages(this);
-
-            if (nodeResults == null)
-                return null;
-
-            foreach (var node in _nodes)
-                node.UnscaleNodeResult(nodeResults, powerScaling);
-
-            return nodeResults;
-        }
-
         public IExternalReadOnlyNode GetNodeById(long id)
         {
             return GetNodeByIdInternal(id);
-        }
-
-        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
-        {
-            powerBase = DeterminePowerScaling();
-            var calculator = new LoadFlowCalculator(powerBase, new NodePotentialMethod());
-            calculator.CalculateAdmittanceMatrix(out matrix, out nodeNames, this);
         }
 
         public void AddNode(int id, double nominalVoltage, double nominalPhaseShift, string name)
@@ -342,14 +325,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return absoluteSum/count;
         }
 
-        private double GetMaximumPower()
+        public double GetMaximumPower()
         {
             var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
             var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
-            return Math.Max(generatorMaximum, loadMaximum);
+            var transformerMaximum = _twoWindingTransformers.Count > 0
+                ? _twoWindingTransformers.Max(transformer => transformer.NominalPower)
+                : 0;
+            return Math.Max(Math.Max(generatorMaximum, loadMaximum), transformerMaximum);
         }
 
-        private double DeterminePowerScaling()
+        public double DeterminePowerScaling()
         {
             var maximumPower = GetMaximumPower();
             var powerScaling = maximumPower > 0 ? maximumPower : 1;
