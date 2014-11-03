@@ -16,6 +16,11 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet = new PowerNetComputable(frequency, nodeVoltageCalculator, new NodeGraph());
         }
 
+        public Angle SlackPhaseShift
+        {
+            get { return _singlePhasePowerNet.SlackPhaseShift; }
+        }
+
         public void AddNode(int id, double nominalVoltage, string name)
         {
             _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), 0, name);
@@ -86,11 +91,6 @@ namespace Calculation.ThreePhase
         {
             powerBase = _singlePhasePowerNet.DeterminePowerScaling();
             _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, powerBase);
-        }
-
-        public Angle GetSlackPhaseShift()
-        {
-            return _singlePhasePowerNet.SlackPhaseShift;
         }
 
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()

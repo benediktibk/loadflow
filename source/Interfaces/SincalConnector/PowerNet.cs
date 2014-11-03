@@ -125,7 +125,7 @@ namespace SincalConnector
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
             var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
-            var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.GetSlackPhaseShift() : new Angle();
+            var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var nodeResults = symmetricPowerNet.CalculateNodeVoltages();
 
