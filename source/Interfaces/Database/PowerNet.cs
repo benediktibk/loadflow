@@ -32,8 +32,7 @@ namespace Database
         private readonly Mutex _isCalculationRunningMutex;
         private readonly BackgroundWorker _backgroundWorker;
         private SymmetricPowerNet _calculationPowerNet;
-        private IReadOnlyDictionary<long, NodeResult> _nodeResults; 
-        private CalculatorDirect _calculator;
+        private IReadOnlyDictionary<long, NodeResult> _nodeResults;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
 
@@ -97,42 +96,43 @@ namespace Database
             const int helmBitPrecisionMulti = 200;
             const int coefficientCountHelmMulti = 80;
             const int coefficientCountHelmLongDouble = 50;
+            INodeVoltageCalculator nodeVoltageCalculator;
 
             switch (CalculatorSelection)
             {
                 case NodeVoltageCalculatorSelection.NodePotential:
-                    _calculator = new CalculatorDirect(new NodePotentialMethod());
+                    nodeVoltageCalculator = new NodePotentialMethod();
                     break;
                 case NodeVoltageCalculatorSelection.CurrentIteration:
-                    _calculator = new CalculatorDirect(new CurrentIteration(targetPrecision, maximumIterations));
+                    nodeVoltageCalculator = new CurrentIteration(targetPrecision, maximumIterations);
                     break;
                 case NodeVoltageCalculatorSelection.NewtonRaphson:
-                    _calculator = new CalculatorDirect(new NewtonRaphsonMethod(targetPrecision, maximumIterations));
+                    nodeVoltageCalculator = new NewtonRaphsonMethod(targetPrecision, maximumIterations);
                     break;
                 case NodeVoltageCalculatorSelection.FastDecoupledLoadFlow:
-                    _calculator = new CalculatorDirect(new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations));
+                    nodeVoltageCalculator = new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations);
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlow:
-                    _calculator =
-                        new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmLongDouble,
-                            new PrecisionLongDouble()));
+                    nodeVoltageCalculator =
+                        new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmLongDouble,
+                            new PrecisionLongDouble());
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
-                    _calculator =
-                        new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti,
-                            new PrecisionMulti(helmBitPrecisionMulti)));
+                    nodeVoltageCalculator =
+                        new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti,
+                            new PrecisionMulti(helmBitPrecisionMulti));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    _calculator = new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new CurrentIteration(targetPrecision, maximumIterations)));
+                    nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new CurrentIteration(targetPrecision, maximumIterations));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    _calculator = new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new NewtonRaphsonMethod(targetPrecision, maximumIterations)));
+                    nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new NewtonRaphsonMethod(targetPrecision, maximumIterations));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (!CreatePowerNet()) 
+            if (!CreatePowerNet(nodeVoltageCalculator)) 
                 return;
 
             Log("starting with calculation of node voltages");
@@ -145,7 +145,7 @@ namespace Database
             nodeNames = null;
             powerBase = 0;
 
-            if (!CreatePowerNet())
+            if (!CreatePowerNet(null))
                 return false;
 
             _calculationPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
@@ -468,7 +468,7 @@ namespace Database
         {
             try
             {
-                _nodeResults = _calculator.Calculate(_calculationPowerNet);
+                _nodeResults = _calculationPowerNet.CalculateNodeVoltages();
 
                 if (_nodeResults != null)
                     return;
@@ -481,11 +481,11 @@ namespace Database
             }
         }
 
-        private bool CreatePowerNet()
+        private bool CreatePowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
             Log("creating symmetric power net");
 
-            _calculationPowerNet = new SymmetricPowerNet(Frequency, null);
+            _calculationPowerNet = new SymmetricPowerNet(Frequency, nodeVoltageCalculator);
 
             try
             {
