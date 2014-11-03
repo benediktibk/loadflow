@@ -73,17 +73,21 @@ namespace CalculationTest.ThreePhase
         {
             _powerNet.AddTwoWindingTransformer(3, 4, 5, 6, 7, 8, 9, 10, new Angle(2), "asdf");
 
-            _singlePhasePowerNetMock.Verify(x => x.AddTwoWindingTransformer(3, 4, 5.0/3, 6, 7.0/3, 8.0/3, 9, 10, It.IsAny<Angle>(), "asdf"),
+            _singlePhasePowerNetMock.Verify(x => x.AddTwoWindingTransformer(3, 4, 5.0 / 3, 6, 7.0 / 3, 8.0 / 3, 9, 10, It.Is<Angle>(a => Angle.Equal(a, new Angle(2), 0.00001)), "asdf"),
                 Times.Once);
         }
 
         [TestMethod]
         public void AddThreeWindingTransformer_ValidData_MockPowerNetGotCallToAddCorrectThreeWindingTransformer()
         {
-            _powerNet.AddThreeWindingTransformer(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, new Angle(),
-                new Angle(), new Angle(), "asdf");
+            _powerNet.AddThreeWindingTransformer(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, new Angle(1),
+                new Angle(2), new Angle(3), "asdf");
 
-            _singlePhasePowerNetMock.Verify(x => x.AddThreeWindingTransformer(3, 4, 5, 6.0 / 3, 7.0 / 3, 8.0 / 3, 9, 10, 11, 12.0 / 3, 13.0 / 3, 14.0 / 3, 15.0 / 3, 16, It.IsAny<Angle>(), It.IsAny<Angle>(), It.IsAny<Angle>(), "asdf"),
+            _singlePhasePowerNetMock.Verify(x => x.AddThreeWindingTransformer(
+                3, 4, 5, 6.0 / 3, 7.0 / 3, 8.0 / 3, 9, 10, 11, 12.0 / 3, 13.0 / 3, 14.0 / 3, 15.0 / 3, 16,
+                It.Is<Angle>(a => Angle.Equal(a, new Angle(1), 0.00001)),
+                It.Is<Angle>(a => Angle.Equal(a, new Angle(2), 0.00001)),
+                It.Is<Angle>(a => Angle.Equal(a, new Angle(3), 0.00001)), "asdf"),
                 Times.Once);
         }
 
