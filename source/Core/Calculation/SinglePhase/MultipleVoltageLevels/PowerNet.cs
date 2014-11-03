@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -45,6 +43,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
             _nodeGraph = new NodeGraph();
+        }
+
+        public IReadOnlyNodeGraph NodeGraph
+        {
+            get { return _nodeGraph; }
         }
 
         public IReadOnlyList<IExternalReadOnlyNode> Nodes
@@ -122,13 +125,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new InvalidOperationException("there must exist exactly one feed in");
 
             var feedIn = _feedIns.First();
-            var segments = GetSetsOfConnectedNodesOnSameVoltageLevel();
-            var feedInNode = feedIn.Node;
-            var segmentWithFeedIn = FindSegmentWhichContains(segments, feedInNode);
-            var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(segments);
-            var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
-            var phaseShiftBySegment = GetNominalPhaseShiftBySegment(segmentWithFeedIn, phaseShiftBySegmentToAllSegments);
-            return CreateDictionaryPhaseShiftByNode(segments, phaseShiftBySegment);
+            return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedIn, _twoWindingTransformers, _threeWindingTransformers);
         }
 
         public IExternalReadOnlyNode GetNodeById(long id)
@@ -309,149 +306,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var maximumPower = GetMaximumPower();
             var powerScaling = maximumPower > 0 ? maximumPower : 1;
             return powerScaling;
-        }
-
-        private static ISet<IExternalReadOnlyNode> FindSegmentWhichContains(IList<ISet<IExternalReadOnlyNode>> segments, IExternalReadOnlyNode node)
-        {
-            ISet<IExternalReadOnlyNode> segmentWhichContainsNode = null;
-
-            for (var i = 0; i < segments.Count && segmentWhichContainsNode == null; ++i)
-            {
-                var segment = segments[i];
-
-                if (segment.Contains(node))
-                    segmentWhichContainsNode = segment;
-            }
-
-            if (segmentWhichContainsNode == null)
-                throw new InvalidDataException("the node is not part of the segments");
-
-            return segmentWhichContainsNode;
-        }
-
-        private IEnumerable<KeyValuePair<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>> CreatePhaseShiftsPerTransformer(IList<ISet<IExternalReadOnlyNode>> segments)
-        {
-            var phaseShiftsPerTransformer =
-                new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>();
-
-            foreach (var transformer in _twoWindingTransformers)
-            {
-                var upperSegment = FindSegmentWhichContains(segments, transformer.UpperSideNode);
-                var lowerSegment = FindSegmentWhichContains(segments, transformer.LowerSideNode);
-                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(upperSegment, lowerSegment, phaseShiftsPerTransformer, transformer.NominalPhaseShift);
-            }
-
-            foreach (var transformer in _threeWindingTransformers)
-            {
-                var segmentOne = FindSegmentWhichContains(segments, transformer.NodeOne);
-                var segmentTwo = FindSegmentWhichContains(segments, transformer.NodeTwo);
-                var segmentThree = FindSegmentWhichContains(segments, transformer.NodeThree);
-                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentOne, segmentTwo, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftOneToTwo);
-                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentTwo, segmentThree, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftTwoToThree);
-                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentThree, segmentOne, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftThreeToOne);
-            }
-
-            return phaseShiftsPerTransformer;
-        }
-
-        private static void AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(ISet<IExternalReadOnlyNode> upperSegment, ISet<IExternalReadOnlyNode> lowerSegment,
-            IDictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle> phaseShiftsPerTransformer, Angle phaseShift)
-        {
-            var segmentPair = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(upperSegment, lowerSegment);
-            var segmentPairInverse = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(lowerSegment,
-                upperSegment);
-
-            if (phaseShiftsPerTransformer.ContainsKey(segmentPair))
-            {
-                var previousPhaseShift = phaseShiftsPerTransformer[segmentPair];
-                if ((previousPhaseShift - phaseShift).Radiant > 0.000001)
-                    throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
-            }
-            else if (phaseShiftsPerTransformer.ContainsKey(segmentPairInverse))
-            {
-                var previousPhaseShift = phaseShiftsPerTransformer[segmentPairInverse];
-                if ((previousPhaseShift + phaseShift).Radiant > 0.000001)
-                    throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
-            }
-            else
-                phaseShiftsPerTransformer.Add(segmentPair, phaseShift);
-        }
-
-        private IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CreateDictionaryPhaseShiftByNode(IList<ISet<IExternalReadOnlyNode>> segments, IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> phaseShiftBySegment)
-        {
-            var result = new Dictionary<IExternalReadOnlyNode, Angle>();
-
-            foreach (var node in _nodes)
-            {
-                var segment = FindSegmentWhichContains(segments, node);
-                result.Add(node, phaseShiftBySegment[segment]);
-            }
-
-            return result;
-        }
-
-        private static IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> GetNominalPhaseShiftBySegment(ISet<IExternalReadOnlyNode> segmentWithFeedIn,
-            IReadOnlyMultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, Angle>> phaseShiftBySegmentToAllSegments)
-        {
-            var phaseShiftBySegment = new Dictionary<ISet<IExternalReadOnlyNode>, Angle>
-            {
-                {segmentWithFeedIn, new Angle(0)}
-            };
-            var lastSegments = new List<ISet<IExternalReadOnlyNode>>() { segmentWithFeedIn };
-
-            do
-            {
-                var nextSegments = new List<ISet<IExternalReadOnlyNode>>();
-
-                foreach (var lastSegment in lastSegments)
-                {
-                    var phaseShiftsToOtherSegments = phaseShiftBySegmentToAllSegments.Get(lastSegment);
-                    var ownPhaseShift = phaseShiftBySegment[lastSegment];
-
-                    foreach (var element in phaseShiftsToOtherSegments)
-                    {
-                        var phaseShift = element.Item2 + ownPhaseShift;
-                        var otherSegment = element.Item1;
-                        Angle previousPhaseShift;
-
-                        if (phaseShiftBySegment.TryGetValue(otherSegment, out previousPhaseShift))
-                        {
-                            if (!Angle.Equal(previousPhaseShift, phaseShift, 0.000001))
-                                throw new InvalidDataException("the phase shifts do not match");
-                        }
-                        else
-                        {
-                            phaseShiftBySegment.Add(otherSegment, phaseShift);
-                            nextSegments.Add(otherSegment);
-                        }
-                    }
-                }
-
-                lastSegments = nextSegments;
-            } while (lastSegments.Count > 0);
-            return phaseShiftBySegment;
-        }
-
-        private static IReadOnlyMultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, Angle>> CreatePhaseShiftBySegmentToAllSegments(IEnumerable<KeyValuePair<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>> phaseShiftsPerTransformer)
-        {
-            var phaseShiftBySegmentToAllSegments =
-                new MultiDictionary<ISet<IExternalReadOnlyNode>, Tuple<ISet<IExternalReadOnlyNode>, Angle>>();
-
-            foreach (var connection in phaseShiftsPerTransformer)
-            {
-                var firstSegment = connection.Key.Item1;
-                var secondSegment = connection.Key.Item2;
-                var phaseShift = connection.Value;
-                phaseShiftBySegmentToAllSegments.Add(firstSegment,
-                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(secondSegment, phaseShift));
-                phaseShiftBySegmentToAllSegments.Add(secondSegment,
-                    new Tuple<ISet<IExternalReadOnlyNode>, Angle>(firstSegment, (-1)*phaseShift));
-            }
-
-            return phaseShiftBySegmentToAllSegments;
         }
     }
 }

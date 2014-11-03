@@ -60,8 +60,10 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\IdGenerator.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IExternalReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\ImpedanceLoad.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\INodeGraph.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNodeGraph.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyPowerNet.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeGraph.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\ThreeWindingTransformer.cs" />
