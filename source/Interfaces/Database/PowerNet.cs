@@ -33,7 +33,7 @@ namespace Database
         private readonly BackgroundWorker _backgroundWorker;
         private SymmetricPowerNet _calculationPowerNet;
         private IReadOnlyDictionary<long, NodeResult> _nodeResults; 
-        private ICalculator _calculator;
+        private CalculatorDirect _calculator;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
 

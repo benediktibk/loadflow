@@ -6,7 +6,7 @@ using Calculation.ThreePhase;
 
 namespace Database
 {
-    class CalculatorDirect : ICalculator
+    class CalculatorDirect
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
