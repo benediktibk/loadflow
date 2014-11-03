@@ -38,7 +38,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodes = new List<Node>();
             _nodesById = new Dictionary<long, Node>();
             _idGeneratorNodes = new IdGenerator();
-            _groundNode = new Node(_idGeneratorNodes.Generate(), 0, 0, "ground");
+            _groundNode = new Node(_idGeneratorNodes.Generate(), 0, "ground");
             _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
@@ -126,10 +126,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return GetNodeByIdInternal(id);
         }
 
-        public void AddNode(int id, double nominalVoltage, double nominalPhaseShift, string name)
+        public void AddNode(int id, double nominalVoltage, string name)
         {
             _idGeneratorNodes.Add(id);
-            var node = new Node(id, nominalVoltage, nominalPhaseShift, name);
+            var node = new Node(id, nominalVoltage, name);
             _nodes.Add(node);
             _nodesById.Add(id, node);
             _nodeGraph.Add(node);

@@ -22,10 +22,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FloatingNodesExist_ThreeInACircleConnectedNodesAndOneFloating_True()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
-            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddNode(3, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -36,8 +36,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FloatingNodesExist_TwoNotConnectedNodes_True()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
 
             Assert.IsTrue(_nodeGraph.FloatingNodesExist);
         }
@@ -45,8 +45,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FloatingNodesExist_TwoConnectedNodes_False()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
 
             Assert.IsFalse(_nodeGraph.FloatingNodesExist);
@@ -55,8 +55,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FloatingNodesExist_TwoConnectedNodesWithGround_False()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 2, 1, true);
 
             Assert.IsFalse(_nodeGraph.FloatingNodesExist);
@@ -65,9 +65,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FloatingNodesExist_ThreeInACircleConnectedNodes_False()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -92,7 +92,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_OneNode_CorrectResult()
         {
-            _powerNet.AddNode(0, 120, 0, "");
+            _powerNet.AddNode(0, 120, "");
 
             var sets = _nodeGraph.Segments;
 
@@ -107,8 +107,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_TwoNotConnectedNodes_TwoElements()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
 
             var sets = _nodeGraph.Segments;
 
@@ -118,8 +118,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_TwoConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
 
             var sets = _nodeGraph.Segments;
@@ -132,9 +132,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_ThreeInARowConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
 
@@ -148,9 +148,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_ThreeInACircleConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -165,10 +165,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Segments_ThreeInACircleConnectedNodesAndOneFloating_TwoElements()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
-            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddNode(3, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -189,7 +189,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_OneNode_CorrectResult()
         {
-            _powerNet.AddNode(0, 120, 0, "");
+            _powerNet.AddNode(0, 120, "");
 
             var sets = _nodeGraph.SegmentsOnSameVoltageLevel;
 
@@ -204,8 +204,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_TwoNotConnectedNodes_TwoElements()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
 
             var sets = _nodeGraph.SegmentsOnSameVoltageLevel;
 
@@ -215,8 +215,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_TwoConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
 
             var sets = _nodeGraph.SegmentsOnSameVoltageLevel;
@@ -229,9 +229,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_ThreeInARowConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
 
@@ -245,9 +245,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_ThreeInACircleConnectedNodes_CorrectResults()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -262,10 +262,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_ThreeInACircleConnectedNodesAndOneFloating_TwoElements()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
-            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddNode(3, 120, "");
             _powerNet.AddTransmissionLine(1, 2, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddTransmissionLine(0, 2, 3, 5, 0, 0, 1, true);
@@ -278,9 +278,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void SegmentsOnSameVoltageLevel_ThreeInACircleByTransformersConnectedConnectedNodes_ThreeElements()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
             _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
@@ -294,10 +294,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CalculateNominalPhaseShiftPerNode_AFewNodesConnectedByTransformers_PhaseShiftsAreCorrect()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
-            _powerNet.AddNode(2, 120, 0, "");
-            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddNode(3, 120, "");
             _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");

@@ -22,9 +22,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _firstNode = new Node(0, 1, 0, "");
-            _secondNode = new Node(1, 1, 0, "");
-            _thirdNode = new Node(2, 1, 0, "");
+            _firstNode = new Node(0, 1, "");
+            _secondNode = new Node(1, 1, "");
+            _thirdNode = new Node(2, 1, "");
             _nodeIndexes = new Dictionary<IReadOnlyNode, int>()
             {
                 {_firstNode, 0},

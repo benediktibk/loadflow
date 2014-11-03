@@ -23,11 +23,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNodeInvalid = new Node(0, 102, 0, "");
-            _targetNodeInvalid = new Node(1, 12, 0, "");
+            _sourceNodeInvalid = new Node(0, 102, "");
+            _targetNodeInvalid = new Node(1, 12, "");
             _transmissionLineInvalid = new TransmissionLine(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10, true);
-            _sourceNodeValid = new Node(0, 100, 0, "");
-            _targetNodeValid = new Node(1, 100, 0, "");
+            _sourceNodeValid = new Node(0, 100, "");
+            _targetNodeValid = new Node(1, 100, "");
             _transmissionLineWithOnlyLengthValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
             _transmissionLineWithLengthAndShuntValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
@@ -104,7 +104,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_LengthAdmittanceAndShuntAdmittance_ThreeCallsToAddConnection()
         {
-            var groundNode = new Node(-1, 0, 0, "");
+            var groundNode = new Node(-1, 0, "");
             var admittances = new Mock<IAdmittanceMatrix>();
 
             _transmissionLineWithLengthAndShuntValues.FillInAdmittances(admittances.Object, 10, groundNode, 1);

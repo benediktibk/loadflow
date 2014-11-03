@@ -19,8 +19,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var singleVoltagePowerNetMock = new Mock<Calculation.SinglePhase.SingleVoltageLevel.IPowerNetComputable>();
             var nodeGraphMock = new Mock<INodeGraph>();
             var powerNet = new PowerNetComputable(50, powerNetFactoryMock.Object, nodeGraphMock.Object);
-            powerNet.AddNode(0, 1, 0, "");
-            powerNet.AddNode(1, 1, 0, "");
+            powerNet.AddNode(0, 1, "");
+            powerNet.AddNode(1, 1, "");
             powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
             powerNet.AddLoad(1, new Complex(-0.6, -1));
             powerNet.AddGenerator(1, 1.02, -0.4);

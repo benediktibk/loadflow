@@ -15,6 +15,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         bool IsPQBus { get; }
         bool IsPVBus { get; }
         bool IsSlackBus { get; }
-        double NominalPhaseShift { get; }
     }
 }

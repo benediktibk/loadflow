@@ -22,7 +22,7 @@ namespace Calculation.ThreePhase
 
         public void AddNode(int id, double nominalVoltage, string name)
         {
-            _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), 0, name);
+            _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), name);
         }
 
         public void AddTransmissionLine(int sourceNodeId, int targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)

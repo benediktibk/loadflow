@@ -8,7 +8,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         Angle SlackPhaseShift { get; }
         IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode();
-        void AddNode(int id, double nominalVoltage, double nominalPhaseShift, string name);
+        void AddNode(int id, double nominalVoltage, string name);
         void AddTransmissionLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel);
         void AddGenerator(long nodeId, double voltageMagnitude, double realPower);
         void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary);

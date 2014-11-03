@@ -18,7 +18,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 3, 0, "");
+            _node = new Node(0, 3, "");
             _load = new Load(new Complex(4, 1), _node);
         }
 

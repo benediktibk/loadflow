@@ -11,11 +11,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private Complex _voltage;
         private bool _voltageSet;
 
-        public Node(int id, double nominalVoltage, double nominalPhaseShift, string name)
+        public Node(int id, double nominalVoltage, string name)
         {
             Id = id;
             NominalVoltage = nominalVoltage;
-            NominalPhaseShift = nominalPhaseShift;
             _connectedElements = new List<IPowerNetElement>();
             _voltage = new Complex();
             _voltageSet = false;
@@ -23,8 +22,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         }
 
         public double NominalVoltage { get; private set; }
-
-        public double NominalPhaseShift { get; private set; }
 
         public int Id { get; private set; }
 
@@ -75,7 +72,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
         {
-            var singleVoltageNode = new SingleVoltageLevel.Node {NominalPhaseShift = NominalPhaseShift};
+            var singleVoltageNode = new SingleVoltageLevel.Node();
 
             if (MustBeSlackBus)
                 singleVoltageNode.Voltage = GetSlackVoltage(scaleBasePower);

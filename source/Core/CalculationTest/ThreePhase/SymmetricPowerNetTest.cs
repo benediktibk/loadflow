@@ -36,7 +36,7 @@ namespace CalculationTest.ThreePhase
         {
             _powerNet.AddNode(3, 5, "asdf");
 
-            _singlePhasePowerNetMock.Verify(x => x.AddNode(3, 5/Math.Sqrt(3), 0, "asdf"),
+            _singlePhasePowerNetMock.Verify(x => x.AddNode(3, 5/Math.Sqrt(3), "asdf"),
                 Times.Once);
         }
 

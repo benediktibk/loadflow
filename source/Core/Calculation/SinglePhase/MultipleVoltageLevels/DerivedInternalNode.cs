@@ -27,9 +27,7 @@
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
         {
-            var node = CreateSingleVoltageNodeInternal(scaleBasePower);
-            node.NominalPhaseShift = _sourceNode.NominalPhaseShift;
-            return node;
+            return CreateSingleVoltageNodeInternal(scaleBasePower);
         }
 
         protected abstract SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower);

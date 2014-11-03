@@ -248,17 +248,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allPowers;
         }
 
-        private static Vector<Complex> CalculateNominalVoltages(double nominalVoltage, IReadOnlyList<IReadOnlyNode> nodes, int countOfUnknownVoltages,
-            IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        private static Vector<Complex> CalculateNominalVoltages(double nominalVoltage, int countOfUnknownVoltages, IReadOnlyCollection<int> indexOfNodesWithUnknownVoltage)
         {
             var nominalVoltages = new DenseVector(countOfUnknownVoltages);
 
             for (var i = 0; i < indexOfNodesWithUnknownVoltage.Count; ++i)
-            {
-                var index = indexOfNodesWithUnknownVoltage[i];
-                var node = nodes[index];
-                nominalVoltages[i] = Complex.FromPolarCoordinates(nominalVoltage, node.NominalPhaseShift);
-            }
+                nominalVoltages[i] = Complex.FromPolarCoordinates(nominalVoltage, 0);
 
             return nominalVoltages;
         }
@@ -287,7 +282,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage,
                 indexOfSlackBuses, knownVoltages, out constantCurrentRightHandSide);
             var totalAdmittanceRowSums = admittances.CalculateRowSums();
-            var initialVoltages = CalculateNominalVoltages(nominalVoltage, nodes, countOfUnknownVoltages,
+            var initialVoltages = CalculateNominalVoltages(nominalVoltage, countOfUnknownVoltages,
                 indexOfNodesWithUnknownVoltage);
 
             var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages,

@@ -31,7 +31,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GetNodeByName_DifferentNodeAdded_ThrowsException()
         {
-            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(0, 123, "");
 
             _powerNet.GetNodeById(1);
         }
@@ -40,14 +40,14 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentException))]
         public void AddNode_TwiceTheSameName_ThrowsException()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(0, 43, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(0, 43, "");
         }
 
         [TestMethod]
         public void GetNodeByName_AlreadyAdded_AddedNode()
         {
-            _powerNet.AddNode(3, 123, 0, "");
+            _powerNet.AddNode(3, 123, "");
 
             var node = _powerNet.GetNodeById(3);
 
@@ -58,8 +58,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddLine_TwoValidNodes_BothNodesHaveOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             var nodeOne = _powerNet.GetNodeById(0);
             var nodeTwo = _powerNet.GetNodeById(1);
 
@@ -73,8 +73,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddTransformer_TwoValidNodes_BothNodesHaveOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             var nodeOne = _powerNet.GetNodeById(0);
             var nodeTwo = _powerNet.GetNodeById(1);
 
@@ -88,7 +88,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddLoad_ValidNode_NodeHasOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
             _powerNet.AddLoad(0, new Complex());
@@ -100,7 +100,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddImpedanceLoad_ValidNode_NodeHasOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
             _powerNet.AddImpedanceLoad(0, new Complex());
@@ -112,7 +112,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddFeedIn_ValidNode_NodeHasOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
             _powerNet.AddFeedIn(0, new Complex(123, 3), 0, 1.1, 1);
@@ -124,7 +124,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void AddGenerator_ValidNode_NodeHasOneConnectedElement()
         {
-            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
             _powerNet.AddGenerator(0, 5, 3);
@@ -136,8 +136,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithDifferentNominalVoltagesConnectedThroughLine_True()
         {
-            _powerNet.AddNode(0, 123, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 2, 1, true);
 
             Assert.IsTrue(_powerNet.CheckIfNominalVoltagesDoNotMatch());
@@ -146,8 +146,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithSameNominalVoltagesConnectedThroughLine_False()
         {
-            _powerNet.AddNode(0, 120, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 120, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 2, 1, true);
 
             Assert.IsFalse(_powerNet.CheckIfNominalVoltagesDoNotMatch());
@@ -156,8 +156,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CheckIfGroundNodeIsNecessary_NoElementNeedsGroundNode_False()
         {
-            _powerNet.AddNode(0, 120, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 120, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
@@ -168,8 +168,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CheckIfGroundNodeIsNecessary_OneElementNeedsGroundNode_True()
         {
-            _powerNet.AddNode(0, 120, 0, "");
-            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(0, 120, "");
+            _powerNet.AddNode(1, 120, "");
             _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
@@ -181,7 +181,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddNode_NegativeId_ThrowsException()
         {
-            _powerNet.AddNode(-1, 230, 0, "");
+            _powerNet.AddNode(-1, 230, "");
         }
     }
 }

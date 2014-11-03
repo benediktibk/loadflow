@@ -9,7 +9,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         bool IsOverdetermined { get; }
         Complex Voltage { get; }
         Complex Power { get; }
-        double NominalPhaseShift { get; }
 
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);

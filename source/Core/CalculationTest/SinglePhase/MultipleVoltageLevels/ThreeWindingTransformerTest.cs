@@ -25,7 +25,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _nodeOne = new Mock<IExternalReadOnlyNode>();
             _nodeTwo = new Mock<IExternalReadOnlyNode>();
             _nodeThree = new Mock<IExternalReadOnlyNode>();
-            _groundNode = new Node(3, 0, 0, "");
+            _groundNode = new Node(3, 0, "");
             _transformer = new ThreeWindingTransformer(_nodeOne.Object, _nodeTwo.Object, _nodeThree.Object, 50, 60, 70, 0.2, 0.21, 0.22, 1, 2, 3, 5, 0.3, new Angle(1), new Angle(2), new Angle(3), "", _idGenerator);
         }
 
