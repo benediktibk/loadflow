@@ -290,5 +290,26 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(3, sets.Count);
         }
+
+        [TestMethod]
+        public void CalculateNominalPhaseShiftPerNode_AFewNodesConnectedByTransformers_PhaseShiftsAreCorrect()
+        {
+            _powerNet.AddNode(0, 123, 0, "");
+            _powerNet.AddNode(1, 120, 0, "");
+            _powerNet.AddNode(2, 120, 0, "");
+            _powerNet.AddNode(3, 120, 0, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
+            _powerNet.AddTwoWindingTransformer(2, 3, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.2), "");
+
+            var phaseShifts = _powerNet.GetNominalPhaseShiftPerNode();
+
+            Assert.IsTrue(Angle.Equal(new Angle(), phaseShifts[_powerNet.GetNodeById(0)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(0.3), phaseShifts[_powerNet.GetNodeById(1)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(-1.5), phaseShifts[_powerNet.GetNodeById(2)], 0.000001));
+            Assert.IsTrue(Angle.Equal(new Angle(-1.3), phaseShifts[_powerNet.GetNodeById(3)], 0.000001));
+        }
     }
 }
