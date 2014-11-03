@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.ThreePhase;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -132,6 +134,37 @@ namespace CalculationTest.ThreePhase
             var result = _powerNet.CalculateNominalPhaseShiftPerNode();
 
             Assert.AreEqual(resultShouldBe, result);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_MockPowerNet_MockGotCallToCalculateNodeVoltages()
+        {
+            _powerNet.CalculateNodeVoltages();
+
+            _singlePhasePowerNetMock.Verify(x => x.CalculateNodeVoltages(), Times.Once);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CalculationFailed_Null()
+        {
+            var result = _powerNet.CalculateNodeVoltages();
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_MockPowerNet_NodeResultsAreUnscaled()
+        {
+            _singlePhasePowerNetMock.Setup(x => x.CalculateNodeVoltages())
+                .Returns(new Dictionary<long, NodeResult> {{3, new NodeResult(new Complex(1, 2), new Complex(3, 4))}});
+
+            var result = _powerNet.CalculateNodeVoltages();
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(3, result.First().Key);
+            var nodeResult = result.First().Value;
+            ComplexAssert.AreEqual(new Complex(1, 2) * Math.Sqrt(3), nodeResult.Voltage, 0.00001);
+            ComplexAssert.AreEqual(new Complex(3, 4) * 3, nodeResult.Power, 0.00001);
         }
     }
 }

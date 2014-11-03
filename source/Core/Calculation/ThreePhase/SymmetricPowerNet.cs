@@ -76,6 +76,9 @@ namespace Calculation.ThreePhase
             var nodeResults = _singlePhasePowerNet.CalculateNodeVoltages();
             var nodeResultsUnscaled = new Dictionary<long, NodeResult>();
 
+            if (nodeResults == null)
+                return null;
+
             foreach (var nodeResultWithId in nodeResults)
             {
                 var nodeResult = nodeResultWithId.Value;
