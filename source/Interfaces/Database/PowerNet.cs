@@ -123,10 +123,10 @@ namespace Database
                             new PrecisionMulti(helmBitPrecisionMulti)));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    _calculator = new CalculatorHelmCombined(new CurrentIteration(targetPrecision, maximumIterations), coefficientCountHelmMulti, helmBitPrecisionMulti, targetPrecision, Log);
+                    _calculator = new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new CurrentIteration(targetPrecision, maximumIterations)));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    _calculator = new CalculatorHelmCombined(new NewtonRaphsonMethod(targetPrecision, maximumIterations), coefficientCountHelmMulti, helmBitPrecisionMulti, targetPrecision, Log);
+                    _calculator = new CalculatorDirect(new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new NewtonRaphsonMethod(targetPrecision, maximumIterations)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

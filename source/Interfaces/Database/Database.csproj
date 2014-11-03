@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="AdmittanceMatrix.cs" />
     <Compile Include="CalculatorDirect.cs" />
-    <Compile Include="CalculatorHelmCombined.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ICalculator.cs" />
     <Compile Include="IConnectionNetElements.cs" />
