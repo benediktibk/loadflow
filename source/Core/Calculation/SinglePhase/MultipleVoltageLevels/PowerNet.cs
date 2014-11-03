@@ -168,7 +168,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 return null;
 
             foreach (var node in _nodes)
-                node.UpdateVoltageAndPower(nodeResults, powerScaling);
+                node.UnscaleNodeResult(nodeResults, powerScaling);
 
             return nodeResults;
         }

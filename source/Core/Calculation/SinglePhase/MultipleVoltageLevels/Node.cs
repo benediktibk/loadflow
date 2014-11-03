@@ -159,7 +159,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return Id == other.Id;
         }
 
-        public void UpdateVoltageAndPower(IReadOnlyDictionary<long, NodeResult> nodeResults, double powerScaling)
+        public void UnscaleNodeResult(IReadOnlyDictionary<long, NodeResult> nodeResults, double powerScaling)
         {
             var scaler = new DimensionScaler(NominalVoltage, powerScaling);
             var nodeResult = nodeResults[Id];

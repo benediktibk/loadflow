@@ -448,23 +448,23 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void UpdateVoltage_NominalVoltageSetTo2AndVoltage4And5_NodeResultIsCorrect()
+        public void UnscaleNodeResult_NominalVoltageSetTo2AndVoltage4And5_NodeResultIsCorrect()
         {
             var nodeResults = new Dictionary<long, NodeResult>() { { _node.Id, new NodeResult { Voltage = new Complex(4, 5), Power = new Complex(6, 7) } } };
 
-            _node.UpdateVoltageAndPower(nodeResults, 2);
+            _node.UnscaleNodeResult(nodeResults, 2);
 
             ComplexAssert.AreEqual(8, 10, nodeResults[_node.Id].Voltage, 0.00001);
             ComplexAssert.AreEqual(12, 14, nodeResults[_node.Id].Power, 0.00001);
         }
 
         [TestMethod]
-        public void UpdateVoltage_MockDictionary_OneCallToFetchCorrectNode()
+        public void UnscaleNodeResult_MockDictionary_OneCallToFetchCorrectNode()
         {
             var nodeResults = new Mock<IReadOnlyDictionary<long, NodeResult>>();
             nodeResults.Setup(x => x[_node.Id]).Returns(new NodeResult());
 
-            _node.UpdateVoltageAndPower(nodeResults.Object, 2);
+            _node.UnscaleNodeResult(nodeResults.Object, 2);
 
             nodeResults.Verify(x => x[_node.Id], Times.Once);
         }
