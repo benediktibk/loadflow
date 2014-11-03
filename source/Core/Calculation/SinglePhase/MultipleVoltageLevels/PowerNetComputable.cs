@@ -5,7 +5,7 @@ using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class PowerNetComputable : PowerNet
+    public class PowerNetComputable : PowerNet, IPowerNetComputable
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 

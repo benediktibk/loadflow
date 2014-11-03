@@ -304,7 +304,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
             _powerNet.AddTwoWindingTransformer(2, 3, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.2), "");
 
-            var phaseShifts = _powerNet.GetNominalPhaseShiftPerNode();
+            var phaseShifts = _powerNet.CalculateNominalPhaseShiftPerNode();
 
             Assert.IsTrue(Angle.Equal(new Angle(), phaseShifts[_powerNet.GetNodeById(0)], 0.000001));
             Assert.IsTrue(Angle.Equal(new Angle(0.3), phaseShifts[_powerNet.GetNodeById(1)], 0.000001));

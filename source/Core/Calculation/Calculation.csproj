@@ -61,6 +61,8 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\IExternalReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\ImpedanceLoad.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\INodeGraph.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNet.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetComputable.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IPowerNetElement.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNodeGraph.cs" />

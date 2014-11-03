@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Calculation;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
@@ -31,7 +32,7 @@ namespace Database
         private bool _isCalculationRunning;
         private readonly Mutex _isCalculationRunningMutex;
         private readonly BackgroundWorker _backgroundWorker;
-        private SymmetricPowerNet _calculationPowerNet;
+        private SymmetricPowerNet _symmetricPowerNet;
         private IReadOnlyDictionary<long, NodeResult> _nodeResults;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
@@ -148,7 +149,7 @@ namespace Database
             if (!CreatePowerNet(null))
                 return false;
 
-            _calculationPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+            _symmetricPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
 
             return true;
         }
@@ -468,7 +469,7 @@ namespace Database
         {
             try
             {
-                _nodeResults = _calculationPowerNet.CalculateNodeVoltages();
+                _nodeResults = _symmetricPowerNet.CalculateNodeVoltages();
 
                 if (_nodeResults != null)
                     return;
@@ -485,31 +486,32 @@ namespace Database
         {
             Log("creating symmetric power net");
 
-            _calculationPowerNet = new SymmetricPowerNet(Frequency, nodeVoltageCalculator);
+            var singlePhasePowerNet = new PowerNetComputable(_frequency, nodeVoltageCalculator, new NodeGraph());
+            _symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
 
             try
             {
                 foreach (var node in Nodes)
-                    _calculationPowerNet.AddNode(node.Id, node.NominalVoltage, node.Name);
+                    _symmetricPowerNet.AddNode(node.Id, node.NominalVoltage, node.Name);
 
                 foreach (var line in TransmissionLines)
-                    _calculationPowerNet.AddTransmissionLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
+                    _symmetricPowerNet.AddTransmissionLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
                         line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
                         line.ShuntCapacityPerUnitLength, line.Length, line.TransmissionEquationModel);
 
                 foreach (var feedIn in FeedIns)
-                    _calculationPowerNet.AddFeedIn(feedIn.Node.Id,
+                    _symmetricPowerNet.AddFeedIn(feedIn.Node.Id,
                         new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
                         feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary);
 
                 foreach (var generator in Generators)
-                    _calculationPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
+                    _symmetricPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
 
                 foreach (var load in Loads)
-                    _calculationPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
+                    _symmetricPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
 
                 foreach (var transformer in Transformers)
-                    _calculationPowerNet.AddTwoWindingTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
+                    _symmetricPowerNet.AddTwoWindingTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
                         transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
                         transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, new Angle(), transformer.Name);
             }

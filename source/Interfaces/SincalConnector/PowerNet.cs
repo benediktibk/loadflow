@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
@@ -124,7 +125,7 @@ namespace SincalConnector
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
             var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
-            var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
+            var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var nodeResults = symmetricPowerNet.CalculateNodeVoltages();
@@ -427,15 +428,16 @@ namespace SincalConnector
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var result = new SymmetricPowerNet(Frequency, nodeVoltageCalculator);
+            var singlePhasePowerNet = new PowerNetComputable(Frequency, nodeVoltageCalculator, new NodeGraph());
+            var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
 
             foreach (var node in _nodes)
-                node.AddTo(result);
+                node.AddTo(symmetricPowerNet);
 
             foreach (var element in _netElements)
-                element.AddTo(result);
+                element.AddTo(symmetricPowerNet);
 
-            return result;
+            return symmetricPowerNet;
         }
     }
 }

@@ -6,7 +6,7 @@ using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class PowerNet
+    public class PowerNet : IPowerNet
     {
         private readonly double _frequency;
         private readonly List<Load> _loads;
@@ -112,7 +112,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
-        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
+        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode()
         {
             if (_feedIns.Count != 1)
                 throw new InvalidOperationException("there must exist exactly one feed in");

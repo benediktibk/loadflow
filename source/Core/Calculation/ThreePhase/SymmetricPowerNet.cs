@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Misc;
 
 namespace Calculation.ThreePhase
 {
     public class SymmetricPowerNet
     {
-        private readonly PowerNetComputable _singlePhasePowerNet;
+        private readonly IPowerNetComputable _singlePhasePowerNet;
 
-        public SymmetricPowerNet(double frequency, INodeVoltageCalculator nodeVoltageCalculator)
+        public SymmetricPowerNet(IPowerNetComputable singlePhasePowerNet)
         {
-            _singlePhasePowerNet = new PowerNetComputable(frequency, nodeVoltageCalculator, new NodeGraph());
+            _singlePhasePowerNet = singlePhasePowerNet;
         }
 
         public Angle SlackPhaseShift
@@ -92,9 +91,9 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
         }
 
-        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
+        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode()
         {
-            return _singlePhasePowerNet.GetNominalPhaseShiftPerNode();
+            return _singlePhasePowerNet.CalculateNominalPhaseShiftPerNode();
         }
     }
 }
