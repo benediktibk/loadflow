@@ -83,7 +83,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private void CheckPowerNet()
         {
-            if (CheckIfFloatingNodesExists())
+            if (NodeGraph.FloatingNodesExist)
                 throw new InvalidDataException("there must not be a floating node");
             if (CheckIfNominalVoltagesDoNotMatch())
                 throw new InvalidDataException("the nominal voltages must match on connected nodes");

@@ -6,7 +6,7 @@ using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class PowerNet : IReadOnlyPowerNet
+    public class PowerNet
     {
         private readonly double _frequency;
         private readonly List<Load> _loads;
@@ -98,16 +98,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public IReadOnlyNode GroundNode
         {
             get { return _groundNode; }
-        }
-
-        public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
-        {
-            return _nodeGraph.Segments;
-        }
-
-        public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodesOnSameVoltageLevel()
-        {
-            return _nodeGraph.SegmentsOnSameVoltageLevel;
         }
 
         public Angle GetSlackPhaseShift()
@@ -223,11 +213,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(impedanceLoad);
         }
 
-        public bool CheckIfFloatingNodesExists()
-        {
-            return GetSetsOfConnectedNodes().Count != 1;
-        }
-
         public bool CheckIfNominalVoltagesDoNotMatch()
         {
             return _elements.Exists(element => !element.NominalVoltagesMatch);
@@ -278,7 +263,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return result;
         }
 
-        private double CalculateAverageLoadFlow()
+        public double CalculateAverageLoadFlow()
         {
             var absoluteSum = 
                 _generators.Sum(generator => Math.Abs(generator.RealPower)) + 

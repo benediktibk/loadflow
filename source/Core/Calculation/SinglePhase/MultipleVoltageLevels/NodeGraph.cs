@@ -38,6 +38,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
+        public bool FloatingNodesExist
+        {
+            get { return Segments.Count != 1; }
+        }
+
         public void Add(IExternalReadOnlyNode node)
         {
             _nodes.Add(node);
