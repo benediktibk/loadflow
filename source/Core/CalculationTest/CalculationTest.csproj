@@ -94,6 +94,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\AdmittanceMatrixTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrixTest.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />
+    <Compile Include="NodeResultTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Calculation\Calculation.csproj">
