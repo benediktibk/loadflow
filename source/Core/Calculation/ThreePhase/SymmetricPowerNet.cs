@@ -81,18 +81,6 @@ namespace Calculation.ThreePhase
             return nodeResults;
         }
 
-        public Complex GetNodeVoltage(long nodeId)
-        {
-            var node = _singlePhasePowerNet.GetNodeById(nodeId);
-            return node.Voltage*Math.Sqrt(3);
-        }
-
-        public Complex GetNodePower(long nodeId)
-        {
-            var node = _singlePhasePowerNet.GetNodeById(nodeId);
-            return node.Power * 3;
-        }
-
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
         {
             _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
