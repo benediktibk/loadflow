@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -67,9 +68,17 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
-        public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            return _singlePhasePowerNet.CalculateNodeVoltages(nodeVoltageCalculator);
+            var nodeResults = _singlePhasePowerNet.CalculateNodeVoltages(nodeVoltageCalculator);
+
+            foreach (var nodeResult in nodeResults.Select(nodeResultWithId => nodeResultWithId.Value))
+            {
+                nodeResult.Voltage = nodeResult.Voltage*Math.Sqrt(3);
+                nodeResult.Power = nodeResult.Power*3;
+            }
+
+            return nodeResults;
         }
 
         public Complex GetNodeVoltage(long nodeId)

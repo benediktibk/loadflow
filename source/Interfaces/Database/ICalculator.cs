@@ -1,9 +1,11 @@
-﻿using Calculation.ThreePhase;
+﻿using System.Collections.Generic;
+using Calculation;
+using Calculation.ThreePhase;
 
 namespace Database
 {
     public interface ICalculator
     {
-        bool Calculate(SymmetricPowerNet powerNet);
+        IReadOnlyDictionary<long, NodeResult> Calculate(SymmetricPowerNet powerNet);
     }
 }

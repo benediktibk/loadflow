@@ -11,8 +11,6 @@ namespace SincalConnector
 {
     public class PowerNet
     {
-        #region variables
-
         private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
         private readonly IList<INetElement> _netElements;
@@ -25,10 +23,6 @@ namespace SincalConnector
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly IList<SlackGenerator> _slackGenerators;
         private readonly string _connectionString;
-
-        #endregion
-
-        #region constructor
 
         public PowerNet(string database) : this()
         {
@@ -79,10 +73,6 @@ namespace SincalConnector
             _threeWindingTransformers = new List<ThreeWindingTransformer>();
         }
 
-        #endregion
-
-        #region properties
-
         public double Frequency { get; private set; }
 
         public IReadOnlyList<IReadOnlyNode> Nodes
@@ -130,10 +120,6 @@ namespace SincalConnector
             get { return _twoWindingTransformers.Count + _threeWindingTransformers.Count > 0; }
         }
 
-        #endregion
-
-        #region public functions
-
         public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet();
@@ -141,13 +127,13 @@ namespace SincalConnector
             var nominalPhaseShifts = symmetricPowerNet.GetNominalPhaseShiftPerNode();
             var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.GetSlackPhaseShift() : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            var success = symmetricPowerNet.CalculateNodeVoltages(calculator);
+            var nodeResults = symmetricPowerNet.CalculateNodeVoltages(calculator);
 
-            if (!success)
+            if (nodeResults == null)
                 return false;
 
             foreach (var node in _nodes)
-                node.SetResult(symmetricPowerNet.GetNodeVoltage(node.Id), symmetricPowerNet.GetNodePower(node.Id),
+                node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
                     impedanceLoadsByNodeId.Get(node.Id));
 
             var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
@@ -215,10 +201,6 @@ namespace SincalConnector
             return results;
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAllFrequencies()
         {
             return new OleDbCommand("SELECT f FROM VoltageLevel GROUP BY f;");
@@ -228,10 +210,6 @@ namespace SincalConnector
         {
             return new OleDbCommand("SELECT Element_ID FROM Element ORDER BY Element_ID ASC;");
         }
-
-        #endregion
-
-        #region private functions
 
         private MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
         {
@@ -459,7 +437,5 @@ namespace SincalConnector
 
             return result;
         }
-
-        #endregion
     }
 }

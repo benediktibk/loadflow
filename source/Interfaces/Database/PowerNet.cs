@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Calculation;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
@@ -33,6 +34,7 @@ namespace Database
         private readonly Mutex _isCalculationRunningMutex;
         private readonly BackgroundWorker _backgroundWorker;
         private SymmetricPowerNet _calculationPowerNet;
+        private IReadOnlyDictionary<long, NodeResult> _nodeResults; 
         private ICalculator _calculator;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
@@ -474,11 +476,11 @@ namespace Database
 
         private void CalculationFinished(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (_calculationPowerNet != null)
+            if (_nodeResults != null)
             {
                 foreach (var node in Nodes)
                 {
-                    var voltage = _calculationPowerNet.GetNodeVoltage(node.Id);
+                    var voltage = _nodeResults[node.Id].Voltage;
                     node.VoltageReal = voltage.Real;
                     node.VoltageImaginary = voltage.Imaginary;
                 }
@@ -492,18 +494,16 @@ namespace Database
         {
             try
             {
-                var ok = _calculator.Calculate(_calculationPowerNet);
+                _nodeResults = _calculator.Calculate(_calculationPowerNet);
 
-                if (ok)
+                if (_nodeResults != null)
                     return;
 
                 Log("voltage collapse");
-                _calculationPowerNet = null;
             }
             catch (Exception exception)
             {
                 Log("an error occurred: " + exception.Message);
-                _calculationPowerNet = null;
             }
         }
 

@@ -161,11 +161,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void UpdateVoltageAndPower(IReadOnlyDictionary<long, NodeResult> nodeResults, double powerScaling)
         {
-            Debug.Assert(nodeResults.ContainsKey(Id));
             var scaler = new DimensionScaler(NominalVoltage, powerScaling);
             var nodeResult = nodeResults[Id];
-            Voltage = scaler.UnscaleVoltage(nodeResult.Voltage);
-            Power = scaler.UnscalePower(nodeResult.Power);
+            nodeResult.Voltage = scaler.UnscaleVoltage(nodeResult.Voltage);
+            nodeResult.Power = scaler.UnscalePower(nodeResult.Power);
         }
     }
 }

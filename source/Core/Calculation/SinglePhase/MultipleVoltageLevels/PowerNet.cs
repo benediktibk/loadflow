@@ -158,19 +158,19 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return CreateDictionaryPhaseShiftByNode(segments, phaseShiftBySegment);
         }
 
-        public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
             var powerScaling = DeterminePowerScaling();
             var calculator = new LoadFlowCalculator(powerScaling, nodeVoltageCalculator);
             var nodeResults = calculator.CalculateNodeVoltages(this);
 
             if (nodeResults == null)
-                return false;
+                return null;
 
             foreach (var node in _nodes)
                 node.UpdateVoltageAndPower(nodeResults, powerScaling);
 
-            return true;
+            return nodeResults;
         }
 
         public IExternalReadOnlyNode GetNodeById(long id)

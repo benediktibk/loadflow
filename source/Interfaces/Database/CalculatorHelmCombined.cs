@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Calculation;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 
@@ -6,22 +8,10 @@ namespace Database
 {
     public class CalculatorHelmCombined : ICalculator
     {
-        #region variables
-
         private readonly INodeVoltageCalculator _iterativeNodeVoltageCalculator;
         private readonly INodeVoltageCalculator _helmCombined;
         private readonly INodeVoltageCalculator _helmMulti;
         private readonly LogFunction _log;
-
-        #endregion
-
-        #region definitions
-
-        public delegate void LogFunction(string message);
-
-        #endregion
-
-        #region constructor
 
         public CalculatorHelmCombined(INodeVoltageCalculator iterativeNodeVoltageCalculator,
             int coefficientCountHelmSecondStep, int bitPrecisionSecondStep,
@@ -40,24 +30,22 @@ namespace Database
             _log = log;
         }
 
-        #endregion
+        public delegate void LogFunction(string message);
 
-        #region ICalculator
-
-        public bool Calculate(SymmetricPowerNet powerNet)
+        public IReadOnlyDictionary<long, NodeResult> Calculate(SymmetricPowerNet powerNet)
         {
             _log("trying to calculate the node voltages with the iterative method");
-            if (powerNet.CalculateNodeVoltages(_iterativeNodeVoltageCalculator))
-                return true;
+            var nodeResults = powerNet.CalculateNodeVoltages(_iterativeNodeVoltageCalculator);
+            if (nodeResults != null)
+                return nodeResults;
 
             _log("iterative method reported voltage collapse, trying HELM combined with the iterative method");
-            if (powerNet.CalculateNodeVoltages(_helmCombined))
-                return true;
+            nodeResults = powerNet.CalculateNodeVoltages(_helmCombined);
+            if (nodeResults != null)
+                return nodeResults;
 
             _log("HELM combined with the iterative method reported voltage collapse, trying HELM with multi precision");
             return powerNet.CalculateNodeVoltages(_helmMulti);
         }
-
-        #endregion
     }
 }
