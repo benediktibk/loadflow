@@ -15,7 +15,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestInitialize]
         public void SetUp()
         {
-            _powerNet = new PowerNetComputable(new CurrentIteration(0.00001, 1000), 50);
+            _powerNet = new PowerNetComputable(50, new CurrentIteration(0.00001, 1000), new NodeGraph());
         }
 
         [TestMethod]

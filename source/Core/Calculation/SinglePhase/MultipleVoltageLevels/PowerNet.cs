@@ -24,7 +24,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly IdGenerator _idGeneratorNodes;
         private readonly INodeGraph _nodeGraph;
 
-        public PowerNet(double frequency)
+        public PowerNet(double frequency, INodeGraph nodeGraph)
         {
             _frequency = frequency;
             _loads = new List<Load>();
@@ -42,7 +42,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
-            _nodeGraph = new NodeGraph();
+            _nodeGraph = nodeGraph;
         }
 
         public IReadOnlyNodeGraph NodeGraph

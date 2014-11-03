@@ -10,13 +10,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     public class NodeGraphTest
     {
         private PowerNet _powerNet;
-        private IReadOnlyNodeGraph _nodeGraph;
+        private NodeGraph _nodeGraph;
 
         [TestInitialize]
         public void SetUp()
         {
-            _powerNet = new PowerNet(50);
-            _nodeGraph = _powerNet.NodeGraph;
+            _nodeGraph = new NodeGraph();
+            _powerNet = new PowerNet(50, _nodeGraph);
         }
 
         [TestMethod]

@@ -9,7 +9,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
-        public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, double frequency) : base(frequency)
+        public PowerNetComputable(double frequency, INodeVoltageCalculator nodeVoltageCalculator, INodeGraph nodeGraph) : base(frequency, nodeGraph)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }

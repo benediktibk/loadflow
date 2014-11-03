@@ -13,7 +13,7 @@ namespace Calculation.ThreePhase
 
         public SymmetricPowerNet(double frequency, INodeVoltageCalculator nodeVoltageCalculator)
         {
-            _singlePhasePowerNet = new PowerNetComputable(nodeVoltageCalculator, frequency);
+            _singlePhasePowerNet = new PowerNetComputable(frequency, nodeVoltageCalculator, new NodeGraph());
         }
 
         public void AddNode(int id, double nominalVoltage, string name)

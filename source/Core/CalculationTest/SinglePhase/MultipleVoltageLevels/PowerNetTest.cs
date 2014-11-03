@@ -3,6 +3,7 @@ using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using Moq;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
@@ -10,11 +11,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     public class PowerNetTest
     {
         private PowerNet _powerNet;
+        private Mock<INodeGraph> _nodeGraphMock;
 
         [TestInitialize]
         public void SetUp()
         {
-            _powerNet = new PowerNet(50);
+            _nodeGraphMock = new Mock<INodeGraph>();
+            _powerNet = new PowerNet(50, _nodeGraphMock.Object);
         }
 
         [TestMethod]
