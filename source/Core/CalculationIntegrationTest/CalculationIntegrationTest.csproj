@@ -64,6 +64,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodWithIterativeMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodTest.cs" />
+    <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Utilities\Misc\Misc.csproj">
