@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.ThreePhase;
@@ -107,6 +108,30 @@ namespace CalculationTest.ThreePhase
 
             _singlePhasePowerNetMock.Verify(x => x.AddImpedanceLoad(3, new Complex(4, 5)),
                 Times.Once);
+        }
+
+        [TestMethod]
+        public void CalculateAdmittanceMatrix_MockPowerNet_MockGotCallToCalculateAdmittanceMatrix()
+        {
+            AdmittanceMatrix matrix;
+            IReadOnlyList<string> nodeNames;
+            double powerBase;
+            _singlePhasePowerNetMock.Setup(x => x.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase));
+
+            _powerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+
+            _singlePhasePowerNetMock.Verify(x => x.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase), Times.Once);
+        }
+
+        [TestMethod]
+        public void CalculateNominalPhaseShiftPerNode_MockPowerNet_MockGotCallToCalculateNominalPhaseShiftPerNode()
+        {
+            var resultShouldBe = new Dictionary<IExternalReadOnlyNode, Angle>();
+            _singlePhasePowerNetMock.Setup(x => x.CalculateNominalPhaseShiftPerNode()).Returns(resultShouldBe);
+
+            var result = _powerNet.CalculateNominalPhaseShiftPerNode();
+
+            Assert.AreEqual(resultShouldBe, result);
         }
     }
 }
