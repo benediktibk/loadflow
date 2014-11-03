@@ -13,10 +13,10 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddVoltageControlledCurrentSource_AmplificationOf2_CurrentsAreCorrect()
         {
-            var firstNode = new Node(0, 1, 0, "");
-            var secondNode = new Node(1, 1, 0, "");
-            var thirdNode = new Node(2, 1, 0, "");
-            var fourthNode = new Node(3, 1, 0, "");
+            var firstNode = new Node(0, 1, "");
+            var secondNode = new Node(1, 1, "");
+            var thirdNode = new Node(2, 1, "");
+            var fourthNode = new Node(3, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {firstNode, 0},
@@ -41,8 +41,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddConnection_1_CurrentsAreCorrect()
         {
-            var firstNode = new Node(0, 1, 0, "");
-            var secondNode = new Node(1, 1, 0, "");
+            var firstNode = new Node(0, 1, "");
+            var secondNode = new Node(1, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {firstNode, 0},
@@ -63,9 +63,9 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddGyrator_AmplificationOf2_CurrentsAreCorrect()
         {
-            var firstNode = new Node(0, 1, 0, "");
-            var secondNode = new Node(1, 1, 0, "");
-            var thirdNode = new Node(2, 1, 0, "");
+            var firstNode = new Node(0, 1, "");
+            var secondNode = new Node(1, 1, "");
+            var thirdNode = new Node(2, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>()
             {
                 {firstNode, 0},
@@ -87,10 +87,10 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf10_CurrentsAreCorrect()
         {
-            var input = new Node(0, 1, 0, "");
-            var output = new Node(1, 1, 0, "");
-            var ground = new Node(-1, 1, 0, "");
-            var internalNode = new Node(-2, 1, 0, "");
+            var input = new Node(0, 1, "");
+            var output = new Node(1, 1, "");
+            var ground = new Node(-1, 1, "");
+            var internalNode = new Node(-2, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -116,10 +116,10 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf10AndResistanceWeightOf100_CurrentsAreCorrect()
         {
-            var input = new Node(0, 1, 0, "");
-            var output = new Node(1, 1, 0, "");
-            var ground = new Node(-1, 1, 0, "");
-            var internalNode = new Node(-2, 1, 0, "");
+            var input = new Node(0, 1, "");
+            var output = new Node(1, 1, "");
+            var ground = new Node(-1, 1, "");
+            var internalNode = new Node(-2, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -145,10 +145,10 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddIdealTransformer_AmplificationOf1AndResistanceWeightOf100_CurrentsAreCorrect()
         {
-            var input = new Node(0, 1, 0, "");
-            var output = new Node(1, 1, 0, "");
-            var ground = new Node(-1, 1, 0, "");
-            var internalNode = new Node(-2, 1, 0, "");
+            var input = new Node(0, 1, "");
+            var output = new Node(1, 1, "");
+            var ground = new Node(-1, 1, "");
+            var internalNode = new Node(-2, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},
@@ -174,12 +174,12 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void AddIdealTransformer_OneConnectionBeforeAndAfter_CurrentsAreCorrect()
         {
-            var input = new Node(0, 1, 0, "");
-            var inputTransformer = new Node(10, 1, 0, "");
-            var output = new Node(1, 1, 0, "");
-            var outputTransformer = new Node(11, 1, 0, "");
-            var ground = new Node(-1, 1, 0, "");
-            var internalNode = new Node(-2, 1, 0, "");
+            var input = new Node(0, 1, "");
+            var inputTransformer = new Node(10, 1, "");
+            var output = new Node(1, 1, "");
+            var outputTransformer = new Node(11, 1, "");
+            var ground = new Node(-1, 1, "");
+            var internalNode = new Node(-2, 1, "");
             var nodeIndexes = new Dictionary<IReadOnlyNode, int>
             {
                 {input, 0},

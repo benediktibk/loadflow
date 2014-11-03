@@ -23,8 +23,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneFeedInAndOneLoad_CorrectResults()
         {
-            _powerNet.AddNode(0, 100, 0, "");
-            _powerNet.AddNode(1, 100, 0, "");
+            _powerNet.AddNode(0, 100, "");
+            _powerNet.AddNode(1, 100, "");
             _powerNet.AddFeedIn(0, new Complex(100, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
@@ -41,8 +41,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_GeneratorAndLoad_CorrectResults()
         {
-            _powerNet.AddNode(0, 1, 0, "");
-            _powerNet.AddNode(1, 1, 0, "");
+            _powerNet.AddNode(0, 1, "");
+            _powerNet.AddNode(1, 1, "");
             _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
@@ -60,8 +60,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_SimpleConnectionFromFeedInToLoad_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 1000, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 1000, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
@@ -76,8 +76,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_SimpleConnectionFromFeedInToLoadWithNoPowerScaling_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 1000, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 1000, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
@@ -92,8 +92,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNominalRatio_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 400, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 400, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTwoWindingTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
@@ -108,8 +108,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNominalRatioAndNoPowerScaling_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 400, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 400, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTwoWindingTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
@@ -124,8 +124,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNominalRatioSecondVersion_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 400, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 400, "");
             _powerNet.AddFeedIn(0, new Complex(1002, 0), 0, 1.1, 1);
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
@@ -140,8 +140,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNominalRatioAndSmallLoad_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 400, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 400, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-200, 0));
@@ -156,8 +156,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransformerWithNoLoad_VoltagesAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 400, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 400, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(0, 0));
@@ -172,8 +172,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneTransmissionLine_VoltagesAndPowersAreCorrect()
         {
-            _powerNet.AddNode(0, 1000, 0, "");
-            _powerNet.AddNode(1, 1000, 0, "");
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 1000, "");
             _powerNet.AddFeedIn(0, new Complex(1000, 0), 0, 1.1, 1);
             _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
             _powerNet.AddLoad(1, new Complex(-1e5, 0));
@@ -194,8 +194,8 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestMethod]
         public void CalculateNodeVoltages_OneImpedanceLoad_VoltagesAndPowersAreCorrect()
         {
-            _powerNet.AddNode(0, 230, 0, "");
-            _powerNet.AddNode(1, 230, 0, "");
+            _powerNet.AddNode(0, 230, "");
+            _powerNet.AddNode(1, 230, "");
             _powerNet.AddFeedIn(0, new Complex(230, 0), 0, 0, 0);
             _powerNet.AddImpedanceLoad(1, new Complex(22, 0));
             _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
