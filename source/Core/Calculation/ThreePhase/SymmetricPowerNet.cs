@@ -89,8 +89,7 @@ namespace Calculation.ThreePhase
 
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
         {
-            powerBase = _singlePhasePowerNet.DeterminePowerScaling();
-            _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, powerBase);
+            _singlePhasePowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
         }
 
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()

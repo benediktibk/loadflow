@@ -42,12 +42,23 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return nodeResultsWithId;
         }
 
-        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, double powerScaling)
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerScaling)
         {
+            powerScaling = DeterminePowerScaling();
             var nodes = new List<IReadOnlyNode>(GetAllNecessaryNodes());
             var nodeIndexes = DetermineNodeIndexes(nodes);
             matrix = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerScaling);
             nodeNames = nodes.Select(node => node.Name).ToList();
+        }
+
+        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
+        {
+            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
+
+            for (var i = 0; i < nodes.Count; ++i)
+                nodeIndexes.Add(nodes[i], i);
+
+            return nodeIndexes;
         }
 
         private SingleVoltageLevel.PowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances, double scaleBasePower)
@@ -69,16 +80,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var admittances = new AdmittanceMatrix(new SingleVoltageLevel.AdmittanceMatrix(nodes.Count), nodeIndexes);
             FillInAdmittances(admittances, scaleBasePower);
             return admittances;
-        }
-
-        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndexes(IReadOnlyList<IReadOnlyNode> nodes)
-        {
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
-
-            for (var i = 0; i < nodes.Count; ++i)
-                nodeIndexes.Add(nodes[i], i);
-
-            return nodeIndexes;
         }
 
         private void CheckPowerNet()
