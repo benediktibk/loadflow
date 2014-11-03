@@ -76,6 +76,9 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\TwoWindingTransformer.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IAdmittanceMatrix.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNet.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNetComputable.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyAdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputable.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionLongDouble.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionMulti.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNet.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PqBus.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PvBus.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNet.cs" />

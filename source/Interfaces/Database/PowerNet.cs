@@ -11,9 +11,11 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
+using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace Database
 {
@@ -486,7 +488,8 @@ namespace Database
         {
             Log("creating symmetric power net");
 
-            var singlePhasePowerNet = new PowerNetComputable(_frequency, nodeVoltageCalculator, new NodeGraph());
+            var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
+            var singlePhasePowerNet = new PowerNetComputable(_frequency, singleVoltagePowerNetFactory, new NodeGraph());
             _symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
 
             try

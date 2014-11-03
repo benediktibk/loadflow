@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class PowerNet
+    public class PowerNet : IPowerNet
     {
         private readonly int _nodeCount;
         private readonly IList<Node> _nodes;
@@ -20,15 +20,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodeCount = admittances.NodeCount;
             _admittances = admittances;
             _nodes = InitializeNodes();
-        }
-
-        public void SetNodeResults(IList<NodeResult> nodeResults)
-        {
-            for (var i = 0; i < NodeCount; ++i)
-            {
-                _nodes[i].Voltage = nodeResults[i].Voltage;
-                _nodes[i].Power = nodeResults[i].Power;
-            }
         }
 
         public void SetNode(int i, Node node)

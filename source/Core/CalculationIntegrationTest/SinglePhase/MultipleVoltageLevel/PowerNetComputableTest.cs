@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
 {
@@ -15,7 +17,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         [TestInitialize]
         public void SetUp()
         {
-            _powerNet = new PowerNetComputable(50, new CurrentIteration(0.00001, 1000), new NodeGraph());
+            _powerNet = new PowerNetComputable(50, new PowerNetFactory(new CurrentIteration(0.00001, 1000)), new NodeGraph());
         }
 
         [TestMethod]

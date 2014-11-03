@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using MathNet.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace CalculationIntegrationTest.ThreePhase
 {
@@ -25,9 +27,9 @@ namespace CalculationIntegrationTest.ThreePhase
             _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.0000001, 1000);
             _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00000001, 80, new PrecisionMulti(200));
             _currentIterationCalculator = new CurrentIteration(0.0000001, 1000);
-            _powerNetWithNewtonRaphson = new SymmetricPowerNet(new PowerNetComputable(50, _newtonRaphsonCalculator, new NodeGraph()));
-            _powerNetWithHelm = new SymmetricPowerNet(new PowerNetComputable(50, _helmCalculator, new NodeGraph()));
-            _powerNetWithCurrentIteration = new SymmetricPowerNet(new PowerNetComputable(50, _currentIterationCalculator, new NodeGraph()));
+            _powerNetWithNewtonRaphson = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_newtonRaphsonCalculator), new NodeGraph()));
+            _powerNetWithHelm = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_helmCalculator), new NodeGraph()));
+            _powerNetWithCurrentIteration = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_currentIterationCalculator), new NodeGraph()));
         }
 
         [TestMethod]

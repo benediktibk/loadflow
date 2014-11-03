@@ -9,7 +9,7 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
-    public class PowerNetComputable : PowerNet
+    public class PowerNetComputable : PowerNet, IPowerNetComputable
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 

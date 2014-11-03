@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
+using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace SincalConnector
 {
@@ -428,7 +430,7 @@ namespace SincalConnector
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var singlePhasePowerNet = new PowerNetComputable(Frequency, nodeVoltageCalculator, new NodeGraph());
+            var singlePhasePowerNet = new PowerNetComputable(Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
             var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
 
             foreach (var node in _nodes)

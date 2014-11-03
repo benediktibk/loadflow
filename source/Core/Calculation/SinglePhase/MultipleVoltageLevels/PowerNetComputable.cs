@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class PowerNetComputable : PowerNet, IPowerNetComputable
     {
-        private readonly INodeVoltageCalculator _nodeVoltageCalculator;
+        private readonly IPowerNetFactory _singleVoltagePowerNetFactory;
 
-        public PowerNetComputable(double frequency, INodeVoltageCalculator nodeVoltageCalculator, INodeGraph nodeGraph) : base(frequency, nodeGraph)
+        public PowerNetComputable(double frequency, IPowerNetFactory singleVoltagePowerNetFactory, INodeGraph nodeGraph) : base(frequency, nodeGraph)
         {
-            _nodeVoltageCalculator = nodeVoltageCalculator;
+            _singleVoltagePowerNetFactory = singleVoltagePowerNetFactory;
         }
 
         public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
@@ -61,9 +61,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return nodeIndexes;
         }
 
-        private SingleVoltageLevel.PowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances, double scaleBasePower)
+        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances, double scaleBasePower)
         {
-            var singleVoltagePowerNet = new SingleVoltageLevel.PowerNetComputable(_nodeVoltageCalculator, admittances.SingleVoltageAdmittanceMatrix, 1);
+            var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1);
 
             foreach (var node in nodes)
             {
