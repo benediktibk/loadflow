@@ -24,6 +24,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Node _groundNode;
         private readonly FeedIn _groundFeedIn;
         private readonly IdGenerator _idGeneratorNodes;
+        private readonly NodeGraph _nodeGraph;
 
         public PowerNet(double frequency)
         {
@@ -43,6 +44,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
+            _nodeGraph = new NodeGraph();
         }
 
         public IReadOnlyList<IExternalReadOnlyNode> Nodes
@@ -97,46 +99,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
         {
-            var segments = new List<ISet<IExternalReadOnlyNode>>();
-
-            if (_nodes.Count == 0)
-                return segments;
-
-            foreach (var node in _nodes)
-            {
-                var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
-
-                if (alreadyContained)
-                    continue;
-
-                var newSegment = new HashSet<IExternalReadOnlyNode>();
-                node.AddConnectedNodes(newSegment);
-                segments.Add(newSegment);
-            }
-
-            return segments;
+            return _nodeGraph.Segments;
         }
 
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodesOnSameVoltageLevel()
         {
-            var segments = new List<ISet<IExternalReadOnlyNode>>();
-
-            if (_nodes.Count == 0)
-                return segments;
-
-            foreach (var node in _nodes)
-            {
-                var alreadyContained = segments.Count(segment => segment.Contains(node)) > 0;
-
-                if (alreadyContained)
-                    continue;
-
-                var newSegment = new HashSet<IExternalReadOnlyNode>();
-                node.AddConnectedNodesOnSameVoltageLevel(newSegment);
-                segments.Add(newSegment);
-            }
-
-            return segments;
+            return _nodeGraph.SegmentsOnSameVoltageLevel;
         }
 
         public Angle GetSlackPhaseShift()
@@ -174,6 +142,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var node = new Node(id, nominalVoltage, nominalPhaseShift, name);
             _nodes.Add(node);
             _nodesById.Add(id, node);
+            _nodeGraph.Add(node);
         }
 
         public void AddTransmissionLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
