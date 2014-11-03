@@ -9,14 +9,8 @@ namespace DatabaseUI
 {
     public class NodeVoltageCalculatorSelectionToStringConverter : IValueConverter
     {
-        #region variables
-
         private readonly Dictionary<NodeVoltageCalculatorSelection, string> _mappingForward;
         private readonly Dictionary<string, NodeVoltageCalculatorSelection> _mappingBackward;
-
-        #endregion
-
-        #region public functions
 
         public NodeVoltageCalculatorSelectionToStringConverter()
         {
@@ -69,10 +63,6 @@ namespace DatabaseUI
             }
         }
 
-        #endregion
-
-        #region private functions
-
         private static string Convert(NodeVoltageCalculatorSelection calculator)
         {
             switch (calculator)
@@ -97,7 +87,5 @@ namespace DatabaseUI
                     throw new ArgumentOutOfRangeException("calculator");
             }
         }
-
-        #endregion
     }
 }

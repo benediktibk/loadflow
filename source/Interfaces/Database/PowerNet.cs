@@ -18,8 +18,6 @@ namespace Database
 {
     public class PowerNet : INotifyPropertyChanged
     {
-        #region variables
-
         private ObservableCollection<Node> _nodes; 
         private ObservableCollection<TransmissionLine> _transmissionLines;
         private ObservableCollection<Load> _loads;
@@ -38,10 +36,6 @@ namespace Database
         private ICalculator _calculator;
         private string _logMessages;
         private NodeVoltageCalculatorSelection _calculatorSelection;
-
-        #endregion
-
-        #region constructor
 
         public PowerNet()
         {
@@ -85,10 +79,6 @@ namespace Database
             CalculatorSelection = (NodeVoltageCalculatorSelection) reader.Parse<int>("CalculatorSelection");
             Connection = connection;
         }
-
-        #endregion
-
-        #region public functions
 
         public void CalculateNodeVoltagesInBackground()
         {
@@ -226,10 +216,6 @@ namespace Database
         {
             LogMessages += message + "\r\n";
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -405,18 +391,10 @@ namespace Database
         public bool ReactToChangesWithDatabaseUpdate { get; set; }
 
         public IConnectionNetElements Connection { get; set; }
-
-        #endregion
-
-        #region events
-
+        
         public delegate void NodesChangedEventHandler();
 
         public event NodesChangedEventHandler NodesChanged;
-
-        #endregion
-
-        #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -430,10 +408,6 @@ namespace Database
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        #endregion
-
-        #region private functions
 
         private void UpdateNetElementCount(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -549,10 +523,6 @@ namespace Database
             return true;
         }
 
-        #endregion
-
-        #region database update event handler
-
         private void UpdateDatabaseWithChangedNetElements(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (ReactToChangesWithDatabaseUpdate)
@@ -579,10 +549,6 @@ namespace Database
             Connection.Update(node);
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -595,7 +561,5 @@ namespace Database
         {
             return new SqlCommand("SELECT * FROM powernets;");
         }
-
-        #endregion
     }
 }
