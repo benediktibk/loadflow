@@ -5,24 +5,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class IdGenerator
     {
-        #region variables
-
         private readonly HashSet<int> _inUse;
         private int _creationCounter;
-
-        #endregion
-
-        #region constructor
 
         public IdGenerator()
         {
             _inUse = new HashSet<int>();
             _creationCounter = 0;
         }
-
-        #endregion
-
-        #region public functions
 
         public bool IsAlreadyUsed(int id)
         {
@@ -50,15 +40,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return _creationCounter;
         }
 
-        #endregion
-
-        #region properties
-
         public int Count
         {
             get { return _inUse.Count; }
         }
-
-        #endregion
     }
 }
