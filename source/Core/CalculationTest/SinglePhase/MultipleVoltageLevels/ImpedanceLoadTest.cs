@@ -12,15 +12,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class ImpedanceLoadTest
     {
-        #region variables
-
         private Node _node;
         private Node _groundNode;
         private ImpedanceLoad _impedanceLoad;
-
-        #endregion
-
-        #region initialization
         
         [TestInitialize]
         public void SetUp()
@@ -29,10 +23,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _groundNode = new Node(1, 0, 0, "");
             _impedanceLoad = new ImpedanceLoad(_node, new Complex(4, 1));
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_NodeWithNominalVoltage3_NominalVoltageIs3()
@@ -132,7 +122,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var admittanceScaled = 9/(5*new Complex(4, 1));
             admittanceMatrix.Verify(x => x.AddConnection(_node, _groundNode, It.Is<Complex>(value => (admittanceScaled - value).MagnitudeSquared() < 0.000001)), Times.Once);
         }
-
-        #endregion
     }
 }

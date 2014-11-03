@@ -9,7 +9,6 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
-using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 using LoadFlowCalculator = Calculation.SinglePhase.MultipleVoltageLevels.LoadFlowCalculator;
 using PowerNet = Calculation.SinglePhase.MultipleVoltageLevels.PowerNet;
 

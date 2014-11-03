@@ -2,27 +2,19 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
 using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
-using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class FeedInTest
     {
-        #region variables
-
         private Node _node;
         private FeedIn _feedIn;
         private IdGenerator _idGenerator;
-
-        #endregion
-
-        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -31,10 +23,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _node = new Node(0, 2, 0, "");
             _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_ValidVoltageSet_VoltageIsCorrect()
@@ -201,7 +189,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.IsFalse(feedIn.EnforcesSlackBus);
             Assert.IsFalse(node.MustBePVBus);
         }
-
-        #endregion
     }
 }
