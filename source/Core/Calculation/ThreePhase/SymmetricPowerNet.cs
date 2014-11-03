@@ -9,22 +9,12 @@ namespace Calculation.ThreePhase
 {
     public class SymmetricPowerNet
     {
-        #region variables
-
         private readonly PowerNet _singlePhasePowerNet;
-
-        #endregion
-
-        #region constructor
 
         public SymmetricPowerNet(double frequency)
         {
             _singlePhasePowerNet = new PowerNet(frequency);
         }
-
-        #endregion
-
-        #region add functions
 
         public void AddNode(int id, double nominalVoltage, string name)
         {
@@ -77,10 +67,6 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
-        #endregion
-
-        #region calculations
-
         public bool CalculateNodeVoltages(INodeVoltageCalculator nodeVoltageCalculator)
         {
             return _singlePhasePowerNet.CalculateNodeVoltages(nodeVoltageCalculator);
@@ -112,7 +98,5 @@ namespace Calculation.ThreePhase
         {
             return _singlePhasePowerNet.GetNominalPhaseShiftPerNode();
         }
-
-        #endregion
     }
 }

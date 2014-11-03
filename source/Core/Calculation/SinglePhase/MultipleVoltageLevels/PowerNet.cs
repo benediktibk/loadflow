@@ -10,8 +10,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class PowerNet : IReadOnlyPowerNet
     {
-        #region variables
-
         private readonly double _frequency;
         private readonly List<Load> _loads;
         private readonly List<ImpedanceLoad> _impedanceLoads;
@@ -26,10 +24,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Node _groundNode;
         private readonly FeedIn _groundFeedIn;
         private readonly IdGenerator _idGeneratorNodes;
-
-        #endregion
-
-        #region public functions
 
         public PowerNet(double frequency)
         {
@@ -49,6 +43,51 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
+        }
+
+        public int LoadCount
+        {
+            get { return _loads.Count; }
+        }
+
+        public int ImpedanceLoadCount
+        {
+            get { return _impedanceLoads.Count; }
+        }
+
+        public int LineCount
+        {
+            get { return _transmissionLines.Count; }
+        }
+
+        public int FeedInCount
+        {
+            get { return _feedIns.Count; }
+        }
+
+        public int TwoWindingTransformerCount
+        {
+            get { return _twoWindingTransformers.Count; }
+        }
+
+        public int ThreeWindingTransformerCount
+        {
+            get { return _threeWindingTransformers.Count; }
+        }
+
+        public int GeneratorCount
+        {
+            get { return _generators.Count; }
+        }
+
+        public int NodeCount
+        {
+            get { return _loads.Count; }
+        }
+
+        public IReadOnlyNode GroundNode
+        {
+            get { return _groundNode; }
         }
 
         public IList<ISet<IExternalReadOnlyNode>> GetSetsOfConnectedNodes()
@@ -146,10 +185,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             calculator.CalculateAdmittanceMatrix(out matrix, out nodeNames, this);
         }
 
-        #endregion
-
-        #region add functions
-
         public void AddNode(int id, double nominalVoltage, double nominalPhaseShift, string name)
         {
             _idGeneratorNodes.Add(id);
@@ -239,10 +274,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(impedanceLoad);
         }
 
-        #endregion
-
-        #region IReadOnlyPowerNet functions
-
         public bool CheckIfFloatingNodesExists()
         {
             return GetSetsOfConnectedNodes().Count != 1;
@@ -286,59 +317,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             foreach (var element in _elements)
                 element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
         }
-
-        #endregion
-        
-        #region IReadOnlyPowerNet properties
-
-        public int LoadCount
-        {
-            get { return _loads.Count; }
-        }
-
-        public int ImpedanceLoadCount
-        {
-            get { return _impedanceLoads.Count; }
-        }
-
-        public int LineCount
-        {
-            get { return _transmissionLines.Count; }
-        }
-
-        public int FeedInCount
-        {
-            get { return _feedIns.Count; }
-        }
-
-        public int TwoWindingTransformerCount
-        {
-            get { return _twoWindingTransformers.Count; }
-        }
-
-        public int ThreeWindingTransformerCount
-        {
-            get { return _threeWindingTransformers.Count; }
-        }
-
-        public int GeneratorCount
-        {
-            get { return _generators.Count; }
-        }
-
-        public int NodeCount
-        {
-            get { return _loads.Count; }
-        }
-
-        public IReadOnlyNode GroundNode
-        {
-            get { return _groundNode; }
-        }
-
-        #endregion
-
-        #region private functions
 
         private Node GetNodeByIdInternal(long name)
         {
@@ -425,7 +403,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         }
 
         private static void AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(ISet<IExternalReadOnlyNode> upperSegment, ISet<IExternalReadOnlyNode> lowerSegment,
-            Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle> phaseShiftsPerTransformer, Angle phaseShift)
+            IDictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle> phaseShiftsPerTransformer, Angle phaseShift)
         {
             var segmentPair = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(upperSegment, lowerSegment);
             var segmentPairInverse = new Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>(lowerSegment,
@@ -517,9 +495,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 phaseShiftBySegmentToAllSegments.Add(secondSegment,
                     new Tuple<ISet<IExternalReadOnlyNode>, Angle>(firstSegment, (-1)*phaseShift));
             }
+
             return phaseShiftBySegmentToAllSegments;
         }
-
-        #endregion
     }
 }
