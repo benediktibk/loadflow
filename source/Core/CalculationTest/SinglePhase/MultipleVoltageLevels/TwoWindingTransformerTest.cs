@@ -13,18 +13,12 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class TwoWindingTransformerTest
     {
-        #region variables
-
         private Node _upperSideNode;
         private Node _lowerSideNode;
         private Node _groundNode;
         private TwoWindingTransformer _transformerWithNotNominalRatio;
         private TwoWindingTransformer _transformerWithNominalRatio;
         private IdGenerator _idGenerator;
-
-        #endregion
-
-        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -36,10 +30,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _transformerWithNotNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, new Angle(0.4), "", _idGenerator);
             _transformerWithNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, new Angle(6), "", _idGenerator);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void UpperSideNominalVoltage_UpperSideNodeHasNominalVoltage10_10()
@@ -222,7 +212,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.AreEqual(6, _transformerWithNominalRatio.NominalPhaseShift.Radiant, 0.00001);
         }
-
-        #endregion
     }
 }

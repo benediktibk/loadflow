@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
 using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
-using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class TransmissionLineTest
     {
-        #region variables
-
         private TransmissionLine _transmissionLineInvalid;
         private Node _sourceNodeInvalid;
         private Node _targetNodeInvalid;
@@ -23,10 +19,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         private TransmissionLine _transmissionLineWithLengthAndShuntValues;
         private Node _sourceNodeValid;
         private Node _targetNodeValid;
-
-        #endregion
-
-        #region initialization
 
         [TestInitialize]
         public void SetUp()
@@ -39,10 +31,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _transmissionLineWithOnlyLengthValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
             _transmissionLineWithLengthAndShuntValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
-
-        #endregion
-
-        #region tests
 
         [TestMethod]
         public void Constructor_OnlyLengthValues_LengthImpedanceIsCorrect()
@@ -191,7 +179,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             Assert.IsTrue(_transmissionLineWithLengthAndShuntValues.NeedsGroundNode);
         }
-
-        #endregion
     }
 }
