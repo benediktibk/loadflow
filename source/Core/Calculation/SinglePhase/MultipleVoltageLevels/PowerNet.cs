@@ -142,7 +142,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public Angle GetSlackPhaseShift()
         {
             if (_feedIns.Count != 1)
-                throw new InvalidOperationException("there must exist exact one feed in");
+                throw new InvalidOperationException("there must exist exactly one feed in");
 
             var feedIn = _feedIns.First();
             return new Angle(feedIn.Voltage.Phase);
@@ -151,7 +151,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> GetNominalPhaseShiftPerNode()
         {
             if (_feedIns.Count != 1)
-                throw new InvalidOperationException("there must exist exact one feed in");
+                throw new InvalidOperationException("there must exist exactly one feed in");
 
             var feedIn = _feedIns.First();
             var segments = GetSetsOfConnectedNodesOnSameVoltageLevel();
