@@ -91,6 +91,37 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqAndPv);
         }
 
+        [TestMethod]
+        public void CalculateUnknownVoltages_ThreePqBuses_CorrectResults()
+        {
+            var admittanceMatrix = new AdmittanceMatrix(4);
+            admittanceMatrix.AddConnection(0, 1, 1 / new Complex(2, 1));
+            admittanceMatrix.AddConnection(1, 2, 1 / new Complex(1, 2));
+            admittanceMatrix.AddConnection(1, 3, 1 / new Complex(3, 2.5));
+            var feedInVoltage = new Complex(10, 0.1);
+            var loadVoltageOne = new Complex(9.98, 0.09);
+            var loadVoltageTwo = new Complex(9.96, 0.07);
+            var loadVoltageThree = new Complex(9.95, 0.08);
+            var knownVoltages = new DenseVector(new[] { _feedInVoltage });
+            var initialVoltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0), new Complex(10, 0) });
+            var correctVoltages = new DenseVector(new[] { feedInVoltage, loadVoltageOne, loadVoltageTwo, loadVoltageThree });
+            var correctPowers = PowerNetComputable.CalculateAllPowers(admittanceMatrix, correctVoltages);
+            var indexOfNodesWithKnownVoltage = new List<int> { 0 };
+            var indexOfNodesWithUnknownVoltage = new List<int> { 1, 2, 3 };
+            Vector<Complex> constantCurrents;
+            var admittanceMatrixReduced = admittanceMatrix.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage, knownVoltages, out constantCurrents);
+            var pqBuses = new List<PqBus> { new PqBus(0, correctPowers[1]), new PqBus(1, correctPowers[2]), new PqBus(2, correctPowers[3]) };
+            var pvBuses = new List<PvBus>();
+
+            var result = _nodeVoltageCalculator.CalculateUnknownVoltages(admittanceMatrixReduced,
+                admittanceMatrix.CalculateRowSums(), 10, initialVoltages, constantCurrents, pqBuses, pvBuses);
+
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(loadVoltageThree.Magnitude, result[2].Magnitude, PrecisionPqOnly);
+        }
+
         public abstract INodeVoltageCalculator CreateNodeVoltageCalculator();
     }
 }
