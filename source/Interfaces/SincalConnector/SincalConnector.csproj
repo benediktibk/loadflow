@@ -66,9 +66,11 @@
     <Compile Include="Generator.cs" />
     <Compile Include="ImpedanceLoad.cs" />
     <Compile Include="INetElement.cs" />
+    <Compile Include="IReadOnlyPowerNetData.cs" />
     <Compile Include="NodeResult.cs" />
     <Compile Include="NodeResultTableEntry.cs" />
     <Compile Include="PowerNetComputable.cs" />
+    <Compile Include="PowerNetData.cs" />
     <Compile Include="SlackGenerator.cs" />
     <Compile Include="SqlCommandFactory.cs" />
     <Compile Include="ThreeWindingTransformer.cs" />

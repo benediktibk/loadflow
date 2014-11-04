@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
 using Misc;
@@ -9,21 +8,11 @@ namespace SincalConnector
 {
     public class PowerNet
     {
-        private readonly IList<Terminal> _terminals;
-        private readonly IList<Node> _nodes;
-        private readonly IList<IReadOnlyNode> _readOnlyNodes;
-        private readonly IList<INetElement> _netElements;
-        private readonly IList<FeedIn> _feedIns;
-        private readonly IList<Load> _loads;
-        private readonly IList<TransmissionLine> _transmissionLines;
-        private readonly IList<TwoWindingTransformer> _twoWindingTransformers;
-        private readonly IList<Generator> _generators;
-        private readonly IList<ImpedanceLoad> _impedanceLoads;
-        private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
-        private readonly IList<SlackGenerator> _slackGenerators;
+        private readonly PowerNetData _data;
 
-        public PowerNet(string database) : this()
+        public PowerNet(string database)
         {
+            _data = new PowerNetData();
             ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
 
             using (var databaseConnection = new OleDbConnection(ConnectionString))
@@ -35,8 +24,8 @@ namespace SincalConnector
                 FetchNodes(commandFactory);
                 FetchTerminals(commandFactory);
 
-                var nodesByIds = CreateDictionaryNodeByIds();
-                var nodeIdsByElementIds = CreateDictionaryNodeIdsByElementIds();
+                var nodesByIds = _data.CreateDictionaryNodeByIds();
+                var nodeIdsByElementIds = _data.CreateDictionaryNodeIdsByElementIds();
 
                 FetchFeedIns(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchLoads(commandFactory, nodeIdsByElementIds);
@@ -53,78 +42,20 @@ namespace SincalConnector
                 databaseConnection.Close();
             }
 
-            if (_feedIns.Count + _slackGenerators.Count != 1)
+            if (_data.CountOfElementsWithSlackBus != 1)
                 throw new NotSupportedException("only one feedin and/or slack generator is supported");
         }
 
-        private PowerNet()
+        public IReadOnlyPowerNetData Data
         {
-            _terminals = new List<Terminal>();
-            _nodes = new List<Node>();
-            _readOnlyNodes = new List<IReadOnlyNode>();
-            _netElements = new List<INetElement>();
-            _feedIns = new List<FeedIn>();
-            _loads = new List<Load>();
-            _transmissionLines = new List<TransmissionLine>();
-            _twoWindingTransformers = new List<TwoWindingTransformer>();
-            _generators = new List<Generator>();
-            _slackGenerators = new List<SlackGenerator>();
-            _impedanceLoads = new List<ImpedanceLoad>();
-            _threeWindingTransformers = new List<ThreeWindingTransformer>();
+            get { return _data; }
         }
-
-        public double Frequency { get; private set; }
 
         public string ConnectionString { get; private set; }
 
-        public IReadOnlyList<IReadOnlyNode> Nodes
+        public void SetNodeResults(IReadOnlyDictionary<long, Calculation.NodeResult> nodeResults)
         {
-            get { return (IReadOnlyList<IReadOnlyNode>) _readOnlyNodes; }
-        }
-
-        public IReadOnlyList<INetElement> NetElements
-        {
-            get { return (IReadOnlyList<INetElement>) _netElements; }
-        }
-
-        public IReadOnlyList<FeedIn> FeedIns
-        {
-            get { return new ReadOnlyCollection<FeedIn>(_feedIns); }
-        }
-
-        public IReadOnlyList<Load> Loads
-        {
-            get { return new ReadOnlyCollection<Load>(_loads); }
-        }
-
-        public IReadOnlyList<TransmissionLine> TransmissionLines
-        {
-            get { return new ReadOnlyCollection<TransmissionLine>(_transmissionLines); }
-        }
-
-        public IReadOnlyList<TwoWindingTransformer> TwoWindingTransformers
-        {
-            get { return new ReadOnlyCollection<TwoWindingTransformer>(_twoWindingTransformers); }
-        }
-
-        public IReadOnlyList<Generator> Generators
-        {
-            get { return new ReadOnlyCollection<Generator>(_generators); }
-        }
-
-        public IReadOnlyList<SlackGenerator> SlackGenerators
-        {
-            get { return new ReadOnlyCollection<SlackGenerator>(_slackGenerators); }
-        }
-
-        public IReadOnlyList<ImpedanceLoad> ImpedanceLoads
-        {
-            get { return new ReadOnlyCollection<ImpedanceLoad>(_impedanceLoads); }
-        }
-
-        public bool ContainsTransformers
-        {
-            get { return _twoWindingTransformers.Count + _threeWindingTransformers.Count > 0; }
+            _data.SetNodeResults(nodeResults);
         }
 
         public IList<NodeResult> GetNodeResultsFromDatabase()
@@ -167,45 +98,13 @@ namespace SincalConnector
             return results;
         }
 
-        public void SetNodeResults(IReadOnlyDictionary<long, Calculation.NodeResult> nodeResults)
-        {
-            var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
-
-            foreach (var node in _nodes)
-                node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
-                    impedanceLoadsByNodeId.Get(node.Id));
-        }
-
-        private MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
-        {
-            var result = new MultiDictionary<int, ImpedanceLoad>();
-
-            foreach (var impedanceLoad in _impedanceLoads)
-                result.Add(impedanceLoad.NodeId, impedanceLoad);
-
-            return result;
-        }
-
-        private MultiDictionary<int, int> CreateDictionaryNodeIdsByElementIds()
-        {
-            var nodeIdsByElementIds = new MultiDictionary<int, int>();
-            foreach (var terminal in _terminals)
-                nodeIdsByElementIds.Add(terminal.ElementId, terminal.NodeId);
-            return nodeIdsByElementIds;
-        }
-
-        private Dictionary<int, IReadOnlyNode> CreateDictionaryNodeByIds()
-        {
-            return _nodes.ToDictionary<Node, int, IReadOnlyNode>(node => node.Id, node => node);
-        }
-
         private void FetchTerminals(SqlCommandFactory commandFactory)
         {
             var command = commandFactory.CreateCommandToFetchAllTerminals();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _terminals.Add(new Terminal(reader));
+                    _data.Add(new Terminal(reader));
         }
 
         private void FetchNodes(SqlCommandFactory commandFactory)
@@ -214,11 +113,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                {
-                    var node = new Node(reader, null);
-                    _nodes.Add(node);
-                    _readOnlyNodes.Add(node);
-                }
+                    _data.Add(new Node(reader, null));
         }
 
         private void FetchTwoWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
@@ -228,13 +123,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(TwoWindingTransformer element)
-        {
-            _netElements.Add(element);
-            _twoWindingTransformers.Add(element);
+                    _data.Add(new TwoWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchThreeWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
@@ -244,13 +133,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(ThreeWindingTransformer element)
-        {
-            _netElements.Add(element);
-            _threeWindingTransformers.Add(element);
+                    _data.Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchTransmissionLines(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -259,13 +142,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new TransmissionLine(reader, nodeIdsByElementIds, Frequency));
-        }
-
-        private void Add(TransmissionLine element)
-        {
-            _netElements.Add(element);
-            _transmissionLines.Add(element);
+                    _data.Add(new TransmissionLine(reader, nodeIdsByElementIds, _data.Frequency));
         }
 
         private void FetchLoads(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -274,13 +151,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new Load(reader, nodeIdsByElementIds));
-        }
-
-        private void Add(Load element)
-        {
-            _netElements.Add(element);
-            _loads.Add(element);
+                    _data.Add(new Load(reader, nodeIdsByElementIds));
         }
 
         private void FetchImpedanceLoads(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -289,13 +160,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(ImpedanceLoad element)
-        {
-            _netElements.Add(element);
-            _impedanceLoads.Add(element);
+                    _data.Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchFeedIns(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -304,13 +169,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(FeedIn element)
-        {
-            _netElements.Add(element);
-            _feedIns.Add(element);
+                    _data.Add(new FeedIn(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchGenerators(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -319,13 +178,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(Generator element)
-        {
-            _netElements.Add(element);
-            _generators.Add(element);
+                    _data.Add(new Generator(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchSlackGenerators(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
@@ -334,13 +187,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
-        }
-
-        private void Add(SlackGenerator element)
-        {
-            _netElements.Add(element);
-            _slackGenerators.Add(element);
+                    _data.Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void DetermineFrequency(SqlCommandFactory commandFactory)
@@ -355,13 +202,13 @@ namespace SincalConnector
             if (frequencies.Count != 1)
                 throw new NotSupportedException("only one frequency per net is supported");
 
-            Frequency = frequencies.First();
+            _data.Frequency = frequencies.First();
         }
 
         private bool ContainsNotSupportedElement(SqlCommandFactory commandFactory)
         {
             var command = commandFactory.CreateCommandToFetchAllElementIdsSorted();
-            var allSupportedElements = GetAllSupportedElementIdsSorted();
+            var allSupportedElements = _data.GetAllSupportedElementIdsSorted();
             var allElements = new List<int>();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -372,11 +219,6 @@ namespace SincalConnector
                 return true;
 
             return allElements.Where((t, i) => t != allSupportedElements[i]).Any();
-        }
-
-        private List<int> GetAllSupportedElementIdsSorted()
-        {
-            return _netElements.Select(element => element.Id).OrderBy(id => id).ToList();
         }
     }
 }

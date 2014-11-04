@@ -25,7 +25,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
-            var nodes = powerNet.Nodes;
+            var nodes = powerNet.Data.Nodes;
             Assert.AreEqual(1, nodes[0].Id);
             Assert.AreEqual("N1", nodes[0].Name);
             Assert.AreEqual(1000, nodes[0].NominalVoltage, 0.0001);
@@ -39,7 +39,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_10kV_files/database.mdb");
 
-            var nodes = powerNet.Nodes;
+            var nodes = powerNet.Data.Nodes;
             Assert.AreEqual(1, nodes[0].Id);
             Assert.AreEqual("N1", nodes[0].Name);
             Assert.AreEqual(10000, nodes[0].NominalVoltage, 0.0001);
@@ -53,7 +53,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/dorfnetz_files/database.mdb");
 
-            Assert.AreEqual(116, powerNet.Nodes.Count);
+            Assert.AreEqual(116, powerNet.Data.Nodes.Count);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
-            var feedIns = powerNet.FeedIns;
+            var feedIns = powerNet.Data.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
             var feedIn = feedIns[0];
             var voltage = Complex.FromPolarCoordinates(990, 10 * Math.PI / 180);
@@ -73,7 +73,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_10kv_files/database.mdb");
 
-            var feedIns = powerNet.FeedIns;
+            var feedIns = powerNet.Data.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
             var feedIn = feedIns[0];
             var voltage = Complex.FromPolarCoordinates(10100, 0);
@@ -85,7 +85,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/feedin_files/database.mdb");
 
-            var feedIns = powerNet.FeedIns;
+            var feedIns = powerNet.Data.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
             var feedIn = feedIns[0];
             var voltage = Complex.FromPolarCoordinates(1050, 10 * Math.PI / 180);
@@ -97,7 +97,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
-            var loads = powerNet.Loads;
+            var loads = powerNet.Data.Loads;
             Assert.AreEqual(1, loads.Count);
             var load = loads[0];
             ComplexAssert.AreEqual(-1e5, -1e4, load.LoadValue, 0.000001);
@@ -108,7 +108,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
-            Assert.AreEqual(50, powerNet.Frequency, 0.000001);
+            Assert.AreEqual(50, powerNet.Data.Frequency, 0.000001);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
-            var transmissionLines = powerNet.TransmissionLines;
+            var transmissionLines = powerNet.Data.TransmissionLines;
             Assert.AreEqual(1, transmissionLines.Count);
             var transmissionLine = transmissionLines.First();
             Assert.AreEqual(1000, transmissionLine.Length, 0.000001);
@@ -139,7 +139,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/transformer_files/database.mdb");
 
-            var transformers = powerNet.TwoWindingTransformers;
+            var transformers = powerNet.Data.TwoWindingTransformers;
             Assert.AreEqual(1, transformers.Count);
             var transformer = transformers.First();
             Assert.AreEqual(5e5, transformer.NominalPower, 0.00001);
@@ -155,7 +155,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/generator1_files/database.mdb");
 
-            var generators = powerNet.Generators;
+            var generators = powerNet.Data.Generators;
             Assert.AreEqual(1, generators.Count);
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
@@ -167,7 +167,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/generator2_files/database.mdb");
 
-            var generators = powerNet.Generators;
+            var generators = powerNet.Data.Generators;
             Assert.AreEqual(1, generators.Count);
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
@@ -179,7 +179,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/generator3_files/database.mdb");
 
-            var generators = powerNet.Generators;
+            var generators = powerNet.Data.Generators;
             Assert.AreEqual(1, generators.Count);
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
@@ -191,7 +191,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/generator4_files/database.mdb");
 
-            var generators = powerNet.Generators;
+            var generators = powerNet.Data.Generators;
             Assert.AreEqual(1, generators.Count);
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
@@ -209,7 +209,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/impedanceload1_files/database.mdb");
 
-            var impedanceLoads = powerNet.ImpedanceLoads;
+            var impedanceLoads = powerNet.Data.ImpedanceLoads;
             Assert.AreEqual(1, impedanceLoads.Count);
             var impedanceLoad = impedanceLoads.First();
             var impedance = impedanceLoad.Impedance;
@@ -222,7 +222,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/impedanceload2_files/database.mdb");
 
-            var impedanceLoads = powerNet.ImpedanceLoads;
+            var impedanceLoads = powerNet.Data.ImpedanceLoads;
             Assert.AreEqual(1, impedanceLoads.Count);
             var impedanceLoad = impedanceLoads.First();
             var impedance = impedanceLoad.Impedance;
@@ -235,7 +235,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/slackgenerator1_files/database.mdb");
 
-            var slackGenerators = powerNet.SlackGenerators;
+            var slackGenerators = powerNet.Data.SlackGenerators;
             Assert.AreEqual(1, slackGenerators.Count);
             var slackGenerator = slackGenerators.First();
             var voltage = slackGenerator.Voltage;
@@ -248,7 +248,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetComputable("testdata/slackgenerator2_files/database.mdb");
 
-            var slackGenerators = powerNet.SlackGenerators;
+            var slackGenerators = powerNet.Data.SlackGenerators;
             Assert.AreEqual(1, slackGenerators.Count);
             var slackGenerator = slackGenerators.First();
             var voltage = slackGenerator.Voltage;

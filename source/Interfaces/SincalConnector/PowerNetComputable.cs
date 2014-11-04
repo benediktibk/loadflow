@@ -19,7 +19,7 @@ namespace SincalConnector
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
             
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
-            var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
+            var slackPhaseShift = Data.ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
             var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             var nodeResults = symmetricPowerNet.CalculateNodeVoltages();
 
@@ -33,8 +33,8 @@ namespace SincalConnector
                 connection.Open();
                 var commandFactory = new SqlCommandFactory(connection);
                 var deleteCommand = commandFactory.CreateCommandToDeleteAllNodeResults();
-                var insertCommands = new List<OleDbCommand> { Capacity = Nodes.Count };
-                insertCommands.AddRange(Nodes.Select(node => commandFactory.CreateCommandToAddResult(node, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
+                var insertCommands = new List<OleDbCommand> { Capacity = Data.Nodes.Count };
+                insertCommands.AddRange(Data.Nodes.Select(node => commandFactory.CreateCommandToAddResult(node, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
 
                 deleteCommand.ExecuteNonQuery();
 
@@ -49,13 +49,13 @@ namespace SincalConnector
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var singlePhasePowerNet = new Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable(Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
+            var singlePhasePowerNet = new Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable(Data.Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
             var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
 
-            foreach (var node in Nodes)
+            foreach (var node in Data.Nodes)
                 node.AddTo(symmetricPowerNet);
 
-            foreach (var element in NetElements)
+            foreach (var element in Data.NetElements)
                 element.AddTo(symmetricPowerNet);
 
             return symmetricPowerNet;
