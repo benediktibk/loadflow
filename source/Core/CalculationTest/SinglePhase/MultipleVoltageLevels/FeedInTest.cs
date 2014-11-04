@@ -123,6 +123,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void GetSlackVoltage_NominalVoltageSetTo0_0()
+        {
+            var node = new Mock<IExternalReadOnlyNode>();
+            node.Setup(x => x.NominalVoltage).Returns(0);
+            var feedIn = new FeedIn(node.Object, new Complex(), 6, 1.1, 1, _idGenerator);
+
+            var result = feedIn.GetSlackVoltage(45);
+
+            ComplexAssert.AreEqual(0, 0, result, 0.00001);
+        }
+
+        [TestMethod]
         public void NominalVoltagesMatch_Empty_True()
         {
             Assert.IsTrue(_feedIn.NominalVoltagesMatch);
