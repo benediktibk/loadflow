@@ -106,14 +106,60 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 return new Angle(feedIn.Voltage.Phase);
             }
         }
-
-        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode()
+        public bool NominalVoltagesDoNotMatch
         {
-            if (_feedIns.Count != 1)
-                throw new InvalidOperationException("there must exist exactly one feed in");
+            get { return _elements.Exists(element => !element.NominalVoltagesMatch); }
+        }
 
-            var feedIn = _feedIns.First();
-            return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedIn, _twoWindingTransformers, _threeWindingTransformers);
+        public bool OneNodeIsOverdetermined
+        {
+            get { return _nodes.Count(x => x.IsOverdetermined) > 0; }
+        }
+
+        public bool GroundNodeNecessary
+        {
+            get { return _elements.Exists(x => x.NeedsGroundNode); }
+        }
+
+        public double AverageLoadFlow
+        {
+            get
+            {
+                var absoluteSum =
+                    _generators.Sum(generator => Math.Abs(generator.RealPower)) +
+                    _loads.Sum(load => Math.Abs(load.Value.Real));
+                var count = _generators.Count + _loads.Count;
+
+                if (count == 0)
+                    return 0;
+
+                return absoluteSum / count;
+            }
+        }
+
+        public double MaximumPower
+        {
+            get
+            {
+                var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
+                var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
+                var transformerMaximum = _twoWindingTransformers.Count > 0
+                    ? _twoWindingTransformers.Max(transformer => transformer.NominalPower)
+                    : 0;
+                return Math.Max(Math.Max(generatorMaximum, loadMaximum), transformerMaximum);
+            }
+        }
+
+        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> NominalPhaseShiftPerNode
+        {
+            get
+            {
+                if (_feedIns.Count != 1)
+                    throw new InvalidOperationException("there must exist exactly one feed in");
+
+                var feedIn = _feedIns.First();
+                return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedIn, _twoWindingTransformers, _threeWindingTransformers);
+            }
         }
 
         public IExternalReadOnlyNode GetNodeById(long id)
@@ -211,21 +257,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(impedanceLoad);
         }
 
-        public bool CheckIfNominalVoltagesDoNotMatch()
-        {
-            return _elements.Exists(element => !element.NominalVoltagesMatch);
-        }
-
-        public bool CheckIfNodeIsOverdetermined()
-        {
-            return _nodes.Count(x => x.IsOverdetermined) > 0;
-        }
-
-        public bool IsGroundNodeNecessary()
-        {
-            return _elements.Exists(x => x.NeedsGroundNode);
-        }
-
         public IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes()
         {
             var allNodes = new List<IReadOnlyNode>();
@@ -234,7 +265,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 allNodes.AddRange(element.GetInternalNodes());
             allNodes.AddRange(_nodes);
 
-            if (!IsGroundNodeNecessary()) 
+            if (!GroundNodeNecessary) 
                 return allNodes;
 
             allNodes.AddRange(_groundFeedIn.GetInternalNodes());
@@ -245,37 +276,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower)
         {
-            var expectedLoadFlow = CalculateAverageLoadFlow();
+            var expectedLoadFlow = AverageLoadFlow;
             foreach (var element in _elements)
                 element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
         }
 
-        public double CalculateAverageLoadFlow()
-        {
-            var absoluteSum = 
-                _generators.Sum(generator => Math.Abs(generator.RealPower)) + 
-                _loads.Sum(load => Math.Abs(load.Value.Real));
-            var count = _generators.Count + _loads.Count;
-
-            if (count == 0)
-                return 0;
-
-            return absoluteSum/count;
-        }
-
-        public double GetMaximumPower()
-        {
-            var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
-            var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
-            var transformerMaximum = _twoWindingTransformers.Count > 0
-                ? _twoWindingTransformers.Max(transformer => transformer.NominalPower)
-                : 0;
-            return Math.Max(Math.Max(generatorMaximum, loadMaximum), transformerMaximum);
-        }
-
         public double DeterminePowerScaling()
         {
-            var maximumPower = GetMaximumPower();
+            var maximumPower = MaximumPower;
             var powerScaling = maximumPower > 0 ? maximumPower : 1;
             return powerScaling;
         }

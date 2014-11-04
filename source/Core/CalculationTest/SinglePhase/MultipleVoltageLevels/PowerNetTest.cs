@@ -134,13 +134,32 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void AddThreeWindingTransformer_ValidNode_NodesHaveOneConnectedElement()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 123, "");
+            _powerNet.AddNode(2, 123, "");
+            var nodeOne = _powerNet.GetNodeById(0);
+            var nodeTwo = _powerNet.GetNodeById(1);
+            var nodeThree = _powerNet.GetNodeById(2);
+
+            _powerNet.AddThreeWindingTransformer(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, new Angle(), new Angle(),
+                new Angle(), "");
+
+            Assert.AreEqual(1, nodeOne.ConnectedElements.Count);
+            Assert.AreEqual(1, nodeTwo.ConnectedElements.Count);
+            Assert.AreEqual(1, nodeThree.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.ThreeWindingTransformerCount);
+        }
+
+        [TestMethod]
         public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithDifferentNominalVoltagesConnectedThroughLine_True()
         {
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 2, 1, true);
 
-            Assert.IsTrue(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+            Assert.IsTrue(_powerNet.NominalVoltagesDoNotMatch);
         }
 
         [TestMethod]
@@ -150,7 +169,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 2, 1, true);
 
-            Assert.IsFalse(_powerNet.CheckIfNominalVoltagesDoNotMatch());
+            Assert.IsFalse(_powerNet.NominalVoltagesDoNotMatch);
         }
 
         [TestMethod]
@@ -162,7 +181,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
-            Assert.IsFalse(_powerNet.IsGroundNodeNecessary());
+            Assert.IsFalse(_powerNet.GroundNodeNecessary);
         }
 
         [TestMethod]
@@ -174,7 +193,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
-            Assert.IsTrue(_powerNet.IsGroundNodeNecessary());
+            Assert.IsTrue(_powerNet.GroundNodeNecessary);
         }
 
         [TestMethod]

@@ -129,7 +129,7 @@ namespace CalculationTest.ThreePhase
         public void CalculateNominalPhaseShiftPerNode_MockPowerNet_MockGotCallToCalculateNominalPhaseShiftPerNode()
         {
             var resultShouldBe = new Dictionary<IExternalReadOnlyNode, Angle>();
-            _singlePhasePowerNetMock.Setup(x => x.CalculateNominalPhaseShiftPerNode()).Returns(resultShouldBe);
+            _singlePhasePowerNetMock.Setup(x => x.NominalPhaseShiftPerNode).Returns(resultShouldBe);
 
             var result = _powerNet.CalculateNominalPhaseShiftPerNode();
 

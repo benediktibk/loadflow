@@ -86,9 +86,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             if (NodeGraph.FloatingNodesExist)
                 throw new InvalidDataException("there must not be a floating node");
-            if (CheckIfNominalVoltagesDoNotMatch())
+            if (NominalVoltagesDoNotMatch)
                 throw new InvalidDataException("the nominal voltages must match on connected nodes");
-            if (CheckIfNodeIsOverdetermined())
+            if (OneNodeIsOverdetermined)
                 throw new InvalidDataException("one node is overdetermined");
         }
     }

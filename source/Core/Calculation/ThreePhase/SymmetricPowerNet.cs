@@ -96,7 +96,7 @@ namespace Calculation.ThreePhase
 
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode()
         {
-            return _singlePhasePowerNet.CalculateNominalPhaseShiftPerNode();
+            return _singlePhasePowerNet.NominalPhaseShiftPerNode;
         }
     }
 }
