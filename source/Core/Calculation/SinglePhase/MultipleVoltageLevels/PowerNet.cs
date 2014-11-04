@@ -50,7 +50,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _nodeGraph; }
         }
 
-        public IReadOnlyList<IExternalReadOnlyNode> Nodes
+        public IReadOnlyList<IExternalReadOnlyNode> ExternalNodes
         {
             get { return _nodes.Cast<IExternalReadOnlyNode>().ToList(); }
         }
@@ -257,7 +257,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(impedanceLoad);
         }
 
-        public IReadOnlyList<IReadOnlyNode> GetAllNecessaryNodes()
+        public IReadOnlyList<IReadOnlyNode> GetAllCalculationNodes()
         {
             var allNodes = new List<IReadOnlyNode>();
 

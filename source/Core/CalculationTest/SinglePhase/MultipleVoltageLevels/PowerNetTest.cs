@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -122,6 +123,17 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void AddFeedIn_TwiceCalled_ThrowsException()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 123, "");
+
+            _powerNet.AddFeedIn(0, new Complex(123, 3), 0, 1.1, 1);
+            _powerNet.AddFeedIn(1, new Complex(123, 3), 0, 1.1, 1);
+        }
+
+        [TestMethod]
         public void AddGenerator_ValidNode_NodeHasOneConnectedElement()
         {
             _powerNet.AddNode(0, 123, "");
@@ -201,6 +213,44 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddNode_NegativeId_ThrowsException()
         {
             _powerNet.AddNode(-1, 230, "");
+        }
+
+        [TestMethod]
+        public void GetAllNecessaryNodes_OneTransmissionLineWithShuntValues_ResultContainsGroundNode()
+        {
+            _powerNet.AddNode(0, 3, "");
+            _powerNet.AddNode(1, 3, "");
+            _powerNet.AddTransmissionLine(0, 1, 1, 2, 3, 4, 5, true);
+
+            var result = _powerNet.GetAllCalculationNodes();
+
+            Assert.AreEqual(3, result.Count);
+            Assert.IsTrue(result.Contains(_powerNet.GetNodeById(0)));
+            Assert.IsTrue(result.Contains(_powerNet.GetNodeById(1)));
+            Assert.IsTrue(result.Contains(_powerNet.GroundNode));
+        }
+
+        [TestMethod]
+        public void GroundNode_NothingAdded_NotNull()
+        {
+            Assert.IsNotNull(_powerNet.GroundNode);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void SlackPhaseShift_NoFeedIn_ThrowsException()
+        {
+            var result = _powerNet.SlackPhaseShift;
+        }
+
+        [TestMethod]
+        public void SlackPhaseShift_OneFeedInWithPhaseShift2_2()
+        {
+            _powerNet.AddNode(0, 3, "");
+            _powerNet.AddFeedIn(0, Complex.FromPolarCoordinates(5, 2), 1, 2, 3);
+            var result = _powerNet.SlackPhaseShift;
+
+            Assert.AreEqual(2, result.Radiant, 0.0001);
         }
     }
 }
