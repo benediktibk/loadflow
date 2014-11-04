@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
@@ -331,6 +332,23 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void SegmentsOnSameVoltageLevel_ThreeInACircleByTransformersConnectedConnectedNodesAndeOneTransformerTwiceWithSamePhaseShiftInverse_ThreeElements()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(2, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(1.8), "");
+            _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
+
+            var nominalPhaseShifts = _powerNet.CalculateNominalPhaseShiftPerNode();
+
+            Assert.AreEqual(3, nominalPhaseShifts.Count);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidDataException))]
         public void CalculateNominalPhaseShiftPerNode_ThreeInACircleByTransformersConnectedConnectedNodesAndeOneTransformerTwiceWithDifferentPhaseShift_ThrowsException()
         {
@@ -343,7 +361,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
 
-            var nominalPhaseShifts = _powerNet.CalculateNominalPhaseShiftPerNode();
+            _powerNet.CalculateNominalPhaseShiftPerNode();
         }
 
         [TestMethod]
@@ -356,7 +374,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(2), "");
 
-            var nominalPhaseShifts = _powerNet.CalculateNominalPhaseShiftPerNode();
+            _powerNet.CalculateNominalPhaseShiftPerNode();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void SegmentsOnSameVoltageLevel_TwoNodesByTransformerTwiceWithDifferentPhaseShiftConnectedInverse_ThrowsException()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(1, 0, 3, 0.5, 0.1, 0, 1, 1, new Angle(2), "");
+
+            _powerNet.CalculateNominalPhaseShiftPerNode();
         }
     }
 }

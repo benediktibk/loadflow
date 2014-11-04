@@ -8,8 +8,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class TwoWindingTransformer : IPowerNetElement
     {
-        #region variables
-
         private readonly IExternalReadOnlyNode _upperSideNode;
         private readonly IExternalReadOnlyNode _lowerSideNode;
         private readonly Complex _lengthAdmittance;
@@ -18,10 +16,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly double _nominalPower;
         private readonly Angle _nominalPhaseShift;
         private readonly List<DerivedInternalPQNode> _internalNodes;
-
-        #endregion
-
-        #region public functions
 
         public TwoWindingTransformer(IExternalReadOnlyNode upperSideNode, IExternalReadOnlyNode lowerSideNode, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name, IdGenerator idGenerator)
         {
@@ -63,6 +57,86 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             _internalNodes.Add(new DerivedInternalPQNode(upperSideNode, idGenerator.Generate(), new Complex(0, 0), name + "#upper"));
             _internalNodes.Add(new DerivedInternalPQNode(lowerSideNode, idGenerator.Generate(), new Complex(0, 0), name + "#lower"));
+        }
+
+        public double UpperSideNominalVoltage
+        {
+            get { return _upperSideNode.NominalVoltage; }
+        }
+
+        public double LowerSideNominalVoltage
+        {
+            get { return _lowerSideNode.NominalVoltage; }
+        }
+
+        public double NominalRatio
+        {
+            get { return UpperSideNominalVoltage / LowerSideNominalVoltage; }
+        }
+
+        public double Ratio
+        {
+            get { return _ratio; }
+        }
+
+        public double RelativeRatio
+        {
+            get { return Ratio / NominalRatio; }
+        }
+
+        public Complex LengthAdmittance
+        {
+            get { return _lengthAdmittance; }
+        }
+
+        public Complex ShuntAdmittance
+        {
+            get { return _shuntAdmittance; }
+        }
+
+        public bool EnforcesSlackBus
+        {
+            get { return false; }
+        }
+
+        public bool EnforcesPVBus
+        {
+            get { return false; }
+        }
+
+        public bool NominalVoltagesMatch
+        {
+            get { return true; }
+        }
+
+        public bool NeedsGroundNode
+        {
+            get { return true; }
+        }
+
+        public bool HasNotNominalRatio
+        {
+            get { return Math.Abs(RelativeRatio - 1) > 0.000001; }
+        }
+
+        public Angle NominalPhaseShift
+        {
+            get { return _nominalPhaseShift; }
+        }
+
+        public IExternalReadOnlyNode UpperSideNode
+        {
+            get { return _upperSideNode; }
+        }
+
+        public IExternalReadOnlyNode LowerSideNode
+        {
+            get { return _lowerSideNode; }
+        }
+
+        public double NominalPower
+        {
+            get { return _nominalPower; }
         }
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
@@ -128,10 +202,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return _internalNodes.Cast<IReadOnlyNode>().ToList();
         }
 
-        #endregion
-
-        #region private functions
-
         private void CalculateAdmittances(double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, out Complex lengthAdmittance, out Complex shuntAdmittance)
         {
             var relativeShortCircuitVoltageReal = copperLosses / nominalPower;
@@ -152,91 +222,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             lengthAdmittance = (nominalPower / (UpperSideNominalVoltage * UpperSideNominalVoltage)) / relativeShortCircuitVoltageComplex;
             shuntAdmittance = new Complex(ironLosses, (-1) * idleLossesWithoutIronLosses) / (2 * UpperSideNominalVoltage * UpperSideNominalVoltage);
         }
-
-        #endregion
-
-        #region properties
-
-        public double UpperSideNominalVoltage
-        {
-            get { return _upperSideNode.NominalVoltage; }
-        }
-
-        public double LowerSideNominalVoltage
-        {
-            get { return _lowerSideNode.NominalVoltage; }
-        }
-
-        public double NominalRatio
-        {
-            get { return UpperSideNominalVoltage/LowerSideNominalVoltage; }
-        }
-
-        public double Ratio
-        {
-            get { return _ratio; }
-        }
-
-        public double RelativeRatio
-        {
-            get { return Ratio/NominalRatio; }
-        }
-
-        public Complex LengthAdmittance
-        {
-            get { return _lengthAdmittance; }
-        }
-
-        public Complex ShuntAdmittance
-        {
-            get { return _shuntAdmittance; }
-        }
-
-        public bool EnforcesSlackBus
-        {
-            get { return false; }
-        }
-
-        public bool EnforcesPVBus
-        {
-            get { return false; }
-        }
-
-        public bool NominalVoltagesMatch
-        {
-            get { return true; }
-        }
-
-        public bool NeedsGroundNode
-        {
-            get { return true; }
-        }
-
-        public bool HasNotNominalRatio
-        {
-            get { return Math.Abs(RelativeRatio - 1) > 0.000001; } 
-        }
-
-        public Angle NominalPhaseShift
-        {
-            get { return _nominalPhaseShift; }
-        }
-
-        public IExternalReadOnlyNode UpperSideNode
-        {
-            get { return _upperSideNode; }
-        }
-
-        public IExternalReadOnlyNode LowerSideNode
-        {
-            get { return _lowerSideNode; }
-        }
-
-        public double NominalPower
-        {
-            get { return _nominalPower; }
-        }
-
-        #endregion
     }
 }
