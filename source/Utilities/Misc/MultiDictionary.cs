@@ -6,22 +6,17 @@ namespace Misc
 {
     public class MultiDictionary<TKey, TValue> : IReadOnlyMultiDictionary<TKey, TValue>
     {
-        #region variables
-
-        private Dictionary<TKey, List<TValue>> _values; 
-
-        #endregion
-
-        #region constructor
+        private readonly Dictionary<TKey, List<TValue>> _values;
 
         public MultiDictionary()
         {
             _values = new Dictionary<TKey, List<TValue>>();
         }
 
-        #endregion
-
-        #region public functions
+        public int Count
+        {
+            get { return _values.Count; }
+        }
 
         public IReadOnlyList<TValue> Get(TKey key)
         {
@@ -52,16 +47,5 @@ namespace Misc
         {
             return _values.ContainsKey(key);
         }
-
-        #endregion
-
-        #region properties
-
-        public int Count
-        {
-            get { return _values.Count; }
-        }
-
-        #endregion
     }
 }

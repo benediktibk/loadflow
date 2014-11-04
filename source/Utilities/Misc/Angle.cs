@@ -4,13 +4,7 @@ namespace Misc
 {
     public class Angle
     {
-        #region variables
-
         private readonly double _value;
-
-        #endregion
-
-        #region constructor
 
         public Angle(double radiant)
         {
@@ -31,15 +25,6 @@ namespace Misc
             _value = 0;
         }
 
-        public static Angle FromDegree(double degree)
-        {
-            return new Angle(degree*Math.PI/180);
-        }
-
-        #endregion
-
-        #region properties
-
         public double Radiant
         {
             get { return _value; }
@@ -59,9 +44,10 @@ namespace Misc
             }
         }
 
-        #endregion
-
-        #region operators
+        public static Angle FromDegree(double degree)
+        {
+            return new Angle(degree*Math.PI/180);
+        }
 
         public static Angle operator +(Angle lhs, Angle rhs)
         {
@@ -93,7 +79,5 @@ namespace Misc
 
             return Math.Abs(absoluteDifference) < delta;
         }
-
-        #endregion
     }
 }
