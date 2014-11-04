@@ -433,21 +433,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Voltage_NotYetSet_ThrowsException()
-        {
-            var voltage = _node.Voltage;
-        }
-
-        [TestMethod]
-        public void Voltage_SetTo4And5_4And5()
-        {
-            _node.Voltage = new Complex(4, 5);
-
-            ComplexAssert.AreEqual(4, 5, _node.Voltage, 0.00001);
-        }
-
-        [TestMethod]
         public void CreateSingleVoltageNode_PqBus_PowerIsSetToCorrectValue()
         {
             var element = new Mock<IPowerNetElement>();

@@ -8,40 +8,18 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     public class Node : IExternalReadOnlyNode
     {
         private readonly List<IPowerNetElement> _connectedElements;
-        private Complex _voltage;
-        private bool _voltageSet;
 
         public Node(int id, double nominalVoltage, string name)
         {
             Id = id;
             NominalVoltage = nominalVoltage;
             _connectedElements = new List<IPowerNetElement>();
-            _voltage = new Complex();
-            _voltageSet = false;
             Name = name;
         }
 
         public double NominalVoltage { get; private set; }
 
         public int Id { get; private set; }
-
-        public Complex Voltage
-        {
-            get
-            {
-                if (!_voltageSet)
-                    throw new InvalidOperationException("voltage not yet set");
-
-                return _voltage;
-            }
-            set
-            {
-                _voltage = value;
-                _voltageSet = true;
-            }
-        }
-
-        public Complex Power { get; private set; }
 
         public bool IsOverdetermined
         {
