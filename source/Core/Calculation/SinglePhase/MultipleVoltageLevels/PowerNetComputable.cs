@@ -14,7 +14,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _singleVoltagePowerNetFactory = singleVoltagePowerNetFactory;
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeResults()
         {
             CheckPowerNet();
 

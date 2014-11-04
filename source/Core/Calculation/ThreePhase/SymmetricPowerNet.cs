@@ -73,7 +73,7 @@ namespace Calculation.ThreePhase
 
         public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
         {
-            var nodeResults = _singlePhasePowerNet.CalculateNodeVoltages();
+            var nodeResults = _singlePhasePowerNet.CalculateNodeResults();
             var nodeResultsUnscaled = new Dictionary<long, NodeResult>();
 
             if (nodeResults == null)

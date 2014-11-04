@@ -29,7 +29,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddLoad(1, new Complex(-10, 0));
             _powerNet.AddTransmissionLine(0, 1, 10, 0, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.AreEqual(2, nodeResults.Count);
             Assert.IsTrue(nodeResults.ContainsKey(0));
@@ -48,7 +48,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.AreEqual(2, nodeResults.Count);
             Assert.IsTrue(nodeResults.ContainsKey(0));
@@ -66,7 +66,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
@@ -82,7 +82,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTransmissionLine(0, 1, 5, 700e-6, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(-2693.9, -4118.5));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
@@ -98,7 +98,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTwoWindingTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.0001);
@@ -114,7 +114,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTwoWindingTransformer(0, 1, 3000, 0.02, 30, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.0001);
@@ -130,7 +130,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-2000, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1002, 0, nodeResults[0].Voltage, 0.01);
@@ -146,7 +146,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(-200, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
@@ -162,7 +162,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTwoWindingTransformer(0, 1, 4000, 0.05, 100, 50, 0.05, 2.5, new Angle(), "");
             _powerNet.AddLoad(1, new Complex(0, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
@@ -178,7 +178,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
             _powerNet.AddLoad(1, new Complex(-1e5, 0));
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             var targetVoltageShouldBe = (0.5 + Math.Sqrt(0.15)) * 1e3;
@@ -200,7 +200,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             _powerNet.AddImpedanceLoad(1, new Complex(22, 0));
             _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
 
-            var nodeResults = _powerNet.CalculateNodeVoltages();
+            var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(230, 0, nodeResults[0].Voltage, 0.00001);
