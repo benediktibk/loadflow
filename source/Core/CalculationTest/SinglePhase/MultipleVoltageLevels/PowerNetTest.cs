@@ -252,5 +252,12 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(2, result.Radiant, 0.0001);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void NominalPhaseShiftPerNode_NoFeedIn_ThrowsException()
+        {
+            var result = _powerNet.NominalPhaseShiftPerNode;
+        }
     }
 }
