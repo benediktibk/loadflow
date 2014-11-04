@@ -55,28 +55,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             get { return 0.1; }
         }
 
-        public static Vector<Complex> CombineRealAndImaginaryParts(IList<double> realParts,
-            IList<double> imaginaryParts)
-        {
-            var result = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(realParts.Count);
-
-            for (var i = 0; i < result.Count; ++i)
-                result[i] = new Complex(realParts[i], imaginaryParts[i]);
-
-            return result;
-        }
-
-        public static Vector<Complex> CombineAmplitudesAndAngles(IList<double> amplitudes,
-            IList<double> angles)
-        {
-            var result = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(amplitudes.Count);
-
-            for (var i = 0; i < result.Count; ++i)
-                result[i] = Complex.FromPolarCoordinates(amplitudes[i], angles[i]);
-
-            return result;
-        }
-
         public static Vector<double> CombineParts(IList<double> upperParts, IList<double> lowerParts)
         {
             var result = new DenseVector(upperParts.Count + lowerParts.Count);
@@ -110,26 +88,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Debug.Assert(firstPartCount == firstParts.Count);
             Debug.Assert(secondPartCount == secondParts.Count);
             Debug.Assert(thirdPartCount == thirdParts.Count);
-        }
-
-        public static Vector<double> ExtractRealParts(IList<Complex> constantCurrents)
-        {
-            var result = new DenseVector(constantCurrents.Count);
-
-            for (var i = 0; i < constantCurrents.Count; ++i)
-                result[i] = constantCurrents[i].Real;
-
-            return result;
-        }
-
-        public static Vector<double> ExtractImaginaryParts(IList<Complex> constantCurrents)
-        {
-            var result = new DenseVector(constantCurrents.Count);
-
-            for (var i = 0; i < constantCurrents.Count; ++i)
-                result[i] = constantCurrents[i].Imaginary;
-
-            return result;
         }
 
         public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
@@ -233,55 +191,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     }
                 }
             }
-        }
-
-        public static void CalculateChangeMatrixRealPowerByAmplitude(Matrix<double> result, AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
-        {
-            for (var row = 0; row < rows.Count; ++row)
-            {
-                var i = rows[row];
-
-                for (var column = 0; column < columns.Count; ++column)
-                {
-                    var k = columns[column];
-
-                    if (i != k)
-                        result[startRow + row, startColumn + column] = admittances[i, k].Magnitude * voltages[i].Magnitude *
-                                             Math.Cos(admittances[i, k].Phase + voltages[k].Phase - voltages[i].Phase);
-                    else
-                    {
-                        var diagonalPart = (-1) * currents[i].Magnitude * Math.Cos(currents[i].Phase - voltages[i].Phase) +
-                                             2 * admittances[i, i].Magnitude * voltages[i].Magnitude * Math.Cos(admittances[i, i].Phase);
-
-                        var offDiagonalPart = 0.0;
-
-                        for (var j = 0; j < admittances.NodeCount; ++j)
-                            if (j != i)
-                                offDiagonalPart += admittances[i, j].Magnitude * voltages[j].Magnitude *
-                                                   Math.Cos(admittances[i, j].Phase + voltages[j].Phase - voltages[i].Phase);
-
-                        result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
-                    }
-                }
-            }
-        }
-
-        public static Vector<double> CalculateLoadCurrentImaginaryParts(AdmittanceMatrix admittances, IList<Complex> voltages)
-        {
-            var nodeCount = admittances.NodeCount;
-            var currents = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-            {
-                var sum = 0.0;
-
-                for (var k = 0; k < nodeCount; ++k)
-                    sum += admittances[i, k].Real * voltages[k].Imaginary + admittances[i, k].Imaginary * voltages[k].Real;
-
-                currents[i] = sum;
-            }
-
-            return currents;
         }
 
         public static void CalculateChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages, IList<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
