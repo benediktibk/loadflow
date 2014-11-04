@@ -8,17 +8,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     {
         public override double PrecisionPqOnly
         {
-            get { return 0.001; }
+            get { return 0.0001; }
         }
 
         public override double PrecisionPvOnly
         {
-            get { return 0.1; }
+            get { return 0.025; }
         }
 
         public override double PrecisionPqAndPv
         {
-            get { return 0.07; }
+            get { return 0.02; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()

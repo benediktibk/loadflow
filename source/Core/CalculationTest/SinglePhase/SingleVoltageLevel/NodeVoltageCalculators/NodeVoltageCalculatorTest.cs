@@ -59,8 +59,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPqOnly);
-            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPqOnly);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqOnly);
         }
 
         [TestMethod]
@@ -73,8 +73,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPvOnly);
-            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPvOnly);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPvOnly);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPvOnly);
         }
 
         [TestMethod]
@@ -87,8 +87,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPqAndPv);
-            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPqAndPv);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqAndPv);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqAndPv);
         }
 
         public abstract INodeVoltageCalculator CreateNodeVoltageCalculator();
