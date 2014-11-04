@@ -6,11 +6,11 @@ using Misc;
 
 namespace SincalConnector
 {
-    public class PowerNet
+    public class PowerNetDatabaseAdapter
     {
         private readonly PowerNetData _data;
 
-        public PowerNet(string database)
+        public PowerNetDatabaseAdapter(string database)
         {
             _data = new PowerNetData();
             ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;

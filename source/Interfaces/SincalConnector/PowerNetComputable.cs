@@ -9,7 +9,7 @@ using Misc;
 
 namespace SincalConnector
 {
-    public class PowerNetComputable : PowerNet
+    public class PowerNetComputable : PowerNetDatabaseAdapter
     {
         public PowerNetComputable(string database) : base(database)
         { }

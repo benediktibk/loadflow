@@ -90,7 +90,7 @@
     <Compile Include="FeedIn.cs" />
     <Compile Include="IReadOnlyNode.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="PowerNet.cs" />
+    <Compile Include="PowerNetDatabaseAdapter.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ConnectorUI.xaml.cs">
       <DependentUpon>ConnectorUI.xaml</DependentUpon>

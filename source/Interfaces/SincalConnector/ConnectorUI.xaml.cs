@@ -40,12 +40,12 @@ namespace SincalConnector
 
         private void CalculatePowerNet(object sender, RoutedEventArgs e)
         {
-            PowerNetComputable powerNet;
+            PowerNetComputable powerNetDatabaseAdapter;
 
             try
             {
                 _connectorData.Log("parsing the power net");
-                powerNet = new PowerNetComputable(_connectorData.InputFile);
+                powerNetDatabaseAdapter = new PowerNetComputable(_connectorData.InputFile);
             }
             catch (Exception exception)
             {
@@ -59,7 +59,7 @@ namespace SincalConnector
                 precision);
 
             _connectorData.Log("calculating the power net");
-            var success = powerNet.CalculateNodeVoltages(calculator);
+            var success = powerNetDatabaseAdapter.CalculateNodeVoltages(calculator);
 
             _connectorData.Log(success ? "finished calculation of power net" : "was not able to calculate the power net");
         }
