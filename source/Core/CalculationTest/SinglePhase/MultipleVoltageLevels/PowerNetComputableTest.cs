@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Misc;
 using Moq;
+using IPowerNetComputable = Calculation.SinglePhase.SingleVoltageLevel.IPowerNetComputable;
 using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -12,28 +15,106 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class PowerNetComputableTest
     {
-        [TestMethod]
-        public void CalculateNodeVoltages_CalculationFails_Null()
+        private Mock<IPowerNetFactory> _powerNetFactoryMock;
+        private Mock<IPowerNetComputable> _singleVoltagePowerNetMock;
+        private Mock<INodeGraph> _nodeGraphMock;
+        private PowerNetComputable _powerNet;
+
+        [TestInitialize]
+        public void SetUp()
         {
-            var powerNetFactoryMock = new Mock<IPowerNetFactory>();
-            var singleVoltagePowerNetMock = new Mock<Calculation.SinglePhase.SingleVoltageLevel.IPowerNetComputable>();
-            var nodeGraphMock = new Mock<INodeGraph>();
-            var powerNet = new PowerNetComputable(50, powerNetFactoryMock.Object, nodeGraphMock.Object);
-            powerNet.AddNode(0, 1, "");
-            powerNet.AddNode(1, 1, "");
-            powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
-            powerNet.AddLoad(1, new Complex(-0.6, -1));
-            powerNet.AddGenerator(1, 1.02, -0.4);
-            powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
-            powerNetFactoryMock.Setup(
+            _powerNetFactoryMock = new Mock<IPowerNetFactory>();
+            _singleVoltagePowerNetMock = new Mock<IPowerNetComputable>();
+            _nodeGraphMock = new Mock<INodeGraph>();
+            _powerNet = new PowerNetComputable(50, _powerNetFactoryMock.Object, _nodeGraphMock.Object);
+            _powerNetFactoryMock.Setup(
                 x =>
                     x.Create(It.IsAny<Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix>(),
-                        It.IsAny<double>())).Returns(singleVoltagePowerNetMock.Object);
-            singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults()).Returns((IList<NodeResult>) null);
+                        It.IsAny<double>())).Returns(_singleVoltagePowerNetMock.Object);
+        }
 
-            var nodeResults = powerNet.CalculateNodeVoltages();
+        [TestMethod]
+        public void CalculateNodeResults_CalculationFails_Null()
+        {
+            _powerNet.AddNode(0, 1, "");
+            _powerNet.AddNode(1, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddLoad(1, new Complex(-0.6, -1));
+            _powerNet.AddGenerator(1, 1.02, -0.4);
+            _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
+            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults()).Returns((IList<NodeResult>) null);
 
-            Assert.AreEqual(null, nodeResults);
+            var nodeResults = _powerNet.CalculateNodeVoltages();
+
+            Assert.IsNull(nodeResults);
+        }
+
+        [TestMethod]
+        public void CalculateNodeResults_CalculationSucceeds_NodeResultsAreUnscaled()
+        {
+            _powerNet.AddNode(0, 7, "");
+            _powerNet.AddNode(1, 7, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddLoad(1, new Complex(-0.6, -1));
+            _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
+            var sourceVoltageInternal = new Complex(2, 3);
+            var sourcePowerInternal = new Complex(4, 5);
+            var loadVoltageInternal = new Complex(6, 7);
+            var loadPowerInternal = new Complex(8, 9);
+            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults()).Returns(new List<NodeResult>
+            {
+                new NodeResult(sourceVoltageInternal, sourcePowerInternal), new NodeResult(loadVoltageInternal, loadPowerInternal)
+            });
+
+            var nodeResults = _powerNet.CalculateNodeVoltages();
+
+            Assert.IsNotNull(nodeResults);
+            Assert.AreEqual(2, nodeResults.Count);
+            var sourceNodeResult = nodeResults[0];
+            var loadNodeResult = nodeResults[1];
+            var powerScaling = _powerNet.DeterminePowerScaling();
+            ComplexAssert.AreEqual(sourceVoltageInternal * 7, sourceNodeResult.Voltage, 0.00001);
+            ComplexAssert.AreEqual(loadVoltageInternal * 7, loadNodeResult.Voltage, 0.00001);
+            ComplexAssert.AreEqual(sourcePowerInternal * powerScaling, sourceNodeResult.Power, 0.00001);
+            ComplexAssert.AreEqual(loadPowerInternal * powerScaling, loadNodeResult.Power, 0.00001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void CalculateNodeResults_FloatingNode_ThrowsException()
+        {
+            _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(true);
+
+            _powerNet.CalculateNodeVoltages();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void CalculateNodeResults_NominalVoltagesDoNotMatch_ThrowsException()
+        {
+            _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(false);
+            _powerNet.AddNode(0, 7, "");
+            _powerNet.AddNode(1, 8, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddLoad(1, new Complex(-0.6, -1));
+            _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
+
+            _powerNet.CalculateNodeVoltages();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void CalculateNodeResults_OverdeterminedProblem_ThrowsException()
+        {
+            _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(false);
+            _powerNet.AddNode(0, 7, "");
+            _powerNet.AddNode(1, 7, "");
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddGenerator(0, 1.02, -0.4);
+            _powerNet.AddLoad(1, new Complex(-0.6, -1));
+            _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
+
+            _powerNet.CalculateNodeVoltages();
         }
     }
 }
