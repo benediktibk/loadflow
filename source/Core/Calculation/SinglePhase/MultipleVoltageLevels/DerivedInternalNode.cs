@@ -20,11 +20,6 @@
 
         public string Name { get; private set; }
 
-        public bool Equals(IReadOnlyNode other)
-        {
-            return Id == other.Id;
-        }
-
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
         {
             return CreateSingleVoltageNodeInternal(scaleBasePower);

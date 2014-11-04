@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Calculation.SinglePhase.MultipleVoltageLevels
+﻿namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public interface IReadOnlyNode : IEquatable<IReadOnlyNode>
+    public interface IReadOnlyNode
     {
         double NominalVoltage { get; }
         int Id { get; }
