@@ -6,7 +6,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PowerNet : IPowerNet
     {
-        private readonly int _nodeCount;
         private readonly IList<Node> _nodes;
         private readonly IAdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
