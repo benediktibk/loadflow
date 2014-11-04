@@ -40,12 +40,12 @@ namespace SincalConnector
 
         private void CalculatePowerNet(object sender, RoutedEventArgs e)
         {
-            PowerNet powerNet;
+            PowerNetComputable powerNet;
 
             try
             {
                 _connectorData.Log("parsing the power net");
-                powerNet = new PowerNet(_connectorData.InputFile);
+                powerNet = new PowerNetComputable(_connectorData.InputFile);
             }
             catch (Exception exception)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Calculation.ThreePhase;
 
 namespace SincalConnector
 {
@@ -9,5 +10,6 @@ namespace SincalConnector
         double NominalVoltage { get; }
         Complex Voltage { get; }
         Complex Load { get; }
+        void AddTo(SymmetricPowerNet symmetricPowerNet);
     }
 }

@@ -88,7 +88,7 @@ namespace SincalConnector
             return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;", _connection);
         }
 
-        public OleDbCommand CreateCommandToAddResult(Node node, Angle phaseShift, Angle slackPhaseShift)
+        public OleDbCommand CreateCommandToAddResult(IReadOnlyNode node, Angle phaseShift, Angle slackPhaseShift)
         {
             var voltagePhase = new Angle(node.Voltage.Phase);
             var voltagePhaseShifted = voltagePhase - phaseShift;

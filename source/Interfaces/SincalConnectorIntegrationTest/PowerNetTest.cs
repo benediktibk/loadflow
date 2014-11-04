@@ -23,7 +23,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodes_NodeValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
             var nodes = powerNet.Nodes;
             Assert.AreEqual(1, nodes[0].Id);
@@ -37,7 +37,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodesAt10kV_NodeValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_10kV_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_10kV_files/database.mdb");
 
             var nodes = powerNet.Nodes;
             Assert.AreEqual(1, nodes[0].Id);
@@ -51,7 +51,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_VillageNet_116Nodes()
         {
-            var powerNet = new PowerNet("testdata/dorfnetz_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/dorfnetz_files/database.mdb");
 
             Assert.AreEqual(116, powerNet.Nodes.Count);
         }
@@ -59,7 +59,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodes_FeedInValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
             var feedIns = powerNet.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
@@ -71,7 +71,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodesAt10kV_FeedInVoltageIsCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_10kv_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_10kv_files/database.mdb");
 
             var feedIns = powerNet.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
@@ -83,7 +83,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithSpecialFeedIn_FeedInVoltageIsCorrect()
         {
-            var powerNet = new PowerNet("testdata/feedin_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/feedin_files/database.mdb");
 
             var feedIns = powerNet.FeedIns;
             Assert.AreEqual(1, feedIns.Count);
@@ -95,7 +95,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodes_LoadIsCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
             var loads = powerNet.Loads;
             Assert.AreEqual(1, loads.Count);
@@ -106,7 +106,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodes_FrequencyIs50()
         {
-            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
             Assert.AreEqual(50, powerNet.Frequency, 0.000001);
         }
@@ -114,7 +114,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithTwoNodes_TransmissionLineIsCorrect()
         {
-            var powerNet = new PowerNet("testdata/node_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/node_files/database.mdb");
 
             var transmissionLines = powerNet.TransmissionLines;
             Assert.AreEqual(1, transmissionLines.Count);
@@ -131,13 +131,13 @@ namespace SincalConnectorIntegrationTest
         [ExpectedException(typeof(NotSupportedException))]
         public void Constructor_NetWithUnsupportedElement_ThrowsException()
         {
-            new PowerNet("testdata/unsupported_files/database.mdb");
+            new PowerNetComputable("testdata/unsupported_files/database.mdb");
         }
 
         [TestMethod]
         public void Constructor_NetWithTransformer_TransformerValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/transformer_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/transformer_files/database.mdb");
 
             var transformers = powerNet.TwoWindingTransformers;
             Assert.AreEqual(1, transformers.Count);
@@ -153,7 +153,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithGeneratorVersionOne_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/generator1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/generator1_files/database.mdb");
 
             var generators = powerNet.Generators;
             Assert.AreEqual(1, generators.Count);
@@ -165,7 +165,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithGeneratorVersionTwo_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/generator2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/generator2_files/database.mdb");
 
             var generators = powerNet.Generators;
             Assert.AreEqual(1, generators.Count);
@@ -177,7 +177,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithGeneratorVersionThree_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/generator3_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/generator3_files/database.mdb");
 
             var generators = powerNet.Generators;
             Assert.AreEqual(1, generators.Count);
@@ -189,7 +189,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithGeneratorVersionFour_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/generator4_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/generator4_files/database.mdb");
 
             var generators = powerNet.Generators;
             Assert.AreEqual(1, generators.Count);
@@ -201,13 +201,13 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_GermanNet_NoErrors()
         {
-            new PowerNet("testdata/uebertragungsnetz_deutschland_files/database.mdb");
+            new PowerNetComputable("testdata/uebertragungsnetz_deutschland_files/database.mdb");
         }
 
         [TestMethod]
         public void Constructor_NetWithImpedanceLoadVersionOne_ImpedanceLoadValueseAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/impedanceload1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/impedanceload1_files/database.mdb");
 
             var impedanceLoads = powerNet.ImpedanceLoads;
             Assert.AreEqual(1, impedanceLoads.Count);
@@ -220,7 +220,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithImpedanceLoadVersionTwo_ImpedanceLoadValueseAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/impedanceload2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/impedanceload2_files/database.mdb");
 
             var impedanceLoads = powerNet.ImpedanceLoads;
             Assert.AreEqual(1, impedanceLoads.Count);
@@ -233,7 +233,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithSlackGeneratorVersionOne_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/slackgenerator1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/slackgenerator1_files/database.mdb");
 
             var slackGenerators = powerNet.SlackGenerators;
             Assert.AreEqual(1, slackGenerators.Count);
@@ -246,7 +246,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void Constructor_NetWithSlackGeneratorVersionTwo_GeneratorValuesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/slackgenerator2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/slackgenerator2_files/database.mdb");
 
             var slackGenerators = powerNet.SlackGenerators;
             Assert.AreEqual(1, slackGenerators.Count);
@@ -259,7 +259,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionOne_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -273,7 +273,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionTwo_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -287,7 +287,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionThree_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline3_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline3_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -301,7 +301,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionFour_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline4_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -315,7 +315,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithOneTransmissionLineVersionFive_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline5_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -329,7 +329,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithSlackGeneratorVersionOne_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_slackgenerator1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_slackgenerator1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -343,7 +343,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithImpedanceLoadVersionOne_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_impedanceload1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_impedanceload1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -357,7 +357,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithImpedanceLoadVersionTwo_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_impedanceload2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_impedanceload2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -371,7 +371,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithGeneratorVersionOne_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_generator1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_generator1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -385,7 +385,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionOne_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -399,7 +399,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionTwo_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -413,7 +413,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionThree_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer3_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer3_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -427,7 +427,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionFour_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer4_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -441,7 +441,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionFive_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer5_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -455,7 +455,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_CountryNetWithOverheadLine1_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/landnetz_freileitung1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/landnetz_freileitung1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -469,7 +469,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_CountryNetWithOverheadLine2_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/landnetz_freileitung2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/landnetz_freileitung2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -483,7 +483,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_CountryNetWithCable1_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/landnetz_kabel1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/landnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -497,7 +497,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_CountryNetWithCable2_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/landnetz_kabel2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/landnetz_kabel2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -511,7 +511,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_SuburbanNetWithCable1_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/vorstadtnetz_kabel1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/vorstadtnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -525,7 +525,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_SuburbanNetWithCable2_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/vorstadtnetz_kabel2_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/vorstadtnetz_kabel2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -539,7 +539,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionSix_AllTableEntriesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transformer6_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transformer6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -552,7 +552,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithTransmissionLineVersionSix_AllTableEntriesAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_transmissionline6_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_transmissionline6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);
@@ -565,7 +565,7 @@ namespace SincalConnectorIntegrationTest
         [TestMethod]
         public void CalculateNodeVoltages_NetWithThreeWindingTransformer_ResultsAreCorrect()
         {
-            var powerNet = new PowerNet("testdata/calculation_threewindingtransformer1_files/database.mdb");
+            var powerNet = new PowerNetComputable("testdata/calculation_threewindingtransformer1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator);

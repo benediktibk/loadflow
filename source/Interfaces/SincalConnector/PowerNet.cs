@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Linq;
-using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using Calculation.ThreePhase;
 using Misc;
-using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace SincalConnector
 {
@@ -16,6 +11,7 @@ namespace SincalConnector
     {
         private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
+        private readonly IList<IReadOnlyNode> _readOnlyNodes;
         private readonly IList<INetElement> _netElements;
         private readonly IList<FeedIn> _feedIns;
         private readonly IList<Load> _loads;
@@ -25,13 +21,12 @@ namespace SincalConnector
         private readonly IList<ImpedanceLoad> _impedanceLoads;
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly IList<SlackGenerator> _slackGenerators;
-        private readonly string _connectionString;
 
         public PowerNet(string database) : this()
         {
-            _connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
+            ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
 
-            using (var databaseConnection = new OleDbConnection(_connectionString))
+            using (var databaseConnection = new OleDbConnection(ConnectionString))
             {
                 databaseConnection.Open();
                 var commandFactory = new SqlCommandFactory(databaseConnection);
@@ -66,6 +61,7 @@ namespace SincalConnector
         {
             _terminals = new List<Terminal>();
             _nodes = new List<Node>();
+            _readOnlyNodes = new List<IReadOnlyNode>();
             _netElements = new List<INetElement>();
             _feedIns = new List<FeedIn>();
             _loads = new List<Load>();
@@ -79,9 +75,16 @@ namespace SincalConnector
 
         public double Frequency { get; private set; }
 
+        public string ConnectionString { get; private set; }
+
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
-            get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
+            get { return (IReadOnlyList<IReadOnlyNode>) _readOnlyNodes; }
+        }
+
+        public IReadOnlyList<INetElement> NetElements
+        {
+            get { return (IReadOnlyList<INetElement>) _netElements; }
         }
 
         public IReadOnlyList<FeedIn> FeedIns
@@ -124,46 +127,11 @@ namespace SincalConnector
             get { return _twoWindingTransformers.Count + _threeWindingTransformers.Count > 0; }
         }
 
-        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
-        {
-            var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
-            var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
-            var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
-            var slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
-            var nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            var nodeResults = symmetricPowerNet.CalculateNodeVoltages();
-
-            if (nodeResults == null)
-                return false;
-
-            foreach (var node in _nodes)
-                node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
-                    impedanceLoadsByNodeId.Get(node.Id));
-
-            using (var connection = new OleDbConnection(_connectionString))
-            {
-                connection.Open();
-                var commandFactory = new SqlCommandFactory(connection);
-                var deleteCommand = commandFactory.CreateCommandToDeleteAllNodeResults();
-                var insertCommands = new List<OleDbCommand> { Capacity = _nodes.Count };
-                insertCommands.AddRange(_nodes.Select(node => commandFactory.CreateCommandToAddResult(node, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
-
-                deleteCommand.ExecuteNonQuery();
-
-                foreach (var command in insertCommands)
-                    command.ExecuteNonQuery();
-
-                connection.Close();
-            }
-
-            return true;
-        }
-
         public IList<NodeResult> GetNodeResultsFromDatabase()
         {
             var results = new List<NodeResult>();
 
-            using (var databaseConnection = new OleDbConnection(_connectionString))
+            using (var databaseConnection = new OleDbConnection(ConnectionString))
             {
                 databaseConnection.Open();
                 var commandFactory = new SqlCommandFactory(databaseConnection);
@@ -183,7 +151,7 @@ namespace SincalConnector
         {
             var results = new List<NodeResultTableEntry>();
 
-            using (var databaseConnection = new OleDbConnection(_connectionString))
+            using (var databaseConnection = new OleDbConnection(ConnectionString))
             {
                 databaseConnection.Open();
                 var commandFactory = new SqlCommandFactory(databaseConnection);
@@ -197,6 +165,15 @@ namespace SincalConnector
             }
 
             return results;
+        }
+
+        public void SetNodeResults(IReadOnlyDictionary<long, Calculation.NodeResult> nodeResults)
+        {
+            var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
+
+            foreach (var node in _nodes)
+                node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
+                    impedanceLoadsByNodeId.Get(node.Id));
         }
 
         private MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
@@ -237,7 +214,11 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _nodes.Add(new Node(reader, null));
+                {
+                    var node = new Node(reader, null);
+                    _nodes.Add(node);
+                    _readOnlyNodes.Add(node);
+                }
         }
 
         private void FetchTwoWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
@@ -396,20 +377,6 @@ namespace SincalConnector
         private List<int> GetAllSupportedElementIdsSorted()
         {
             return _netElements.Select(element => element.Id).OrderBy(id => id).ToList();
-        }
-
-        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
-        {
-            var singlePhasePowerNet = new PowerNetComputable(Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
-            var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
-
-            foreach (var node in _nodes)
-                node.AddTo(symmetricPowerNet);
-
-            foreach (var element in _netElements)
-                element.AddTo(symmetricPowerNet);
-
-            return symmetricPowerNet;
         }
     }
 }
