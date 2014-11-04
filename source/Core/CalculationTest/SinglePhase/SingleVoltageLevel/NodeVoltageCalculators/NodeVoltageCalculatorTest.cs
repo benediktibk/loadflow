@@ -26,6 +26,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private List<int> _indexOfNodesWithUnknownVoltage;
         private IReadOnlyAdmittanceMatrix _admittanceMatrixReduced;
 
+        public abstract double PrecisionPqOnly { get; }
+        public abstract double PrecisionPvOnly { get; }
+        public abstract double PrecisionPqAndPv { get; }
+
         [TestInitialize]
         public void SetUp()
         {
@@ -55,8 +59,36 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            ComplexAssert.AreEqual(_loadVoltageOne, result[0], 0.001);
-            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], 0.001);
+            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPqOnly);
+            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPqOnly);
+        }
+
+        [TestMethod]
+        public void CalculateUnknownVoltages_TwoPvBuses_CorrectResults()
+        {
+            var pqBuses = new List<PqBus>();
+            var pvBuses = new List<PvBus> { new PvBus(0, _correctPowers[1].Real, _loadVoltageTwo.Magnitude), new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
+
+            var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
+                _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
+
+            Assert.AreEqual(2, result.Count);
+            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPvOnly);
+            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPvOnly);
+        }
+
+        [TestMethod]
+        public void CalculateUnknownVoltages_OnePvAndOnePqBus_CorrectResults()
+        {
+            var pqBuses = new List<PqBus> { new PqBus(0, _correctPowers[1]) };
+            var pvBuses = new List<PvBus> { new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
+
+            var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
+                _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
+
+            Assert.AreEqual(2, result.Count);
+            ComplexAssert.AreEqual(_loadVoltageOne, result[0], PrecisionPqAndPv);
+            ComplexAssert.AreEqual(_loadVoltageTwo, result[1], PrecisionPqAndPv);
         }
 
         public abstract INodeVoltageCalculator CreateNodeVoltageCalculator();
