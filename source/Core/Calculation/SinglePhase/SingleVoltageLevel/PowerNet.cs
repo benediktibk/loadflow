@@ -17,7 +17,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 throw new ArgumentOutOfRangeException("nominalVoltage", "the nominal voltage must be positive");
 
             _nominalVoltage = nominalVoltage;
-            _nodeCount = admittances.NodeCount;
             _admittances = admittances;
             _nodes = InitializeNodes();
         }
@@ -44,9 +43,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         private IList<Node> InitializeNodes()
         {
-            var result = new List<Node>(_nodeCount);
+            var result = new List<Node>(Admittances.NodeCount);
 
-            for (var i = 0; i < _nodeCount; ++i)
+            for (var i = 0; i < Admittances.NodeCount; ++i)
                 result.Add(new Node());
 
             return result;

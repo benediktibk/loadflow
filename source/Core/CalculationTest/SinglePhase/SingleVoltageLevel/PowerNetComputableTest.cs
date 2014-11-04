@@ -12,6 +12,19 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
     [TestClass]
     public class PowerNetComputableTest
     {
+        private PowerNetComputable _powerNet;
+        private Mock<IAdmittanceMatrix> _admittanceMatrixMock;
+        private Mock<INodeVoltageCalculator> _nodeVoltageCalculatorMock;
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            _admittanceMatrixMock = new Mock<IAdmittanceMatrix>();
+            _admittanceMatrixMock.Setup(x => x.NodeCount).Returns(3);
+            _nodeVoltageCalculatorMock = new Mock<INodeVoltageCalculator>();
+            _powerNet = new PowerNetComputable(_nodeVoltageCalculatorMock.Object, _admittanceMatrixMock.Object, 5);
+        }
+            
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
@@ -73,6 +86,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var powerLoss = PowerNetComputable.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CalculateNodeResults_NoSlackBus_ThrowsException()
+        {
+            _powerNet.SetNode(0, new Node() { Power = new Complex(1, 2) });
+            _powerNet.SetNode(1, new Node() { Power = new Complex(5, 6) });
+            _powerNet.SetNode(2, new Node() { RealPower = 3, VoltageMagnitude = 4});
+
+            _powerNet.CalculateNodeResults();
         }
     }
 }
