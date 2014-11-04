@@ -389,5 +389,22 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             _powerNet.CalculateNominalPhaseShiftPerNode();
         }
+
+        [TestMethod]
+        public void SegmentsOnSameVoltageLevel_ThreeInACircleByTransformersConnectedConnectedNodesAndAThreeWindingTransformer_ThreeElements()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
+            _powerNet.AddThreeWindingTransformer(0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, new Angle(0.3), new Angle(-1.8), new Angle(1.5), "");
+
+            var nominalPhaseShifts = _powerNet.CalculateNominalPhaseShiftPerNode();
+
+            Assert.AreEqual(3, nominalPhaseShifts.Count);
+        }
     }
 }
