@@ -9,7 +9,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         int NodeCount { get; }
         Vector<Complex> CalculateCurrents(Vector<Complex> voltages);
-        Complex this[int row, int column] { get; set; }
+        Complex this[int row, int column] { get; }
         ISolver<Complex> CalculateFactorization();
         Vector<Complex> GetRow(int row);
         AdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage,

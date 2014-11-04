@@ -96,7 +96,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public Complex this[int row, int column]
         {
             get { return _values[row, column]; }
-            set { _values[row, column] = value; }
         }
 
         public ISolver<Complex> CalculateFactorization()

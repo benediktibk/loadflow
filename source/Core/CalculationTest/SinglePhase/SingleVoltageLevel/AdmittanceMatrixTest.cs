@@ -148,5 +148,153 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var admittanceMatrix = new AdmittanceMatrix(-5);
         }
+
+        [TestMethod]
+        public void AddConnection_OnceCalled_ValuesAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(2);
+
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+
+            ComplexAssert.AreEqual(2, 3, _admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(2, 3, _admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-2, -3, _admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-2, -3, _admittances[1, 0], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddConnection_TwiceCalled_ValuesAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(2);
+
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+            _admittances.AddConnection(0, 1, new Complex(4, 5));
+
+            ComplexAssert.AreEqual(6, 8, _admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(6, 8, _admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-6, -8, _admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-6, -8, _admittances[1, 0], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddUnsymmetricAdmittance_PrefilledMatrix_ValuesAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(2);
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+
+            _admittances.AddUnsymmetricAdmittance(1, 0, new Complex(4, 5));
+
+            ComplexAssert.AreEqual(2, 3, _admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(2, 3, _admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-2, -3, _admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(2, 2, _admittances[1, 0], 0.00001);
+        }
+
+        [TestMethod]
+        public void AddVoltageControlledCurrentSource_PrefilledMatrix_ValuesAreCorrect()
+        {
+            _admittances = new AdmittanceMatrix(4);
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+            _admittances.AddConnection(2, 3, new Complex(4, 5));
+
+            _admittances.AddVoltageControlledCurrentSource(0, 1, 2, 3, new Complex(6, 7));
+
+            ComplexAssert.AreEqual(2, 3, _admittances[0, 0], 0.00001);
+            ComplexAssert.AreEqual(2, 3, _admittances[1, 1], 0.00001);
+            ComplexAssert.AreEqual(-2, -3, _admittances[0, 1], 0.00001);
+            ComplexAssert.AreEqual(-2, -3, _admittances[1, 0], 0.00001);
+            ComplexAssert.AreEqual(4, 5, _admittances[2, 2], 0.00001);
+            ComplexAssert.AreEqual(4, 5, _admittances[3, 3], 0.00001);
+            ComplexAssert.AreEqual(-4, -5, _admittances[2, 3], 0.00001);
+            ComplexAssert.AreEqual(-4, -5, _admittances[3, 2], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _admittances[0, 2], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _admittances[0, 3], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _admittances[1, 2], 0.00001);
+            ComplexAssert.AreEqual(0, 0, _admittances[1, 3], 0.00001);
+            ComplexAssert.AreEqual(6, 7, _admittances[2, 0], 0.00001);
+            ComplexAssert.AreEqual(-6, -7, _admittances[3, 0], 0.00001);
+            ComplexAssert.AreEqual(-6, -7, _admittances[2, 1], 0.00001);
+            ComplexAssert.AreEqual(6, 7, _admittances[3, 1], 0.00001);
+        }
+
+        [TestMethod]
+        public void NodeCount_SetTo3_3()
+        {
+            _admittances = new AdmittanceMatrix(3);
+
+            Assert.AreEqual(3, _admittances.NodeCount);
+        }
+
+        [TestMethod]
+        public void GetRow_ValidRowNumber_CorrectValues()
+        {
+            _admittances = new AdmittanceMatrix(2);
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+
+            var row = _admittances.GetRow(1);
+
+            ComplexAssert.AreEqual(-2, -3, row[0], 0.0001);
+            ComplexAssert.AreEqual(2, 3, row[1], 0.0001);
+        }
+
+        [TestMethod]
+        public void CalculateRowSums_UnsymmetricValues_CorrectResults()
+        {
+            _admittances = new AdmittanceMatrix(4);
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+            _admittances.AddConnection(2, 3, new Complex(4, 5));
+            _admittances.AddVoltageControlledCurrentSource(0, 1, 2, 3, new Complex(6, 7));
+            _admittances.AddUnsymmetricAdmittance(2, 3, new Complex(8, 9));
+            _admittances.AddUnsymmetricAdmittance(3, 1, new Complex(10, 11));
+
+            var rowSums = _admittances.CalculateRowSums();
+
+            ComplexAssert.AreEqual(0, 0, rowSums[0], 0.000001);
+            ComplexAssert.AreEqual(0, 0, rowSums[1], 0.000001);
+            ComplexAssert.AreEqual(8, 9, rowSums[2], 0.000001);
+            ComplexAssert.AreEqual(10, 11, rowSums[3], 0.000001);
+        }
+
+        [TestMethod]
+        public void CalculateFactorization_OneConnection_SolverDeliversCorrectVoltages()
+        {
+            _admittances = new AdmittanceMatrix(2);
+            _admittances.AddConnection(0, 1, new Complex(2, 3));
+            _admittances.AddUnsymmetricAdmittance(1, 1, new Complex(8, 9));
+            var correctVoltages = new DenseVector(new[] {new Complex(4, 5), new Complex(6, 7)});
+            var currents = _admittances.CalculateCurrents(correctVoltages);
+
+            var factorization = _admittances.CalculateFactorization();
+
+            var voltages = factorization.Solve(currents);
+            ComplexAssert.AreAllEqual(correctVoltages, voltages, 0.0001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_NotQuadraticMatrix_ThrowsException()
+        {
+            var matrix = new SparseMatrix(4, 5);
+
+            var admittances = new AdmittanceMatrix(matrix);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        public void AddIdealTransformer_ZeroRatio_ThrowsException()
+        {
+            _admittances = new AdmittanceMatrix(5);
+
+            _admittances.AddIdealTransformer(0, 1, 2, 3, 4, new Complex(), 5);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddIdealTransformer_NegativeResistanceWeight_ThrowsException()
+        {
+            _admittances = new AdmittanceMatrix(5);
+
+            _admittances.AddIdealTransformer(0, 1, 2, 3, 4, new Complex(1, 3), -4);
+        }
     }
 }
