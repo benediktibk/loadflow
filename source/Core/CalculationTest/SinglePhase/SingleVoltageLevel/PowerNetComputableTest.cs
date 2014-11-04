@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
@@ -21,7 +23,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _admittanceMatrixMock = new Mock<IAdmittanceMatrix>();
             _admittanceMatrixMock.Setup(x => x.NodeCount).Returns(3);
+            _admittanceMatrixMock.Setup(x => x.CalculateCurrents(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => voltages);
             _nodeVoltageCalculatorMock = new Mock<INodeVoltageCalculator>();
+            _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
             _powerNet = new PowerNetComputable(_nodeVoltageCalculatorMock.Object, _admittanceMatrixMock.Object, 5);
         }
             
@@ -97,6 +102,37 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.SetNode(2, new Node() { RealPower = 3, VoltageMagnitude = 4});
 
             _powerNet.CalculateNodeResults();
+        }
+
+        [TestMethod]
+        public void CalculateNodeResults_AllVoltagesKnown_CorrectVoltages()
+        {
+            _powerNet.SetNode(0, new Node() { Voltage = new Complex(1, 2) });
+            _powerNet.SetNode(1, new Node() { Voltage = new Complex(5, 6) });
+            _powerNet.SetNode(2, new Node() { Voltage = new Complex(3, 4) });
+
+            var nodeResults = _powerNet.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(1, 2, nodeResults[0].Voltage, 0.00001);
+            ComplexAssert.AreEqual(5, 6, nodeResults[1].Voltage, 0.00001);
+            ComplexAssert.AreEqual(3, 4, nodeResults[2].Voltage, 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeResults_AllVoltagesKnown_NodeVoltageCalculatorGotNoCall()
+        {
+            _powerNet.SetNode(0, new Node() { Voltage = new Complex(1, 2) });
+            _powerNet.SetNode(1, new Node() { Voltage = new Complex(5, 6) });
+            _powerNet.SetNode(2, new Node() { Voltage = new Complex(3, 4) });
+
+            _powerNet.CalculateNodeResults();
+
+            _nodeVoltageCalculatorMock.Verify(
+                x =>
+                    x.CalculateUnknownVoltages(It.IsAny<AdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
+                        It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
+                        It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()), Times.Never);
         }
     }
 }
