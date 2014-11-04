@@ -161,20 +161,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 phaseShiftsPerTransformer.Add(segmentPair, phaseShift);
         }
 
-        private IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CreateDictionaryPhaseShiftByNode(IList<ISet<IExternalReadOnlyNode>> segments, IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> phaseShiftBySegment)
-        {
-            var result = new Dictionary<IExternalReadOnlyNode, Angle>();
-
-            foreach (var node in _nodes)
-            {
-                var segment = FindSegmentWhichContains(segments, node);
-                result.Add(node, phaseShiftBySegment[segment]);
-            }
-
-            return result;
-        }
-
-        private IEnumerable<KeyValuePair<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>> CreatePhaseShiftsPerTransformer(IList<ISet<IExternalReadOnlyNode>> segments, IEnumerable<TwoWindingTransformer> twoWindingTransformers, IEnumerable<ThreeWindingTransformer> threeWindingTransformers)
+        private static IEnumerable<KeyValuePair<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>> CreatePhaseShiftsPerTransformer(IList<ISet<IExternalReadOnlyNode>> segments, IEnumerable<TwoWindingTransformer> twoWindingTransformers, IEnumerable<ThreeWindingTransformer> threeWindingTransformers)
         {
             var phaseShiftsPerTransformer =
                 new Dictionary<Tuple<ISet<IExternalReadOnlyNode>, ISet<IExternalReadOnlyNode>>, Angle>();
@@ -200,6 +187,19 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
 
             return phaseShiftsPerTransformer;
+        }
+
+        private IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CreateDictionaryPhaseShiftByNode(IList<ISet<IExternalReadOnlyNode>> segments, IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> phaseShiftBySegment)
+        {
+            var result = new Dictionary<IExternalReadOnlyNode, Angle>();
+
+            foreach (var node in _nodes)
+            {
+                var segment = FindSegmentWhichContains(segments, node);
+                result.Add(node, phaseShiftBySegment[segment]);
+            }
+
+            return result;
         }
 
         private void UpdateCachedResultsIfNecessary()
