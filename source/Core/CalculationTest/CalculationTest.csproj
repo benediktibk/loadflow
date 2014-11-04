@@ -82,6 +82,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeGraphTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodeVoltageCalculatorTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIterationTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputableTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeAssert.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeTest.cs" />
