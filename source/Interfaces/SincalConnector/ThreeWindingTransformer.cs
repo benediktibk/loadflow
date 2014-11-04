@@ -107,11 +107,6 @@ namespace SincalConnector
 
         public Angle PhaseShiftThreeToOne { get; private set; }
 
-        public static OleDbCommand CreateCommandToFetchAllThreeWindingTransformers()
-        {
-            return new OleDbCommand("SELECT Element_ID,Sn12,Sn23,Sn31,uk12,uk23,uk31,ur12,ur23,ur31,Vfe,i0,VecGrp1,VecGrp2,VecGrp3,roh1,roh2,roh3,Un1,Un2,Un3,AddRotate1,AddRotate2,AddRotate3 FROM ThreeWindingTransformer;");
-        }
-
         public static int MapConnectionSymbolToPhaseShiftFactor(int connectionSymbol)
         {
             switch (connectionSymbol)

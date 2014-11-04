@@ -65,10 +65,5 @@ namespace SincalConnector
                 SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
                 TransmissionEquationModel);
         }
-
-        public static OleDbCommand CreateCommandToFetchAllTransmissionLines()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_LineTyp,Flag_Ll,l,ParSys,fr,r,x,c,va,fn,Un FROM Line;");
-        }
     }
 }

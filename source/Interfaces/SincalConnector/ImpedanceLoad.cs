@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
 using Misc;
@@ -45,11 +44,6 @@ namespace SincalConnector
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddImpedanceLoad(NodeId, Impedance);
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllImpedanceLoads()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q,u,Ul FROM Load WHERE Flag_LoadType = 1 AND Flag_Load = 1;");
         }
     }
 }

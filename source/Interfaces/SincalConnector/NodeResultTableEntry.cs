@@ -1,5 +1,4 @@
-﻿using System.Data.OleDb;
-using Misc;
+﻿using Misc;
 
 namespace SincalConnector
 {
@@ -50,10 +49,5 @@ namespace SincalConnector
         public double VoltagePhaseWithRotation { get; private set; }
 
         public double StringVoltagePhaseWithRotation { get; private set; }
-
-        public static OleDbCommand CreateCommandToFetchAll()
-        {
-            return new OleDbCommand("SELECT U,U_Un,phi,P,Q,S,Flag_Result,Flag_State,Uph,Uph_Unph,phi_ph,phi_rot,phi_ph_rot FROM LFNodeResult ORDER BY Result_ID;");
-        }
     }
 }

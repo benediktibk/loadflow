@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
 using Misc;
@@ -31,11 +30,6 @@ namespace SincalConnector
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddLoad(NodeId, LoadValue);
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllLoads()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q FROM Load WHERE (Flag_LoadType = 2 OR Flag_LoadType = 4) AND Flag_Load = 1;");
         }
     }
 }

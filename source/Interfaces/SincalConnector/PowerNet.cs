@@ -34,24 +34,25 @@ namespace SincalConnector
             using (var databaseConnection = new OleDbConnection(_connectionString))
             {
                 databaseConnection.Open();
+                var commandFactory = new SqlCommandFactory(databaseConnection);
 
-                DetermineFrequency(databaseConnection);
-                FetchNodes(databaseConnection);
-                FetchTerminals(databaseConnection);
+                DetermineFrequency(commandFactory);
+                FetchNodes(commandFactory);
+                FetchTerminals(commandFactory);
 
                 var nodesByIds = CreateDictionaryNodeByIds();
                 var nodeIdsByElementIds = CreateDictionaryNodeIdsByElementIds();
 
-                FetchFeedIns(databaseConnection, nodesByIds, nodeIdsByElementIds);
-                FetchLoads(databaseConnection, nodeIdsByElementIds);
-                FetchTransmissionLines(databaseConnection, nodeIdsByElementIds);
-                FetchTwoWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
-                FetchThreeWindingTransformers(databaseConnection, nodesByIds, nodeIdsByElementIds);
-                FetchGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
-                FetchSlackGenerators(databaseConnection, nodesByIds, nodeIdsByElementIds);
-                FetchImpedanceLoads(databaseConnection, nodesByIds, nodeIdsByElementIds);
+                FetchFeedIns(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchLoads(commandFactory, nodeIdsByElementIds);
+                FetchTransmissionLines(commandFactory, nodeIdsByElementIds);
+                FetchTwoWindingTransformers(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchThreeWindingTransformers(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchSlackGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchImpedanceLoads(commandFactory, nodesByIds, nodeIdsByElementIds);
 
-                if (ContainsNotSupportedElement(databaseConnection))
+                if (ContainsNotSupportedElement(commandFactory))
                     throw new NotSupportedException("the net contains a not supported element");
 
                 databaseConnection.Close();
@@ -139,22 +140,18 @@ namespace SincalConnector
                 node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
                     impedanceLoadsByNodeId.Get(node.Id));
 
-            var insertCommands = new List<OleDbCommand>() { Capacity = _nodes.Count };
-            insertCommands.AddRange(_nodes.Select(node => node.CreateCommandToAddResult(nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
-
             using (var connection = new OleDbConnection(_connectionString))
             {
                 connection.Open();
+                var commandFactory = new SqlCommandFactory(connection);
+                var deleteCommand = commandFactory.CreateCommandToDeleteAllNodeResults();
+                var insertCommands = new List<OleDbCommand> { Capacity = _nodes.Count };
+                insertCommands.AddRange(_nodes.Select(node => commandFactory.CreateCommandToAddResult(node, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
 
-                var deleteCommand = NodeResult.CreateCommandToDeleteAllNodeResults();
-                deleteCommand.Connection = connection;
                 deleteCommand.ExecuteNonQuery();
 
                 foreach (var command in insertCommands)
-                {
-                    command.Connection = connection;
                     command.ExecuteNonQuery();
-                }
 
                 connection.Close();
             }
@@ -169,9 +166,8 @@ namespace SincalConnector
             using (var databaseConnection = new OleDbConnection(_connectionString))
             {
                 databaseConnection.Open();
-
-                var command = NodeResult.CreateCommandToFetchAllNodeResults();
-                command.Connection = databaseConnection;
+                var commandFactory = new SqlCommandFactory(databaseConnection);
+                var command = commandFactory.CreateCommandToFetchAllNodeResults();
 
                 using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                     while (reader.Next())
@@ -190,9 +186,8 @@ namespace SincalConnector
             using (var databaseConnection = new OleDbConnection(_connectionString))
             {
                 databaseConnection.Open();
-
-                var command = NodeResultTableEntry.CreateCommandToFetchAll();
-                command.Connection = databaseConnection;
+                var commandFactory = new SqlCommandFactory(databaseConnection);
+                var command = commandFactory.CreateCommandToFetchAllNodeResultTableEntries();
 
                 using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                     while (reader.Next())
@@ -202,16 +197,6 @@ namespace SincalConnector
             }
 
             return results;
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllFrequencies()
-        {
-            return new OleDbCommand("SELECT f FROM VoltageLevel GROUP BY f;");
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllElementIdsSorted()
-        {
-            return new OleDbCommand("SELECT Element_ID FROM Element ORDER BY Element_ID ASC;");
         }
 
         private MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
@@ -234,37 +219,31 @@ namespace SincalConnector
 
         private Dictionary<int, IReadOnlyNode> CreateDictionaryNodeByIds()
         {
-            var nodesByIds = new Dictionary<int, IReadOnlyNode>();
-            foreach (var node in _nodes)
-                nodesByIds.Add(node.Id, node);
-            return nodesByIds;
+            return _nodes.ToDictionary<Node, int, IReadOnlyNode>(node => node.Id, node => node);
         }
 
-        private void FetchTerminals(OleDbConnection databaseConnection)
+        private void FetchTerminals(SqlCommandFactory commandFactory)
         {
-            var command = Terminal.CreateCommandToFetchAllTerminals();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllTerminals();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _terminals.Add(new Terminal(reader));
         }
 
-        private void FetchNodes(OleDbConnection databaseConnection)
+        private void FetchNodes(SqlCommandFactory commandFactory)
         {
-            var command = Node.CreateCommandToFetchAllNodes();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllNodes();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _nodes.Add(new Node(reader, databaseConnection));
+                    _nodes.Add(new Node(reader, null));
         }
 
-        private void FetchTwoWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
+        private void FetchTwoWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
             IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = TwoWindingTransformer.CreateCommandToFetchAllTwoWindingTransformers();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllTwoWindingTransformers();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -277,11 +256,10 @@ namespace SincalConnector
             _twoWindingTransformers.Add(element);
         }
 
-        private void FetchThreeWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
+        private void FetchThreeWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
             IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = ThreeWindingTransformer.CreateCommandToFetchAllThreeWindingTransformers();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllThreeWindingTransformers();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -294,10 +272,9 @@ namespace SincalConnector
             _threeWindingTransformers.Add(element);
         }
 
-        private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchTransmissionLines(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = TransmissionLine.CreateCommandToFetchAllTransmissionLines();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllTransmissionLines();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -310,10 +287,9 @@ namespace SincalConnector
             _transmissionLines.Add(element);
         }
 
-        private void FetchLoads(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchLoads(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = Load.CreateCommandToFetchAllLoads();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllLoads();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -326,10 +302,9 @@ namespace SincalConnector
             _loads.Add(element);
         }
 
-        private void FetchImpedanceLoads(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchImpedanceLoads(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = ImpedanceLoad.CreateCommandToFetchAllImpedanceLoads();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllImpedanceLoads();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -342,10 +317,9 @@ namespace SincalConnector
             _impedanceLoads.Add(element);
         }
 
-        private void FetchFeedIns(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchFeedIns(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = FeedIn.CreateCommandToFetchAllFeedIns();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllFeedIns();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -358,10 +332,9 @@ namespace SincalConnector
             _feedIns.Add(element);
         }
 
-        private void FetchGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchGenerators(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = Generator.CreateCommandToFetchAllGenerators();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllGenerators();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -374,10 +347,9 @@ namespace SincalConnector
             _generators.Add(element);
         }
 
-        private void FetchSlackGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchSlackGenerators(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = SlackGenerator.CreateCommandToFetchAllSlackGenerators();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllSlackGenerators();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
@@ -390,10 +362,9 @@ namespace SincalConnector
             _slackGenerators.Add(element);
         }
 
-        private void DetermineFrequency(OleDbConnection databaseConnection)
+        private void DetermineFrequency(SqlCommandFactory commandFactory)
         {
-            var command = CreateCommandToFetchAllFrequencies();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllFrequencies();
             var frequencies = new List<double>();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -406,10 +377,9 @@ namespace SincalConnector
             Frequency = frequencies.First();
         }
 
-        private bool ContainsNotSupportedElement(OleDbConnection databaseConnection)
+        private bool ContainsNotSupportedElement(SqlCommandFactory commandFactory)
         {
-            var command = CreateCommandToFetchAllElementIdsSorted();
-            command.Connection = databaseConnection;
+            var command = commandFactory.CreateCommandToFetchAllElementIdsSorted();
             var allSupportedElements = GetAllSupportedElementIdsSorted();
             var allElements = new List<int>();
 

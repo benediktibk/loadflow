@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using System.IO;
 using Calculation.ThreePhase;
 using Misc;
@@ -58,11 +57,6 @@ namespace SincalConnector
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower);
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllGenerators()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,fP FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
         }
     }
 }

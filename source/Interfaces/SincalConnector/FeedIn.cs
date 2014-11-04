@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using System.Numerics;
 using Calculation.ThreePhase;
 using Misc;
@@ -53,11 +52,6 @@ namespace SincalConnector
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
-        }
-
-        public static OleDbCommand CreateCommandToFetchAllFeedIns()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;");
         }
     }
 }

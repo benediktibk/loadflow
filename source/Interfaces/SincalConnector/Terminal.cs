@@ -27,10 +27,5 @@ namespace SincalConnector
         public int ElementId { get; private set; }
 
         public int NodeId { get; private set; }
-
-        public static OleDbCommand CreateCommandToFetchAllTerminals()
-        {
-            return new OleDbCommand("SELECT Terminal_ID, Element_ID, Node_ID, Flag_Switch, Flag_Terminal FROM Terminal;");
-        }
     }
 }
