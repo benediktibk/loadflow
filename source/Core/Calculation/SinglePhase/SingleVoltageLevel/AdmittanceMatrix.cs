@@ -110,9 +110,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        public AdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
-            IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages,
-            out Vector<Complex> constantCurrentRightHandSide)
+        public IReadOnlyAdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage, IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages, out Vector<Complex> constantCurrentRightHandSide)
         {
             var admittancesToUnknownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithUnknownVoltage);
             var admittancesToKnownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage);

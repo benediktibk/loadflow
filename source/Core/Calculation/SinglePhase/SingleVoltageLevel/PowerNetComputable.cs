@@ -70,7 +70,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return powerLoss*(-1);
         }
 
-        public static double CalculatePowerError(AdmittanceMatrix admittances, Vector<Complex> voltages,
+        public static double CalculatePowerError(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
@@ -101,7 +101,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allPowers;
         }
 
-        public static Vector<Complex> CalculateAllPowers(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
         {
             var currents = admittances.CalculateCurrents(voltages) - constantCurrents;
             var powers = voltages.PointwiseMultiply(currents.Conjugate());

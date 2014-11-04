@@ -12,7 +12,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
         { }
 
-        public override Vector<Complex> CalculateImprovedVoltages(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
+        public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
             var unknownAngles = pqBuses.Count + pvBuses.Count;
             var unknownMagnitudes = pqBuses.Count;
@@ -42,7 +42,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
-        private static Vector<double> CalculateAmplitudeChange(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+        private static Vector<double> CalculateAmplitudeChange(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
             IEnumerable<double> powersImaginaryError, IList<int> pqBuses, int unknownMagnitudes)
         {
             var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
@@ -52,7 +52,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
         }
 
-        private static Vector<double> CalculateAngleChange(AdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+        private static Vector<double> CalculateAngleChange(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
             IEnumerable<double> powersRealError, int unknownAngles, IList<int> allNodes)
         {
             var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);

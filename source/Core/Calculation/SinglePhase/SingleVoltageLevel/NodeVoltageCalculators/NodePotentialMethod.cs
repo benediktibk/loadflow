@@ -7,7 +7,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : INodeVoltageCalculator
     {
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
@@ -75,7 +75,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             get { return 10; }
         }
 
-        private Vector<Complex> CalculateUnknownVoltagesInternal(AdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
+        private Vector<Complex> CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
             var ownCurrents = (knownPowers.PointwiseDivide(DenseVector.OfEnumerable(nominalVoltages))).Conjugate();

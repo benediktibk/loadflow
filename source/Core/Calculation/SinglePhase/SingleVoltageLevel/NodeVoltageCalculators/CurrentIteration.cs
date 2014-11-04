@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _maximumIterations = maximumIterations;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(AdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
         {
             Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
             var powers = CollectPowers(pqBuses, pvBuses);
@@ -75,7 +75,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return powers;
         }
 
-        private bool CheckAccuracy(AdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqBus> pqBuses,
+        private bool CheckAccuracy(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqBus> pqBuses,
             IList<PvBus> pvBuses, Vector<Complex> newVoltages, Vector<Complex> voltages, double totalAbsolutePowerSum, bool powerErrorTooBig)
         {
             var voltageDifference = newVoltages.Subtract(voltages);
@@ -90,7 +90,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                          relativePowerError < MaximumRelativePowerError;
         }
 
-        private Vector<Complex> CalculateImprovedVoltagesAndPowers(AdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvBus> pvBuses,
+        private Vector<Complex> CalculateImprovedVoltagesAndPowers(IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvBus> pvBuses,
             ISolver<Complex> factorization, Vector<Complex> rightHandSide, IList<Complex> powers, out bool powerErrorTooBig)
         {
             powerErrorTooBig = false;
@@ -112,7 +112,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return newVoltages;
         }
 
-        private Complex CalculatePower(int i, AdmittanceMatrix admittances, IList<Complex> constantCurrents,
+        private Complex CalculatePower(int i, IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents,
             Vector<Complex> voltages)
         {
             var voltage = voltages[i];
