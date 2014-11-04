@@ -90,11 +90,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _generators.Count; }
         }
 
-        public int NodeCount
-        {
-            get { return _loads.Count; }
-        }
-
         public IReadOnlyNode GroundNode
         {
             get { return _groundNode; }
