@@ -9,8 +9,6 @@ namespace SincalConnector
 {
     public class Generator : INetElement
     {
-        #region constructor
-
         public Generator(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -49,33 +47,19 @@ namespace SincalConnector
             RealPower = record.Parse<double>("P")*1e6;
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
         public int NodeId { get; private set; }
         public double VoltageMagnitude { get; private set; }
         public double RealPower { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower);
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,fP FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
         }
-
-        #endregion
     }
 }

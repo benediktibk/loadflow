@@ -7,13 +7,7 @@ namespace SincalConnector
 {
     public partial class MainWindow
     {
-        #region variables
-
         private readonly ConnectorData _connectorData;
-        
-        #endregion
-
-        #region constructor
 
         public MainWindow()
         {
@@ -26,10 +20,6 @@ namespace SincalConnector
 
             _connectorData.Log("application started");
         }
-
-        #endregion
-
-        #region private functions
 
         private void OpenFileDialogForInputPowerNet(object sender, RoutedEventArgs e)
         {
@@ -73,7 +63,5 @@ namespace SincalConnector
 
             _connectorData.Log(success ? "finished calculation of power net" : "was not able to calculate the power net");
         }
-
-        #endregion
     }
 }

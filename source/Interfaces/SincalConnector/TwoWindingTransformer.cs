@@ -9,8 +9,6 @@ namespace SincalConnector
 {
     public class TwoWindingTransformer : INetElement
     {
-        #region constructor
-
         public TwoWindingTransformer(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -56,34 +54,31 @@ namespace SincalConnector
             Ratio = upperSideNode.NominalVoltage/lowerSideNode.NominalVoltage;
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
+
         public int UpperSideNodeId { get; private set; }
+
         public int LowerSideNodeId { get; private set; }
+
         public double NominalPower { get; private set; }
+
         public double RelativeShortCircuitVoltage { get; private set; }
+
         public double CopperLosses { get; private set; }
+
         public double IronLosses { get; private set; }
+
         public double RelativeNoLoadCurrent { get; private set; }
+
         public Angle PhaseShift { get; private set; }
+
         public double Ratio { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddTwoWindingTransformer(UpperSideNodeId, LowerSideNodeId, NominalPower, RelativeShortCircuitVoltage,
                 CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift, "");
         }
-
-        #endregion
-
-        #region static functions
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
@@ -114,7 +109,5 @@ namespace SincalConnector
 
             throw new ArgumentOutOfRangeException("connectionSymbol");
         }
-
-        #endregion
     }
 }

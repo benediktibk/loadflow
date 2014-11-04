@@ -7,17 +7,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class TransmissionLine : IPowerNetElement
     {
-        #region variables
-
         private readonly IExternalReadOnlyNode _sourceNode;
         private readonly IExternalReadOnlyNode _targetNode;
         private Complex _lengthImpedance;
         private Complex _shuntAdmittance;
         private bool _hasShuntAdmittance;
-
-        #endregion
-
-        #region constructor
 
         public TransmissionLine(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
@@ -45,10 +39,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, 
                     length, frequency);
         }
-
-        #endregion
-
-        #region properties
 
         public Complex LengthImpedance
         {
@@ -89,10 +79,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region public functions
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
@@ -142,10 +128,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return new List<IReadOnlyNode>();
         }
 
-        #endregion
-
-        #region private functions
-
         private void CalculateElectricCharacteristicsWithSimplifiedDirectModel(double lengthResistance,
             double lengthInductance, double length, double frequency)
         {
@@ -186,7 +168,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             return 2 * Math.PI * frequency;
         }
-
-        #endregion
     }
 }

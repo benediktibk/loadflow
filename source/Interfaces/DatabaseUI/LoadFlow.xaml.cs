@@ -11,14 +11,8 @@ namespace DatabaseUI
 {
     public partial class MainWindow
     {
-        #region variables
-
         private readonly Model _model;
         private readonly NodeToNodeNameConverter _converter;
-
-        #endregion
-
-        #region constructor
 
         public MainWindow()
         {
@@ -34,10 +28,6 @@ namespace DatabaseUI
             LoggingOutput.TextChanged += ScrollLoggingOutputToEnd;
             Closed += DisposeConnection;
         }
-
-        #endregion
-
-        #region private functions
 
         private void UpdateSubscriptionOfNodesChanged()
         {
@@ -159,7 +149,5 @@ namespace DatabaseUI
         {
             _model.Connection.Dispose();
         }
-
-        #endregion
     }
 }

@@ -9,15 +9,9 @@ namespace Database
 {
     public class Model : INotifyPropertyChanged
     {
-        #region variables
-
         private PowerNet _selectedPowerNet;
         private Connection _connection;
         private bool _reactToChanges;
-
-        #endregion
-
-        #region constructor
 
         public Model()
         {
@@ -26,10 +20,6 @@ namespace Database
             PowerNets.CollectionChanged += UpdateDatabaseWithChangedPowerNets;
             _reactToChanges = true;
         }
-
-        #endregion
-
-        #region public functions
 
         public void ReadFromDatabase()
         {
@@ -48,10 +38,6 @@ namespace Database
             SelectedPowerNet = null;
             _reactToChanges = true;
         }
-
-        #endregion
-
-        #region properties
 
         public PowerNet SelectedPowerNet 
         { 
@@ -81,10 +67,6 @@ namespace Database
 
         public ObservableCollection<PowerNet> PowerNets { get; set; }
 
-        #endregion
-
-        #region events
-
         public delegate void PowerNetChangedEventHandler();
 
         private PowerNetChangedEventHandler _selectedPowerNetChanged;
@@ -101,10 +83,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -114,10 +92,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region private functions
 
         private void UpdateDatabaseWithChangedPowerNets(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -160,7 +134,5 @@ namespace Database
 
             Connection.Update(powerNet);
         }
-
-        #endregion
     }
 }

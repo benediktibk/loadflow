@@ -10,16 +10,10 @@ namespace Database
 {
     public class Load : INetElement
     {
-        #region variables
-
         private string _name;
         private Node _node;
         private double _real;
         private double _imaginary;
-
-        #endregion
-
-        #region constructor
 
         public Load()
         {
@@ -38,10 +32,6 @@ namespace Database
             Imaginary = reader.Parse<double>("LoadImaginary");
             Node = node;
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -104,10 +94,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -117,10 +103,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region INetElement
 
         public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
         {
@@ -159,10 +141,6 @@ namespace Database
             return node == Node;
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -181,7 +159,5 @@ namespace Database
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
         }
-
-        #endregion
     }
 }

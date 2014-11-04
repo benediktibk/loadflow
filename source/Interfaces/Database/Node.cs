@@ -9,16 +9,10 @@ namespace Database
 {
     public class Node : INetElement
     {
-        #region variables
-
         private string _name;
         private double _nominalVoltage;
         private double _voltageReal;
         private double _voltageImaginary;
-
-        #endregion
-
-        #region constructor
 
         public Node()
         {
@@ -36,10 +30,6 @@ namespace Database
             VoltageReal = reader.Parse<double>("NodeVoltageReal");
             VoltageImaginary = reader.Parse<double>("NodeVoltageImaginary");
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -96,10 +86,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region events
-
         public delegate void NameChangedEventHandler();
 
         public delegate void NominalVoltageChangedEventHandler();
@@ -107,10 +93,6 @@ namespace Database
         public event NameChangedEventHandler NameChanged;
 
         public event NominalVoltageChangedEventHandler NominalVoltageChanged;
-
-        #endregion
-
-        #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -121,10 +103,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region INetElement
 
         public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
         {
@@ -164,10 +142,6 @@ namespace Database
             return node == this;
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -186,7 +160,5 @@ namespace Database
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
         }
-
-        #endregion
     }
 }

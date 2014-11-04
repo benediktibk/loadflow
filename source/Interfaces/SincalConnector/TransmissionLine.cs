@@ -8,8 +8,6 @@ namespace SincalConnector
 {
     public class TransmissionLine : INetElement
     {
-        #region constructor
-
         public TransmissionLine(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds, double frequency)
         {
             Id = record.Parse<int>("Element_ID");
@@ -43,10 +41,6 @@ namespace SincalConnector
                 throw new NotSupportedException("parallel transmission lines are not supported");
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
         public int NodeOneId { get; private set; }
         public int NodeTwoId { get; private set; }
@@ -57,10 +51,6 @@ namespace SincalConnector
         public double Length { get; private set; }
         public bool TransmissionEquationModel { get; private set; }
 
-        #endregion
-
-        #region public functions
-
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
@@ -68,15 +58,9 @@ namespace SincalConnector
                 TransmissionEquationModel);
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_LineTyp,Flag_Ll,l,ParSys,fr,r,x,c,va,fn,Un FROM Line;");
         }
-
-        #endregion
     }
 }

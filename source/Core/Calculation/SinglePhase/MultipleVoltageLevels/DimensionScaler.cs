@@ -5,16 +5,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class DimensionScaler
     {
-        #region member variables
-
         private readonly double _voltageBase;
         private readonly double _powerBase;
         private readonly double _currentBase;
         private readonly double _impedanceBase;
-
-        #endregion
-
-        #region public functions
 
         public DimensionScaler(double voltageBase, double powerBase)
         {
@@ -28,6 +22,26 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _powerBase = powerBase;
             _currentBase = powerBase/voltageBase;
             _impedanceBase = voltageBase/_currentBase;
+        }
+
+        public double VoltageBase
+        {
+            get { return _voltageBase; }
+        }
+
+        public double PowerBase
+        {
+            get { return _powerBase; }
+        }
+
+        public double CurrentBase
+        {
+            get { return _currentBase; }
+        }
+
+        public double ImpedanceBase
+        {
+            get { return _impedanceBase; }
         }
 
         public double ScaleVoltage(double voltage)
@@ -89,31 +103,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             return admittance * ImpedanceBase;
         }
-
-        #endregion
-
-        #region public properties
-
-        public double VoltageBase
-        {
-            get { return _voltageBase; }
-        }
-
-        public double PowerBase
-        {
-            get { return _powerBase; }
-        }
-
-        public double CurrentBase
-        {
-            get { return _currentBase; }
-        }
-
-        public double ImpedanceBase
-        {
-            get { return _impedanceBase; }
-        }
-
-        #endregion
     }
 }

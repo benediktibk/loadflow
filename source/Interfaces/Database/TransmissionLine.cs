@@ -10,8 +10,6 @@ namespace Database
 {
     public class TransmissionLine : INetElement
     {
-        #region variables
-
         private string _name;
         private Node _nodeOne;
         private Node _nodeTwo;
@@ -21,10 +19,6 @@ namespace Database
         private double _shuntCapacityPerUnitLength;
         private double _length;
         private bool _transmissionEquationModel;
-
-        #endregion
-
-        #region constructor
 
         public TransmissionLine()
         {
@@ -54,10 +48,6 @@ namespace Database
             NodeOne = nodeOne;
             NodeTwo = nodeTwo;
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -191,10 +181,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -204,10 +190,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region INetElement
 
         public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
         {
@@ -257,10 +239,6 @@ namespace Database
             return node == NodeOne || node == NodeTwo;
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -280,7 +258,5 @@ namespace Database
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
         }
-
-        #endregion
     }
 }

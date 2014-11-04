@@ -6,24 +6,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class Load : IPowerNetElement
     {
-        #region variables
-
         private readonly Complex _load;
         private readonly IExternalReadOnlyNode _node;
-
-        #endregion
-
-        #region constructor
 
         public Load(Complex load, IExternalReadOnlyNode node)
         {
             _load = load;
             _node = node;
         }
-
-        #endregion
-
-        #region properties
 
         public Complex Value
         {
@@ -54,10 +44,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region public functions
 
         public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
         {
@@ -94,7 +80,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             return new List<IReadOnlyNode>();
         }
-
-        #endregion
     }
 }

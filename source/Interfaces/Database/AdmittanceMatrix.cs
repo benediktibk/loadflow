@@ -8,8 +8,6 @@ namespace Database
 {
     public static class AdmittanceMatrix
     {
-        #region public functions
-
         public static List<SqlCommand> CreateCommandsToCreateTables()
         {
             return new List<SqlCommand>
@@ -50,10 +48,6 @@ namespace Database
             return commands;
         }
 
-        #endregion
-
-        #region private functions
-
         private static IEnumerable<SqlCommand> CreateCommandsToAddNodeNames(IReadOnlyList<string> nodeNames, int matrixId)
         {
             var commands = new List<SqlCommand>();
@@ -93,7 +87,5 @@ namespace Database
 
             return commands;
         }
-
-        #endregion
     }
 }

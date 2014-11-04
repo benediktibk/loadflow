@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using System.Numerics;
 using Misc;
 
@@ -7,8 +6,6 @@ namespace SincalConnector
 {
     public class NodeResult
     {
-        #region constructor
-
         public NodeResult(ISafeDatabaseRecord record)
         {
             var voltageMagnitude = record.Parse<double>("U")*1e3;
@@ -20,17 +17,11 @@ namespace SincalConnector
             Power = new Complex(realPower, reactivePower);
         }
 
-        #endregion
-
-        #region properties
-
         public int NodeId { get; private set; }
+
         public Complex Voltage { get; private set; }
+
         public Complex Power { get; private set; }
-
-        #endregion
-
-        #region static functions
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
@@ -41,7 +32,5 @@ namespace SincalConnector
         {
             return new OleDbCommand("DELETE FROM LFNodeResult;");
         }
-
-        #endregion
     }
 }

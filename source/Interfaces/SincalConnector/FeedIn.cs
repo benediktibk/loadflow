@@ -9,8 +9,6 @@ namespace SincalConnector
 {
     public class FeedIn : INetElement
     {
-        #region constructor
-
         public FeedIn(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -46,32 +44,18 @@ namespace SincalConnector
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);
         }
 
-        #endregion
-
-        #region properties
-
         public Complex Voltage { get; private set; }
         public int Id { get; private set; }
         public int NodeId { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;");
         }
-
-        #endregion
     }
 }

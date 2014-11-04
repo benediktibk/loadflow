@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
-using System.Linq;
+﻿using System.Data.OleDb;
 using Misc;
 
 namespace SincalConnector
@@ -11,8 +8,6 @@ namespace SincalConnector
     /// </summary>
     public class NodeResultTableEntry
     {
-        #region constructor
-
         public NodeResultTableEntry(ISafeDatabaseRecord record)
         {
             VoltageMagnitude = record.Parse<double>("U");
@@ -30,33 +25,35 @@ namespace SincalConnector
             StringVoltagePhaseWithRotation = record.Parse<double>("phi_ph_rot");
         }
 
-        #endregion
-
-        #region properties
-
         public double VoltageMagnitude { get; private set; }
+
         public double VoltageMagnitudeToNominalVoltage { get; private set; }
+
         public double VoltagePhase { get; private set; }
+
         public double RealPower { get; private set; }
+
         public double ImaginaryPower { get; private set; }
+
         public double PowerMagnitude { get; private set; }
+
         public int ResultType { get; private set; }
+
         public int ResultState { get; private set; }
+
         public double StringVoltageMagnitude { get; private set; }
+
         public double StringVoltageMagnitudeToNominalStringVoltage { get; private set; }
+
         public double StringVoltagePhase { get; private set; }
+
         public double VoltagePhaseWithRotation { get; private set; }
+
         public double StringVoltagePhaseWithRotation { get; private set; }
-
-        #endregion
-
-        #region static functions
 
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT U,U_Un,phi,P,Q,S,Flag_Result,Flag_State,Uph,Uph_Unph,phi_ph,phi_rot,phi_ph_rot FROM LFNodeResult ORDER BY Result_ID;");
         }
-
-        #endregion
     }
 }

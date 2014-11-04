@@ -14,27 +14,17 @@ namespace Database
     public class Connection : 
         INotifyPropertyChanged, IConnectionNetElements, IDisposable
     {
-        #region variables
-
         private string _server;
         private string _user;
         private string _password;
         private string _database;
         private SqlConnection _sqlConnection;
 
-        #endregion
-
-        #region constructor
-
         public Connection()
         {
             Server = ".\\SQLEXPRESS";
             Database = "loadflow";
         }
-
-        #endregion
-
-        #region public functions
 
         public void Connect()
         {
@@ -185,10 +175,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region properties
-
         public string Server
         {
             get { return _server; }
@@ -273,10 +259,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -289,10 +271,6 @@ namespace Database
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        #endregion
-
-        #region private functions
 
         private void NotifyConnectedChanged()
         {
@@ -388,10 +366,6 @@ namespace Database
                     powerNet.Transformers.Add(new Transformer(nodeIds, reader));
         }
 
-        #endregion
-
-        #region IConnectionNetElements
-
         public void Add(INetElement element, int powerNetId)
         {
             var command = element.CreateCommandToAddToDatabase(powerNetId);
@@ -432,7 +406,5 @@ namespace Database
             foreach (var element in elementsCasted)
                 Remove(element);
         }
-
-        #endregion
     }
 }

@@ -10,8 +10,6 @@ namespace SincalConnector
 {
     public class SlackGenerator : INetElement
     {
-        #region constructor
-
         public SlackGenerator(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -48,32 +46,20 @@ namespace SincalConnector
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, delta);
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
+
         public int NodeId { get; private set; }
+
         public Complex Voltage { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,u,Ug,xi,delta FROM SynchronousMachine WHERE Flag_Lf = 3 OR Flag_Lf = 5;");
         }
-
-        #endregion
     }
 }

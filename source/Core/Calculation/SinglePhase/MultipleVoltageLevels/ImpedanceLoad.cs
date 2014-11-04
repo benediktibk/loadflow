@@ -6,24 +6,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class ImpedanceLoad : IPowerNetElement
     {
-        #region variables
-
         private readonly IExternalReadOnlyNode _node;
-        private Complex _impedance;
-
-        #endregion
-
-        #region constructor
+        private readonly Complex _impedance;
 
         public ImpedanceLoad(IExternalReadOnlyNode node, Complex impedance)
         {
             _node = node;
             _impedance = impedance;
         }
-
-        #endregion
-
-        #region properties
 
         public double NominalVoltage
         {
@@ -34,10 +24,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return _impedance; }
         }
-
-        #endregion
-
-        #region IPowerNetElement
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
@@ -97,7 +83,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get { return true; }
         }
-
-        #endregion
     }
 }

@@ -4,26 +4,16 @@ namespace SincalConnector
 {
     public class ConnectorData : INotifyPropertyChanged
     {
-        #region variables
-
         private string _inputFile;
         private string _loggingOutput;
         private int _sizeOfDataType;
         private int _countOfCoefficients;
-
-        #endregion
-
-        #region constructor
 
         public ConnectorData()
         {
             SizeOfDataType = 64;
             CountOfCoefficients = 50;
         }
-
-        #endregion
-
-        #region properties
 
         public int SizeOfDataType
         {
@@ -79,19 +69,11 @@ namespace SincalConnector
         {
             get { return SizeOfDataType > 0 && CountOfCoefficients > 2; }
         }
-
-        #endregion
-
-        #region public functions
         
         public void Log(string message)
         {
             LoggingOutput += message + "\n";
         }
-
-        #endregion
-
-        #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -101,7 +83,5 @@ namespace SincalConnector
             if (handler != null) 
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        #endregion
     }
 }

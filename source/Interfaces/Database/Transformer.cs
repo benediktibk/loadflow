@@ -10,8 +10,6 @@ namespace Database
 {
     public class Transformer : INetElement
     {
-        #region variables
-
         private string _name;
         private Node _upperSideNode;
         private Node _lowerSideNode;
@@ -21,10 +19,6 @@ namespace Database
         private double _ironLosses;
         private double _relativeNoLoadCurrent;
         private double _ratio;
-
-        #endregion
-
-        #region constructor
 
         public Transformer()
         {
@@ -54,10 +48,6 @@ namespace Database
             LowerSideNode = lowerSideNode;
             Ratio = reader.Parse<double>("Ratio");
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -201,10 +191,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -214,10 +200,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region INetElement
 
         public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
         {
@@ -271,10 +253,6 @@ namespace Database
             return node == UpperSideNode || node == LowerSideNode;
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -295,10 +273,6 @@ namespace Database
             return command;
         }
 
-        #endregion
-
-        #region private functions
-
         private void InitializeRatio()
         {
             if (UpperSideNode == null || LowerSideNode == null)
@@ -306,7 +280,5 @@ namespace Database
 
             Ratio = UpperSideNode.NominalVoltage/LowerSideNode.NominalVoltage;
         }
-
-        #endregion
     }
 }

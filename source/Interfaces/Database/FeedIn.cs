@@ -10,8 +10,6 @@ namespace Database
 {
     public class FeedIn : INetElement
     {
-        #region variables
-
         private string _name;
         private Node _node;
         private double _voltageReal;
@@ -19,10 +17,6 @@ namespace Database
         private double _shortCircuitPower;
         private double _c;
         private double _realToImaginary;
-
-        #endregion
-
-        #region constructors
 
         public FeedIn()
         {
@@ -47,10 +41,6 @@ namespace Database
             C = reader.Parse<double>("C");
             RealToImaginary = reader.Parse<double>("RealToImaginary");
         }
-
-        #endregion
-
-        #region properties
 
         public int Id { get; set; }
 
@@ -149,10 +139,6 @@ namespace Database
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -162,10 +148,6 @@ namespace Database
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
-
-        #region INetElement
 
         public SqlCommand CreateCommandToAddToDatabase(int powerNetId)
         {
@@ -215,10 +197,6 @@ namespace Database
             return node == Node;
         }
 
-        #endregion
-
-        #region static functions
-
         public static SqlCommand CreateCommandToCreateTable()
         {
             return new SqlCommand(
@@ -237,7 +215,5 @@ namespace Database
             command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
             return command;
         }
-
-        #endregion
     }
 }

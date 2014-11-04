@@ -9,8 +9,6 @@ namespace SincalConnector
 {
     public class ImpedanceLoad : INetElement
     {
-        #region constructor
-
         public ImpedanceLoad(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
@@ -38,32 +36,18 @@ namespace SincalConnector
             Impedance = voltage/current;
         }
 
-        #endregion
-
-        #region properties
-
         public int Id { get; private set; }
         public int NodeId { get; private set; }
         public Complex Impedance { get; private set; }
-
-        #endregion
-
-        #region public functions
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
             powerNet.AddImpedanceLoad(NodeId, Impedance);
         }
 
-        #endregion
-
-        #region static functions
-
         public static OleDbCommand CreateCommandToFetchAll()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q,u,Ul FROM Load WHERE Flag_LoadType = 1 AND Flag_Load = 1;");
         }
-
-        #endregion
     }
 }
