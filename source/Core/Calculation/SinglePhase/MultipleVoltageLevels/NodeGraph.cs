@@ -148,13 +148,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (phaseShiftsPerTransformer.ContainsKey(segmentPair))
             {
                 var previousPhaseShift = phaseShiftsPerTransformer[segmentPair];
-                if ((previousPhaseShift - phaseShift).Radiant > 0.000001)
+                if (!Angle.Equal(phaseShift, previousPhaseShift, 0.000001))
                     throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
             }
             else if (phaseShiftsPerTransformer.ContainsKey(segmentPairInverse))
             {
                 var previousPhaseShift = phaseShiftsPerTransformer[segmentPairInverse];
-                if ((previousPhaseShift + phaseShift).Radiant > 0.000001)
+                if (!Angle.Equal(phaseShift, previousPhaseShift, 0.000001))
                     throw new InvalidDataException("the nominal phase shifts of two transformers do not match");
             }
             else
