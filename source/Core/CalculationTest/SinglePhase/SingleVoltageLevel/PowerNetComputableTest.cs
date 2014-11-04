@@ -197,7 +197,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                             initialVoltages =>
                                 initialVoltages.All(
                                     initalVoltage => (initalVoltage - new Complex(5, 0)).MagnitudeSquared() < 0.000001)),
-                        constantCurrents, It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()), Times.Once);
+                        constantCurrents, 
+                        It.Is<IList<PqBus>>(pqBuses => pqBuses.Count == 1 && (pqBuses.First().Power - new Complex(3, 4)).Magnitude < 0.000001), 
+                        It.Is<IList<PvBus>>(pvBuses => pvBuses.Count == 1 && Math.Abs(pvBuses.First().RealPower - 5) < 0.00001 && Math.Abs(pvBuses.First().VoltageMagnitude - 6) < 0.00001)), 
+                        Times.Once);
             _nodeVoltageCalculatorMock.Verify(
                 x =>
                     x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
