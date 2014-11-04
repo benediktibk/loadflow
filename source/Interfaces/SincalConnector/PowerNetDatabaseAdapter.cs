@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics;
 using Misc;
 
 namespace SincalConnector
@@ -63,7 +65,25 @@ namespace SincalConnector
             if (nodeResults == null)
                 return false;
 
-            _powerNet.SetNodeResults(nodeResults);
+            var impedanceLoadsByNodeId = _powerNet.GetImpedanceLoadsByNodeId();
+            var nodeResultsModified = new Dictionary<int, NodeResult>();
+
+            foreach (var node in _powerNet.Nodes)
+            {
+                var impedanceLoads = impedanceLoadsByNodeId.Get(node.Id);
+                var loadByImpedances = new Complex();
+                var nodeResult = nodeResults[node.Id];
+
+                foreach (var impedanceLoad in impedanceLoads)
+                {
+                    var impedance = impedanceLoad.Impedance;
+                    var loadByImpedance = nodeResult.Voltage * (nodeResult.Voltage / impedance).Conjugate();
+                    loadByImpedances = loadByImpedances + loadByImpedance;
+                }
+
+                var nodeResultModified = new NodeResult(node.Id, nodeResult.Voltage, nodeResult.Power - loadByImpedances);
+                nodeResultsModified.Add(node.Id, nodeResultModified);
+            }
 
             using (var connection = new OleDbConnection(ConnectionString))
             {
@@ -71,7 +91,7 @@ namespace SincalConnector
                 var commandFactory = new SqlCommandFactory(connection);
                 var deleteCommand = commandFactory.CreateCommandToDeleteAllNodeResults();
                 var insertCommands = new List<OleDbCommand> { Capacity = Data.Nodes.Count };
-                insertCommands.AddRange(Data.Nodes.Select(node => commandFactory.CreateCommandToAddResult(node, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
+                insertCommands.AddRange(Data.Nodes.Select(node => commandFactory.CreateCommandToAddResult(nodeResultsModified[node.Id], node.NominalVoltage, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
 
                 deleteCommand.ExecuteNonQuery();
 
@@ -139,7 +159,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _powerNet.Add(new Node(reader, null));
+                    _powerNet.Add(new Node(reader));
         }
 
         private void FetchTwoWindingTransformers(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,

@@ -88,27 +88,27 @@ namespace SincalConnector
             return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;", _connection);
         }
 
-        public OleDbCommand CreateCommandToAddResult(IReadOnlyNode node, Angle phaseShift, Angle slackPhaseShift)
+        public OleDbCommand CreateCommandToAddResult(NodeResult nodeResult, double nominalVoltage, Angle phaseShift, Angle slackPhaseShift)
         {
-            var voltagePhase = new Angle(node.Voltage.Phase);
+            var voltagePhase = new Angle(nodeResult.Voltage.Phase);
             var voltagePhaseShifted = voltagePhase - phaseShift;
             var voltagePhaseSlackShifted = voltagePhase - slackPhaseShift;
 
             var command = new OleDbCommand("INSERT INTO LFNodeResult (Node_ID,Result_ID,Variant_ID,Flag_Result,Flag_State,P,Q,S,U,U_Un,Uph,Uph_Unph,phi,phi_rot,phi_ph,phi_ph_rot) " +
                                            "VALUES (@Node_ID,@Result_ID,@Variant_ID,@Flag_Result,@Flag_State,@P,@Q,@S,@U,@U_Un,@Uph,@Uph_Unph,@phi,@phi_rot,@phi_ph,@phi_ph_rot);",
                                            _connection);
-            command.Parameters.AddWithValue("@Node_ID", node.Id);
-            command.Parameters.AddWithValue("@Result_ID", node.Id);
+            command.Parameters.AddWithValue("@Node_ID", nodeResult.NodeId);
+            command.Parameters.AddWithValue("@Result_ID", nodeResult.NodeId);
             command.Parameters.AddWithValue("@Variant_ID", 1);
             command.Parameters.AddWithValue("@Flag_Result", 0);
             command.Parameters.AddWithValue("@Flag_State", 1);
-            command.Parameters.AddWithValue("@P", node.Load.Real * 1e-6);
-            command.Parameters.AddWithValue("@Q", node.Load.Imaginary * 1e-6);
-            command.Parameters.AddWithValue("@S", node.Load.Magnitude * 1e-6);
-            command.Parameters.AddWithValue("@U", node.Voltage.Magnitude * 1e-3);
-            command.Parameters.AddWithValue("@U_Un", node.Voltage.Magnitude / node.NominalVoltage * 100);
-            command.Parameters.AddWithValue("@Uph", node.Voltage.Magnitude / Math.Sqrt(3) * 1e-3);
-            command.Parameters.AddWithValue("@Uph_Unph", node.Voltage.Magnitude / node.NominalVoltage * 100);
+            command.Parameters.AddWithValue("@P", nodeResult.Power.Real * 1e-6);
+            command.Parameters.AddWithValue("@Q", nodeResult.Power.Imaginary * 1e-6);
+            command.Parameters.AddWithValue("@S", nodeResult.Power.Magnitude * 1e-6);
+            command.Parameters.AddWithValue("@U", nodeResult.Voltage.Magnitude * 1e-3);
+            command.Parameters.AddWithValue("@U_Un", nodeResult.Voltage.Magnitude / nominalVoltage * 100);
+            command.Parameters.AddWithValue("@Uph", nodeResult.Voltage.Magnitude / Math.Sqrt(3) * 1e-3);
+            command.Parameters.AddWithValue("@Uph_Unph", nodeResult.Voltage.Magnitude / nominalVoltage * 100);
             command.Parameters.AddWithValue("@phi", voltagePhaseSlackShifted.DegreeAroundZero);
             command.Parameters.AddWithValue("@phi_rot", voltagePhaseShifted.DegreeAroundZero);
             command.Parameters.AddWithValue("@phi_ph", voltagePhaseSlackShifted.DegreeAroundZero);

@@ -16,6 +16,13 @@ namespace SincalConnector
             Power = new Complex(realPower, reactivePower);
         }
 
+        public NodeResult(int nodeId, Complex voltage, Complex power)
+        {
+            NodeId = nodeId;
+            Voltage = voltage;
+            Power = power;
+        }
+
         public int NodeId { get; private set; }
 
         public Complex Voltage { get; private set; }

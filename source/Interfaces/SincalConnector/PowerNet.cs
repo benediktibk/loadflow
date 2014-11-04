@@ -92,15 +92,6 @@ namespace SincalConnector
             get { return _feedIns.Count + _slackGenerators.Count; }
         }
 
-        public void SetNodeResults(IReadOnlyDictionary<long, Calculation.NodeResult> nodeResults)
-        {
-            var impedanceLoadsByNodeId = GetImpedanceLoadsByNodeId();
-
-            foreach (var node in _nodes)
-                node.SetResult(nodeResults[node.Id].Voltage, nodeResults[node.Id].Power,
-                    impedanceLoadsByNodeId.Get(node.Id));
-        }
-
         public void Add(Terminal terminal)
         {
             _terminals.Add(terminal);
