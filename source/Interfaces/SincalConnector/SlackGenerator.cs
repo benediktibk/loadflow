@@ -57,7 +57,7 @@ namespace SincalConnector
             powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllSlackGenerators()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,u,Ug,xi,delta FROM SynchronousMachine WHERE Flag_Lf = 3 OR Flag_Lf = 5;");
         }

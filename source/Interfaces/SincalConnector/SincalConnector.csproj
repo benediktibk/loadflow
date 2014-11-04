@@ -69,6 +69,7 @@
     <Compile Include="NodeResult.cs" />
     <Compile Include="NodeResultTableEntry.cs" />
     <Compile Include="SlackGenerator.cs" />
+    <Compile Include="SqlCommandFactory.cs" />
     <Compile Include="ThreeWindingTransformer.cs" />
     <Compile Include="TwoWindingTransformer.cs" />
     <Compile Include="TransmissionLine.cs" />

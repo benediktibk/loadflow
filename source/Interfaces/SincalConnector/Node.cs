@@ -84,7 +84,7 @@ namespace SincalConnector
             powerNet.AddNode(Id, NominalVoltage, Name);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllNodes()
         {
             return new OleDbCommand("SELECT Node.Node_ID AS Id,Node.Name AS Name,VoltageLevel.Un AS Un FROM Node INNER JOIN VoltageLevel ON VoltageLevel.VoltLevel_ID = Node.VoltLevel_ID;");
         }

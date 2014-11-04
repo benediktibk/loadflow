@@ -45,7 +45,9 @@ namespace SincalConnector
         }
 
         public Complex Voltage { get; private set; }
+
         public int Id { get; private set; }
+
         public int NodeId { get; private set; }
 
         public void AddTo(SymmetricPowerNet powerNet)
@@ -53,7 +55,7 @@ namespace SincalConnector
             powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllFeedIns()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;");
         }

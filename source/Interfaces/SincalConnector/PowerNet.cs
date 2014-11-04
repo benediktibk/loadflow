@@ -146,7 +146,7 @@ namespace SincalConnector
             {
                 connection.Open();
 
-                var deleteCommand = NodeResult.CreateCommandToDeleteAll();
+                var deleteCommand = NodeResult.CreateCommandToDeleteAllNodeResults();
                 deleteCommand.Connection = connection;
                 deleteCommand.ExecuteNonQuery();
 
@@ -170,7 +170,7 @@ namespace SincalConnector
             {
                 databaseConnection.Open();
 
-                var command = NodeResult.CreateCommandToFetchAll();
+                var command = NodeResult.CreateCommandToFetchAllNodeResults();
                 command.Connection = databaseConnection;
 
                 using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -242,7 +242,7 @@ namespace SincalConnector
 
         private void FetchTerminals(OleDbConnection databaseConnection)
         {
-            var command = Terminal.CreateCommandToFetchAll();
+            var command = Terminal.CreateCommandToFetchAllTerminals();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -252,7 +252,7 @@ namespace SincalConnector
 
         private void FetchNodes(OleDbConnection databaseConnection)
         {
-            var command = Node.CreateCommandToFetchAll();
+            var command = Node.CreateCommandToFetchAllNodes();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -263,7 +263,7 @@ namespace SincalConnector
         private void FetchTwoWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
             IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = TwoWindingTransformer.CreateCommandToFetchAll();
+            var command = TwoWindingTransformer.CreateCommandToFetchAllTwoWindingTransformers();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -280,7 +280,7 @@ namespace SincalConnector
         private void FetchThreeWindingTransformers(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds,
             IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = ThreeWindingTransformer.CreateCommandToFetchAll();
+            var command = ThreeWindingTransformer.CreateCommandToFetchAllThreeWindingTransformers();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -296,7 +296,7 @@ namespace SincalConnector
 
         private void FetchTransmissionLines(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = TransmissionLine.CreateCommandToFetchAll();
+            var command = TransmissionLine.CreateCommandToFetchAllTransmissionLines();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -312,7 +312,7 @@ namespace SincalConnector
 
         private void FetchLoads(OleDbConnection databaseConnection, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = Load.CreateCommandToFetchAll();
+            var command = Load.CreateCommandToFetchAllLoads();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -328,7 +328,7 @@ namespace SincalConnector
 
         private void FetchImpedanceLoads(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = ImpedanceLoad.CreateCommandToFetchAll();
+            var command = ImpedanceLoad.CreateCommandToFetchAllImpedanceLoads();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -344,7 +344,7 @@ namespace SincalConnector
 
         private void FetchFeedIns(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = FeedIn.CreateCommandToFetchAll();
+            var command = FeedIn.CreateCommandToFetchAllFeedIns();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -360,7 +360,7 @@ namespace SincalConnector
 
         private void FetchGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = Generator.CreateCommandToFetchAll();
+            var command = Generator.CreateCommandToFetchAllGenerators();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -376,7 +376,7 @@ namespace SincalConnector
 
         private void FetchSlackGenerators(OleDbConnection databaseConnection, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
-            var command = SlackGenerator.CreateCommandToFetchAll();
+            var command = SlackGenerator.CreateCommandToFetchAllSlackGenerators();
             command.Connection = databaseConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))

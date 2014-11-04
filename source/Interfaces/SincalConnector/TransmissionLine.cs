@@ -42,13 +42,21 @@ namespace SincalConnector
         }
 
         public int Id { get; private set; }
+
         public int NodeOneId { get; private set; }
+
         public int NodeTwoId { get; private set; }
+
         public double SeriesResistancePerUnitLength { get; private set; }
+
         public double SeriesInductancePerUnitLength { get; private set; }
+
         public double ShuntConductancePerUnitLength { get; private set; }
+
         public double ShuntCapacityPerUnitLength { get; private set; }
+
         public double Length { get; private set; }
+
         public bool TransmissionEquationModel { get; private set; }
 
         public void AddTo(SymmetricPowerNet powerNet)
@@ -58,7 +66,7 @@ namespace SincalConnector
                 TransmissionEquationModel);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllTransmissionLines()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_LineTyp,Flag_Ll,l,ParSys,fr,r,x,c,va,fn,Un FROM Line;");
         }

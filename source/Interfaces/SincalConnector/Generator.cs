@@ -48,8 +48,11 @@ namespace SincalConnector
         }
 
         public int Id { get; private set; }
+
         public int NodeId { get; private set; }
+
         public double VoltageMagnitude { get; private set; }
+
         public double RealPower { get; private set; }
 
         public void AddTo(SymmetricPowerNet powerNet)
@@ -57,7 +60,7 @@ namespace SincalConnector
             powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllGenerators()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,Flag_Lf,P,u,Ug,xi,fP FROM SynchronousMachine WHERE Flag_Lf = 6 OR Flag_Lf = 7 OR Flag_Lf = 11 OR Flag_Lf = 12;");
         }

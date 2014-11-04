@@ -80,7 +80,7 @@ namespace SincalConnector
                 CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift, "");
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllTwoWindingTransformers()
         {
             return new OleDbCommand("SELECT Element_ID,Sn,uk,ur,Vfe,i0,VecGrp,roh,Un1,Un2,AddRotate FROM TwoWindingTransformer;");
         }

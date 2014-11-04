@@ -23,12 +23,12 @@ namespace SincalConnector
 
         public Complex Power { get; private set; }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllNodeResults()
         {
             return new OleDbCommand("SELECT Node_ID,U,phi_rot,P,Q FROM LFNodeResult;");
         }
 
-        public static OleDbCommand CreateCommandToDeleteAll()
+        public static OleDbCommand CreateCommandToDeleteAllNodeResults()
         {
             return new OleDbCommand("DELETE FROM LFNodeResult;");
         }

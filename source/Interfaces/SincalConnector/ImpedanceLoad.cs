@@ -37,7 +37,9 @@ namespace SincalConnector
         }
 
         public int Id { get; private set; }
+
         public int NodeId { get; private set; }
+
         public Complex Impedance { get; private set; }
 
         public void AddTo(SymmetricPowerNet powerNet)
@@ -45,7 +47,7 @@ namespace SincalConnector
             powerNet.AddImpedanceLoad(NodeId, Impedance);
         }
 
-        public static OleDbCommand CreateCommandToFetchAll()
+        public static OleDbCommand CreateCommandToFetchAllImpedanceLoads()
         {
             return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q,u,Ul FROM Load WHERE Flag_LoadType = 1 AND Flag_Load = 1;");
         }
