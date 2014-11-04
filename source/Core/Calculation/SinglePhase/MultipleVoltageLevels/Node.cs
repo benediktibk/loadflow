@@ -66,11 +66,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return singleVoltageNode;
         }
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             if (visitedNodes.Contains(this))
