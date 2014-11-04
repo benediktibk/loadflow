@@ -8,11 +8,11 @@ namespace SincalConnector
 {
     public class PowerNetDatabaseAdapter
     {
-        private readonly PowerNetData _data;
+        private readonly PowerNet _data;
 
         public PowerNetDatabaseAdapter(string database)
         {
-            _data = new PowerNetData();
+            _data = new PowerNet();
             ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;
 
             using (var databaseConnection = new OleDbConnection(ConnectionString))

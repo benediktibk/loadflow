@@ -4,7 +4,7 @@ using Misc;
 
 namespace SincalConnector
 {
-    public class PowerNetData : IReadOnlyPowerNetData
+    public class PowerNet : IReadOnlyPowerNetData
     {
         private readonly IList<Terminal> _terminals;
         private readonly IList<Node> _nodes;
@@ -19,7 +19,7 @@ namespace SincalConnector
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly IList<SlackGenerator> _slackGenerators;
 
-        public PowerNetData()
+        public PowerNet()
         {
             _terminals = new List<Terminal>();
             _nodes = new List<Node>();
