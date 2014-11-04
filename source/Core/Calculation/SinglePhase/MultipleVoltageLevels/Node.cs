@@ -149,10 +149,5 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var enforcingElement = enforcingElements.First();
             return enforcingElement.GetSlackVoltage(scaleBasePower);
         }
-
-        public bool Equals(IReadOnlyNode other)
-        {
-            return Id == other.Id;
-        }
     }
 }
