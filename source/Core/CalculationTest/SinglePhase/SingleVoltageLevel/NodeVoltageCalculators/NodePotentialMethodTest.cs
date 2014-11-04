@@ -13,7 +13,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override double PrecisionPvOnly
         {
-            get { return 0.025; }
+            get { return 0.0001; }
         }
 
         public override double PrecisionPqAndPv

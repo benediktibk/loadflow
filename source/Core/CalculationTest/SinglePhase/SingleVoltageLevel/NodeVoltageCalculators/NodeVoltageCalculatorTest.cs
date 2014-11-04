@@ -67,7 +67,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public void CalculateUnknownVoltages_TwoPvBuses_CorrectResults()
         {
             var pqBuses = new List<PqBus>();
-            var pvBuses = new List<PvBus> { new PvBus(0, _correctPowers[1].Real, _loadVoltageTwo.Magnitude), new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
+            var pvBuses = new List<PvBus> { new PvBus(0, _correctPowers[1].Real, _loadVoltageOne.Magnitude), new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
 
             var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);

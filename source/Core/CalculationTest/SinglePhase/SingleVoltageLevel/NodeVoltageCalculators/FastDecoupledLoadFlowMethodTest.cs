@@ -4,11 +4,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class NewtonRaphsonMethodTest : NodeVoltageCalculatorTest
+    public class FastDecoupledLoadFlowMethodTest : NodeVoltageCalculatorTest
     {
         public override double PrecisionPqOnly
         {
-            get { return 0.0001; }
+            get { return 10; }
         }
 
         public override double PrecisionPvOnly
@@ -18,12 +18,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override double PrecisionPqAndPv
         {
-            get { return 0.001; }
+            get { return 10; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new NewtonRaphsonMethod(0.0000001, 1000);
+            return new FastDecoupledLoadFlowMethod(0.0000001, 1000);
         }
     }
 }
