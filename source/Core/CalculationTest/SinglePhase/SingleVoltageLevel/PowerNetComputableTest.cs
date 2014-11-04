@@ -251,6 +251,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                         It.IsAny<Vector<Complex>>(), out constantCurrents))
                 .Returns(admittanceMatrixReduced.Object);
             _admittanceMatrixMock.Setup(x => x.CalculateRowSums()).Returns(totalAdmittanceRowSums);
+            _admittanceMatrixMock.Setup(x => x.CalculateCurrents(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
