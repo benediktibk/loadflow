@@ -29,5 +29,14 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
             Assert.AreEqual(2, powerNet.NominalVoltage);
         }
+
+        [TestMethod]
+        public void AdmittanceMatrix_Empty_SameObjectAsConstructorGot()
+        {
+            var admittanceMatrix = new AdmittanceMatrix(3);
+            var powerNet = new PowerNet(admittanceMatrix, 2);
+
+            Assert.AreEqual(admittanceMatrix, powerNet.Admittances);
+        }
     }
 }

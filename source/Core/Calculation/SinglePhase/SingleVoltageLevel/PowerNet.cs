@@ -27,11 +27,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodes[i] = node;
         }
 
-        public bool IsVoltageOfNodeKnown(int node)
-        {
-            return _nodes[node].VoltageIsKnown;
-        }
-
         public IReadOnlyList<IReadOnlyNode> Nodes
         {
             get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
