@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
@@ -93,6 +94,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void ScaleAdmittance_Complex_CorrectResult()
         {
             ComplexAssert.AreEqual(160.0 / 3, 16, _scaler.ScaleAdmittance(new Complex(10, 3)), 0.00001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_VerySmallVoltageBase_ThrowsException()
+        {
+            var scaler = new DimensionScaler(1e-10, 10);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Constructor_VerySmallPowerBase_ThrowsException()
+        {
+            var scaler = new DimensionScaler(10, 1e-10);
         }
     }
 }
