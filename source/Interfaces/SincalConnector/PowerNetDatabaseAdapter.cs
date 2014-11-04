@@ -27,8 +27,8 @@ namespace SincalConnector
                 FetchNodes(commandFactory);
                 FetchTerminals(commandFactory);
 
-                var nodesByIds = _powerNet.CreateDictionaryNodeByIds();
-                var nodeIdsByElementIds = _powerNet.CreateDictionaryNodeIdsByElementIds();
+                var nodesByIds = _powerNet.NodeByNodeIds;
+                var nodeIdsByElementIds = _powerNet.NodeIdsByElementIds;
 
                 FetchFeedIns(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchLoads(commandFactory, nodeIdsByElementIds);
@@ -65,7 +65,7 @@ namespace SincalConnector
             if (nodeResults == null)
                 return false;
 
-            var impedanceLoadsByNodeId = _powerNet.GetImpedanceLoadsByNodeId();
+            var impedanceLoadsByNodeId = _powerNet.ImpedanceLoadsByNodeId;
             var nodeResultsModified = new Dictionary<int, NodeResult>();
 
             foreach (var node in _powerNet.Nodes)
@@ -254,7 +254,7 @@ namespace SincalConnector
         private bool ContainsNotSupportedElement(SqlCommandFactory commandFactory)
         {
             var command = commandFactory.CreateCommandToFetchAllElementIdsSorted();
-            var allSupportedElements = _powerNet.GetAllSupportedElementIdsSorted();
+            var allSupportedElements = _powerNet.AllSupportedElementIdsSorted;
             var allElements = new List<int>();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))

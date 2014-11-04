@@ -92,6 +92,40 @@ namespace SincalConnector
             get { return _feedIns.Count + _slackGenerators.Count; }
         }
 
+        public List<int> AllSupportedElementIdsSorted
+        {
+            get { return _netElements.Select(element => element.Id).OrderBy(id => id).ToList(); }
+        }
+
+        public MultiDictionary<int, ImpedanceLoad> ImpedanceLoadsByNodeId
+        {
+            get
+            {
+                var result = new MultiDictionary<int, ImpedanceLoad>();
+
+                foreach (var impedanceLoad in _impedanceLoads)
+                    result.Add(impedanceLoad.NodeId, impedanceLoad);
+
+                return result;
+            }
+        }
+
+        public MultiDictionary<int, int> NodeIdsByElementIds
+        {
+            get
+            {
+                var nodeIdsByElementIds = new MultiDictionary<int, int>();
+                foreach (var terminal in _terminals)
+                    nodeIdsByElementIds.Add(terminal.ElementId, terminal.NodeId);
+                return nodeIdsByElementIds;
+            }
+        }
+
+        public Dictionary<int, IReadOnlyNode> NodeByNodeIds
+        {
+            get { return _nodes.ToDictionary<Node, int, IReadOnlyNode>(node => node.Id, node => node); }
+        }
+
         public void Add(Terminal terminal)
         {
             _terminals.Add(terminal);
@@ -149,34 +183,6 @@ namespace SincalConnector
         {
             _netElements.Add(element);
             _slackGenerators.Add(element);
-        }
-
-        public List<int> GetAllSupportedElementIdsSorted()
-        {
-            return _netElements.Select(element => element.Id).OrderBy(id => id).ToList();
-        }
-
-        public MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId()
-        {
-            var result = new MultiDictionary<int, ImpedanceLoad>();
-
-            foreach (var impedanceLoad in _impedanceLoads)
-                result.Add(impedanceLoad.NodeId, impedanceLoad);
-
-            return result;
-        }
-
-        public MultiDictionary<int, int> CreateDictionaryNodeIdsByElementIds()
-        {
-            var nodeIdsByElementIds = new MultiDictionary<int, int>();
-            foreach (var terminal in _terminals)
-                nodeIdsByElementIds.Add(terminal.ElementId, terminal.NodeId);
-            return nodeIdsByElementIds;
-        }
-
-        public Dictionary<int, IReadOnlyNode> CreateDictionaryNodeByIds()
-        {
-            return _nodes.ToDictionary<Node, int, IReadOnlyNode>(node => node.Id, node => node);
         }
     }
 }

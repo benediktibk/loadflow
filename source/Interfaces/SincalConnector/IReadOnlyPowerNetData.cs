@@ -17,9 +17,9 @@ namespace SincalConnector
         IReadOnlyList<ImpedanceLoad> ImpedanceLoads { get; }
         bool ContainsTransformers { get; }
         int CountOfElementsWithSlackBus { get; }
-        List<int> GetAllSupportedElementIdsSorted();
-        MultiDictionary<int, ImpedanceLoad> GetImpedanceLoadsByNodeId();
-        MultiDictionary<int, int> CreateDictionaryNodeIdsByElementIds();
-        Dictionary<int, IReadOnlyNode> CreateDictionaryNodeByIds();
+        List<int> AllSupportedElementIdsSorted { get; }
+        MultiDictionary<int, ImpedanceLoad> ImpedanceLoadsByNodeId { get; }
+        MultiDictionary<int, int> NodeIdsByElementIds { get; }
+        Dictionary<int, IReadOnlyNode> NodeByNodeIds { get; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.OleDb;
 using System.Linq;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -11,7 +10,8 @@ namespace SincalConnector
 {
     public class PowerNetComputable : PowerNet
     {
-        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds)
+        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, 
+            out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
