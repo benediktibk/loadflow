@@ -207,5 +207,19 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()), Times.Once);
         }
+
+        [TestMethod]
+        public void CalculateAllPowers_WithConstantCurrents_CorrectResults()
+        {
+            var constantCurrents = new DenseVector(new[] {new Complex(1, 2), new Complex(3, 4) });
+            var internalCurrents = new DenseVector(new[] { new Complex(5, 6), new Complex(7, 8) });
+            var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
+            _admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
+            var correctPowers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
+
+            var powers = PowerNetComputable.CalculateAllPowers(_admittanceMatrixMock.Object, voltages, constantCurrents);
+
+            ComplexAssert.AreAllEqual(correctPowers, powers, 0.00001);
+        }
     }
 }

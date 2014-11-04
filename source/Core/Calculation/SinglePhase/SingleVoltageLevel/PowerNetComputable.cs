@@ -129,9 +129,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         private static IList<NodeResult> CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
         {
-            if (allPowers.Count != allVoltages.Count)
-                throw new ArgumentOutOfRangeException();
-
             var nodeCount = allPowers.Count;
             var result = new NodeResult[nodeCount];
 
@@ -149,9 +146,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             foreach (var index in indexes)
             {
-                if (!nodes[index].IsPQBus)
-                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PQ-bus");
-
                 result.Add(new PqBus(newIndex, nodes[index].Power));
                 ++newIndex;
             }
@@ -167,9 +161,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             foreach (var index in indexes)
             {
-                if (!nodes[index].IsPVBus)
-                    throw new ArgumentOutOfRangeException("indexes", "selected node is not a PV-bus");
-
                 result.Add(new PvBus(newIndex, nodes[index].RealPower, nodes[index].VoltageMagnitude));
                 ++newIndex;
             }
