@@ -37,11 +37,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
            get { return _admittances; }
         }
 
-        public int NodeCount
-        {
-            get { return _nodeCount; }
-        }
-
         public double NominalVoltage
         {
             get { return _nominalVoltage; }

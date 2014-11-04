@@ -15,14 +15,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void Constructor_AdmittanceMatrixWithThreeNodes_NodeCountIs3()
-        {
-            var powerNet = new PowerNet(new AdmittanceMatrix(3), 2);
-
-            Assert.AreEqual(3, powerNet.NodeCount);
-        }
-
-        [TestMethod]
         public void Constructor_NominalVoltage2_NominalVoltageIs2()
         {
             var powerNet = new PowerNet(new AdmittanceMatrix(3), 2);
