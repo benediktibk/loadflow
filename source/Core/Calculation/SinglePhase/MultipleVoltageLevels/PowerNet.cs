@@ -17,9 +17,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
         private readonly List<IPowerNetElement> _elements;
-        private readonly List<Node> _nodes;
-        private readonly Dictionary<long, Node> _nodesById;
-        private readonly Node _groundNode;
+        private readonly List<ExternalNode> _nodes;
+        private readonly Dictionary<long, ExternalNode> _nodesById;
+        private readonly ExternalNode _groundNode;
         private readonly FeedIn _groundFeedIn;
         private readonly IdGenerator _idGeneratorNodes;
         private readonly INodeGraph _nodeGraph;
@@ -35,10 +35,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _generators = new List<Generator>();
             _feedIns = new List<FeedIn>();
             _elements = new List<IPowerNetElement>();
-            _nodes = new List<Node>();
-            _nodesById = new Dictionary<long, Node>();
+            _nodes = new List<ExternalNode>();
+            _nodesById = new Dictionary<long, ExternalNode>();
             _idGeneratorNodes = new IdGenerator();
-            _groundNode = new Node(_idGeneratorNodes.Generate(), 0, "ground");
+            _groundNode = new ExternalNode(_idGeneratorNodes.Generate(), 0, "ground");
             _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
@@ -166,7 +166,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public void AddNode(int id, double nominalVoltage, string name)
         {
             _idGeneratorNodes.Add(id);
-            var node = new Node(id, nominalVoltage, name);
+            var node = new ExternalNode(id, nominalVoltage, name);
             _nodes.Add(node);
             _nodesById.Add(id, node);
             _nodeGraph.Add(node);
@@ -284,12 +284,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return powerScaling;
         }
 
-        private Node GetNodeByIdInternal(long name)
+        private ExternalNode GetNodeByIdInternal(long name)
         {
-            Node result;
+            ExternalNode result;
             _nodesById.TryGetValue(name, out result);
 
-            if (result == default(Node))
+            if (result == default(ExternalNode))
                 throw new ArgumentOutOfRangeException("name", "specified node does not exist");
 
             return result;

@@ -9,14 +9,14 @@ using Moq;
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
-    public class NodeTest
+    public class ExternalNodeTest
     {
-        private Node _node;
+        private ExternalNode _node;
 
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 2, "");
+            _node = new ExternalNode(0, 2, "");
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void Equals_DifferentObjectWithSameValues_False()
         {
-            Assert.AreNotEqual(_node, new Node(0, 2, ""));
+            Assert.AreNotEqual(_node, new ExternalNode(0, 2, ""));
         }
 
         [TestMethod]

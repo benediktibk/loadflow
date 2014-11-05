@@ -6,20 +6,19 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class LoadTest
     {
-        private Node _node;
+        private ExternalNode _node;
         private Load _load;
 
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 3, "");
+            _node = new ExternalNode(0, 3, "");
             _load = new Load(new Complex(4, 1), _node);
         }
 

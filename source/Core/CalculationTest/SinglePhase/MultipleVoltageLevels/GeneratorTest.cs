@@ -5,20 +5,19 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class GeneratorTest
     {
-        private Node _node;
+        private ExternalNode _node;
         private Generator _generator;
 
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 103, "");
+            _node = new ExternalNode(0, 103, "");
             _generator = new Generator(_node, 5, 7);
         }
 

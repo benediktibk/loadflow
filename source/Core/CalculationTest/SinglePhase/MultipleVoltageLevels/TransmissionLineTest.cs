@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
 using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
@@ -15,21 +14,21 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     public class TransmissionLineTest
     {
         private TransmissionLine _transmissionLineInvalid;
-        private Node _sourceNodeInvalid;
-        private Node _targetNodeInvalid;
+        private ExternalNode _sourceNodeInvalid;
+        private ExternalNode _targetNodeInvalid;
         private TransmissionLine _transmissionLineWithOnlyLengthValues;
         private TransmissionLine _transmissionLineWithLengthAndShuntValues;
-        private Node _sourceNodeValid;
-        private Node _targetNodeValid;
+        private ExternalNode _sourceNodeValid;
+        private ExternalNode _targetNodeValid;
 
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNodeInvalid = new Node(0, 102, "");
-            _targetNodeInvalid = new Node(1, 12, "");
+            _sourceNodeInvalid = new ExternalNode(0, 102, "");
+            _targetNodeInvalid = new ExternalNode(1, 12, "");
             _transmissionLineInvalid = new TransmissionLine(_sourceNodeInvalid, _targetNodeInvalid, 50, 40, 30, 20, 0.1, 10, true);
-            _sourceNodeValid = new Node(0, 100, "");
-            _targetNodeValid = new Node(1, 100, "");
+            _sourceNodeValid = new ExternalNode(0, 100, "");
+            _targetNodeValid = new ExternalNode(1, 100, "");
             _transmissionLineWithOnlyLengthValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0.1, 10, true);
             _transmissionLineWithLengthAndShuntValues = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 30, 20, 0.1, 10, true);
         }
@@ -106,7 +105,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInAdmittances_LengthAdmittanceAndShuntAdmittance_ThreeCallsToAddConnection()
         {
-            var groundNode = new Node(-1, 0, "");
+            var groundNode = new ExternalNode(-1, 0, "");
             var admittances = new Mock<IAdmittanceMatrix>();
 
             _transmissionLineWithLengthAndShuntValues.FillInAdmittances(admittances.Object, 10, groundNode, 1);

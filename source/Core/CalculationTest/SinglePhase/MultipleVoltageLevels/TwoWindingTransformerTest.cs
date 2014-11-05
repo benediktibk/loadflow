@@ -6,7 +6,6 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -14,9 +13,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class TwoWindingTransformerTest
     {
-        private Node _upperSideNode;
-        private Node _lowerSideNode;
-        private Node _groundNode;
+        private ExternalNode _upperSideNode;
+        private ExternalNode _lowerSideNode;
+        private ExternalNode _groundNode;
         private TwoWindingTransformer _transformerWithNotNominalRatio;
         private TwoWindingTransformer _transformerWithNominalRatio;
         private IdGenerator _idGenerator;
@@ -25,9 +24,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _upperSideNode = new Node(0, 10, "");
-            _lowerSideNode = new Node(1, 0.25, "");
-            _groundNode = new Node(2, 0, "");
+            _upperSideNode = new ExternalNode(0, 10, "");
+            _lowerSideNode = new ExternalNode(1, 0.25, "");
+            _groundNode = new ExternalNode(2, 0, "");
             _transformerWithNotNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 2, new Angle(0.4), "", _idGenerator);
             _transformerWithNominalRatio = new TwoWindingTransformer(_upperSideNode, _lowerSideNode, 50, 0.2, 4, 5, 0.1, 40, new Angle(6), "", _idGenerator);
         }

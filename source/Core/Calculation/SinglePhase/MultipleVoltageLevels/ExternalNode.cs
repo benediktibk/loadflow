@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    public class Node : IExternalReadOnlyNode
+    public class ExternalNode : IExternalReadOnlyNode
     {
         private readonly List<IPowerNetElement> _connectedElements;
 
-        public Node(int id, double nominalVoltage, string name)
+        public ExternalNode(int id, double nominalVoltage, string name)
         {
             Id = id;
             NominalVoltage = nominalVoltage;

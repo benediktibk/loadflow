@@ -5,13 +5,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     public abstract class DerivedInternalNodeTest
     {
-        private Node _sourceNode;
+        private ExternalNode _sourceNode;
         private DerivedInternalNode _node;
 
         [TestInitialize]
         public void SetUp()
         {
-            _sourceNode = new Node(0, 234, "");
+            _sourceNode = new ExternalNode(0, 234, "");
             _node = CreateNode(_sourceNode, 1);
         }
 

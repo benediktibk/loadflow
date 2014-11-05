@@ -14,15 +14,15 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
     [TestClass]
     public class ImpedanceLoadTest
     {
-        private Node _node;
-        private Node _groundNode;
+        private ExternalNode _node;
+        private ExternalNode _groundNode;
         private ImpedanceLoad _impedanceLoad;
         
         [TestInitialize]
         public void SetUp()
         {
-            _node = new Node(0, 3, "");
-            _groundNode = new Node(1, 0, "");
+            _node = new ExternalNode(0, 3, "");
+            _groundNode = new ExternalNode(1, 0, "");
             _impedanceLoad = new ImpedanceLoad(_node, new Complex(4, 1));
         }
 

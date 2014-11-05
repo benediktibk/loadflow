@@ -7,14 +7,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
 using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
     [TestClass]
     public class FeedInTest
     {
-        private Node _node;
+        private ExternalNode _node;
         private FeedIn _feedIn;
         private IdGenerator _idGenerator;
 
@@ -22,7 +21,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SetUp()
         {
             _idGenerator = new IdGenerator();
-            _node = new Node(0, 2, "");
+            _node = new ExternalNode(0, 2, "");
             _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
         }
 
@@ -157,7 +156,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_NominalVoltageSetTo0_SlackNodeWithVoltage0()
         {
-            var node = new Node(1, 0, "");
+            var node = new ExternalNode(1, 0, "");
             var feedIn = new FeedIn(node, new Complex(), 4, 5, 6, _idGenerator);
 
             var result = feedIn.CreateSingleVoltageNode(5);

@@ -4,7 +4,6 @@ using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
-using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 using IAdmittanceMatrix = Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix;
 
@@ -23,9 +22,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestInitialize]
         public void SetUp()
         {
-            _firstNode = new Node(0, 1, "");
-            _secondNode = new Node(1, 1, "");
-            _thirdNode = new Node(2, 1, "");
+            _firstNode = new ExternalNode(0, 1, "");
+            _secondNode = new ExternalNode(1, 1, "");
+            _thirdNode = new ExternalNode(2, 1, "");
             _nodeIndexes = new Dictionary<IReadOnlyNode, int>()
             {
                 {_firstNode, 0},
