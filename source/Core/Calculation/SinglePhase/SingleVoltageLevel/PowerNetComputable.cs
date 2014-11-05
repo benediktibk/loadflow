@@ -55,15 +55,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return voltageCollapse ? null : nodeResults;
         }
 
-        public static double CalculatePowerError(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages,
-            Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
-        {
-            var powers = admittances.CalculateAllPowers(voltages, constantCurrents);
-            return 
-                pqBuses.Sum(bus => Math.Abs(bus.Power.Real - powers[bus.Index].Real) + Math.Abs(bus.Power.Imaginary - powers[bus.Index].Imaginary)) + 
-                pvBuses.Sum(bus => Math.Abs(bus.RealPower - powers[bus.Index].Real));
-        }
-
         public static Vector<Complex> CombineKnownAndUnknownVoltages(List<int> slackNodes,
             Vector<Complex> knownVoltages,
             IReadOnlyList<int> indexOfNodesWithUnknownVoltage, Vector<Complex> unknownVoltages)

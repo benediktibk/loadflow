@@ -67,6 +67,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeResults_AllVoltagesKnown_CorrectVoltages()
         {
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
             _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
@@ -82,6 +84,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeResults_AllVoltagesKnown_NodeVoltageCalculatorGotNoCall()
         {
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
             _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
@@ -98,6 +102,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeResults_RelativePowerErrorTooBig_Null()
         {
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new DenseVector(new[] { new Complex(10, 10), new Complex(10, 10), new Complex(10, 10) }));
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(0);
             _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
@@ -112,6 +118,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeResults_AllVoltagesKnown_CorrectPowers()
         {
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new DenseVector(new []{new Complex(1, 2), new Complex(3, 4), new Complex(5, 6) }));
             var voltageOne = new Complex(1, 2);
             var voltageTwo = new Complex(5, 6);
             var voltageThree = new Complex(3, 4);
@@ -122,9 +130,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var nodeResults = _powerNet.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            ComplexAssert.AreEqual(voltageOne * (2 * voltageOne).Conjugate(), nodeResults[0].Power, 0.00001);
-            ComplexAssert.AreEqual(voltageTwo * (2 * voltageTwo).Conjugate(), nodeResults[1].Power, 0.00001);
-            ComplexAssert.AreEqual(voltageThree * (2 * voltageThree).Conjugate(), nodeResults[2].Power, 0.00001);
+            ComplexAssert.AreEqual(1, 2, nodeResults[0].Power, 0.00001);
+            ComplexAssert.AreEqual(3, 4, nodeResults[1].Power, 0.00001);
+            ComplexAssert.AreEqual(5, 6, nodeResults[2].Power, 0.00001);
         }
 
         [TestMethod]
@@ -142,6 +150,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(2));
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
             _powerNet.AddNode(new PqNode(new Complex(3, 4)));
             _powerNet.AddNode(new PvNode(5, 6));
@@ -167,23 +177,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void CalculatePowerError_OnePqAndOnePvBus_CorrectResult()
-        {
-            var constantCurrents = new DenseVector(new[] { new Complex(1, 2), new Complex(3, 4) });
-            var internalCurrents = new DenseVector(new[] { new Complex(5, 6), new Complex(7, 8) });
-            var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
-            _admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
-            var powers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
-            var pqBuses = new List<PqNodeWithIndex> {new PqNodeWithIndex(0, powers[0] - new Complex(0.1, 0.2))};
-            var pvBuses = new List<PvNodeWithIndex> {new PvNodeWithIndex(1, powers[1].Real - 0.3, 1)};
-
-            var powerError = PowerNetComputable.CalculatePowerError(_admittanceMatrixMock.Object, voltages,
-                constantCurrents, pqBuses, pvBuses);
-
-            Assert.AreEqual(0.6, powerError, 0.00001);
-        }
-
-        [TestMethod]
         public void CalculateNodeResults_NoLoad_NoVoltageCollapse()
         {
             var admittanceMatrixReduced = new Mock<IReadOnlyAdmittanceMatrix>();
@@ -196,6 +189,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 .Returns(admittanceMatrixReduced.Object);
             _admittanceMatrixMock.Setup(x => x.CalculateRowSums()).Returns(totalAdmittanceRowSums);
             _admittanceMatrixMock.Setup(x => x.CalculateCurrents(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
                 .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
@@ -228,6 +223,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(1));
+            _admittanceMatrixMock.Setup(x => x.CalculateAllPowers(It.IsAny<Vector<Complex>>()))
+                .Returns<Vector<Complex>>(voltages => new SparseVector(voltages.Count));
             _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
             _powerNet.AddNode(new PqNode(new Complex(3, 4)));
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));

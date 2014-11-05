@@ -313,19 +313,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculatePowerLoss_ThreeNodeSystem_CorrectResult()
         {
-            var admittances = new DenseMatrix(3, 3);
+            var matrix = new DenseMatrix(3, 3);
             var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0.5, 0), new Complex(0.25, 0) });
-            admittances[0, 0] = new Complex(1 + 1.0 / 3, 0);
-            admittances[0, 1] = new Complex(-1, 0);
-            admittances[0, 2] = new Complex(-1.0 / 3, 0);
-            admittances[1, 0] = new Complex(-1, 0);
-            admittances[1, 1] = new Complex(1.5, 0);
-            admittances[1, 2] = new Complex(-0.5, 0);
-            admittances[2, 0] = new Complex(-1.0 / 3, 0);
-            admittances[2, 1] = new Complex(-0.5, 0);
-            admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
+            matrix[0, 0] = new Complex(1 + 1.0 / 3, 0);
+            matrix[0, 1] = new Complex(-1, 0);
+            matrix[0, 2] = new Complex(-1.0 / 3, 0);
+            matrix[1, 0] = new Complex(-1, 0);
+            matrix[1, 1] = new Complex(1.5, 0);
+            matrix[1, 2] = new Complex(-0.5, 0);
+            matrix[2, 0] = new Complex(-1.0 / 3, 0);
+            matrix[2, 1] = new Complex(-0.5, 0);
+            matrix[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
+            _admittances = new AdmittanceMatrix(matrix);
 
-            var powerLoss = new AdmittanceMatrix(admittances).CalculatePowerLoss(voltages);
+            var powerLoss = _admittances.CalculatePowerLoss(voltages);
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }
@@ -333,16 +334,32 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateAllPowers_WithConstantCurrents_CorrectResults()
         {
+            _admittances = new AdmittanceMatrix(2);
+            _admittances.AddConnection(0, 1, new Complex(1, 2));
             var constantCurrents = new DenseVector(new[] { new Complex(1, 2), new Complex(3, 4) });
-            var internalCurrents = new DenseVector(new[] { new Complex(5, 6), new Complex(7, 8) });
             var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
-            var admittanceMatrixMock = new Mock<IReadOnlyAdmittanceMatrix>();
-            admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
-            var correctPowers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
 
-            var powers = admittanceMatrixMock.Object.CalculateAllPowers(voltages, constantCurrents);
+            var powers = _admittances.CalculateAllPowers(voltages, constantCurrents);
 
-            ComplexAssert.AreAllEqual(correctPowers, powers, 0.00001);
+            ComplexAssert.AreEqual(-71, 82, powers[0], 0.00001);
+            ComplexAssert.AreEqual(-31, -82, powers[1], 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculatePowerError_OnePqAndOnePvBus_CorrectResult()
+        {
+            _admittances = new AdmittanceMatrix(2);
+            _admittances.AddConnection(0, 1, new Complex(1, 2));
+            var constantCurrents = new DenseVector(new[] { new Complex(1, 2), new Complex(3, 4) });
+            var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
+            var powers = _admittances.CalculateAllPowers(voltages, constantCurrents);
+            var pqBuses = new List<PqNodeWithIndex> { new PqNodeWithIndex(0, powers[0] - new Complex(0.1, 0.2)) };
+            var pvBuses = new List<PvNodeWithIndex> { new PvNodeWithIndex(1, powers[1].Real - 0.3, 1) };
+
+            var powerError = _admittances.CalculatePowerError(voltages,
+                constantCurrents, pqBuses, pvBuses);
+
+            Assert.AreEqual(0.6, powerError, 0.00001);
         }
     }
 }

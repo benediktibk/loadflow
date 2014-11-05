@@ -17,5 +17,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         Vector<Complex> CalculateAllPowers(Vector<Complex> allVoltages);
         Complex CalculatePowerLoss(Vector<Complex> allVoltages);
         Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents);
+
+        double CalculatePowerError(Vector<Complex> voltages,
+            Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
     }
 }

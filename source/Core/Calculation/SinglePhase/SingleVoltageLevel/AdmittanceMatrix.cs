@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
@@ -44,6 +45,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 }
 
             return powerLoss * (-1);
+        }
+
+        public double CalculatePowerError(Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
+        {
+            var powers = CalculateAllPowers(voltages, constantCurrents);
+            return
+                pqBuses.Sum(bus => Math.Abs(bus.Power.Real - powers[bus.Index].Real) + Math.Abs(bus.Power.Imaginary - powers[bus.Index].Imaginary)) +
+                pvBuses.Sum(bus => Math.Abs(bus.RealPower - powers[bus.Index].Real));
         }
 
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)
