@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -15,5 +16,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         bool IsPQBus { get; }
         bool IsPVBus { get; }
         bool IsSlackBus { get; }
+        void AddTo(IList<int> indexOfSlackBuses, IList<int> indexOfPqBuses, IList<int> indexOfPvBuses, int index);
     }
 }

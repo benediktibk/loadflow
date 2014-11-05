@@ -188,19 +188,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             indexOfPVBuses = new List<int>();
 
             for (var i = 0; i < nodes.Count(); ++i)
-            {
-                var node = nodes[i];
-
-                if (node.IsSlackBus)
-                    indexOfSlackBuses.Add(i);
-                else if (node.IsPQBus)
-                    indexOfPQBuses.Add(i);
-                else if (node.IsPVBus)
-                    indexOfPVBuses.Add(i);
-                else
-                    throw new ArgumentOutOfRangeException("nodes",
-                        "invalid bus type (neither PV, PQ or slack bus)");
-            }
+                nodes[i].AddTo(indexOfSlackBuses, indexOfPQBuses, indexOfPVBuses, i);
         }
 
         private static DenseVector DetermineFixedVoltages(IReadOnlyList<IReadOnlyNode> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,

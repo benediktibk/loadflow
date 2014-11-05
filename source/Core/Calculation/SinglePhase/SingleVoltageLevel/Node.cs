@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
@@ -110,6 +112,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public bool IsSlackBus
         {
             get { return VoltageIsKnown && !PowerIsKnown && !RealPowerIsKnown; }
+        }
+
+        public void AddTo(IList<int> indexOfSlackBuses, IList<int> indexOfPqBuses, IList<int> indexOfPvBuses, int index)
+        {
+            if (IsSlackBus)
+                indexOfSlackBuses.Add(index);
+            else if (IsPQBus)
+                indexOfPqBuses.Add(index);
+            else if (IsPVBus)
+                indexOfPvBuses.Add(index);
+            else
+                throw new InvalidOperationException("invalid bus type (neither PV, PQ or slack bus)");
         }
     }
 }
