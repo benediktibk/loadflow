@@ -155,9 +155,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             var countOfKnownVoltages = slackNodes.Count;
             var knownVoltages = new DenseVector(countOfKnownVoltages);
+            var index = 0;
 
             foreach (var node in slackNodes)
-                node.SetVoltageIn(knownVoltages);
+            {
+                node.Node.SetVoltageIn(knownVoltages, index);
+                ++index;
+            }
 
             return knownVoltages;
         }
