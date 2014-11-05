@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -124,6 +126,21 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 indexOfPvBuses.Add(index);
             else
                 throw new InvalidOperationException("invalid bus type (neither PV, PQ or slack bus)");
+        }
+
+        public void SetValueIn(Vector<Complex> knownVoltages, int index)
+        {
+            knownVoltages[index] = Voltage;
+        }
+
+        public void AddTo(IList<PvBus> pvBuses, int index)
+        {
+            pvBuses.Add(new PvBus(index, RealPower, VoltageMagnitude));
+        }
+
+        public void AddTo(IList<PqBus> pqBuses, int index)
+        {
+            pqBuses.Add(new PqBus(index, Power));
         }
     }
 }
