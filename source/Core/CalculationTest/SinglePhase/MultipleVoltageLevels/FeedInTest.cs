@@ -96,45 +96,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void EnforcesPVBus_Empty_False()
-        {
-            Assert.IsFalse(_feedIn.EnforcesPVBus);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof (InvalidOperationException))]
-        public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
-        {
-            _feedIn.GetVoltageMagnitudeAndRealPowerForPVBus(1);
-        }
-
-        [TestMethod]
-        public void GetTotalPowerForPQBus_ValidStuff_0()
-        {
-            ComplexAssert.AreEqual(0, 0, _feedIn.GetTotalPowerForPQBus(3), 0.00001);
-        }
-
-        [TestMethod]
-        public void GetSlackVoltage_VoltageSetTo4And3_CorrectResult()
-        {
-            var result = _feedIn.GetSlackVoltage(45);
-
-            ComplexAssert.AreEqual(2, 1.5, result, 0.00001);
-        }
-
-        [TestMethod]
-        public void GetSlackVoltage_NominalVoltageSetTo0_0()
-        {
-            var node = new Mock<IExternalReadOnlyNode>();
-            node.Setup(x => x.NominalVoltage).Returns(0);
-            var feedIn = new FeedIn(node.Object, new Complex(), 6, 1.1, 1, _idGenerator);
-
-            var result = feedIn.GetSlackVoltage(45);
-
-            ComplexAssert.AreEqual(0, 0, result, 0.00001);
-        }
-
-        [TestMethod]
         public void NominalVoltagesMatch_Empty_True()
         {
             Assert.IsTrue(_feedIn.NominalVoltagesMatch);
@@ -189,17 +150,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void NeedsGroundNode_Empty_False()
         {
             Assert.IsFalse(_feedIn.NeedsGroundNode);
-        }
-
-        [TestMethod]
-        public void EnforcesSlackBus_InternalAdmittanceNotZero_False()
-        {
-            var node = new Node(0, 577.35026918962576450915, "");
-            var feedIn = new FeedIn(node, new Complex(562.893231088613, 99.2532638990873), 333333333.33333331, 1.2, 0.1, _idGenerator);
-
-            Assert.IsTrue(feedIn.InternalNodeNecessary);
-            Assert.IsFalse(feedIn.EnforcesSlackBus);
-            Assert.IsFalse(node.MustBePVBus);
         }
     }
 }

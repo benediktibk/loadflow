@@ -39,41 +39,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void EnforcesPVBus_Empty_True()
-        {
-            Assert.IsTrue(_generator.EnforcesPVBus);
-        }
-
-        [TestMethod]
-        public void EnforcesSlackBus_Empty_False()
-        {
-            Assert.IsFalse(_generator.EnforcesSlackBus);
-        }
-
-        [TestMethod]
-        public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_CorrectResult()
-        {
-            var result = _generator.GetVoltageMagnitudeAndRealPowerForPVBus(10);
-
-            Assert.AreEqual(5.0 / 103, result.Item1, 0.0001);
-            Assert.AreEqual(0.7, result.Item2, 0.0001);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetTotalPowerForPQBus_ValidStuff_ThrowsException()
-        {
-            _generator.GetTotalPowerForPQBus(3);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
-        {
-            _generator.GetSlackVoltage(45);
-        }
-
-        [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();

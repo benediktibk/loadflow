@@ -5,8 +5,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     public interface IExternalReadOnlyNode : IReadOnlyNode
     {
         IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
-        bool IsOverdetermined { get; }
-
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);
     }

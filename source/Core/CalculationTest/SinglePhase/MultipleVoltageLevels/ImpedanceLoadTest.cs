@@ -61,38 +61,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void EnforcesSlackBus_Empty_False()
-        {
-            Assert.IsFalse(_impedanceLoad.EnforcesSlackBus);
-        }
-
-        [TestMethod]
-        public void EnforcesPVBus_Empty_False()
-        {
-            Assert.IsFalse(_impedanceLoad.EnforcesPVBus);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetVoltageMagnitudeAndRealPowerForPVBus_Empty_ExceptionThrown()
-        {
-            _impedanceLoad.GetVoltageMagnitudeAndRealPowerForPVBus(3);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetSlackVoltage_Empty_ExceptionThrown()
-        {
-            _impedanceLoad.GetSlackVoltage(3);
-        }
-
-        [TestMethod]
-        public void GetTotalPowerForPQBus_Empty_0And0()
-        {
-            ComplexAssert.AreEqual(0, 0, _impedanceLoad.GetTotalPowerForPQBus(3), 0.000001);
-        }
-
-        [TestMethod]
         public void GetInternalNodes_Empty_CountOfResultIs0()
         {
             var internalNodes = _impedanceLoad.GetInternalNodes();

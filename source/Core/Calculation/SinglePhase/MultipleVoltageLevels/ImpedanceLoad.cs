@@ -36,31 +36,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _node.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
         }
 
-        public bool EnforcesSlackBus
-        {
-            get { return false; }
-        }
-
-        public bool EnforcesPVBus
-        {
-            get { return false; }
-        }
-
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public Complex GetTotalPowerForPQBus(double scaleBasePower)
-        {
-            return new Complex(0, 0);
-        }
-
-        public Complex GetSlackVoltage(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
         public INode CreateSingleVoltageNode(double scaleBasePower)
         {
             return new PqNode(new Complex());

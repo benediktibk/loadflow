@@ -33,16 +33,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _realPower; }
         }
 
-        public bool EnforcesSlackBus
-        {
-            get { return false; }
-        }
-
-        public bool EnforcesPVBus
-        {
-            get { return true; }
-        }
-
         public bool NominalVoltagesMatch
         {
             get { return true; }
@@ -51,22 +41,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public bool NeedsGroundNode
         {
             get { return false; }
-        }
-
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
-        {
-            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
-            return new Tuple<double, double>(scaler.ScaleVoltage(VoltageMagnitude), scaler.ScalePower(RealPower));
-        }
-
-        public Complex GetTotalPowerForPQBus(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public Complex GetSlackVoltage(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower)

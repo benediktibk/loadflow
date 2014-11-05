@@ -115,40 +115,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void EnforcesPVBus_Empty_False()
-        {
-            Assert.IsFalse(_transmissionLineWithOnlyLengthValues.EnforcesPVBus);
-        }
-
-        [TestMethod]
-        public void EnforcesSlackBus_Empty_False()
-        {
-            Assert.IsFalse(_transmissionLineWithOnlyLengthValues.EnforcesSlackBus);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetVoltageMagnitudeAndRealPowerForPVBus_ValidStuff_ThrowsException()
-        {
-            _transmissionLineWithOnlyLengthValues.GetVoltageMagnitudeAndRealPowerForPVBus(1);
-        }
-
-        [TestMethod]
-        public void GetTotalPowerForPQBus_ValidStuff_0()
-        {
-            var result = _transmissionLineWithOnlyLengthValues.GetTotalPowerForPQBus(3);
-
-            ComplexAssert.AreEqual(0, 0, result, 0.00001);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void GetSlackVoltage_VoltageSetTo4And3_ThrowsException()
-        {
-            _transmissionLineWithOnlyLengthValues.GetSlackVoltage(45);
-        }
-
-        [TestMethod]
         public void NominalVoltagesMatch_ValidLine_True()
         {
             Assert.IsTrue(_transmissionLineWithOnlyLengthValues.NominalVoltagesMatch);

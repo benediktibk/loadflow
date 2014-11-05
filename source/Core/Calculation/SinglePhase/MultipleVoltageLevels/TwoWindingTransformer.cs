@@ -95,16 +95,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _shuntAdmittance; }
         }
 
-        public bool EnforcesSlackBus
-        {
-            get { return false; }
-        }
-
-        public bool EnforcesPVBus
-        {
-            get { return false; }
-        }
-
         public bool NominalVoltagesMatch
         {
             get { return true; }
@@ -138,21 +128,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public double NominalPower
         {
             get { return _nominalPower; }
-        }
-
-        public Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public Complex GetTotalPowerForPQBus(double scaleBasePower)
-        {
-            return new Complex();
-        }
-
-        public Complex GetSlackVoltage(double scaleBasePower)
-        {
-            throw new InvalidOperationException();
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower)
