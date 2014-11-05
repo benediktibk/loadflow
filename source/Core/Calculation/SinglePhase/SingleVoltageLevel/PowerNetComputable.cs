@@ -44,7 +44,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             var allVoltages = countOfUnknownVoltages == 0 ?
                 ExtractKnownVoltages(indexOfSlackBuses) :
-                CalculateUnknownVoltages(Admittances, NominalVoltage, nodes, indexOfSlackBuses, indexOfPqBuses, indexOfPvBuses, indexOfNodesWithUnknownVoltage, countOfUnknownVoltages);
+                CalculateUnknownVoltages(Admittances, NominalVoltage, indexOfSlackBuses, indexOfPqBuses, indexOfPvBuses, indexOfNodesWithUnknownVoltage, countOfUnknownVoltages);
 
             var allPowers = DeterminePowers(Admittances, allVoltages, indexOfPqBuses, indexOfPvBuses);
             allVoltages = DetermineFixedVoltages(allVoltages, indexOfPvBuses, indexOfSlackBuses);
@@ -74,24 +74,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
-            double sum = 0;
-
-            foreach (var bus in pqBuses)
-            {
-                var id = bus.Index;
-                var power = bus.Power;
-                sum += Math.Abs(power.Real - powers[id].Real);
-                sum += Math.Abs(power.Imaginary - powers[id].Imaginary);
-            }
-
-            foreach (var bus in pvBuses)
-            {
-                var id = bus.Index;
-                var power = bus.RealPower;
-                sum += Math.Abs(power - powers[id].Real);
-            }
-
-            return sum;
+            return 
+                pqBuses.Sum(bus => Math.Abs(bus.Power.Real - powers[bus.Index].Real) + Math.Abs(bus.Power.Imaginary - powers[bus.Index].Imaginary)) + 
+                pvBuses.Sum(bus => Math.Abs(bus.RealPower - powers[bus.Index].Real));
         }
 
         public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
@@ -138,7 +123,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PqNodeWithIndex> ExtractPqNodesWithIndices(ICollection<NodeWithIndex> nodesWithIndices)
+        private static List<PqNodeWithIndex> ExtractPqNodesWithIndices(IReadOnlyCollection<NodeWithIndex> nodesWithIndices)
         {
             var result = new List<PqNodeWithIndex>(nodesWithIndices.Count);
             var newIndex = 0;
@@ -152,7 +137,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PvNodeWithIndex> ExtractPvNodesWithIndices(ICollection<NodeWithIndex> nodeWithIndices, int countOfPqBuses)
+        private static List<PvNodeWithIndex> ExtractPvNodesWithIndices(IReadOnlyCollection<NodeWithIndex> nodeWithIndices, int countOfPqBuses)
         {
             var result = new List<PvNodeWithIndex>(nodeWithIndices.Count);
             var newIndex = countOfPqBuses;
@@ -237,9 +222,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<INode> nodes,
-            List<NodeWithIndex> slackNodes, ICollection<NodeWithIndex> pqNodes, ICollection<NodeWithIndex> pvNodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
-            int countOfUnknownVoltages)
+        private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyCollection<NodeWithIndex> slackNodes, IReadOnlyCollection<NodeWithIndex> pqNodes, IReadOnlyCollection<NodeWithIndex> pvNodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage, int countOfUnknownVoltages)
         {
             var knownVoltages = ExtractKnownVoltages(slackNodes);
             var pqNodeWithIndices = ExtractPqNodesWithIndices(pqNodes);
