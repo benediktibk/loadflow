@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.Remoting;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -55,6 +56,38 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void SetPowerIn_NullAndValidId_ThrowsException()
         {
             _node.SetPowerIn(null, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Merge_SlackNode_ThrowsException()
+        {
+            _node.Merge(new SlackNode(new Complex(3, 4)));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Merge_PvNode_ThrowsException()
+        {
+            _node.Merge(new PvNode(3, 4));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void Merge_null_ThrowsException()
+        {
+            _node.Merge(null);
+        }
+
+        [TestMethod]
+        public void Merge_PqNode_NewSlackNodeWithCorrectValues()
+        {
+            var result = _node.Merge(new PqNode(new Complex(6, 7)));
+
+            var resultAsSlackNode = result as SlackNode;
+            Assert.IsNotNull(resultAsSlackNode);
+            Assert.AreNotEqual(resultAsSlackNode, _node);
+            ComplexAssert.AreEqual(resultAsSlackNode.Voltage, _node.Voltage, 0.000001);
         }
     }
 }

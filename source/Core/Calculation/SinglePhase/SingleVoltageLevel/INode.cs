@@ -13,5 +13,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         void SetVoltageMagnitudeIn(Vector<Complex> voltages, int index);
         void SetPowerIn(Vector<Complex> powers, int index);
         void SetRealPowerIn(Vector<Complex> powers, int index);
+        INode Merge(INode node);
     }
 }

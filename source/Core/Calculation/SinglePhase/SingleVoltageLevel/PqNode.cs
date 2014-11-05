@@ -48,5 +48,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             throw new InvalidOperationException();
         }
+
+        public INode Merge(INode node)
+        {
+            if (node is SlackNode)
+                return node.Merge(this);
+            if (node is PvNode)
+                return node.Merge(this);
+
+            var pqNode = node as PqNode;
+
+            if (pqNode == null)
+                throw new NotSupportedException("node type is not supported");
+
+            return new PqNode(Power + pqNode.Power);
+        }
     }
 }

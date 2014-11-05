@@ -51,5 +51,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             powers[index] = new Complex(RealPower, powers[index].Imaginary);
         }
+
+        public INode Merge(INode node)
+        {
+            if (node is SlackNode)
+                throw new InvalidOperationException("can not merge two slack nodes");
+            if (node is PvNode)
+                throw new InvalidOperationException("can not merge a slack node and a PV node");
+
+            var pqNode = node as PqNode;
+
+            if (pqNode == null)
+                throw new NotSupportedException("node type is not supported");
+
+            return new PvNode(RealPower + pqNode.Power.Real, VoltageMagnitude);
+        }
     }
 }

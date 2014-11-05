@@ -67,5 +67,38 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _node.SetPowerIn(null, 2);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Merge_SlackNode_ThrowsException()
+        {
+            _node.Merge(new SlackNode(new Complex(3, 4)));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Merge_PvNode_ThrowsException()
+        {
+            _node.Merge(new PvNode(3, 4));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void Merge_null_ThrowsException()
+        {
+            _node.Merge(null);
+        }
+
+        [TestMethod]
+        public void Merge_PqNode_NewPvNodeWithCorrectValues()
+        {
+            var result = _node.Merge(new PqNode(new Complex(6, 7)));
+
+            var resultAsPvNode = result as PvNode;
+            Assert.IsNotNull(resultAsPvNode);
+            Assert.AreNotEqual(resultAsPvNode, _node);
+            Assert.AreEqual(9, resultAsPvNode.RealPower, 0.000001);
+            Assert.AreEqual(4, resultAsPvNode.VoltageMagnitude, 0.000001);
+        }
     }
 }

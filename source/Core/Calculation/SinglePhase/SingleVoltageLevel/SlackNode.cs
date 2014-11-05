@@ -48,5 +48,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             throw new InvalidOperationException();
         }
+
+        public INode Merge(INode node)
+        {
+            if (node is SlackNode)
+                throw new InvalidOperationException("can not merge two slack nodes");
+            if (node is PvNode)
+                throw new InvalidOperationException("can not merge a slack node and a PV node");
+            if (node is PqNode)
+                return new SlackNode(Voltage);
+            
+            throw new NotSupportedException("node type is not supported");
+        }
     }
 }
