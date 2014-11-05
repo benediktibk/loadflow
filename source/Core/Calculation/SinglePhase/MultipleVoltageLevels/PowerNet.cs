@@ -106,14 +106,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 return new Angle(feedIn.Voltage.Phase);
             }
         }
+
         public bool NominalVoltagesDoNotMatch
         {
             get { return _elements.Exists(element => !element.NominalVoltagesMatch); }
-        }
-
-        public bool OneNodeIsOverdetermined
-        {
-            get { return _nodes.Count(x => x.IsOverdetermined) > 0; }
         }
 
         public bool GroundNodeNecessary

@@ -16,7 +16,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public IReadOnlyDictionary<long, NodeResult> CalculateNodeResults()
         {
-            CheckPowerNet();
+            if (NodeGraph.FloatingNodesExist)
+                throw new InvalidDataException("there must not be a floating node");
+            if (NominalVoltagesDoNotMatch)
+                throw new InvalidDataException("the nominal voltages must match on connected nodes");
 
             var powerScaling = DeterminePowerScaling();
             var nodes = new List<IReadOnlyNode>(GetAllCalculationNodes());
@@ -82,16 +85,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var admittances = new AdmittanceMatrix(new SingleVoltageLevel.AdmittanceMatrix(nodes.Count), nodeIndexes);
             FillInAdmittances(admittances, scaleBasePower);
             return admittances;
-        }
-
-        private void CheckPowerNet()
-        {
-            if (NodeGraph.FloatingNodesExist)
-                throw new InvalidDataException("there must not be a floating node");
-            if (NominalVoltagesDoNotMatch)
-                throw new InvalidDataException("the nominal voltages must match on connected nodes");
-            if (OneNodeIsOverdetermined)
-                throw new InvalidDataException("one node is overdetermined");
         }
     }
 }
