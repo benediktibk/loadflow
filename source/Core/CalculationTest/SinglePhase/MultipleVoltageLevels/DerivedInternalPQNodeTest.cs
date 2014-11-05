@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 
@@ -16,8 +17,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var result = node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPqBus);
-            ComplexAssert.AreEqual(2, -1, result.Power, 0.00001);
+            var resultAsPqNode = result as PqNode;
+            Assert.IsNotNull(resultAsPqNode);
+            ComplexAssert.AreEqual(2, -1, resultAsPqNode.Power, 0.00001);
         }
 
         protected override DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id)

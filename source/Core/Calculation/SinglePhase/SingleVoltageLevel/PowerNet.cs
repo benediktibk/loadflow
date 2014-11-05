@@ -6,7 +6,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class PowerNet : IPowerNet
     {
-        private readonly IList<Node> _nodes;
+        private readonly IList<INode> _nodes;
         private readonly IAdmittanceMatrix _admittances;
         private readonly double _nominalVoltage;
 
@@ -20,14 +20,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodes = InitializeNodes();
         }
 
-        public void SetNode(int i, Node node)
+        public void SetNode(int i, INode node)
         {
             _nodes[i] = node;
         }
 
-        public IReadOnlyList<IReadOnlyNode> Nodes
+        public IReadOnlyList<INode> Nodes
         {
-            get { return _nodes.Cast<IReadOnlyNode>().ToList(); }
+            get { return _nodes.Cast<INode>().ToList(); }
         }
 
         public IReadOnlyAdmittanceMatrix Admittances
@@ -40,9 +40,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             get { return _nominalVoltage; }
         }
 
-        private IList<Node> InitializeNodes()
+        private IList<INode> InitializeNodes()
         {
-            var result = new List<Node>(Admittances.NodeCount);
+            var result = new List<INode>(Admittances.NodeCount);
 
             for (var i = 0; i < Admittances.NodeCount; ++i)
                 result.Add(null);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
@@ -441,8 +442,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var singleVoltageNode = _node.CreateSingleVoltageNode(123);
 
-            Assert.IsTrue(singleVoltageNode.IsPqBus);
-            ComplexAssert.AreEqual(4, 5, singleVoltageNode.Power, 0.00001);
+            var singleVoltageNodeAsPqNode = singleVoltageNode as PqNode;
+            Assert.IsNotNull(singleVoltageNodeAsPqNode);
+            ComplexAssert.AreEqual(4, 5, singleVoltageNodeAsPqNode.Power, 0.00001);
         }
     }
 }

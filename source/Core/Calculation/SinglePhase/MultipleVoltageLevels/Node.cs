@@ -49,9 +49,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _connectedElements; }
         }
 
-        public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        public SingleVoltageLevel.INode CreateSingleVoltageNode(double scaleBasePower)
         {
-            SingleVoltageLevel.Node singleVoltageNode;
+            SingleVoltageLevel.INode singleVoltageNode;
 
             if (MustBeSlackBus)
                 singleVoltageNode = new SlackNode(GetSlackVoltage(scaleBasePower));

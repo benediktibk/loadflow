@@ -4,7 +4,7 @@
     {
         double NominalVoltage { get; }
         int Id { get; }
-        SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower);
+        SingleVoltageLevel.INode CreateSingleVoltageNode(double scaleBasePower);
         string Name { get; }
     }
 }

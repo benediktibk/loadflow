@@ -2,7 +2,7 @@
 {
     public interface IPowerNet
     {
-        void SetNode(int i, Node node);
+        void SetNode(int i, INode node);
         IReadOnlyAdmittanceMatrix Admittances { get; }
         double NominalVoltage { get; }
     }

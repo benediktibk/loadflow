@@ -28,11 +28,11 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void CreateSingleVoltageNode_ValidScaleBaseForPower_ResultIsEitherSlackPVOrPQBus()
+        public void CreateSingleVoltageNode_ValidScaleBaseForPower_ResultIsNotNull()
         {
             var result = _node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPqBus || result.IsPvBus || result.IsSlackBus);
+            Assert.IsNotNull(result);
         }
 
         protected abstract DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id);

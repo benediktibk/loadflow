@@ -80,9 +80,8 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNetComputable.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyAdmittanceMatrix.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyNode.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\INode.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputable.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\Node.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIteration.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 
@@ -21,8 +22,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var result = node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsSlackBus);
-            ComplexAssert.AreEqual(10.0/3, 1.0/3, result.Voltage, 0.00001);
+            var resultAsSlackNode = result as SlackNode;
+            Assert.IsNotNull(resultAsSlackNode);
+            ComplexAssert.AreEqual(10.0 / 3, 1.0 / 3, resultAsSlackNode.Voltage, 0.00001);
         }
     }
 }

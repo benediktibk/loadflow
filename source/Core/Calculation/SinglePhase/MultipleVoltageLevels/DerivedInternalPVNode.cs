@@ -11,7 +11,7 @@
             _realPower = realPower;
         }
 
-        protected override SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower)
+        protected override SingleVoltageLevel.INode CreateSingleVoltageNodeInternal(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SingleVoltageLevel.PvNode(scaler.ScalePower(_realPower), scaler.ScaleVoltage(_voltageMagnitude));

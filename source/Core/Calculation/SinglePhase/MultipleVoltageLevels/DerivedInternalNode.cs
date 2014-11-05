@@ -20,11 +20,11 @@
 
         public string Name { get; private set; }
 
-        public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
+        public SingleVoltageLevel.INode CreateSingleVoltageNode(double scaleBasePower)
         {
             return CreateSingleVoltageNodeInternal(scaleBasePower);
         }
 
-        protected abstract SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower);
+        protected abstract SingleVoltageLevel.INode CreateSingleVoltageNodeInternal(double scaleBasePower);
     }
 }

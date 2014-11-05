@@ -138,7 +138,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PqBus> ExtractPqBuses(IReadOnlyList<IReadOnlyNode> nodes,
+        private static List<PqBus> ExtractPqBuses(IReadOnlyList<INode> nodes,
             IEnumerable<int> indexes)
         {
             var result = new List<PqBus>(nodes.Count);
@@ -153,7 +153,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PvBus> ExtractPvBuses(IReadOnlyList<IReadOnlyNode> nodes,
+        private static List<PvBus> ExtractPvBuses(IReadOnlyList<INode> nodes,
             IEnumerable<int> indexes, int countOfPqBuses)
         {
             var result = new List<PvBus>(nodes.Count);
@@ -168,7 +168,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static Vector<Complex> ExtractKnownVoltages(IReadOnlyList<IReadOnlyNode> nodes,
+        private static Vector<Complex> ExtractKnownVoltages(IReadOnlyList<INode> nodes,
             IReadOnlyList<int> indexes)
         {
             var countOfKnownVoltages = indexes.Count;
@@ -180,7 +180,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return knownVoltages;
         }
 
-        private static void SeperateNodesInBusTypes(IReadOnlyList<IReadOnlyNode> nodes,
+        private static void SeperateNodesInBusTypes(IReadOnlyList<INode> nodes,
             out List<int> indexOfSlackBuses, out List<int> indexOfPQBuses, out List<int> indexOfPVBuses)
         {
             indexOfSlackBuses = new List<int>();
@@ -191,7 +191,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 nodes[i].AddTo(indexOfSlackBuses, indexOfPQBuses, indexOfPVBuses, i);
         }
 
-        private static DenseVector DetermineFixedVoltages(IReadOnlyList<IReadOnlyNode> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,
+        private static DenseVector DetermineFixedVoltages(IReadOnlyList<INode> nodes, Vector<Complex> allVoltages, IEnumerable<int> indexOfPVBuses,
             IEnumerable<int> indexOfSlackBuses)
         {
             var allVoltagesFixed = DenseVector.OfVector(allVoltages);
@@ -205,7 +205,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allVoltagesFixed;
         }
 
-        private static Vector<Complex> DeterminePowers(IReadOnlyAdmittanceMatrix admittances, IReadOnlyList<IReadOnlyNode> nodes, Vector<Complex> allVoltages,
+        private static Vector<Complex> DeterminePowers(IReadOnlyAdmittanceMatrix admittances, IReadOnlyList<INode> nodes, Vector<Complex> allVoltages,
             IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
         {
             var allPowers = CalculateAllPowers(admittances, allVoltages);
@@ -242,7 +242,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<IReadOnlyNode> nodes,
+        private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<INode> nodes,
             IReadOnlyList<int> indexOfSlackBuses, IEnumerable<int> indexOfPqBuses, IEnumerable<int> indexOfPvBuses, IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
             int countOfUnknownVoltages)
         {

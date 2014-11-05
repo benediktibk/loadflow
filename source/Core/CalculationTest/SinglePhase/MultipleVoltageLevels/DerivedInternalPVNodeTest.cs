@@ -1,4 +1,5 @@
 ﻿using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -19,9 +20,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var result = node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPvBus);
-            Assert.AreEqual(5.0 / 3, result.VoltageMagnitude, 0.00001);
-            Assert.AreEqual(2, result.RealPower, 0.00001);
+            var resultAsPvNode = result as PvNode;
+            Assert.IsNotNull(resultAsPvNode);
+            Assert.AreEqual(5.0 / 3, resultAsPvNode.VoltageMagnitude, 0.00001);
+            Assert.AreEqual(2, resultAsPvNode.RealPower, 0.00001);
         }
     }
 }

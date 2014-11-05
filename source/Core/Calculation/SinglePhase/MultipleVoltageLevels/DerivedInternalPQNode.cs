@@ -11,7 +11,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _power = power;
         }
 
-        protected override SingleVoltageLevel.Node CreateSingleVoltageNodeInternal(double scaleBasePower)
+        protected override SingleVoltageLevel.INode CreateSingleVoltageNodeInternal(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SingleVoltageLevel.PqNode(scaler.ScalePower(_power));
