@@ -31,7 +31,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             List<NodeWithIndex> indexOfSlackBuses;
             List<NodeWithIndex> indexOfPqBuses;
             List<NodeWithIndex> indexOfPvBuses;
-            SeperateNodesInBusTypes(Nodes, out indexOfSlackBuses,
+            SeperateNodesByTypes(out indexOfSlackBuses,
                 out indexOfPqBuses, out indexOfPvBuses);
 
             var countOfKnownVoltages = indexOfSlackBuses.Count;
@@ -50,8 +50,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             var allPowers = DeterminePowers(allVoltages, indexOfPqBuses, indexOfPvBuses);
             allVoltages = DetermineFixedVoltages(allVoltages, indexOfPvBuses, indexOfSlackBuses);
-            var voltageCollapse = CheckForVoltageCollapse(Admittances, allPowers, allVoltages);
-            var nodeResults = CombineVoltagesAndPowersToNodes(allPowers, allVoltages);
+            var voltageCollapse = CheckForVoltageCollapse(allPowers, allVoltages);
+            var nodeResults = CombineVoltagesAndPowersToNodeResults(allPowers, allVoltages);
             return voltageCollapse ? null : nodeResults;
         }
 
@@ -70,11 +70,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             for (var i = 0; i < countOfUnknownVoltages; ++i)
                 voltagesArray[indexOfNodesWithUnknownVoltage[i]] = unknownVoltages.At(i);
 
-            var allVoltages = new DenseVector(voltagesArray);
-            return allVoltages;
+            return new DenseVector(voltagesArray);
         }
 
-        private static IList<NodeResult> CombineVoltagesAndPowersToNodes(IList<Complex> allPowers, IList<Complex> allVoltages)
+        private static IList<NodeResult> CombineVoltagesAndPowersToNodeResults(IList<Complex> allPowers, IList<Complex> allVoltages)
         {
             var nodeCount = allPowers.Count;
             var result = new NodeResult[nodeCount];
@@ -128,17 +127,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return knownVoltages;
         }
 
-        private static void SeperateNodesInBusTypes(IReadOnlyList<INode> nodes,
-            out List<NodeWithIndex> slackNodes, out List<NodeWithIndex> pqNodes, out List<NodeWithIndex> pvNodes)
-        {
-            slackNodes = new List<NodeWithIndex>();
-            pqNodes = new List<NodeWithIndex>();
-            pvNodes = new List<NodeWithIndex>();
-
-            for (var i = 0; i < nodes.Count(); ++i)
-                nodes[i].AddTo(slackNodes, pqNodes, pvNodes, i);
-        }
-
         private static DenseVector DetermineFixedVoltages(Vector<Complex> allVoltages, IEnumerable<NodeWithIndex> pvNodes, IEnumerable<NodeWithIndex> slackNodes)
         {
             var allVoltagesFixed = DenseVector.OfVector(allVoltages);
@@ -150,6 +138,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 node.SetVoltageIn(allVoltagesFixed);
 
             return allVoltagesFixed;
+        }
+
+        private void SeperateNodesByTypes(out List<NodeWithIndex> slackNodes, out List<NodeWithIndex> pqNodes, out List<NodeWithIndex> pvNodes)
+        {
+            slackNodes = new List<NodeWithIndex>();
+            pqNodes = new List<NodeWithIndex>();
+            pvNodes = new List<NodeWithIndex>();
+
+            for (var i = 0; i < Nodes.Count(); ++i)
+                Nodes[i].AddTo(slackNodes, pqNodes, pvNodes, i);
         }
 
         private Vector<Complex> CalculateNominalVoltages(int countOfUnknownVoltages, IReadOnlyCollection<int> indexOfNodesWithUnknownVoltage)
@@ -175,11 +173,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allPowers;
         }
 
-        private bool CheckForVoltageCollapse(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        private bool CheckForVoltageCollapse(Vector<Complex> allPowers, Vector<Complex> allVoltages)
         {
             var inputPowerSum = allPowers.Sum();
             var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
-            var lossPowerSum = admittances.CalculatePowerLoss(allVoltages);
+            var lossPowerSum = Admittances.CalculatePowerLoss(allVoltages);
             var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
             return relativePowerError > _nodeVoltageCalculator.MaximumRelativePowerError || Double.IsNaN(relativePowerError) ||
