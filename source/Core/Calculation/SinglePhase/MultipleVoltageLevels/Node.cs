@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -50,18 +51,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public SingleVoltageLevel.Node CreateSingleVoltageNode(double scaleBasePower)
         {
-            var singleVoltageNode = new SingleVoltageLevel.Node();
+            SingleVoltageLevel.Node singleVoltageNode;
 
             if (MustBeSlackBus)
-                singleVoltageNode.Voltage = GetSlackVoltage(scaleBasePower);
+                singleVoltageNode = new SlackNode(GetSlackVoltage(scaleBasePower));
             else if (MustBePVBus)
             {
                 var data = GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasePower);
-                singleVoltageNode.VoltageMagnitude = data.Item1;
-                singleVoltageNode.RealPower = data.Item2;
+                singleVoltageNode = new PvNode(data.Item2, data.Item1);
             }
             else
-                singleVoltageNode.Power = GetTotalPowerForPQBus(scaleBasePower);
+                singleVoltageNode = new PqNode(GetTotalPowerForPQBus(scaleBasePower));
 
             return singleVoltageNode;
         }

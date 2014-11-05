@@ -45,7 +45,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var result = new List<Node>(Admittances.NodeCount);
 
             for (var i = 0; i < Admittances.NodeCount; ++i)
-                result.Add(new Node());
+                result.Add(null);
 
             return result;
         }

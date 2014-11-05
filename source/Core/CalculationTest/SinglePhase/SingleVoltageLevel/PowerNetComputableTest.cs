@@ -42,7 +42,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [ExpectedException(typeof(NullReferenceException))]
         public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
         {
             var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();

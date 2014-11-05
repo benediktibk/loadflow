@@ -98,7 +98,10 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNet.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PqBus.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PqNode.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PvBus.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PvNode.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\SlackNode.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNet.cs" />
   </ItemGroup>
   <ItemGroup>
