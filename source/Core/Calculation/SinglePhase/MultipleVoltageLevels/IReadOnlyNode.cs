@@ -7,7 +7,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         double NominalVoltage { get; }
         int Id { get; }
-        IEnumerable<INode> CreateSingleVoltageNodes(double scaleBasePower);
+        INode CreateSingleVoltageNode(double scaleBasePower);
         string Name { get; }
     }
 }

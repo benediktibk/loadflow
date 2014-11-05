@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Calculation.SinglePhase.SingleVoltageLevel;
+﻿using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -23,11 +22,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public string Name { get; private set; }
 
-        public IEnumerable<INode> CreateSingleVoltageNodes(double scaleBasePower)
-        {
-            return new List<INode> {CreateSingleVoltageNodesInternal(scaleBasePower)};
-        }
-
-        protected abstract INode CreateSingleVoltageNodesInternal(double scaleBasePower);
+        public abstract INode CreateSingleVoltageNode(double scaleBasePower);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -13,7 +12,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _voltage = voltage;
         }
 
-        protected override INode CreateSingleVoltageNodesInternal(double scaleBasePower)
+        public override INode CreateSingleVoltageNode(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SlackNode(scaler.ScaleVoltage(_voltage));

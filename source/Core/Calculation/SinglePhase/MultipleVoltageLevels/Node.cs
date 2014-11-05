@@ -1,4 +1,5 @@
-﻿using Calculation.SinglePhase.SingleVoltageLevel;
+﻿using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,9 +33,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _connectedElements; }
         }
 
-        public IEnumerable<INode> CreateSingleVoltageNodes(double scaleBasePower)
+        public INode CreateSingleVoltageNode(double scaleBasePower)
         {
-            return _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower));
+            var singleVoltageNodes = _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower));
+            return singleVoltageNodes.Aggregate((INode) new PqNode(new Complex()), (current, singleVoltageNode) => current.Merge(singleVoltageNode));
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

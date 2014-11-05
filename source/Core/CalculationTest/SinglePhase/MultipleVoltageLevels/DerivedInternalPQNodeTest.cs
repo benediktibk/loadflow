@@ -16,10 +16,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = new Node(0, 3, "");
             var node = CreateNode(sourceNode, 1);
 
-            var result = node.CreateSingleVoltageNodes(2).ToList();
+            var result = node.CreateSingleVoltageNode(2);
 
-            Assert.AreEqual(1, result.Count);
-            var resultAsPqNode = result.First() as PqNode;
+            var resultAsPqNode = result as PqNode;
             Assert.IsNotNull(resultAsPqNode);
             ComplexAssert.AreEqual(2, -1, resultAsPqNode.Power, 0.00001);
         }
