@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _iterativeMethod = iterativeMethod;
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             var helm = new HolomorphicEmbeddedLoadFlowMethod(_targetPrecision, 50, new PrecisionLongDouble());
             var improvedInitialVoltages = helm.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,

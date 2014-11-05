@@ -124,7 +124,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 x =>
                     x.CalculateUnknownVoltages(It.IsAny<AdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
-                        It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()), Times.Never);
+                        It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>()), Times.Never);
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _admittanceMatrixMock.Setup(x => x.CalculateRowSums()).Returns(totalAdmittanceRowSums);
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
-                        It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>())).Returns(new SparseVector(2));
+                        It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(2));
             _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
             _powerNet.SetNode(1, new PqNode(new Complex(3, 4)));
             _powerNet.SetNode(2, new PvNode(5, 6));
@@ -188,14 +188,14 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                                 initialVoltages.All(
                                     initalVoltage => (initalVoltage - new Complex(5, 0)).MagnitudeSquared() < 0.000001)),
                         constantCurrents, 
-                        It.Is<IList<PqBus>>(pqBuses => pqBuses.Count == 1 && (pqBuses.First().Power - new Complex(3, 4)).Magnitude < 0.000001), 
-                        It.Is<IList<PvBus>>(pvBuses => pvBuses.Count == 1 && Math.Abs(pvBuses.First().RealPower - 5) < 0.00001 && Math.Abs(pvBuses.First().VoltageMagnitude - 6) < 0.00001)), 
+                        It.Is<IList<PqNodeWithIndex>>(pqBuses => pqBuses.Count == 1 && (pqBuses.First().Power - new Complex(3, 4)).Magnitude < 0.000001), 
+                        It.Is<IList<PvNodeWithIndex>>(pvBuses => pvBuses.Count == 1 && Math.Abs(pvBuses.First().RealPower - 5) < 0.00001 && Math.Abs(pvBuses.First().VoltageMagnitude - 6) < 0.00001)), 
                         Times.Once);
             _nodeVoltageCalculatorMock.Verify(
                 x =>
                     x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
-                        It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>()), Times.Once);
+                        It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>()), Times.Once);
         }
 
         [TestMethod]
@@ -220,8 +220,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
             _admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
             var powers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
-            var pqBuses = new List<PqBus> {new PqBus(0, powers[0] - new Complex(0.1, 0.2))};
-            var pvBuses = new List<PvBus> {new PvBus(1, powers[1].Real - 0.3, 1)};
+            var pqBuses = new List<PqNodeWithIndex> {new PqNodeWithIndex(0, powers[0] - new Complex(0.1, 0.2))};
+            var pvBuses = new List<PvNodeWithIndex> {new PvNodeWithIndex(1, powers[1].Real - 0.3, 1)};
 
             var powerError = PowerNetComputable.CalculatePowerError(_admittanceMatrixMock.Object, voltages,
                 constantCurrents, pqBuses, pvBuses);
@@ -246,7 +246,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
-                        It.IsAny<IList<PqBus>>(), It.IsAny<IList<PvBus>>())).Returns(new SparseVector(2));
+                        It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(2));
             _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
             _powerNet.SetNode(1, new PqNode(new Complex()));
             _powerNet.SetNode(2, new PvNode(0, 6));

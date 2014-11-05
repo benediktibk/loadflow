@@ -96,8 +96,8 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTestCase.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTestCaseGenerator.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\PqBusTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\PvBusTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PqNodeWithIndexTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\PvNodeWithIndexTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\AdmittanceMatrixTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\AdmittanceMatrixTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetFactoryTest.cs" />

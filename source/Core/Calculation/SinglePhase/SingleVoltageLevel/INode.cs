@@ -6,9 +6,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public interface INode
     {
-        void AddTo(IList<int> indexOfSlackBuses, IList<int> indexOfPqBuses, IList<int> indexOfPvBuses, int index);
-        void AddTo(IList<PvBus> pvBuses, int index);
-        void AddTo(IList<PqBus> pqBuses, int index);
+        void AddTo(IList<NodeWithIndex> slackNodes, IList<NodeWithIndex> pqNodes, IList<NodeWithIndex> pvNodes, int index);
+        void AddTo(IList<PvNodeWithIndex> pvBuses, int index);
+        void AddTo(IList<PqNodeWithIndex> pqBuses, int index);
         void SetVoltageIn(Vector<Complex> voltages, int index);
         void SetVoltageMagnitudeIn(Vector<Complex> voltages, int index);
         void SetPowerIn(Vector<Complex> powers, int index);

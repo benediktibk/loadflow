@@ -52,8 +52,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateUnknownVoltages_TwoPqBuses_CorrectResults()
         {
-            var pqBuses = new List<PqBus> {new PqBus(0, _correctPowers[1]), new PqBus(1, _correctPowers[2])};
-            var pvBuses = new List<PvBus>();
+            var pqBuses = new List<PqNodeWithIndex> {new PqNodeWithIndex(0, _correctPowers[1]), new PqNodeWithIndex(1, _correctPowers[2])};
+            var pvBuses = new List<PvNodeWithIndex>();
             
             var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
@@ -66,8 +66,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateUnknownVoltages_TwoPvBuses_CorrectResults()
         {
-            var pqBuses = new List<PqBus>();
-            var pvBuses = new List<PvBus> { new PvBus(0, _correctPowers[1].Real, _loadVoltageOne.Magnitude), new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
+            var pqBuses = new List<PqNodeWithIndex>();
+            var pvBuses = new List<PvNodeWithIndex> { new PvNodeWithIndex(0, _correctPowers[1].Real, _loadVoltageOne.Magnitude), new PvNodeWithIndex(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
 
             var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
@@ -80,8 +80,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateUnknownVoltages_OnePvAndOnePqBus_CorrectResults()
         {
-            var pqBuses = new List<PqBus> { new PqBus(0, _correctPowers[1]) };
-            var pvBuses = new List<PvBus> { new PvBus(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
+            var pqBuses = new List<PqNodeWithIndex> { new PqNodeWithIndex(0, _correctPowers[1]) };
+            var pvBuses = new List<PvNodeWithIndex> { new PvNodeWithIndex(1, _correctPowers[2].Real, _loadVoltageTwo.Magnitude) };
 
             var result = _nodeVoltageCalculator.CalculateUnknownVoltages(_admittanceMatrixReduced,
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
@@ -110,8 +110,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var indexOfNodesWithUnknownVoltage = new List<int> { 1, 2, 3 };
             Vector<Complex> constantCurrents;
             var admittanceMatrixReduced = admittanceMatrix.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage, knownVoltages, out constantCurrents);
-            var pqBuses = new List<PqBus> { new PqBus(0, correctPowers[1]), new PqBus(1, correctPowers[2]), new PqBus(2, correctPowers[3]) };
-            var pvBuses = new List<PvBus>();
+            var pqBuses = new List<PqNodeWithIndex> { new PqNodeWithIndex(0, correctPowers[1]), new PqNodeWithIndex(1, correctPowers[2]), new PqNodeWithIndex(2, correctPowers[3]) };
+            var pvBuses = new List<PvNodeWithIndex>();
 
             var result = _nodeVoltageCalculator.CalculateUnknownVoltages(admittanceMatrixReduced,
                 admittanceMatrix.CalculateRowSums(), 10, initialVoltages, constantCurrents, pqBuses, pvBuses);

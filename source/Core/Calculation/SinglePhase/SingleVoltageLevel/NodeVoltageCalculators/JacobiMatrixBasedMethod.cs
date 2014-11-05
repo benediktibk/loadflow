@@ -21,7 +21,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfVector(initialVoltages);
             var iterations = 0;
@@ -33,8 +33,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusIds = new List<int>(pvBuses.Count);
             var pqBusIds = new List<int>(pqBuses.Count);
             pvBusVoltages.AddRange(pvBuses.Select(bus => bus.VoltageMagnitude));
-            pvBusIds.AddRange(pvBuses.Select(bus => bus.Id));
-            pqBusIds.AddRange(pqBuses.Select(bus => bus.Id));
+            pvBusIds.AddRange(pvBuses.Select(bus => bus.Index));
+            pqBusIds.AddRange(pqBuses.Select(bus => bus.Index));
 
             do
             {
@@ -282,7 +282,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return busIdToAmplitudeIndex;
         }
 
-        private static void CalculatePowerDifferences(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses,
+        private static void CalculatePowerDifferences(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses,
             Vector<Complex> currentVoltages, out IList<double> powersRealDifference, out IList<double> powersImaginaryDifference)
         {
             var powersCurrent = PowerNetComputable.CalculateAllPowers(admittances, currentVoltages, constantCurrents);

@@ -17,17 +17,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public double VoltageMagnitude { get; private set; }
 
-        public void AddTo(IList<int> indexOfSlackBuses, IList<int> indexOfPqBuses, IList<int> indexOfPvBuses, int index)
+        public void AddTo(IList<NodeWithIndex> slackNodes, IList<NodeWithIndex> pqNodes, IList<NodeWithIndex> pvNodes, int index)
         {
-            indexOfPvBuses.Add(index);
+            pvNodes.Add(new NodeWithIndex(this, index));
         }
 
-        public void AddTo(IList<PvBus> pvBuses, int index)
+        public void AddTo(IList<PvNodeWithIndex> pvBuses, int index)
         {
-            pvBuses.Add(new PvBus(index, RealPower, VoltageMagnitude));
+            pvBuses.Add(new PvNodeWithIndex(index, RealPower, VoltageMagnitude));
         }
 
-        public void AddTo(IList<PqBus> pqBuses, int index)
+        public void AddTo(IList<PqNodeWithIndex> pqBuses, int index)
         {
         }
 

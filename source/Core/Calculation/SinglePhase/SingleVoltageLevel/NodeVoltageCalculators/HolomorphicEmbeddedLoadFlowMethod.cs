@@ -40,7 +40,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             GC.SuppressFinalize(this);
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             if (_calculator >= 0)
                 HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
@@ -108,18 +108,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltages;
         }
 
-        private void SetRightHandSideValues(Vector<Complex> constantCurrents, IList<PqBus> pqBuses, IList<PvBus> pvBuses, int nodeCount)
+        private void SetRightHandSideValues(Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, int nodeCount)
         {
             for (var i = 0; i < nodeCount; ++i)
                 HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConstantCurrent(_calculator, i, constantCurrents[i].Real,
                     constantCurrents[i].Imaginary);
 
             for (var i = 0; i < pqBuses.Count; ++i)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPQBus(_calculator, i, pqBuses[i].Id, pqBuses[i].Power.Real,
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPQBus(_calculator, i, pqBuses[i].Index, pqBuses[i].Power.Real,
                     pqBuses[i].Power.Imaginary);
 
             for (var i = 0; i < pvBuses.Count; ++i)
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPVBus(_calculator, i, pvBuses[i].Id, pvBuses[i].RealPower,
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetPVBus(_calculator, i, pvBuses[i].Index, pvBuses[i].RealPower,
                     pvBuses[i].VoltageMagnitude);
         }
 
@@ -144,7 +144,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private void CreateNewCalculator(double nominalVoltage, IList<PqBus> pqBuses, IList<PvBus> pvBuses, int nodeCount)
+        private void CreateNewCalculator(double nominalVoltage, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, int nodeCount)
         {
             switch (_precision.Type)
             {
