@@ -182,7 +182,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _node.Power = new Complex(3, 3);
 
-            Assert.IsTrue(_node.IsPQBus);
+            Assert.IsTrue(_node.IsPqBus);
         }
 
         [TestMethod]
@@ -190,7 +190,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _node.RealPower = 3;
 
-            Assert.IsFalse(_node.IsPQBus);
+            Assert.IsFalse(_node.IsPqBus);
         }
 
         [TestMethod]
@@ -199,7 +199,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _node.Power = new Complex(3, 3);
             _node.Voltage = new Complex(2, 3);
 
-            Assert.IsFalse(_node.IsPQBus);
+            Assert.IsFalse(_node.IsPqBus);
         }
 
         [TestMethod]
@@ -208,7 +208,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _node.Power = new Complex(3, 3);
             _node.VoltageMagnitude = 1;
 
-            Assert.IsFalse(_node.IsPQBus);
+            Assert.IsFalse(_node.IsPqBus);
         }
 
         [TestMethod]
@@ -242,7 +242,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _node.VoltageMagnitude = 3;
             _node.RealPower = 1;
 
-            Assert.IsTrue(_node.IsPVBus);
+            Assert.IsTrue(_node.IsPvBus);
         }
 
         [TestMethod]
@@ -250,7 +250,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _node.VoltageMagnitude = 3;
 
-            Assert.IsFalse(_node.IsPVBus);
+            Assert.IsFalse(_node.IsPvBus);
         }
 
         [TestMethod]
@@ -258,7 +258,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             _node.RealPower = 1;
 
-            Assert.IsFalse(_node.IsPVBus);
+            Assert.IsFalse(_node.IsPvBus);
         }
 
         [TestMethod]
@@ -267,7 +267,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _node.VoltageMagnitude = 3;
             _node.Power = new Complex(3, 3);
 
-            Assert.IsFalse(_node.IsPVBus);
+            Assert.IsFalse(_node.IsPvBus);
         }
 
         [TestMethod]
@@ -276,7 +276,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _node.RealPower = 1;
             _node.Voltage = new Complex(2, 3);
 
-            Assert.IsFalse(_node.IsPVBus);
+            Assert.IsFalse(_node.IsPvBus);
         }
     }
 }

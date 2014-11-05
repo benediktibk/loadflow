@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -101,12 +99,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public bool RealPowerIsKnown { get; private set; }
 
-        public bool IsPQBus
+        public bool IsPqBus
         {
             get { return PowerIsKnown && !VoltageIsKnown && !VoltageMagnitudeIsKnown; }
         }
 
-        public bool IsPVBus
+        public bool IsPvBus
         {
             get { return VoltageMagnitudeIsKnown && RealPowerIsKnown && !VoltageIsKnown && !PowerIsKnown; }
         }
@@ -120,17 +118,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             if (IsSlackBus)
                 indexOfSlackBuses.Add(index);
-            else if (IsPQBus)
+            else if (IsPqBus)
                 indexOfPqBuses.Add(index);
-            else if (IsPVBus)
+            else if (IsPvBus)
                 indexOfPvBuses.Add(index);
             else
                 throw new InvalidOperationException("invalid bus type (neither PV, PQ or slack bus)");
-        }
-
-        public void SetValueIn(Vector<Complex> knownVoltages, int index)
-        {
-            knownVoltages[index] = Voltage;
         }
 
         public void AddTo(IList<PvBus> pvBuses, int index)
@@ -141,6 +134,26 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public void AddTo(IList<PqBus> pqBuses, int index)
         {
             pqBuses.Add(new PqBus(index, Power));
+        }
+
+        public void SetVoltageIn(Vector<Complex> voltages, int index)
+        {
+            voltages[index] = Voltage;
+        }
+
+        public void SetVoltageMagnitudeIn(Vector<Complex> voltages, int index)
+        {
+            voltages[index] = Complex.FromPolarCoordinates(VoltageMagnitude, voltages[index].Phase);
+        }
+
+        public void SetPowerIn(Vector<Complex> powers, int index)
+        {
+            powers[index] = Power;
+        }
+
+        public void SetRealPowerIn(Vector<Complex> powers, int index)
+        {
+            powers[index] = new Complex(RealPower, powers[index].Imaginary);
         }
     }
 }

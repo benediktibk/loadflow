@@ -16,7 +16,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var result = node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPQBus);
+            Assert.IsTrue(result.IsPqBus);
             ComplexAssert.AreEqual(2, -1, result.Power, 0.00001);
         }
 

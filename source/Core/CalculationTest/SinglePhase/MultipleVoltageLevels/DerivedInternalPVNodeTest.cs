@@ -19,7 +19,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var result = node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPVBus);
+            Assert.IsTrue(result.IsPvBus);
             Assert.AreEqual(5.0 / 3, result.VoltageMagnitude, 0.00001);
             Assert.AreEqual(2, result.RealPower, 0.00001);
         }

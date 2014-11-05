@@ -175,7 +175,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var knownVoltages = new DenseVector(countOfKnownVoltages);
 
             for (var i = 0; i < countOfKnownVoltages; ++i)
-                nodes[indexes[i]].SetValueIn(knownVoltages, i);
+                nodes[indexes[i]].SetVoltageIn(knownVoltages, i);
 
             return knownVoltages;
         }
@@ -197,15 +197,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var allVoltagesFixed = DenseVector.OfVector(allVoltages);
 
             foreach (var index in indexOfPVBuses)
-            {
-                allVoltagesFixed[index] = Complex.FromPolarCoordinates(nodes[index].VoltageMagnitude,
-                    allVoltagesFixed[index].Phase);
-            }
+                nodes[index].SetVoltageMagnitudeIn(allVoltagesFixed, index);
 
             foreach (var index in indexOfSlackBuses)
-            {
-                allVoltagesFixed[index] = nodes[index].Voltage;
-            }
+                nodes[index].SetVoltageIn(allVoltagesFixed, index);
+
             return allVoltagesFixed;
         }
 
@@ -213,17 +209,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             IEnumerable<int> indexOfPQBuses, IEnumerable<int> indexOfPVBuses)
         {
             var allPowers = CalculateAllPowers(admittances, allVoltages);
+
             foreach (var index in indexOfPQBuses)
-            {
-                var power = nodes[index].Power;
-                allPowers[index] = power;
-            }
+                nodes[index].SetPowerIn(allPowers, index);
 
             foreach (var index in indexOfPVBuses)
-            {
-                var power = new Complex(nodes[index].RealPower, allPowers[index].Imaginary);
-                allPowers[index] = power;
-            }
+                nodes[index].SetRealPowerIn(allPowers, index);
+
             return allPowers;
         }
 

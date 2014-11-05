@@ -32,7 +32,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             var result = _node.CreateSingleVoltageNode(2);
 
-            Assert.IsTrue(result.IsPQBus || result.IsPVBus || result.IsSlackBus);
+            Assert.IsTrue(result.IsPqBus || result.IsPvBus || result.IsSlackBus);
         }
 
         protected abstract DerivedInternalNode CreateNode(IExternalReadOnlyNode sourceNode, int id);
