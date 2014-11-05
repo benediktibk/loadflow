@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +31,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void SetVoltageIn_NullAndValidId_SetsNoValue()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void SetVoltageIn_NullAndValidId_ThrowsException()
         {
             _node.SetVoltageIn(null, 1);
         }
@@ -60,7 +62,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void SetPowerIn_NullAndValidId_SetsNoValue()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void SetPowerIn_NullAndValidId_ThrowsException()
         {
             _node.SetPowerIn(null, 2);
         }

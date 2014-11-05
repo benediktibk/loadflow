@@ -29,10 +29,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void AddTo(IList<PqNodeWithIndex> pqBuses, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void SetVoltageIn(Vector<Complex> voltages, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void SetVoltageMagnitudeIn(Vector<Complex> voltages, int index)
@@ -42,6 +44,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void SetPowerIn(Vector<Complex> powers, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void SetRealPowerIn(Vector<Complex> powers, int index)

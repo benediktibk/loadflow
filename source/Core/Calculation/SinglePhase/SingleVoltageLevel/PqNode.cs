@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -20,6 +21,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void AddTo(IList<PvNodeWithIndex> pvBuses, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void AddTo(IList<PqNodeWithIndex> pqBuses, int index)
@@ -29,10 +31,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void SetVoltageIn(Vector<Complex> voltages, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void SetVoltageMagnitudeIn(Vector<Complex> voltages, int index)
         {
+            throw new InvalidOperationException();
         }
 
         public void SetPowerIn(Vector<Complex> powers, int index)
@@ -42,6 +46,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void SetRealPowerIn(Vector<Complex> powers, int index)
         {
+            throw new InvalidOperationException();
         }
     }
 }
