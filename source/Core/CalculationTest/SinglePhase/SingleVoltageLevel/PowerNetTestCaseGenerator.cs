@@ -465,7 +465,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(700, 500));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0.99, -0.12) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -479,7 +479,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(10, -5));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.2), new Complex(0.97, -0.15), new Complex(0, 0) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -493,7 +493,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new Complex(1, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1, -0.1), new Complex(1.05, 0.1), new Complex(0.95, 0.1), new Complex(0.97, -0.15), new Complex(1.01, -0.02) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -527,7 +527,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(0, 500), new Complex(0, 0), new Complex(0, -600));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -539,7 +539,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances.AddUnsymmetricAdmittance(2, 1, new Complex(-4, -1));
 
             voltages = new DenseVector(new[] { new Complex(1.1, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -549,7 +549,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(1000, 500), new Complex(0, 0), new Complex(10, -60));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0, 0) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -559,7 +559,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances = CreateThreeNodeProblemAdmittanceMatrix(new Complex(5, 500), new Complex(20, -300), new Complex(10, 1000));
 
             voltages = new DenseVector(new[] { new Complex(1.0, 0.12), new Complex(0.9, 0.1), new Complex(0.95, 0.05) });
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -583,7 +583,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0.2);
             voltages[1] = new Complex(1.1, -0.1);
             voltages[2] = new Complex(0.8, 0);
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -596,7 +596,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0.1);
             voltages[1] = new Complex(0.95, 0.08);
             voltages[2] = new Complex(0.9, 0.12);
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
 
@@ -609,7 +609,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             voltages[0] = new Complex(1, 0);
             voltages[1] = new Complex(0.5, 0);
             voltages[2] = new Complex(0.5, 0);
-            powers = PowerNetComputable.CalculateAllPowers(admittances, voltages);
+            powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages);
             nominalVoltage = 1;
         }
     }

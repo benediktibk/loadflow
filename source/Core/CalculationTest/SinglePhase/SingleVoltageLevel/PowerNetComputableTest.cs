@@ -53,39 +53,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void CalculatePowerLoss_TwoNodeSystem_CorrectResult()
-        {
-            var admittances =
-                new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
-                {{new Complex(1, 0), new Complex(-1, 0)}, {new Complex(-1, 0), new Complex(1, 0)}}));
-            var voltages = new DenseVector(new[] {new Complex(1, 0), new Complex(0.5, 0)});
-
-            var powerLoss = PowerNetComputable.CalculatePowerLoss(admittances, voltages);
-
-            ComplexAssert.AreEqual(0.25, 0, powerLoss, 0.0001);
-        }
-
-        [TestMethod]
-        public void CalculatePowerLoss_ThreeNodeSystem_CorrectResult()
-        {
-            var admittances = new DenseMatrix(3, 3);
-            var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0.5, 0), new Complex(0.25, 0) });
-            admittances[0, 0] = new Complex(1 + 1.0/3, 0);
-            admittances[0, 1] = new Complex(-1, 0);
-            admittances[0, 2] = new Complex(-1.0 / 3, 0);
-            admittances[1, 0] = new Complex(-1, 0);
-            admittances[1, 1] = new Complex(1.5, 0);
-            admittances[1, 2] = new Complex(-0.5, 0);
-            admittances[2, 0] = new Complex(-1.0 / 3, 0);
-            admittances[2, 1] = new Complex(-0.5, 0);
-            admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
-
-            var powerLoss = PowerNetComputable.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
-
-            ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CalculateNodeResults_NoSlackBus_ThrowsException()
         {
@@ -197,20 +164,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                     x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>()), Times.Once);
-        }
-
-        [TestMethod]
-        public void CalculateAllPowers_WithConstantCurrents_CorrectResults()
-        {
-            var constantCurrents = new DenseVector(new[] {new Complex(1, 2), new Complex(3, 4) });
-            var internalCurrents = new DenseVector(new[] { new Complex(5, 6), new Complex(7, 8) });
-            var voltages = new DenseVector(new[] { new Complex(9, 10), new Complex(11, 12) });
-            _admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
-            var correctPowers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
-
-            var powers = PowerNetComputable.CalculateAllPowers(_admittanceMatrixMock.Object, voltages, constantCurrents);
-
-            ComplexAssert.AreAllEqual(correctPowers, powers, 0.00001);
         }
 
         [TestMethod]

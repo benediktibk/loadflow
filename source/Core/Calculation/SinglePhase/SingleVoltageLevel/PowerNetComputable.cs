@@ -56,44 +56,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return voltageCollapse ? null : nodeResults;
         }
 
-        public static Complex CalculatePowerLoss(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
-        {
-            var powerLoss = new Complex();
-
-            for (var i = 0; i < admittances.NodeCount; ++i)
-                for (var j = i + 1; j < admittances.NodeCount; ++j)
-                {
-                    var admittance = admittances[i, j];
-                    var voltageDifference = allVoltages[i] - allVoltages[j];
-                    var branchCurrent = admittance*voltageDifference;
-                    var branchPowerLoss = voltageDifference*branchCurrent.Conjugate();
-                    powerLoss += branchPowerLoss;
-                }
-
-            return powerLoss*(-1);
-        }
-
         public static double CalculatePowerError(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
-            var powers = CalculateAllPowers(admittances, voltages, constantCurrents);
+            var powers = AdmittanceMatrix.CalculateAllPowers(admittances, voltages, constantCurrents);
             return 
                 pqBuses.Sum(bus => Math.Abs(bus.Power.Real - powers[bus.Index].Real) + Math.Abs(bus.Power.Imaginary - powers[bus.Index].Imaginary)) + 
                 pvBuses.Sum(bus => Math.Abs(bus.RealPower - powers[bus.Index].Real));
-        }
-
-        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
-        {
-            var currents = admittances.CalculateCurrents(allVoltages);
-            var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
-            return allPowers;
-        }
-
-        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
-        {
-            var currents = admittances.CalculateCurrents(voltages) - constantCurrents;
-            var powers = voltages.PointwiseMultiply(currents.Conjugate());
-            return powers;
         }
 
         public static Vector<Complex> CombineKnownAndUnknownVoltages(List<int> slackNodes,
@@ -195,7 +164,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         private static Vector<Complex> DeterminePowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages, IEnumerable<NodeWithIndex> pqNodes, IEnumerable<NodeWithIndex> pvNodes)
         {
-            var allPowers = CalculateAllPowers(admittances, allVoltages);
+            var allPowers = AdmittanceMatrix.CalculateAllPowers(admittances, allVoltages);
 
             foreach (var node in pqNodes)
                 node.SetPowerIn(allPowers);
@@ -220,7 +189,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         {
             var inputPowerSum = allPowers.Sum();
             var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
-            var lossPowerSum = CalculatePowerLoss(admittances, allVoltages);
+            var lossPowerSum = AdmittanceMatrix.CalculatePowerLoss(admittances, allVoltages);
             var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError / absolutePowerSum : absolutPowerError;
 

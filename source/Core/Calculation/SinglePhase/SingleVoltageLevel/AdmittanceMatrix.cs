@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -26,6 +27,37 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 throw new ArgumentOutOfRangeException("values", "must be quadratic");
 
             _values = values.Clone();
+        }
+
+        public static Complex CalculatePowerLoss(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
+        {
+            var powerLoss = new Complex();
+
+            for (var i = 0; i < admittances.NodeCount; ++i)
+                for (var j = i + 1; j < admittances.NodeCount; ++j)
+                {
+                    var admittance = admittances[i, j];
+                    var voltageDifference = allVoltages[i] - allVoltages[j];
+                    var branchCurrent = admittance * voltageDifference;
+                    var branchPowerLoss = voltageDifference * branchCurrent.Conjugate();
+                    powerLoss += branchPowerLoss;
+                }
+
+            return powerLoss * (-1);
+        }
+
+        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> allVoltages)
+        {
+            var currents = admittances.CalculateCurrents(allVoltages);
+            var allPowers = allVoltages.PointwiseMultiply(currents.Conjugate());
+            return allPowers;
+        }
+
+        public static Vector<Complex> CalculateAllPowers(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents)
+        {
+            var currents = admittances.CalculateCurrents(voltages) - constantCurrents;
+            var powers = voltages.PointwiseMultiply(currents.Conjugate());
+            return powers;
         }
 
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
