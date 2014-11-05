@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
+using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -150,6 +152,29 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void NeedsGroundNode_Empty_False()
         {
             Assert.IsFalse(_feedIn.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_NominalVoltageSetTo0_SlackNodeWithVoltage0()
+        {
+            var node = new Node(1, 0, "");
+            var feedIn = new FeedIn(node, new Complex(), 4, 5, 6, _idGenerator);
+
+            var result = feedIn.CreateSingleVoltageNode(5);
+
+            var resultAsSlackNode = result as SlackNode;
+            Assert.IsNotNull(resultAsSlackNode);
+            ComplexAssert.AreEqual(0, 0, resultAsSlackNode.Voltage, 0.000001);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidPowerBase_SlackNodeWithScaledVoltage()
+        {
+            var result = _feedIn.CreateSingleVoltageNode(5);
+
+            var resultAsSlackNode = result as SlackNode;
+            Assert.IsNotNull(resultAsSlackNode);
+            ComplexAssert.AreEqual(2, 1.5, resultAsSlackNode.Voltage, 0.000001);
         }
     }
 }

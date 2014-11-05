@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
+using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
@@ -89,6 +91,16 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             var admittanceScaled = 9/(5*new Complex(4, 1));
             admittanceMatrix.Verify(x => x.AddConnection(_node, _groundNode, It.Is<Complex>(value => (admittanceScaled - value).MagnitudeSquared() < 0.000001)), Times.Once);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
+        {
+            var result = _impedanceLoad.CreateSingleVoltageNode(5);
+
+            var resultAsPqNode = result as PqNode;
+            Assert.IsNotNull(resultAsPqNode);
+            ComplexAssert.AreEqual(0, 0, resultAsPqNode.Power, 0.000001);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
@@ -177,6 +178,16 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void Constructor_NominalPhaseShiftOf6_NominalPhaseShiftIs6()
         {
             Assert.AreEqual(6, _transformerWithNominalRatio.NominalPhaseShift.Radiant, 0.00001);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
+        {
+            var result = _transformerWithNominalRatio.CreateSingleVoltageNode(5);
+
+            var resultAsPqNode = result as PqNode;
+            Assert.IsNotNull(resultAsPqNode);
+            ComplexAssert.AreEqual(0, 0, resultAsPqNode.Power, 0.000001);
         }
     }
 }

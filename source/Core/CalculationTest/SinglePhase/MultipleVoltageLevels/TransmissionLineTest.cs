@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Misc;
+using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -144,6 +146,16 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void NeedsGroundNode_WithShuntAdmittance_True()
         {
             Assert.IsTrue(_transmissionLineWithLengthAndShuntValues.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
+        {
+            var result = _transmissionLineWithLengthAndShuntValues.CreateSingleVoltageNode(5);
+
+            var resultAsPqNode = result as PqNode;
+            Assert.IsNotNull(resultAsPqNode);
+            ComplexAssert.AreEqual(0, 0, resultAsPqNode.Power, 0.000001);
         }
     }
 }

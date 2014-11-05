@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Misc;
 using Moq;
 using Node = Calculation.SinglePhase.MultipleVoltageLevels.Node;
 
@@ -86,6 +88,17 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void NeedsGroundNode_Empty_False()
         {
             Assert.IsFalse(_generator.NeedsGroundNode);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_ValidPowerBase_PvNodeWithScaledValues()
+        {
+            var result = _generator.CreateSingleVoltageNode(5);
+
+            var resultAsPvNode = result as PvNode;
+            Assert.IsNotNull(resultAsPvNode);
+            Assert.AreEqual(5.0 / 103, resultAsPvNode.VoltageMagnitude, 0.00000001);
+            Assert.AreEqual(7.0 / 5, resultAsPvNode.RealPower, 0.00000001);
         }
     }
 }
