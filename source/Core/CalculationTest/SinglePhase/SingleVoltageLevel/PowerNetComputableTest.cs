@@ -32,7 +32,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
             
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void CalculateNodeVoltagesAndPowers_OverdeterminedProblem_ExceptionThrown()
         {
             var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();
@@ -42,7 +42,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
         {
             var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();
