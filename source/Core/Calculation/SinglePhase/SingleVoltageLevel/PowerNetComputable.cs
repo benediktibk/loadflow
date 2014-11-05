@@ -138,30 +138,28 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private static List<PqNodeWithIndex> ExtractPqNodesWithIndices(IReadOnlyList<INode> nodes,
-            IEnumerable<int> indexes)
+        private static List<PqNodeWithIndex> ExtractPqNodesWithIndices(ICollection<NodeWithIndex> nodesWithIndices)
         {
-            var result = new List<PqNodeWithIndex>(nodes.Count);
+            var result = new List<PqNodeWithIndex>(nodesWithIndices.Count);
             var newIndex = 0;
 
-            foreach (var index in indexes)
+            foreach (var nodeWithIndex in nodesWithIndices)
             {
-                nodes[index].AddTo(result, newIndex);
+                nodeWithIndex.Node.AddTo(result, newIndex);
                 ++newIndex;
             }
 
             return result;
         }
 
-        private static List<PvNodeWithIndex> ExtractPvNodesWithIndices(IReadOnlyList<INode> nodes,
-            IEnumerable<int> indexes, int countOfPqBuses)
+        private static List<PvNodeWithIndex> ExtractPvNodesWithIndices(ICollection<NodeWithIndex> nodeWithIndices, int countOfPqBuses)
         {
-            var result = new List<PvNodeWithIndex>(nodes.Count);
+            var result = new List<PvNodeWithIndex>(nodeWithIndices.Count);
             var newIndex = countOfPqBuses;
 
-            foreach (var index in indexes)
+            foreach (var nodeWithIndex in nodeWithIndices)
             {
-                nodes[index].AddTo(result, newIndex);
+                nodeWithIndex.Node.AddTo(result, newIndex);
                 ++newIndex;
             }
 
@@ -240,12 +238,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         }
 
         private Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<INode> nodes,
-            List<NodeWithIndex> slackNodes, IEnumerable<NodeWithIndex> pqNodes, IEnumerable<NodeWithIndex> pvNodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
+            List<NodeWithIndex> slackNodes, ICollection<NodeWithIndex> pqNodes, ICollection<NodeWithIndex> pvNodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage,
             int countOfUnknownVoltages)
         {
             var knownVoltages = ExtractKnownVoltages(slackNodes);
-            var pqNodeWithIndices = ExtractPqNodesWithIndices(nodes, pqNodes.Select(x => x.Index));
-            var pvNodeWithIndices = ExtractPvNodesWithIndices(nodes, pvNodes.Select(x => x.Index), pqNodeWithIndices.Count);
+            var pqNodeWithIndices = ExtractPqNodesWithIndices(pqNodes);
+            var pvNodeWithIndices = ExtractPvNodesWithIndices(pvNodes, pqNodeWithIndices.Count);
             Vector<Complex> constantCurrentRightHandSide;
             var indexOfNodesWithKnownVoltage = slackNodes.Select(x => x.Index).ToList();
             var admittancesToUnknownVoltages = admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage,
