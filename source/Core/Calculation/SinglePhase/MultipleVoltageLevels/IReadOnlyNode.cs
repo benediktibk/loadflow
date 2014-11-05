@@ -1,10 +1,13 @@
-﻿namespace Calculation.SinglePhase.MultipleVoltageLevels
+﻿using System.Collections.Generic;
+using Calculation.SinglePhase.SingleVoltageLevel;
+
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public interface IReadOnlyNode
     {
         double NominalVoltage { get; }
         int Id { get; }
-        SingleVoltageLevel.INode CreateSingleVoltageNode(double scaleBasePower);
+        IEnumerable<INode> CreateSingleVoltageNodes(double scaleBasePower);
         string Name { get; }
     }
 }

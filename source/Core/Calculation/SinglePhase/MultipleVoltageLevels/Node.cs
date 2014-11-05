@@ -49,21 +49,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _connectedElements; }
         }
 
-        public SingleVoltageLevel.INode CreateSingleVoltageNode(double scaleBasePower)
+        public IEnumerable<INode> CreateSingleVoltageNodes(double scaleBasePower)
         {
-            SingleVoltageLevel.INode singleVoltageNode;
-
-            if (MustBeSlackBus)
-                singleVoltageNode = new SlackNode(GetSlackVoltage(scaleBasePower));
-            else if (MustBePVBus)
-            {
-                var data = GetVoltageMagnitudeAndRealPowerForPVBus(scaleBasePower);
-                singleVoltageNode = new PvNode(data.Item2, data.Item1);
-            }
-            else
-                singleVoltageNode = new PqNode(GetTotalPowerForPQBus(scaleBasePower));
-
-            return singleVoltageNode;
+            return _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower));
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

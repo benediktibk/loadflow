@@ -30,7 +30,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidScaleBaseForPower_ResultIsNotNull()
         {
-            var result = _node.CreateSingleVoltageNode(2);
+            var result = _node.CreateSingleVoltageNodes(2);
 
             Assert.IsNotNull(result);
         }

@@ -432,19 +432,5 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             elementTwo.Verify(x => x.GetTotalPowerForPQBus(3), Times.Once);
             ComplexAssert.AreEqual(6, 8, result, 0.00001);
         }
-
-        [TestMethod]
-        public void CreateSingleVoltageNode_PqBus_PowerIsSetToCorrectValue()
-        {
-            var element = new Mock<IPowerNetElement>();
-            element.Setup(x => x.GetTotalPowerForPQBus(123)).Returns(new Complex(4, 5));
-            _node.Connect(element.Object);
-
-            var singleVoltageNode = _node.CreateSingleVoltageNode(123);
-
-            var singleVoltageNodeAsPqNode = singleVoltageNode as PqNode;
-            Assert.IsNotNull(singleVoltageNodeAsPqNode);
-            ComplexAssert.AreEqual(4, 5, singleVoltageNodeAsPqNode.Power, 0.00001);
-        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -152,6 +153,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public Complex GetSlackVoltage(double scaleBasePower)
         {
             throw new InvalidOperationException();
+        }
+
+        public INode CreateSingleVoltageNode(double scaleBasePower)
+        {
+            return new PqNode(new Complex());
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

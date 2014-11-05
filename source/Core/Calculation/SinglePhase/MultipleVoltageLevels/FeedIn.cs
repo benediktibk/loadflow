@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -103,6 +104,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return scaler.ScaleVoltage(Voltage);
+        }
+
+        public INode CreateSingleVoltageNode(double scaleBasePower)
+        {
+            if (NominalVoltage == 0)
+                return new SlackNode(new Complex(0, 0));
+
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
+            return new SlackNode(scaler.ScaleVoltage(Voltage));
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

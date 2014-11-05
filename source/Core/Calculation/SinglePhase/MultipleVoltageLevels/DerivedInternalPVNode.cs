@@ -1,4 +1,7 @@
-﻿namespace Calculation.SinglePhase.MultipleVoltageLevels
+﻿using System.Collections.Generic;
+using Calculation.SinglePhase.SingleVoltageLevel;
+
+namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public class DerivedInternalPVNode : DerivedInternalNode
     {
@@ -11,7 +14,7 @@
             _realPower = realPower;
         }
 
-        protected override SingleVoltageLevel.INode CreateSingleVoltageNodeInternal(double scaleBasePower)
+        protected override INode CreateSingleVoltageNodesInternal(double scaleBasePower)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SingleVoltageLevel.PvNode(scaler.ScalePower(_realPower), scaler.ScaleVoltage(_voltageMagnitude));

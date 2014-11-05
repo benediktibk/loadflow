@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -13,6 +14,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         Tuple<double, double> GetVoltageMagnitudeAndRealPowerForPVBus(double scaleBasePower);
         Complex GetTotalPowerForPQBus(double scaleBasePower);
         Complex GetSlackVoltage(double scaleBasePower);
+        INode CreateSingleVoltageNode(double scaleBasePower);
         IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow);
         bool NominalVoltagesMatch { get; }
