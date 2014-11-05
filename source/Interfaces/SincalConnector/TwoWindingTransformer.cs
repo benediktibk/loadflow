@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using System.IO;
 using Calculation.ThreePhase;
 using Misc;
