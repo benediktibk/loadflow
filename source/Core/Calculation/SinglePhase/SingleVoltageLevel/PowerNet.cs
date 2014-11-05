@@ -30,7 +30,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public IReadOnlyList<INode> Nodes
         {
-            get { return _nodes.Cast<INode>().ToList(); }
+            get { return (IReadOnlyList<INode>) _nodes; }
         }
 
         public IReadOnlyAdmittanceMatrix Admittances
