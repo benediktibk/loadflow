@@ -103,6 +103,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetFactoryTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PqNodeTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PvNodeTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\SlackNodeTest.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />
     <Compile Include="NodeResultTest.cs" />
   </ItemGroup>

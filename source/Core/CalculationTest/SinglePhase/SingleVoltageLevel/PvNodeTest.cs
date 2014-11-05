@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,7 +36,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void SetVoltageMagnitudeIn_NullAndValidId_CorrectMagnitudeSet()
+        public void SetVoltageMagnitudeIn_ValidId_CorrectMagnitudeSet()
         {
             var voltages = new DenseVector(new []{new Complex(), Complex.FromPolarCoordinates(5, 6), new Complex()});
 
@@ -53,7 +48,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void SetRealPowerIn_NullAndValidId_CorrectRealPowerSet()
+        public void SetRealPowerIn_ValidId_CorrectRealPowerSet()
         {
             var powers = new DenseVector(new[] { new Complex(1, 2), new Complex(3, 4), new Complex(5, 6) });
 
