@@ -14,5 +14,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         Vector<Complex> GetRow(int row);
         IReadOnlyAdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage, IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages, out Vector<Complex> constantCurrentRightHandSide);
         Vector<Complex> CalculateRowSums();
+        Vector<Complex> CalculateAllPowers(Vector<Complex> allVoltages);
+        Complex CalculatePowerLoss(Vector<Complex> allVoltages);
+        Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents);
     }
 }

@@ -43,7 +43,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _knownVoltages = new DenseVector(new[] { _feedInVoltage });
             _initialVoltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0) });
             _correctVoltages = new DenseVector(new[] { _feedInVoltage, _loadVoltageOne, _loadVoltageTwo });
-            _correctPowers = AdmittanceMatrix.CalculateAllPowers(_admittanceMatrix, _correctVoltages);
+            _correctPowers = _admittanceMatrix.CalculateAllPowers(_correctVoltages);
             _indexOfNodesWithKnownVoltage = new List<int> { 0 };
             _indexOfNodesWithUnknownVoltage = new List<int> { 1, 2 };
             _admittanceMatrixReduced = _admittanceMatrix.CreateReducedAdmittanceMatrix(_indexOfNodesWithUnknownVoltage, _indexOfNodesWithKnownVoltage, _knownVoltages, out _constantCurrents);
@@ -105,7 +105,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var knownVoltages = new DenseVector(new[] { _feedInVoltage });
             var initialVoltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0), new Complex(10, 0) });
             var correctVoltages = new DenseVector(new[] { feedInVoltage, loadVoltageOne, loadVoltageTwo, loadVoltageThree });
-            var correctPowers = AdmittanceMatrix.CalculateAllPowers(admittanceMatrix, correctVoltages);
+            var correctPowers = admittanceMatrix.CalculateAllPowers(correctVoltages);
             var indexOfNodesWithKnownVoltage = new List<int> { 0 };
             var indexOfNodesWithUnknownVoltage = new List<int> { 1, 2, 3 };
             Vector<Complex> constantCurrents;

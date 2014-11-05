@@ -305,7 +305,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
                 new AdmittanceMatrix(DenseMatrix.OfArray(new[,] { { new Complex(1, 0), new Complex(-1, 0) }, { new Complex(-1, 0), new Complex(1, 0) } }));
             var voltages = new DenseVector(new[] { new Complex(1, 0), new Complex(0.5, 0) });
 
-            var powerLoss = AdmittanceMatrix.CalculatePowerLoss(admittances, voltages);
+            var powerLoss = admittances.CalculatePowerLoss(voltages);
 
             ComplexAssert.AreEqual(0.25, 0, powerLoss, 0.0001);
         }
@@ -325,7 +325,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittances[2, 1] = new Complex(-0.5, 0);
             admittances[2, 2] = new Complex(1.0 / 3 + 0.5, 0);
 
-            var powerLoss = AdmittanceMatrix.CalculatePowerLoss(new AdmittanceMatrix(admittances), voltages);
+            var powerLoss = new AdmittanceMatrix(admittances).CalculatePowerLoss(voltages);
 
             ComplexAssert.AreEqual(0.46875, 0, powerLoss, 0.0000001);
         }
@@ -340,7 +340,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             admittanceMatrixMock.Setup(x => x.CalculateCurrents(voltages)).Returns(internalCurrents);
             var correctPowers = voltages.PointwiseMultiply((internalCurrents - constantCurrents).Conjugate());
 
-            var powers = AdmittanceMatrix.CalculateAllPowers(admittanceMatrixMock.Object, voltages, constantCurrents);
+            var powers = admittanceMatrixMock.Object.CalculateAllPowers(voltages, constantCurrents);
 
             ComplexAssert.AreAllEqual(correctPowers, powers, 0.00001);
         }
