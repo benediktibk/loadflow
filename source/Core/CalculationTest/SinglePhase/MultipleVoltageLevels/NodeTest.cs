@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using Calculation;
 using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Misc;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 {
