@@ -20,9 +20,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodes = InitializeNodes();
         }
 
-        public void SetNode(int i, INode node)
+        public void AdNode(int i, INode node)
         {
-            _nodes[i] = node;
+            if (_nodes[i] == null)
+                _nodes[i] = node;
+            else
+                _nodes[i] = _nodes[i].Merge(node);
         }
 
         public IReadOnlyList<INode> Nodes

@@ -69,7 +69,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             {
                 var singleVoltageNode = node.CreateSingleVoltageNode(scaleBasePower);
                 var nodeIndex = nodeIndexes[node];
-                singleVoltagePowerNet.SetNode(nodeIndex, singleVoltageNode);
+                singleVoltagePowerNet.AdNode(nodeIndex, singleVoltageNode);
             }
 
             return singleVoltagePowerNet;
