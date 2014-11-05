@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
@@ -25,11 +26,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public IList<NodeResult> CalculateNodeResults()
         {
-            var nodes = Nodes;
+            if (Nodes.Count != Admittances.NodeCount)
+                throw new InvalidDataException("the node count does not match the size of the admittance matrix");
+
             List<NodeWithIndex> indexOfSlackBuses;
             List<NodeWithIndex> indexOfPqBuses;
             List<NodeWithIndex> indexOfPvBuses;
-            SeperateNodesInBusTypes(nodes, out indexOfSlackBuses,
+            SeperateNodesInBusTypes(Nodes, out indexOfSlackBuses,
                 out indexOfPqBuses, out indexOfPvBuses);
 
             var countOfKnownVoltages = indexOfSlackBuses.Count;

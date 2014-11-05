@@ -16,12 +16,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             _nominalVoltage = nominalVoltage;
             _admittances = admittances;
-            _nodes = InitializeNodes();
+            _nodes = new List<INode>(_admittances.NodeCount);
         }
 
-        public void SetNode(int i, INode node)
+        public void AddNode(INode node)
         {
-            _nodes[i] = node;
+            _nodes.Add(node);
         }
 
         public IReadOnlyList<INode> Nodes
@@ -37,16 +37,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public double NominalVoltage
         {
             get { return _nominalVoltage; }
-        }
-
-        private IList<INode> InitializeNodes()
-        {
-            var result = new List<INode>(Admittances.NodeCount);
-
-            for (var i = 0; i < Admittances.NodeCount; ++i)
-                result.Add(null);
-
-            return result;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -32,7 +33,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(InvalidDataException))]
         public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
         {
             var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();
@@ -88,9 +89,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [ExpectedException(typeof(ArgumentException))]
         public void CalculateNodeResults_NoSlackBus_ThrowsException()
         {
-            _powerNet.SetNode(0, new PqNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new PqNode(new Complex(5, 6)));
-            _powerNet.SetNode(2, new PvNode(3, 4));
+            _powerNet.AddNode(new PqNode(new Complex(1, 2)));
+            _powerNet.AddNode(new PqNode(new Complex(5, 6)));
+            _powerNet.AddNode(new PvNode(3, 4));
 
             _powerNet.CalculateNodeResults();
         }
@@ -99,9 +100,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeResults_AllVoltagesKnown_CorrectVoltages()
         {
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new SlackNode(new Complex(5, 6)));
-            _powerNet.SetNode(2, new SlackNode(new Complex(3, 4)));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
+            _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
             var nodeResults = _powerNet.CalculateNodeResults();
 
@@ -114,9 +115,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         [TestMethod]
         public void CalculateNodeResults_AllVoltagesKnown_NodeVoltageCalculatorGotNoCall()
         {
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new SlackNode(new Complex(5, 6)));
-            _powerNet.SetNode(2, new SlackNode(new Complex(3, 4)));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
+            _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
             _powerNet.CalculateNodeResults();
 
@@ -131,9 +132,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void CalculateNodeResults_RelativePowerErrorTooBig_Null()
         {
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(0);
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new SlackNode(new Complex(5, 6)));
-            _powerNet.SetNode(2, new SlackNode(new Complex(3, 4)));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
+            _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
             var nodeResults = _powerNet.CalculateNodeResults();
 
@@ -147,9 +148,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var voltageOne = new Complex(1, 2);
             var voltageTwo = new Complex(5, 6);
             var voltageThree = new Complex(3, 4);
-            _powerNet.SetNode(0, new SlackNode(voltageOne));
-            _powerNet.SetNode(1, new SlackNode(voltageTwo));
-            _powerNet.SetNode(2, new SlackNode(voltageThree));
+            _powerNet.AddNode(new SlackNode(voltageOne));
+            _powerNet.AddNode(new SlackNode(voltageTwo));
+            _powerNet.AddNode(new SlackNode(voltageThree));
 
             var nodeResults = _powerNet.CalculateNodeResults();
 
@@ -174,9 +175,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(2));
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new PqNode(new Complex(3, 4)));
-            _powerNet.SetNode(2, new PvNode(5, 6));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new PqNode(new Complex(3, 4)));
+            _powerNet.AddNode(new PvNode(5, 6));
 
             _powerNet.CalculateNodeResults();
 
@@ -247,9 +248,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(2));
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new PqNode(new Complex()));
-            _powerNet.SetNode(2, new PvNode(0, 6));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new PqNode(new Complex()));
+            _powerNet.AddNode(new PvNode(0, 6));
 
             var nodeResults = _powerNet.CalculateNodeResults();
 
@@ -274,9 +275,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculatorMock.Setup(x => x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
                         It.IsAny<double>(), It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(),
                         It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>())).Returns(new SparseVector(1));
-            _powerNet.SetNode(0, new SlackNode(new Complex(1, 2)));
-            _powerNet.SetNode(1, new PqNode(new Complex(3, 4)));
-            _powerNet.SetNode(2, new SlackNode(new Complex(5, 6)));
+            _powerNet.AddNode(new SlackNode(new Complex(1, 2)));
+            _powerNet.AddNode(new PqNode(new Complex(3, 4)));
+            _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
 
             var nodeResults = _powerNet.CalculateNodeResults();
 

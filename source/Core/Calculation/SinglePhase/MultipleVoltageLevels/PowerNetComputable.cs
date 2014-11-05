@@ -25,7 +25,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var nodes = new List<IReadOnlyNode>(GetAllCalculationNodes());
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerScaling);
-            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, nodeIndexes, admittances, powerScaling);
+            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, admittances, powerScaling);
             var nodeResults = singleVoltagePowerNet.CalculateNodeResults();
 
             if (nodeResults == null)
@@ -64,16 +64,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return nodeIndexes;
         }
 
-        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndexes, IAdmittanceMatrix admittances, double scaleBasePower)
+        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower)
         {
             var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1);
 
             foreach (var node in nodes)
-            {
-                var singleVoltageNode = node.CreateSingleVoltageNode(scaleBasePower);
-                var nodeIndex = nodeIndexes[node];
-                singleVoltagePowerNet.SetNode(nodeIndex, singleVoltageNode);
-            }
+                singleVoltagePowerNet.AddNode(node.CreateSingleVoltageNode(scaleBasePower));
 
             return singleVoltagePowerNet;
         }
