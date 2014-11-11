@@ -137,7 +137,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             out Complex lengthAdmittanceThree)
         {
             var nominalVoltage = _nodeOne.NominalVoltage;
-            var idleLosses = relativeNoLoadCurrent * (nominalPowerOneToTwo + nominalPowerTwoToThree + nominalPowerThreeToOne);
+            var idleLosses = relativeNoLoadCurrent * (Math.Max(Math.Max(nominalPowerOneToTwo, nominalPowerTwoToThree), nominalPowerThreeToOne));
 
             if (ironLosses > idleLosses)
                 throw new ArgumentException("the iron losses are too high compared to the relative no load current");
