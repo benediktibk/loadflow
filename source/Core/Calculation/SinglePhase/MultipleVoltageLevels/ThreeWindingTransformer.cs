@@ -142,23 +142,23 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (ironLosses > idleLosses)
                 throw new ArgumentException("the iron losses are too high compared to the relative no load current");
 
-            var lengthAdmittanceOneToTwo = CalculateLenghtAdmittance(nominalPowerOneToTwo, relativeShortCircuitVoltageOneToTwo, copperLossesOneToTwo, nominalVoltage);
-            var lengthAdmittanceTwoToThree = CalculateLenghtAdmittance(nominalPowerTwoToThree, relativeShortCircuitVoltageTwoToThree, copperLossesTwoToThree, nominalVoltage);
-            var lengthAdmittanceThreeToOne = CalculateLenghtAdmittance(nominalPowerThreeToOne, relativeShortCircuitVoltageThreeToOne, copperLossesThreeToOne, nominalVoltage);
-            lengthAdmittanceOne = 2 / (lengthAdmittanceOneToTwo + lengthAdmittanceThreeToOne - lengthAdmittanceTwoToThree);
-            lengthAdmittanceTwo = 2 / (lengthAdmittanceOneToTwo - lengthAdmittanceThreeToOne + lengthAdmittanceTwoToThree);
-            lengthAdmittanceThree = 2 / (lengthAdmittanceThreeToOne - lengthAdmittanceOneToTwo + lengthAdmittanceTwoToThree);
+            var lengthImpedanceOneToTwo = CalculateLengthImpedance(nominalPowerOneToTwo, relativeShortCircuitVoltageOneToTwo, copperLossesOneToTwo, nominalVoltage);
+            var lengthImpedanceTwoToThree = CalculateLengthImpedance(nominalPowerTwoToThree, relativeShortCircuitVoltageTwoToThree, copperLossesTwoToThree, nominalVoltage);
+            var lengthImpedanceThreeToOne = CalculateLengthImpedance(nominalPowerThreeToOne, relativeShortCircuitVoltageThreeToOne, copperLossesThreeToOne, nominalVoltage);
+            lengthAdmittanceOne = 2 / (lengthImpedanceOneToTwo + lengthImpedanceThreeToOne - lengthImpedanceTwoToThree);
+            lengthAdmittanceTwo = 2 / (lengthImpedanceOneToTwo - lengthImpedanceThreeToOne + lengthImpedanceTwoToThree);
+            lengthAdmittanceThree = 2 / (lengthImpedanceThreeToOne - lengthImpedanceOneToTwo + lengthImpedanceTwoToThree);
             shuntAdmittance = new Complex(ironLosses, (-1)*Math.Sqrt(idleLosses*idleLosses - ironLosses*ironLosses))/
                               (2*nominalVoltage*nominalVoltage);
         }
 
-        private static Complex CalculateLenghtAdmittance(double nominalPower, double relativeShortCircuitVoltage,
-            double copperLossesOneToTwo, double nominalVoltage)
+        private static Complex CalculateLengthImpedance(double nominalPower, double relativeShortCircuitVoltage,
+            double copperLosses, double nominalVoltage)
         {
-            var relativeShortCircuitVoltageOneToTwoComplex = CalculateRelativeShortCircuitVoltage(nominalPower,
-                relativeShortCircuitVoltage, copperLossesOneToTwo);
+            var relativeShortCircuitVoltageComplex = CalculateRelativeShortCircuitVoltage(nominalPower,
+                relativeShortCircuitVoltage, copperLosses);
             return (nominalVoltage*nominalVoltage/nominalPower)*
-                                   relativeShortCircuitVoltageOneToTwoComplex;
+                                   relativeShortCircuitVoltageComplex;
         }
 
         private static Complex CalculateRelativeShortCircuitVoltage(double nominalPower, double relativeShortCircuitVoltage,
