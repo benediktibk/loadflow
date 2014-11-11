@@ -85,6 +85,18 @@
     <None Include="testdata\calculation_threewindingtransformer1.sin" />
     <None Include="testdata\calculation_threewindingtransformer1_files\database.001.dia" />
     <None Include="testdata\calculation_threewindingtransformer1_files\database.ini" />
+    <None Include="testdata\calculation_threewindingtransformer2.sin" />
+    <None Include="testdata\calculation_threewindingtransformer2_files\database.001.dia" />
+    <None Include="testdata\calculation_threewindingtransformer2_files\database.ini" />
+    <None Include="testdata\calculation_threewindingtransformer3.sin" />
+    <None Include="testdata\calculation_threewindingtransformer3_files\database.001.dia" />
+    <None Include="testdata\calculation_threewindingtransformer3_files\database.ini" />
+    <None Include="testdata\calculation_threewindingtransformer4.sin" />
+    <None Include="testdata\calculation_threewindingtransformer4_files\database.001.dia" />
+    <None Include="testdata\calculation_threewindingtransformer4_files\database.ini" />
+    <None Include="testdata\calculation_threewindingtransformer5.sin" />
+    <None Include="testdata\calculation_threewindingtransformer5_files\database.001.dia" />
+    <None Include="testdata\calculation_threewindingtransformer5_files\database.ini" />
     <None Include="testdata\calculation_transformer1.sin" />
     <None Include="testdata\calculation_transformer1_files\database.001.dia" />
     <None Include="testdata\calculation_transformer1_files\database.ini" />
@@ -199,6 +211,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_threewindingtransformer1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_threewindingtransformer2_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_threewindingtransformer3_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_threewindingtransformer4_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_threewindingtransformer5_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transformer1_files\database.mdb">
