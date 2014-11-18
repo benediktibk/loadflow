@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using Calculation.ThreePhase;
 using Misc;
 
@@ -38,9 +37,9 @@ namespace SincalConnector
             if (additionalPhaseShiftOneToTwo != 0 || additionalPhaseShiftTwoToThree != 0 || additionalPhaseShiftThreeToOne != 0)
                 throw new NotSupportedException("additional phase shifts at the transformer are not supported");
 
-            var connectionSymbolOneToTwo = record.Parse<int>("VecGrp1");
-            var connectionSymbolTwoToThree = record.Parse<int>("VecGrp2");
-            var connectionSymbolThreeToOne = record.Parse<int>("VecGrp3");
+            var connectionSymbolOneToTwo = record.Parse<int>("VecGrp3");
+            var connectionSymbolTwoToThree = record.Parse<int>("VecGrp1");
+            var connectionSymbolThreeToOne = record.Parse<int>("VecGrp2");
             var phaseShiftFactorOneToTwo = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolOneToTwo);
             var phaseShiftFactorTwoToThree = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolTwoToThree);
             var phaseShiftFactorThreeToOne = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolThreeToOne);
