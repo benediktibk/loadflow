@@ -103,5 +103,51 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
             Assert.AreEqual(200, calculatorCasted.BitPrecision);
         }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_HelmWithCurrentIteration_HelmWithCurrentIterationWithCorrectValues()
+        {
+            _factory.MaximumIterations = 1234;
+            _factory.TargetPrecision = 0.4567;
+            _factory.BitPrecision = 200;
+            _factory.CoefficientCount = 123;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.HolomorphicEmbeddedLoadFlowWithCurrentIteration);
+
+            var calculatorCasted = calculator as TwoStepMethod;
+            Assert.IsNotNull(calculatorCasted);
+            var firstMethod = calculatorCasted.FirstMethod as HolomorphicEmbeddedLoadFlowMethod;
+            var secondMethod = calculatorCasted.SecondMethod as CurrentIteration;
+            Assert.IsNotNull(firstMethod);
+            Assert.IsNotNull(secondMethod);
+            Assert.AreEqual(0.4567, firstMethod.TargetPrecision, 1e-10);
+            Assert.AreEqual(123, firstMethod.NumberOfCoefficients);
+            Assert.AreEqual(200, firstMethod.BitPrecision);
+            Assert.AreEqual(1234, secondMethod.MaximumIterations);
+            Assert.AreEqual(0.4567, secondMethod.TargetPrecision, 1e-10);
+        }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_HelmWithNewtonRaphson_HelmWithNewtonRaphsonWithCorrectValues()
+        {
+            _factory.MaximumIterations = 1234;
+            _factory.TargetPrecision = 0.4567;
+            _factory.BitPrecision = 200;
+            _factory.CoefficientCount = 123;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson);
+
+            var calculatorCasted = calculator as TwoStepMethod;
+            Assert.IsNotNull(calculatorCasted);
+            var firstMethod = calculatorCasted.FirstMethod as HolomorphicEmbeddedLoadFlowMethod;
+            var secondMethod = calculatorCasted.SecondMethod as NewtonRaphsonMethod;
+            Assert.IsNotNull(firstMethod);
+            Assert.IsNotNull(secondMethod);
+            Assert.AreEqual(0.4567, firstMethod.TargetPrecision, 1e-10);
+            Assert.AreEqual(123, firstMethod.NumberOfCoefficients);
+            Assert.AreEqual(200, firstMethod.BitPrecision);
+            Assert.AreEqual(1234, secondMethod.MaximumIterations);
+            Assert.AreEqual(0.4567, secondMethod.TargetPrecision, 1e-10);
+        }
     }
 }

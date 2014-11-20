@@ -79,9 +79,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 case Selection.HolomorphicEmbeddedLoadFlow:
                     return new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision);
                 case Selection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, 50, 64), new CurrentIteration(TargetPrecision, MaximumIterations));
+                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision), new CurrentIteration(TargetPrecision, MaximumIterations));
                 case Selection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, 50, 64), new NewtonRaphsonMethod(TargetPrecision, MaximumIterations));
+                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision), new NewtonRaphsonMethod(TargetPrecision, MaximumIterations));
                 default:
                     throw new ArgumentOutOfRangeException();
             }
