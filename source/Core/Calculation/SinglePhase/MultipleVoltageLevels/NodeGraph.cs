@@ -179,11 +179,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var segmentTwo = FindSegmentWhichContains(segments, transformer.NodeTwo);
                 var segmentThree = FindSegmentWhichContains(segments, transformer.NodeThree);
                 AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentOne, segmentTwo, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftOneToTwo);
+                    transformer.NominalPhaseShiftOneToTwo + transformer.NominalPhaseShiftTwoToThree);
                 AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentTwo, segmentThree, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftTwoToThree);
-                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentThree, segmentOne, phaseShiftsPerTransformer,
-                    transformer.NominalPhaseShiftThreeToOne);
+                    (-1)*transformer.NominalPhaseShiftTwoToThree + transformer.NominalPhaseShiftThreeToOne);
+                AddPhaseShiftBetweenSegmentsAndCheckExistingShifts(segmentOne, segmentThree, phaseShiftsPerTransformer,
+                    transformer.NominalPhaseShiftThreeToOne + transformer.NominalPhaseShiftOneToTwo);
             }
 
             return phaseShiftsPerTransformer;
