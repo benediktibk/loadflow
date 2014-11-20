@@ -51,13 +51,13 @@ namespace Calculation.ThreePhase
             double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree,
             double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo,
             double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses,
-            double relativeNoLoadCurrent, Angle nominalPhaseShiftOneToTwo,
-            Angle nominalPhaseShiftTwoToThree, Angle nominalPhaseShiftThreeToOne, string name)
+            double relativeNoLoadCurrent, Angle nominalPhaseShiftOne,
+            Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name)
         {
             _singlePhasePowerNet.AddThreeWindingTransformer(nodeOneId, nodeTwoId, nodeThreeId, nominalPowerOneToTwo/3, nominalPowerTwoToThree/3,
                 nominalPowerThreeToOne/3, relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
                 relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo/3, copperLossesTwoToThree/3, copperLossesThreeToOne/3,
-                ironLosses/3, relativeNoLoadCurrent, nominalPhaseShiftOneToTwo, nominalPhaseShiftTwoToThree, nominalPhaseShiftThreeToOne,
+                ironLosses/3, relativeNoLoadCurrent, nominalPhaseShiftOne, nominalPhaseShiftTwo, nominalPhaseShiftThree,
                 name);
         }
 

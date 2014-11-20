@@ -15,9 +15,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Complex _lengthAdmittanceOne;
         private readonly Complex _lengthAdmittanceTwo;
         private readonly Complex _lengthAdmittanceThree;
-        private readonly Angle _nominalPhaseShiftOneToTwo;
-        private readonly Angle _nominalPhaseShiftTwoToThree;
-        private readonly Angle _nominalPhaseShiftThreeToOne;
+        private readonly Angle _nominalPhaseShiftOne;
+        private readonly Angle _nominalPhaseShiftTwo;
+        private readonly Angle _nominalPhaseShiftThree;
         private readonly DerivedInternalPQNode _internalNode;
 
         public ThreeWindingTransformer(
@@ -27,15 +27,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             double relativeShortCircuitVoltageThreeToOne,
             double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne,
             double ironLosses, double relativeNoLoadCurrent,
-            Angle nominalPhaseShiftOneToTwo, Angle nominalPhaseShiftTwoToThree, Angle nominalPhaseShiftThreeToOne,
+            Angle nominalPhaseShiftOne, Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree,
             string name, IdGenerator idGenerator)
         {
             _nodeOne = nodeOne;
             _nodeTwo = nodeTwo;
             _nodeThree = nodeThree;
-            _nominalPhaseShiftOneToTwo = nominalPhaseShiftOneToTwo;
-            _nominalPhaseShiftTwoToThree = nominalPhaseShiftTwoToThree;
-            _nominalPhaseShiftThreeToOne = nominalPhaseShiftThreeToOne;
+            _nominalPhaseShiftOne = nominalPhaseShiftOne;
+            _nominalPhaseShiftTwo = nominalPhaseShiftTwo;
+            _nominalPhaseShiftThree = nominalPhaseShiftThree;
             _internalNode = new DerivedInternalPQNode(nodeTwo, idGenerator.Generate(), new Complex(), name + "#internal");
             CalculateAdmittances(nominalPowerOneToTwo, nominalPowerTwoToThree, nominalPowerThreeToOne,
                 relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
@@ -59,19 +59,19 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _nodeThree; }
         }
 
-        public Angle NominalPhaseShiftOneToTwo
+        public Angle NominalPhaseShiftOne
         {
-            get { return _nominalPhaseShiftOneToTwo; }
+            get { return _nominalPhaseShiftOne; }
         }
 
-        public Angle NominalPhaseShiftTwoToThree
+        public Angle NominalPhaseShiftTwo
         {
-            get { return _nominalPhaseShiftTwoToThree; }
+            get { return _nominalPhaseShiftTwo; }
         }
 
-        public Angle NominalPhaseShiftThreeToOne
+        public Angle NominalPhaseShiftThree
         {
-            get { return _nominalPhaseShiftThreeToOne; }
+            get { return _nominalPhaseShiftThree; }
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

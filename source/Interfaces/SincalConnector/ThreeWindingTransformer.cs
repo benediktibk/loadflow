@@ -27,14 +27,14 @@ namespace SincalConnector
             var controlStageOne = record.Parse<double>("roh1");
             var controlStageTwo = record.Parse<double>("roh2");
             var controlStageThree = record.Parse<double>("roh3");
-            var additionalPhaseShiftOneToTwo = record.Parse<double>("AddRotate1");
-            var additionalPhaseShiftTwoToThree = record.Parse<double>("AddRotate2");
-            var additionalPhaseShiftThreeToOne = record.Parse<double>("AddRotate3");
+            var additionalPhaseShiftOne = record.Parse<double>("AddRotate1");
+            var additionalPhaseShiftTwo = record.Parse<double>("AddRotate2");
+            var additionalPhaseShiftThree = record.Parse<double>("AddRotate3");
 
             if (controlStageOne != 0 || controlStageTwo != 0 || controlStageThree != 0)
                 throw new NotSupportedException("control stages are not supported");
 
-            if (additionalPhaseShiftOneToTwo != 0 || additionalPhaseShiftTwoToThree != 0 || additionalPhaseShiftThreeToOne != 0)
+            if (additionalPhaseShiftOne != 0 || additionalPhaseShiftTwo != 0 || additionalPhaseShiftThree != 0)
                 throw new NotSupportedException("additional phase shifts at the transformer are not supported");
 
             var connectionSymbolOneToTwo = record.Parse<int>("VecGrp1");
@@ -43,11 +43,11 @@ namespace SincalConnector
             var phaseShiftFactorOneToTwo = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolOneToTwo);
             var phaseShiftFactorTwoToThree = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolTwoToThree);
             var phaseShiftFactorThreeToOne = MapConnectionSymbolToPhaseShiftFactor(connectionSymbolThreeToOne);
-            PhaseShiftOneToTwo = Angle.FromDegree(phaseShiftFactorOneToTwo * 30);
-            PhaseShiftTwoToThree = Angle.FromDegree(phaseShiftFactorTwoToThree * 30);
-            PhaseShiftThreeToOne = Angle.FromDegree(phaseShiftFactorThreeToOne * 30);
+            PhaseShiftOne = Angle.FromDegree(phaseShiftFactorOneToTwo * 30);
+            PhaseShiftTwo = Angle.FromDegree(phaseShiftFactorTwoToThree * 30);
+            PhaseShiftThree = Angle.FromDegree(phaseShiftFactorThreeToOne * 30);
 
-            var nominalVoltageOne = record.Parse<double>("Un1")*1000;
+            var nominalVoltageOne = record.Parse<double>("Un1") * 1000;
             var nominalVoltageTwo = record.Parse<double>("Un2") * 1000;
             var nominalVoltageThree = record.Parse<double>("Un3") * 1000;
             var nominalVoltages = new List<double>() {nominalVoltageOne, nominalVoltageTwo, nominalVoltageThree};
@@ -100,11 +100,11 @@ namespace SincalConnector
 
         public double RelativeNoLoadCurrent { get; private set; }
 
-        public Angle PhaseShiftOneToTwo { get; private set; }
+        public Angle PhaseShiftOne { get; private set; }
 
-        public Angle PhaseShiftTwoToThree { get; private set; }
+        public Angle PhaseShiftTwo { get; private set; }
 
-        public Angle PhaseShiftThreeToOne { get; private set; }
+        public Angle PhaseShiftThree { get; private set; }
 
         public static int MapConnectionSymbolToPhaseShiftFactor(int connectionSymbol)
         {
@@ -142,8 +142,8 @@ namespace SincalConnector
             powerNet.AddThreeWindingTransformer(NodeOneId, NodeTwoId, NodeThreeId, NominalPowerOneToTwo,
                 NominalPowerTwoToThree, NominalPowerThreeToOne, RelativeShortCircuitVoltageOneToTwo,
                 RelativeShortCircuitVoltageTwoToThree, RelativeShortCircuitVoltageThreeToOne, CopperLossesOneToTwo,
-                CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOneToTwo,
-                PhaseShiftTwoToThree, PhaseShiftThreeToOne, "");
+                CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOne,
+                PhaseShiftTwo, PhaseShiftThree, "");
         }
     }
 }
