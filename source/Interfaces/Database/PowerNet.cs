@@ -37,7 +37,8 @@ namespace Database
         private SymmetricPowerNet _symmetricPowerNet;
         private IReadOnlyDictionary<long, NodeResult> _nodeResults;
         private string _logMessages;
-        private NodeVoltageCalculatorSelection _calculatorSelection;
+        private Selection _calculatorSelection;
+        private readonly Factory _calculatorFactory;
 
         public PowerNet()
         {
@@ -69,7 +70,14 @@ namespace Database
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.DoWork += CalculateNodeVoltages;
             _backgroundWorker.RunWorkerCompleted += CalculationFinished;
-            _calculatorSelection = NodeVoltageCalculatorSelection.CurrentIteration;
+            _calculatorSelection = Selection.CurrentIteration;
+            _calculatorFactory = new Factory
+            {
+                TargetPrecision = 0.000001,
+                MaximumIterations = 1000,
+                BitPrecision = 200,
+                CoefficientCount = 50
+            };
         }
 
         public PowerNet(ISafeDatabaseRecord reader, IConnectionNetElements connection) : 
@@ -78,7 +86,7 @@ namespace Database
             Id = reader.Parse<int>("PowerNetId");
             Name = reader.Parse<string>("PowerNetName");
             Frequency = reader.Parse<double>("Frequency");
-            CalculatorSelection = (NodeVoltageCalculatorSelection) reader.Parse<int>("CalculatorSelection");
+            CalculatorSelection = (Selection)reader.Parse<int>("CalculatorSelection");
             Connection = connection;
         }
 
@@ -93,45 +101,7 @@ namespace Database
             }
             _isCalculationRunning = true;
             _isCalculationRunningMutex.ReleaseMutex();
-
-            const double targetPrecision = 0.000001;
-            const int maximumIterations = 1000;
-            const int helmBitPrecisionMulti = 200;
-            const int coefficientCountHelmMulti = 80;
-            const int coefficientCountHelmLongDouble = 50;
-            INodeVoltageCalculator nodeVoltageCalculator;
-
-            switch (CalculatorSelection)
-            {
-                case NodeVoltageCalculatorSelection.NodePotential:
-                    nodeVoltageCalculator = new NodePotentialMethod();
-                    break;
-                case NodeVoltageCalculatorSelection.CurrentIteration:
-                    nodeVoltageCalculator = new CurrentIteration(targetPrecision, maximumIterations);
-                    break;
-                case NodeVoltageCalculatorSelection.NewtonRaphson:
-                    nodeVoltageCalculator = new NewtonRaphsonMethod(targetPrecision, maximumIterations);
-                    break;
-                case NodeVoltageCalculatorSelection.FastDecoupledLoadFlow:
-                    nodeVoltageCalculator = new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations);
-                    break;
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlow:
-                    nodeVoltageCalculator =
-                        new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmLongDouble, 64);
-                    break;
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
-                    nodeVoltageCalculator =
-                        new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti, helmBitPrecisionMulti);
-                    break;
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    nodeVoltageCalculator = new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64), new CurrentIteration(targetPrecision, maximumIterations));
-                    break;
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    nodeVoltageCalculator = new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64), new NewtonRaphsonMethod(targetPrecision, maximumIterations));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var nodeVoltageCalculator = _calculatorFactory.CreateNodeVoltageCalculator(CalculatorSelection);
 
             if (!CreatePowerNet(nodeVoltageCalculator)) 
                 return;
@@ -244,7 +214,7 @@ namespace Database
             }
         }
 
-        public NodeVoltageCalculatorSelection CalculatorSelection
+        public Selection CalculatorSelection
         {
             get { return _calculatorSelection; }
             set

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 
 namespace Database
@@ -13,6 +12,11 @@ namespace Database
         public NodeToNodeNameConverter()
         {
             _mapping = new Dictionary<string, Node>();
+        }
+
+        public static string Convert(Node node)
+        {
+            return node.Name + " [" + node.Id + "]";
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -47,11 +51,6 @@ namespace Database
 
             foreach (var node in nodes)
                 _mapping.Add(Convert(node), node);
-        }
-
-        public static string Convert(Node node)
-        {
-            return node.Name + " [" + node.Id + "]";
         }
     }
 }
