@@ -10,14 +10,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
     {
-        private readonly double _targetPrecision;
-        private readonly int _maximumIterations;
-
         protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
         {
-            _targetPrecision = targetPrecision;
-            _maximumIterations = maximumIterations;
+            TargetPrecision = targetPrecision;
+            MaximumIterations = maximumIterations;
         }
+
+        public int MaximumIterations { get; private set; }
+        public double TargetPrecision { get; private set; }
 
         public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages);
 
@@ -45,7 +45,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
                 var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
                 maximumPowerDifference = powersDifferenceAbsolute.Max();
-            } while (maximumPowerDifference > nominalVoltage*_targetPrecision && iterations <= _maximumIterations);
+            } while (maximumPowerDifference > nominalVoltage*TargetPrecision && iterations <= MaximumIterations);
             
             return currentVoltages;
         }

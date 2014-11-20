@@ -11,14 +11,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class CurrentIteration : INodeVoltageCalculator
     {
-        private readonly int _maximumIterations;
-        private readonly double _targetPrecision;
-
         public CurrentIteration(double targetPrecision, int maximumIterations)
         {
-            _targetPrecision = targetPrecision;
-            _maximumIterations = maximumIterations;
+            MaximumIterations = maximumIterations;
+            TargetPrecision = targetPrecision;
         }
+
+        public double MaximumRelativePowerError
+        {
+            get { return 0.1; }
+        }
+
+        public int MaximumIterations { get; private set; }
+        public double TargetPrecision { get; private set; }
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
@@ -40,14 +45,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, voltages, totalAbsolutePowerSum, powerErrorTooBig);
                 voltages = newVoltages;
                 ++iterations;
-            } while (iterations <= _maximumIterations && !accurateEnough);
+            } while (iterations <= MaximumIterations && !accurateEnough);
 
             return voltages;
-        }
-
-        public double MaximumRelativePowerError
-        {
-            get { return 0.1; }
         }
 
         private static DenseVector CalculateRightHandSide(IList<Complex> constantCurrents, IList<Complex> powers, IList<Complex> voltages)
@@ -86,7 +86,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var relativePowerError = totalAbsolutePowerSum != 0
                 ? absolutePowerError/totalAbsolutePowerSum
                 : absolutePowerError;
-            return voltageChange/nominalVoltage < _targetPrecision/10 && !powerErrorTooBig &&
+            return voltageChange / nominalVoltage < TargetPrecision / 10 && !powerErrorTooBig &&
                          relativePowerError < MaximumRelativePowerError;
         }
 
@@ -103,7 +103,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 newVoltages[bus.Index] = newVoltage;
                 var newPower = CalculatePower(bus.Index, admittances, constantCurrents, newVoltages);
 
-                if (Math.Abs((newPower.Real - bus.RealPower)/bus.RealPower) > _targetPrecision)
+                if (Math.Abs((newPower.Real - bus.RealPower) / bus.RealPower) > TargetPrecision)
                     powerErrorTooBig = true;
 
                 powers[bus.Index] = new Complex(bus.RealPower, newPower.Imaginary);

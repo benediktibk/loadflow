@@ -8,9 +8,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator, IDisposable
     {
-        private readonly double _targetPrecision;
-        private readonly int _numberOfCoefficients;
-        private readonly Precision _precision;
         private int _calculator;
         private bool _disposed;
 
@@ -22,9 +19,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (targetPrecision < 0)
                 throw new ArgumentOutOfRangeException("targetPrecision", "must be greater or equal 0");
 
-            _numberOfCoefficients = numberOfCoefficients;
-            _targetPrecision = targetPrecision;
-            _precision = precision;
+            NumberOfCoefficients = numberOfCoefficients;
+            TargetPrecision = targetPrecision;
+            Precision = precision;
             _calculator = -1;
             _disposed = false;
         }
@@ -33,6 +30,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             Dispose(false);
         }
+
+        public double MaximumRelativePowerError
+        {
+            get { return 0.1; }
+        }
+
+        public double TargetPrecision { get; private set; }
+        public int NumberOfCoefficients { get; private set; }
+        public Precision Precision { get; private set; }
 
         public void Dispose()
         {
@@ -53,11 +59,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(_calculator);
 
             return FetchVoltages(nodeCount);
-        }
-
-        public double MaximumRelativePowerError
-        {
-            get { return 0.1; }
         }
 
         public Vector<Complex> GetCoefficients(int step)
@@ -146,19 +147,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         private void CreateNewCalculator(double nominalVoltage, ICollection<PqNodeWithIndex> pqBuses, ICollection<PvNodeWithIndex> pvBuses, int nodeCount)
         {
-            switch (_precision.Type)
+            switch (Precision.Type)
             {
                 case DataType.LongDouble:
                     _calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(
-                            _targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
+                            TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
                             pqBuses.Count, pvBuses.Count, nominalVoltage);
                     break;
                 case DataType.MultiPrecision:
                     _calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(
-                            _targetPrecision * nominalVoltage, _numberOfCoefficients, nodeCount,
-                            pqBuses.Count, pvBuses.Count, nominalVoltage, _precision.BitPrecision);
+                            TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
+                            pqBuses.Count, pvBuses.Count, nominalVoltage, Precision.Bits);
                     break;
             }
 

@@ -2,8 +2,8 @@
 {
     public class PrecisionMulti : Precision
     {
-        public PrecisionMulti(int bitPrecision) :
-            base(DataType.MultiPrecision, bitPrecision)
+        public PrecisionMulti(int bits) :
+            base(DataType.MultiPrecision, bits)
         { }
     }
 }

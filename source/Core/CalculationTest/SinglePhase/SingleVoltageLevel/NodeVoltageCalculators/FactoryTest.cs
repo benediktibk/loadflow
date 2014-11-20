@@ -42,7 +42,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var calculatorCasted = calculator as CurrentIteration;
             Assert.IsNotNull(calculatorCasted);
-            //Assert.AreEqual(1234, calculatorCasted.M);
+            Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
+            Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
         }
     }
 }

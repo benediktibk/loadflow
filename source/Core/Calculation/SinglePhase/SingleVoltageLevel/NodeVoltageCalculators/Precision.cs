@@ -11,15 +11,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     public class Precision
     {
         private readonly DataType _dataType;
-        private readonly int _bitPrecision;
+        private readonly int _bits;
 
-        protected Precision(DataType dataType, int bitPrecision)
+        protected Precision(DataType dataType, int bits)
         {
-            if (dataType == DataType.MultiPrecision && bitPrecision <= 0)
-                throw new ArgumentOutOfRangeException("bitPrecision", "must be greater than 0");
+            if (dataType == DataType.MultiPrecision && bits <= 0)
+                throw new ArgumentOutOfRangeException("bits", "must be greater than 0");
 
             _dataType = dataType;
-            _bitPrecision = bitPrecision;
+            _bits = bits;
         }
 
         public DataType Type
@@ -27,14 +27,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             get { return _dataType; }
         }
 
-        public int BitPrecision
+        public int Bits
         {
             get
             {
                 if (_dataType == DataType.LongDouble)
                     throw new ArgumentOutOfRangeException();
 
-                return _bitPrecision;
+                return _bits;
             }
         }
 
