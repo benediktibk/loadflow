@@ -22,7 +22,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
-            var helm = new HolomorphicEmbeddedLoadFlowMethod(_targetPrecision, 50, new PrecisionLongDouble());
+            var helm = new HolomorphicEmbeddedLoadFlowMethod(_targetPrecision, 50, 64);
             var improvedInitialVoltages = helm.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
                 nominalVoltage, initialVoltages, constantCurrents, pqBuses, pvBuses);
             return _iterativeMethod.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,

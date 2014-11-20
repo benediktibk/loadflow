@@ -11,7 +11,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private int _calculator;
         private bool _disposed;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, Precision precision)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -21,7 +21,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             NumberOfCoefficients = numberOfCoefficients;
             TargetPrecision = targetPrecision;
-            Precision = precision;
+            BitPrecision = bitPrecision;
             _calculator = -1;
             _disposed = false;
         }
@@ -38,7 +38,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public double TargetPrecision { get; private set; }
         public int NumberOfCoefficients { get; private set; }
-        public Precision Precision { get; private set; }
+        public int BitPrecision { get; private set; }
 
         public void Dispose()
         {
@@ -147,21 +147,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         private void CreateNewCalculator(double nominalVoltage, ICollection<PqNodeWithIndex> pqBuses, ICollection<PvNodeWithIndex> pvBuses, int nodeCount)
         {
-            switch (Precision.Type)
-            {
-                case DataType.LongDouble:
-                    _calculator =
+            if (BitPrecision <= 64)
+                _calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(
                             TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
                             pqBuses.Count, pvBuses.Count, nominalVoltage);
-                    break;
-                case DataType.MultiPrecision:
-                    _calculator =
+            else
+                _calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(
                             TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
-                            pqBuses.Count, pvBuses.Count, nominalVoltage, Precision.Bits);
-                    break;
-            }
+                            pqBuses.Count, pvBuses.Count, nominalVoltage, BitPrecision);
 
             if (_calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");

@@ -54,9 +54,7 @@ namespace SincalConnector
                 return;
             }
 
-            var precision = Precision.Create(_connectorData.SizeOfDataType);
-            var calculator = new HolomorphicEmbeddedLoadFlowMethod(0.000001, _connectorData.CountOfCoefficients,
-                precision);
+            var calculator = new HolomorphicEmbeddedLoadFlowMethod(0.000001, _connectorData.CountOfCoefficients, _connectorData.SizeOfDataType);
 
             _connectorData.Log("calculating the power net");
             var success = powerNet.CalculateNodeVoltages(calculator);

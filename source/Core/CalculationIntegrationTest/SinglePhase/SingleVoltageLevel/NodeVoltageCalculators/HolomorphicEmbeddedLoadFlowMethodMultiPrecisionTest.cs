@@ -16,7 +16,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, new PrecisionMulti(300));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, 300);
         }
 
         [TestCleanup]
@@ -373,7 +373,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 150, new PrecisionMulti(400));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 150, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
@@ -386,7 +386,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
@@ -399,7 +399,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(400));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
@@ -412,7 +412,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
             _nodeVoltageCalculator.Dispose();
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, new PrecisionMulti(500));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 500);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();

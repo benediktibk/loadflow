@@ -86,7 +86,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var calculatorCasted = calculator as HolomorphicEmbeddedLoadFlowMethod;
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
-            Assert.AreEqual(64, calculatorCasted.Precision.Bits);
+            Assert.AreEqual(64, calculatorCasted.BitPrecision);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var calculatorCasted = calculator as HolomorphicEmbeddedLoadFlowMethod;
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
-            Assert.AreEqual(200, calculatorCasted.Precision.Bits);
+            Assert.AreEqual(200, calculatorCasted.BitPrecision);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, new PrecisionLongDouble());
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, 64);
         }
 
         [TestCleanup]

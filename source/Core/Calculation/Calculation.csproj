@@ -94,9 +94,6 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\JacobiMatrixBasedMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethod.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\Precision.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionLongDouble.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\PrecisionMulti.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNet.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PqNodeWithIndex.cs" />

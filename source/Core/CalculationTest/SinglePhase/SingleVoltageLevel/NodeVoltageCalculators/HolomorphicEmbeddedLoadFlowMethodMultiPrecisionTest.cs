@@ -23,7 +23,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 70, new PrecisionMulti(100));
+            return new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 70, 100);
         }
     }
 }

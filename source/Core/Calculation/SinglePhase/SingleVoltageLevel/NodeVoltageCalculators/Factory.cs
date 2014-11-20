@@ -77,8 +77,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 case Selection.FastDecoupledLoadFlow:
                     return new FastDecoupledLoadFlowMethod(TargetPrecision, MaximumIterations);
                 case Selection.HolomorphicEmbeddedLoadFlow:
-                    return new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount,
-                        Precision.Create(BitPrecision));
+                    return new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision);
                 case Selection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
                     return new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(TargetPrecision, new CurrentIteration(TargetPrecision, MaximumIterations));
                 case Selection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
