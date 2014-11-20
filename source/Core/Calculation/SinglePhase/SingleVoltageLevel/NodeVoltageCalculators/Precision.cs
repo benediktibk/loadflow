@@ -31,9 +31,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             get
             {
-                if (_dataType == DataType.LongDouble)
-                    throw new ArgumentOutOfRangeException();
-
                 return _bits;
             }
         }

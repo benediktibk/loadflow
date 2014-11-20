@@ -45,5 +45,63 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
         }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_NewtonRaphson_NewtonRaphsonWithCorrectValues()
+        {
+            _factory.MaximumIterations = 1234;
+            _factory.TargetPrecision = 0.4567;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.NewtonRaphson);
+
+            var calculatorCasted = calculator as NewtonRaphsonMethod;
+            Assert.IsNotNull(calculatorCasted);
+            Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
+            Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+        }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_FastDecoupledLoadFlow_FastDecoupledLoadFlowWithCorrectValues()
+        {
+            _factory.MaximumIterations = 1234;
+            _factory.TargetPrecision = 0.4567;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.NewtonRaphson);
+
+            var calculatorCasted = calculator as NewtonRaphsonMethod;
+            Assert.IsNotNull(calculatorCasted);
+            Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
+            Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+        }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_HelmWith64Bit_HelmWithCorrectValues()
+        {
+            _factory.TargetPrecision = 0.4567;
+            _factory.BitPrecision = 64;
+            _factory.CoefficientCount = 123;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.HolomorphicEmbeddedLoadFlow);
+
+            var calculatorCasted = calculator as HolomorphicEmbeddedLoadFlowMethod;
+            Assert.IsNotNull(calculatorCasted);
+            Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+            Assert.AreEqual(64, calculatorCasted.Precision.Bits);
+        }
+
+        [TestMethod]
+        public void CreateNodeVoltageCalculator_HelmWith200Bit_HelmWithCorrectValues()
+        {
+            _factory.TargetPrecision = 0.4567;
+            _factory.BitPrecision = 200;
+            _factory.CoefficientCount = 123;
+
+            var calculator = _factory.CreateNodeVoltageCalculator(Selection.HolomorphicEmbeddedLoadFlow);
+
+            var calculatorCasted = calculator as HolomorphicEmbeddedLoadFlowMethod;
+            Assert.IsNotNull(calculatorCasted);
+            Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+            Assert.AreEqual(200, calculatorCasted.Precision.Bits);
+        }
     }
 }
