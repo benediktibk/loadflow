@@ -124,10 +124,10 @@ namespace Database
                         new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCountHelmMulti, helmBitPrecisionMulti);
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, 50, 64, new CurrentIteration(targetPrecision, maximumIterations));
+                    nodeVoltageCalculator = new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64), new CurrentIteration(targetPrecision, maximumIterations));
                     break;
                 case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, 50, 64, new NewtonRaphsonMethod(targetPrecision, maximumIterations));
+                    nodeVoltageCalculator = new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64), new NewtonRaphsonMethod(targetPrecision, maximumIterations));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

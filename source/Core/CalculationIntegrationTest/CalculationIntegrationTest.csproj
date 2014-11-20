@@ -63,7 +63,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodWithIterativeMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\TwoStepMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodTest.cs" />
     <Compile Include="ThreePhase\SymmetricPowerNetTest.cs" />

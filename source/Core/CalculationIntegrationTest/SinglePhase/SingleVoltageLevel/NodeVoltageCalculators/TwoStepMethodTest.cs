@@ -5,15 +5,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class HolomorphicEmbeddedLoadFlowMethodWithIterativeMethodTest
+    public class TwoStepMethodTest
     {
-        private HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod _nodeVoltageCalculator;
+        private TwoStepMethod _nodeVoltageCalculator;
 
         [TestInitialize]
         public void SetUp()
         {
             const double targetPrecision = 0.000001;
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, 50, 64, new CurrentIteration(targetPrecision, 1000));
+            _nodeVoltageCalculator = new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64), new CurrentIteration(targetPrecision, 1000));
         }
 
         [TestMethod]

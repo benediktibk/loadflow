@@ -89,7 +89,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodNativeMethods.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\TwoStepMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\INodeVoltageCalculator.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\JacobiMatrixBasedMethod.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethod.cs" />
