@@ -13,7 +13,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         public void SetUp()
         {
             const double targetPrecision = 0.000001;
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, new CurrentIteration(targetPrecision, 1000));
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(targetPrecision, 50, 64, new CurrentIteration(targetPrecision, 1000));
         }
 
         [TestMethod]

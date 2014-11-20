@@ -7,31 +7,29 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod : INodeVoltageCalculator
     {
-        private readonly double _targetPrecision;
-        private readonly INodeVoltageCalculator _iterativeMethod;
-
-        public HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(double targetPrecision,
-            INodeVoltageCalculator iterativeMethod)
+        public HolomorphicEmbeddedLoadFlowMethodWithIterativeMethod(double targetPrecision, int coefficientCount, int bitPrecision, INodeVoltageCalculator iterativeMethod)
         {
             if (iterativeMethod == null)
                 throw new ArgumentNullException("iterativeMethod");
 
-            _targetPrecision = targetPrecision;
-            _iterativeMethod = iterativeMethod;
+            IterativeMethod = iterativeMethod;
+            HolomorphicEmbeddedLoadFlowMethod = new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, coefficientCount, bitPrecision);
         }
+
+        public INodeVoltageCalculator IterativeMethod { get; private set; }
+        public HolomorphicEmbeddedLoadFlowMethod HolomorphicEmbeddedLoadFlowMethod { get; private set; }
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
-            var helm = new HolomorphicEmbeddedLoadFlowMethod(_targetPrecision, 50, 64);
-            var improvedInitialVoltages = helm.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
+            var improvedInitialVoltages = HolomorphicEmbeddedLoadFlowMethod.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
                 nominalVoltage, initialVoltages, constantCurrents, pqBuses, pvBuses);
-            return _iterativeMethod.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
+            return IterativeMethod.CalculateUnknownVoltages(admittances, totalAdmittanceRowSums,
                 nominalVoltage, improvedInitialVoltages, constantCurrents, pqBuses, pvBuses);
         }
 
         public double MaximumRelativePowerError
         {
-            get { return _iterativeMethod.MaximumRelativePowerError; }
+            get { return IterativeMethod.MaximumRelativePowerError; }
         }
     }
 }
