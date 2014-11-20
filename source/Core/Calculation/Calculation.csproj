@@ -81,6 +81,8 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\IPowerNetFactory.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\IReadOnlyAdmittanceMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\INode.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\Factory.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\Selection.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeWithIndex.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputable.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIteration.cs" />
