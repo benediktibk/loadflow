@@ -16,17 +16,13 @@ namespace SincalConnector
             if (admittanceType != 2)
                 throw new NotSupportedException("a feed-in must be specified by R/X and Sk");
 
-            var internalReactance = record.Parse<double>("xi")/100;
-
-            if (internalReactance != 0)
-                throw new NotSupportedException("an internal reactance for a feed-in is not supported");
-
             NodeId = nodeIdsByElementIds.GetOnly(Id);
+            var nominalVoltage = nodes[NodeId].NominalVoltage;
             var voltageAngle = record.Parse<double>("delta")*Math.PI/180;
             var voltageType = record.Parse<int>("Flag_Lf");
             var realToImaginary = record.Parse<double>("R_X");
             var shortCircuitPower = record.Parse<double>("Sk2")*1e6;
-            var nominalVoltage = nodes[NodeId].NominalVoltage;
+            var internalReactance = record.Parse<double>("xi") / 100;
             double voltageMagnitude;
 
             switch (voltageType)
