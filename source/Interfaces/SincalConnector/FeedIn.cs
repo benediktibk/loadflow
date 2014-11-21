@@ -23,6 +23,7 @@ namespace SincalConnector
             var realToImaginary = record.Parse<double>("R_X");
             var shortCircuitPower = record.Parse<double>("Sk2")*1e6;
             var internalReactance = record.Parse<double>("xi") / 100;
+            var shortCircuitPowerMultiplier = record.Parse<double>("cact");
             double voltageMagnitude;
 
             switch (voltageType)
@@ -39,7 +40,7 @@ namespace SincalConnector
             }
 
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);
-            InternalImpedance = internalReactance*nominalVoltage*nominalVoltage/shortCircuitPower*
+            InternalImpedance = internalReactance*nominalVoltage*nominalVoltage/(shortCircuitPowerMultiplier*shortCircuitPower)*
                                 new Complex(realToImaginary, 1);
         }
 
