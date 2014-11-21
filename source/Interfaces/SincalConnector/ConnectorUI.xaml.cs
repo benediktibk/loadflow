@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.Win32;
@@ -9,18 +11,32 @@ namespace SincalConnector
     public partial class MainWindow
     {
         private readonly ConnectorData _connectorData;
+        private bool _isCalculationRunning;
+        private readonly Mutex _isCalculationRunningMutex;
+        private readonly BackgroundWorker _backgroundWorker;
+        private PowerNetDatabaseAdapter _powerNet;
+        private INodeVoltageCalculator _calculator;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            _isCalculationRunning = false;
+            _isCalculationRunningMutex = new Mutex();
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.DoWork += CalculatePowerNetInternal;
+            _backgroundWorker.RunWorkerCompleted += CalculationFinished;
             _connectorData = FindResource("ConnectorData") as ConnectorData;
 
             if (_connectorData == null)
                 throw new Exception("could not find static resource");
 
-            _connectorData.Log("application started");
+            Log += _connectorData.Log;
+            Log("application started");
         }
+
+        private delegate void LogHandler(string message);
+
+        private event LogHandler Log;
 
         private void OpenFileDialogForInputPowerNet(object sender, RoutedEventArgs e)
         {
@@ -31,9 +47,9 @@ namespace SincalConnector
                 Multiselect = false
             };
 
-            var userClickedOK = openFileDialog.ShowDialog();
+            var userClickedOk = openFileDialog.ShowDialog();
 
-            if (userClickedOK != true)
+            if (userClickedOk != true)
                 return;
 
             _connectorData.InputFile = openFileDialog.FileName;
@@ -41,40 +57,71 @@ namespace SincalConnector
 
         private void CalculatePowerNet(object sender, RoutedEventArgs e)
         {
-            PowerNetDatabaseAdapter powerNet;
+            _isCalculationRunningMutex.WaitOne();
+            if (_isCalculationRunning)
+            {
+                _isCalculationRunningMutex.ReleaseMutex();
+                Log("calculation already running");
+                return;
+            }
+            _isCalculationRunning = true;
+            _isCalculationRunningMutex.ReleaseMutex();
 
             try
             {
-                _connectorData.Log("parsing the power net");
-                powerNet = new PowerNetDatabaseAdapter(_connectorData.InputFile);
+                Log("parsing the power net");
+                _powerNet = new PowerNetDatabaseAdapter(_connectorData.InputFile);
             }
             catch (Exception exception)
             {
-                _connectorData.Log("could not open selected file " + _connectorData.InputFile);
-                _connectorData.Log(exception.Message);
+                Log("could not open selected file " + _connectorData.InputFile);
+                Log(exception.Message);
+                _isCalculationRunningMutex.WaitOne();
+                _isCalculationRunning = false;
+                _isCalculationRunningMutex.ReleaseMutex();
                 return;
             }
 
-            var calculator = _connectorData.CreateCalculator();
+            _calculator = _connectorData.CreateCalculator();
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        private void CalculationFinished(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _isCalculationRunningMutex.WaitOne();
+            _isCalculationRunning = false;
+            _isCalculationRunningMutex.ReleaseMutex();
+        }
+
+        private void CalculatePowerNetInternal(object sender, DoWorkEventArgs e)
+        {
             var stopWatch = new Stopwatch();
 
             try
             {
-                _connectorData.Log("calculating the power net");
+                LogThreadSafe("calculating the power net");
                 double relativePowerError;
                 stopWatch.Start();
-                var success = powerNet.CalculateNodeVoltages(calculator, out relativePowerError);
+                var success = _powerNet.CalculateNodeVoltages(_calculator, out relativePowerError);
                 stopWatch.Stop();
-                _connectorData.Log(success ? 
-                    "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s with a relative power mismatch of " + relativePowerError : 
+                LogThreadSafe(success ?
+                    "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s with a relative power mismatch of " + relativePowerError :
                     "was not able to calculate the power net");
 
             }
             catch (Exception exception)
             {
-                _connectorData.Log("was not able to calculate the power net because an exception occured:");
-                _connectorData.Log(exception.Message);
+                LogThreadSafe("was not able to calculate the power net because an exception occured:");
+                LogThreadSafe(exception.Message);
             }
+        }
+
+        private void LogThreadSafe(string message)
+        {
+            if (Dispatcher.CheckAccess())
+                Log(message);
+            else
+                Dispatcher.Invoke(Log, new object[] { message });
         }
     }
 }
