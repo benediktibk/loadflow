@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace SincalConnector
 {
@@ -8,6 +9,9 @@ namespace SincalConnector
         private string _loggingOutput;
         private int _sizeOfDataType;
         private int _countOfCoefficients;
+        private double _targetPrecision;
+        private int _maximumIterations;
+        private Selection _calculatorSelection;
 
         public ConnectorData()
         {
@@ -38,6 +42,44 @@ namespace SincalConnector
                 _countOfCoefficients = value;
                 OnPropertyChanged("CountOfCoefficients");
                 OnPropertyChanged("IsValid");
+            }
+        }
+
+        public double TargetPrecision
+        {
+            get { return _targetPrecision; }
+            set
+            {
+                if (value == _targetPrecision) return;
+
+                _targetPrecision = value;
+                OnPropertyChanged("TargetPrecision");
+                OnPropertyChanged("IsValid");
+            }
+        }
+
+        public int MaximumIterations
+        {
+            get { return _maximumIterations; }
+            set
+            {
+                if (value == _maximumIterations) return;
+
+                _maximumIterations = value;
+                OnPropertyChanged("MaximumIterations");
+                OnPropertyChanged("IsValid");
+            }
+        }
+
+        public Selection CalculatorSelection
+        {
+            get { return _calculatorSelection; }
+            set
+            {
+                if (value == _calculatorSelection) return;
+
+                _calculatorSelection = value;
+                OnPropertyChanged("CalculatorSelection");
             }
         }
 
