@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.Win32;
@@ -55,12 +56,15 @@ namespace SincalConnector
             }
 
             var calculator = _connectorData.CreateCalculator();
+            var stopWatch = new Stopwatch();
 
             try
             {
                 _connectorData.Log("calculating the power net");
+                stopWatch.Start();
                 var success = powerNet.CalculateNodeVoltages(calculator);
-                _connectorData.Log(success ? "finished calculation of power net" : "was not able to calculate the power net");
+                stopWatch.Stop();
+                _connectorData.Log(success ? "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" : "was not able to calculate the power net");
 
             }
             catch (Exception exception)
