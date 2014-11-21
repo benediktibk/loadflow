@@ -238,25 +238,5 @@ namespace Database
         {
             return node == NodeOne || node == NodeTwo;
         }
-
-        public static SqlCommand CreateCommandToCreateTable()
-        {
-            return new SqlCommand(
-                "CREATE TABLE transmissionlines " +
-                "(LineId INTEGER NOT NULL IDENTITY, NodeOne INTEGER REFERENCES nodes (NodeId), NodeTwo INTEGER REFERENCES nodes (NodeId), PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), " +
-                "LineName TEXT NOT NULL, SeriesResistancePerUnitLength REAL NOT NULL, SeriesInductancePerUnitLength REAL NOT NULL, ShuntConductancePerUnitLength REAL NOT NULL, " +
-                "ShuntCapacityPerUnitLength REAL NOT NULL, Length REAL NOT NULL, TransmissionEquationModel INTEGER NOT NULL, " +
-                "PRIMARY KEY(LineId));");
-        }
-
-        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
-        {
-            var command =
-                new SqlCommand(
-                    "SELECT * " +
-                    "FROM transmissionlines WHERE PowerNet=@PowerNet;");
-            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
-            return command;
-        }
     }
 }

@@ -141,24 +141,5 @@ namespace Database
         {
             return node == this;
         }
-
-        public static SqlCommand CreateCommandToCreateTable()
-        {
-            return new SqlCommand(
-                "CREATE TABLE nodes " +
-                "(NodeId INTEGER NOT NULL IDENTITY, PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), NodeName TEXT NOT NULL, NominalVoltage REAL NOT NULL, " +
-                "NodeVoltageReal REAL NOT NULL, NodeVoltageImaginary REAL NOT NULL, " +
-                "PRIMARY KEY(NodeId));");
-        }
-
-        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
-        {
-            var command =
-                new SqlCommand(
-                    "SELECT * " +
-                    "FROM nodes WHERE PowerNet=@PowerNet;");
-            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
-            return command;
-        }
     }
 }

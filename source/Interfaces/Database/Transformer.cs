@@ -253,26 +253,6 @@ namespace Database
             return node == UpperSideNode || node == LowerSideNode;
         }
 
-        public static SqlCommand CreateCommandToCreateTable()
-        {
-            return new SqlCommand(
-                "CREATE TABLE transformers " +
-                "(TransformerId INTEGER NOT NULL IDENTITY, UpperSideNode INTEGER REFERENCES nodes (NodeId), LowerSideNode INTEGER REFERENCES nodes (NodeId), " +
-                "PowerNet INTEGER NOT NULL REFERENCES powernets (PowerNetId), TransformerName TEXT NOT NULL, NominalPower REAL NOT NULL, " +
-                "RelativeShortCircuitVoltage REAL NOT NULL, CopperLosses REAL NOT NULL, IronLosses REAL NOT NULL, RelativeNoLoadCurrent REAL NOT NULL, Ratio REAL NOT NULL, " +
-                "PRIMARY KEY(TransformerId));");
-        }
-
-        public static SqlCommand CreateCommandToFetchAll(int powerNetId)
-        {
-            var command =
-                new SqlCommand(
-                    "SELECT * " +
-                    "FROM transformers WHERE PowerNet=@PowerNet;");
-            command.Parameters.Add(new SqlParameter("PowerNet", SqlDbType.Int) { Value = powerNetId });
-            return command;
-        }
-
         private void InitializeRatio()
         {
             if (UpperSideNode == null || LowerSideNode == null)

@@ -67,14 +67,14 @@ namespace Database
                 new SqlCommand("CREATE DATABASE " + Database + ";"),
                 new SqlCommand("USE " + Database + ";"),
                 SqlCommandFactory.CreateCommandToCreateTableForPowerNets(),
-                Node.CreateCommandToCreateTable(),
-                Load.CreateCommandToCreateTable(),
-                FeedIn.CreateCommandToCreateTable(),
-                Generator.CreateCommandToCreateTable(),
-                Transformer.CreateCommandToCreateTable(),
-                TransmissionLine.CreateCommandToCreateTable()
+                SqlCommandFactory.CreateCommandToCreateNodeTable(),
+                SqlCommandFactory.CreateCommandToCreateLoadTable(),
+                SqlCommandFactory.CreateCommandToCreateFeedInTable(),
+                SqlCommandFactory.CreateCommandToCreateGeneratorTable(),
+                SqlCommandFactory.CreateCommandToCreateTransformerTable(),
+                SqlCommandFactory.CreateCommandToCreateTransmissionLineTable()
             };
-            commands.AddRange(AdmittanceMatrix.CreateCommandsToCreateTables());
+            commands.AddRange(SqlCommandFactory.CreateCommandsToCreateAdmittanceMatrixTables());
 
             foreach (var command in commands)
             {
@@ -149,10 +149,10 @@ namespace Database
         public void Add(Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix matrix,
             IReadOnlyList<string> nodeNames, string powerNet, double powerBase)
         {
-            var headerCommand = AdmittanceMatrix.CreateCommandToAddHeader(matrix, powerNet, powerBase);
+            var headerCommand = SqlCommandFactory.CreateCommandToAddAdmittanceMatrixHeader(matrix, powerNet, powerBase);
             headerCommand.Connection = _sqlConnection;
             var matrixId = Convert.ToInt32(headerCommand.ExecuteScalar().ToString());
-            var contentCommands = AdmittanceMatrix.CreateCommandsToAddContent(matrix, nodeNames, matrixId);
+            var contentCommands = SqlCommandFactory.CreateCommandsToAddContent(matrix, nodeNames, matrixId);
 
             using (var transaction = _sqlConnection.BeginTransaction())
             {
@@ -282,7 +282,7 @@ namespace Database
         {
             powerNet.Nodes.Clear();
             var nodeIds = new Dictionary<int, Node> {{0, null}};
-            var command = Node.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllNodes(powerNet.Id);
             command.Connection = _sqlConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -314,7 +314,7 @@ namespace Database
         private void ReadLoads(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Loads.Clear();
-            var command = Load.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllLoads(powerNet.Id);
             command.Connection = _sqlConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -325,7 +325,7 @@ namespace Database
         private void ReadLines(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.TransmissionLines.Clear();
-            var command = TransmissionLine.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllTransmssionLines(powerNet.Id);
             command.Connection = _sqlConnection;
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -336,7 +336,7 @@ namespace Database
         private void ReadFeedIns(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.FeedIns.Clear();
-            var command = FeedIn.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllFeedIns(powerNet.Id);
             command.Connection = _sqlConnection;
             
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -347,7 +347,7 @@ namespace Database
         private void ReadGenerators(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Generators.Clear();
-            var command = Generator.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllGenerators(powerNet.Id);
             command.Connection = _sqlConnection;
             
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
@@ -358,7 +358,7 @@ namespace Database
         private void ReadTransformers(PowerNet powerNet, IReadOnlyDictionary<int, Node> nodeIds)
         {
             powerNet.Transformers.Clear();
-            var command = Transformer.CreateCommandToFetchAll(powerNet.Id);
+            var command = SqlCommandFactory.CreateCommandToFetchAllTransformers(powerNet.Id);
             command.Connection = _sqlConnection;
             
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))

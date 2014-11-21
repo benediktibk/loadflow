@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdmittanceMatrix.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="IConnectionNetElements.cs" />
     <Compile Include="INetElement.cs" />
