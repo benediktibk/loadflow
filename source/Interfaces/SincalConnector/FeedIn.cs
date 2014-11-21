@@ -16,7 +16,7 @@ namespace SincalConnector
             if (admittanceType != 2)
                 throw new NotSupportedException("a feed-in must be specified by R/X and Sk");
 
-            var internalReactance = record.Parse<double>("xi");
+            var internalReactance = record.Parse<double>("xi")/100;
 
             if (internalReactance != 0)
                 throw new NotSupportedException("an internal reactance for a feed-in is not supported");
@@ -24,13 +24,15 @@ namespace SincalConnector
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var voltageAngle = record.Parse<double>("delta")*Math.PI/180;
             var voltageType = record.Parse<int>("Flag_Lf");
+            var realToImaginary = record.Parse<double>("R_X");
+            var shortCircuitPower = record.Parse<double>("Sk2")*1e6;
+            var nominalVoltage = nodes[NodeId].NominalVoltage;
             double voltageMagnitude;
 
             switch (voltageType)
             {
                 case 3:
                     var voltageMagnitudeRelative = record.Parse<double>("u")/100;
-                    var nominalVoltage = nodes[NodeId].NominalVoltage;
                     voltageMagnitude = voltageMagnitudeRelative*nominalVoltage;
                     break;
                 case 6:
@@ -41,9 +43,13 @@ namespace SincalConnector
             }
 
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);
+            InternalImpedance = internalReactance*nominalVoltage*nominalVoltage/shortCircuitPower*
+                                new Complex(realToImaginary, 1);
         }
 
         public Complex Voltage { get; private set; }
+
+        public Complex InternalImpedance { get; private set; }
 
         public int Id { get; private set; }
 
@@ -51,7 +57,7 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            powerNet.AddFeedIn(NodeId, Voltage, 0, 0, 0);
+            powerNet.AddFeedIn(NodeId, Voltage, InternalImpedance);
         }
     }
 }

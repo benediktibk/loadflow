@@ -116,7 +116,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
-            _powerNet.AddFeedIn(0, new Complex(123, 3), 0, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(123, 3), new Complex());
 
             Assert.AreEqual(1, node.ConnectedElements.Count);
             Assert.AreEqual(1, _powerNet.FeedInCount);
@@ -129,8 +129,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 123, "");
 
-            _powerNet.AddFeedIn(0, new Complex(123, 3), 0, 1.1, 1);
-            _powerNet.AddFeedIn(1, new Complex(123, 3), 0, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(123, 3), new Complex());
+            _powerNet.AddFeedIn(1, new Complex(123, 3), new Complex());
         }
 
         [TestMethod]
@@ -189,7 +189,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 120, "");
             _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(234, 3), new Complex());
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
@@ -201,7 +201,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 120, "");
             _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(), 6, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(), new Complex(23, 3));
             _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 0, 1, true);
             _powerNet.AddLoad(1, new Complex(4, 5));
 
@@ -247,7 +247,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void SlackPhaseShift_OneFeedInWithPhaseShift2_2()
         {
             _powerNet.AddNode(0, 3, "");
-            _powerNet.AddFeedIn(0, Complex.FromPolarCoordinates(5, 2), 1, 2, 3);
+            _powerNet.AddFeedIn(0, Complex.FromPolarCoordinates(5, 2), new Complex(3, 4));
             var result = _powerNet.SlackPhaseShift;
 
             Assert.AreEqual(2, result.Radiant, 0.0001);

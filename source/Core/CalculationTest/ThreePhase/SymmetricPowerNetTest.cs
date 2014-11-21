@@ -65,9 +65,9 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void AddFeedIn_ValidData_MockPowerNetGotCallToAddCorrectFeedIn()
         {
-            _powerNet.AddFeedIn(3, new Complex(4, 5), 6, 7, 8);
+            _powerNet.AddFeedIn(3, new Complex(4, 5), new Complex(6, 7));
 
-            _singlePhasePowerNetMock.Verify(x => x.AddFeedIn(3, new Complex(4, 5) / Math.Sqrt(3), 6.0/3, 7, 8),
+            _singlePhasePowerNetMock.Verify(x => x.AddFeedIn(3, new Complex(4, 5) / Math.Sqrt(3), new Complex(6, 7)),
                 Times.Once);
         }
 

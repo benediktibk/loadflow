@@ -38,7 +38,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
 
@@ -58,7 +58,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, true);
 
@@ -77,7 +77,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 0));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0, 0, 0, 1, false);
 
@@ -96,7 +96,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 0));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.05, 0, 50000.0 / (400 * 400), 0, 1, false);
 
@@ -115,7 +115,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, 20000));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.05, 0, 0, 1e-5, 1, false);
 
@@ -135,7 +135,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 10000.0 / (400 * 400), 1e-7, 1, false);
 
@@ -154,7 +154,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
             _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 10, 0.01, 2.5, new Angle(), "");
 
@@ -173,7 +173,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
             _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.001 * 3000, 0.00000001, 0.000000001, 2.5, new Angle(), "");
 
@@ -192,7 +192,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(1, 1000, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(1000, 2 * Math.PI / 180), new Complex());
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-2000, 0));
             _powerNetWithNewtonRaphson.AddTwoWindingTransformer(1, 2, 3000, 0.08, 0.0799999 * 3000, 0.0000000001, 0.00000000001, 2.5, new Angle(), "");
 
@@ -212,7 +212,7 @@ namespace CalculationIntegrationTest.ThreePhase
             _powerNetWithNewtonRaphson.AddNode(1, 400, "");
             _powerNetWithNewtonRaphson.AddNode(2, 400, "");
             _powerNetWithNewtonRaphson.AddNode(3, 400, "");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, Complex.FromPolarCoordinates(400, 0), new Complex());
             _powerNetWithNewtonRaphson.AddGenerator(3, 400, 15000);
             _powerNetWithNewtonRaphson.AddLoad(2, new Complex(-20000, -2000));
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 0.1, 0.4 / omega, 100.0 / (400 * 400), 1e-10, 1, true);
@@ -247,7 +247,7 @@ namespace CalculationIntegrationTest.ThreePhase
             _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
             _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "generator");
             _powerNetWithCurrentIteration.AddNode(3, threePhaseFactor, "load");
-            _powerNetWithCurrentIteration.AddFeedIn(1, U1 * threePhaseFactor, 0, 1, 1);
+            _powerNetWithCurrentIteration.AddFeedIn(1, U1 * threePhaseFactor, new Complex());
             _powerNetWithCurrentIteration.AddGenerator(2, U2.Magnitude * threePhaseFactor, generatorLoad.Real * 3);
             _powerNetWithCurrentIteration.AddLoad(3, load * 3);
             _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
@@ -266,7 +266,7 @@ namespace CalculationIntegrationTest.ThreePhase
             var threePhaseFactor = Math.Sqrt(3);
             _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
             _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "load");
-            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), new Complex());
             _powerNetWithCurrentIteration.AddLoad(2, new Complex(-0.1425, 0));
             _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 0, 0, 0, 1, true);
 
@@ -283,7 +283,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithCurrentIteration.AddNode(1, threePhaseFactor, "feed in");
             _powerNetWithCurrentIteration.AddNode(2, threePhaseFactor, "generator");
-            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithCurrentIteration.AddFeedIn(1, new Complex(threePhaseFactor, 0), new Complex());
             _powerNetWithCurrentIteration.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
             _powerNetWithCurrentIteration.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
@@ -300,7 +300,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithNewtonRaphson.AddNode(1, threePhaseFactor, "feed in");
             _powerNetWithNewtonRaphson.AddNode(2, threePhaseFactor, "generator");
-            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(1, new Complex(threePhaseFactor, 0), new Complex());
             _powerNetWithNewtonRaphson.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
             _powerNetWithNewtonRaphson.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
@@ -317,7 +317,7 @@ namespace CalculationIntegrationTest.ThreePhase
             const double omega = 2 * Math.PI * 50;
             _powerNetWithHelm.AddNode(1, threePhaseFactor, "feed in");
             _powerNetWithHelm.AddNode(2, threePhaseFactor, "generator");
-            _powerNetWithHelm.AddFeedIn(1, new Complex(threePhaseFactor, 0), 0, 1, 1);
+            _powerNetWithHelm.AddFeedIn(1, new Complex(threePhaseFactor, 0), new Complex());
             _powerNetWithHelm.AddGenerator(2, Math.Sqrt(0.95 * 0.95 + 0.1 * 0.1) * threePhaseFactor, 0.09375);
             _powerNetWithHelm.AddTransmissionLine(1, 2, 1, 1 / omega, 0, 0, 1, true);
 
@@ -332,7 +332,7 @@ namespace CalculationIntegrationTest.ThreePhase
         {
             _powerNetWithNewtonRaphson.AddNode(0, 1000 * Math.Sqrt(3), "");
             _powerNetWithNewtonRaphson.AddNode(1, 1000 * Math.Sqrt(3), "");
-            _powerNetWithNewtonRaphson.AddFeedIn(0, new Complex(1000, 0) * Math.Sqrt(3), 0, 1.1, 1);
+            _powerNetWithNewtonRaphson.AddFeedIn(0, new Complex(1000, 0) * Math.Sqrt(3), new Complex());
             _powerNetWithNewtonRaphson.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
             _powerNetWithNewtonRaphson.AddLoad(1, new Complex(-3e5, 0));
 

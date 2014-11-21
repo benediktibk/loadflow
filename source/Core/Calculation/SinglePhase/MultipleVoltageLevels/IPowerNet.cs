@@ -12,7 +12,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         void AddNode(int id, double nominalVoltage, string name);
         void AddTransmissionLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel);
         void AddGenerator(long nodeId, double voltageMagnitude, double realPower);
-        void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary);
+        void AddFeedIn(long nodeId, Complex voltage, Complex internalImpedance);
         void AddTwoWindingTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name);
 
         void AddThreeWindingTransformer(long nodeOneId, long nodeTwoId, long nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne,

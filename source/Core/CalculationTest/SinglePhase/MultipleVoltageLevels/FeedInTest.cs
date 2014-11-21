@@ -22,7 +22,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _idGenerator = new IdGenerator();
             _node = new ExternalNode(0, 2, "");
-            _feedIn = new FeedIn(_node, new Complex(4, 3), 5, 1.1, 1, _idGenerator);
+            _feedIn = new FeedIn(_node, new Complex(4, 3), new Complex(6, 5), _idGenerator);
         }
 
         [TestMethod]
@@ -32,24 +32,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void Constructor_ShortCircuitPowerSetTo5_ShortCircuitPowerIs5()
+        public void Constructor_NoInternalImpedance_ThrowsNoException()
         {
-            Assert.AreEqual(5, _feedIn.ShortCircuitPower, 0.0001);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_ShortCircuitPowerSetToNegativeValue_ThrowsException()
-        {
-            new FeedIn(_node, new Complex(4, 3), -4, 1.1, 1, _idGenerator);
-        }
-
-        [TestMethod]
-        public void Constructor_ShortCircuitPowerSetTo0_ThrowsNoException()
-        {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
-
-            Assert.AreEqual(0, feedIn.ShortCircuitPower);
+            var feedIn = new FeedIn(_node, new Complex(4, 3), new Complex(), _idGenerator);
+            ComplexAssert.AreEqual(new Complex(), feedIn.InternalImpedance, 0.0001);
         }
 
         [TestMethod]
@@ -59,24 +45,16 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void InputImpedance_ShortCircuitPowerSetTo0_ThrowsException()
-        {
-            var feedIn = new FeedIn(_node, new Complex(4, 3), 0, 1.1, 1, _idGenerator);
-            var impedance = feedIn.InputImpedance;
-        }
-
-        [TestMethod]
         public void InputImpedance_ShortCircuitPowerNotZero_CorrectResult()
         {
-            ComplexAssert.AreEqual(1.60706086633306, 1.60706086633306, _feedIn.InputImpedance, 0.0001);
+            ComplexAssert.AreEqual(6, 5, _feedIn.InternalImpedance, 0.0001);
         }
 
         [TestMethod]
         public void AddConnectedNodes_EmptySet_NodeGotCallToAddConnectedNodes()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), new Complex(5, 6), _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             feedIn.AddConnectedNodes(nodes);
@@ -88,7 +66,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void AddConnectedNodesOnSameVoltageLevel_EmptySet_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
         {
             var node = new Mock<IExternalReadOnlyNode>();
-            var feedIn = new FeedIn(node.Object, new Complex(123, 3), 6, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(node.Object, new Complex(123, 3), new Complex(5, 6), _idGenerator);
             var nodes = new HashSet<IExternalReadOnlyNode>();
 
             feedIn.AddConnectedNodesOnSameVoltageLevel(nodes);
@@ -103,9 +81,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetInternalNodes_ShortCircuitPowerSetTo0_EmptyList()
+        public void GetInternalNodes_InternalImpedanceSetTo0_EmptyList()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), new Complex(), _idGenerator);
 
             var result = feedIn.GetInternalNodes();
 
@@ -113,7 +91,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetInternalNodes_ShortCircuitPowerNot0_OneSlackNode()
+        public void GetInternalNodes_InternalImpedanceNot0_OneSlackNode()
         {
             var result = _feedIn.GetInternalNodes();
 
@@ -123,22 +101,21 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void FillInAdmittances_ShortCircuitPowerSetTo0_NoChangeInAdmittanceMatrix()
+        public void FillInAdmittances_InternalImpedanceSetTo0_NoChangeInAdmittanceMatrix()
         {
-            var feedIn = new FeedIn(_node, new Complex(123, 4), 0, 1.1, 1, _idGenerator);
+            var feedIn = new FeedIn(_node, new Complex(123, 4), new Complex(), _idGenerator);
 
             feedIn.FillInAdmittances(null, 1, null, 1);
         }
 
         [TestMethod]
-        public void FillInAdmittances_ShortCircuitPowerNot0_CallToAddConnection()
+        public void FillInAdmittances_InternalImpedanceNot0_CallToAddConnection()
         {
             var internalNodes = _feedIn.GetInternalNodes();
             var internalNode = internalNodes[0];
             var admittances = new Mock<IAdmittanceMatrix>();
-            var inputImpedance = _feedIn.InputImpedance;
             var scaler = new DimensionScaler(_node.NominalVoltage, 3);
-            var inputAdmittanceScaled = scaler.ScaleAdmittance(1/inputImpedance);
+            var inputAdmittanceScaled = scaler.ScaleAdmittance(1/_feedIn.InternalImpedance);
 
             _feedIn.FillInAdmittances(admittances.Object, 3, null, 2);
 
@@ -157,7 +134,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         public void CreateSingleVoltageNode_NominalVoltageSetTo0_SlackNodeWithVoltage0()
         {
             var node = new ExternalNode(1, 0, "");
-            var feedIn = new FeedIn(node, new Complex(), 4, 5, 6, _idGenerator);
+            var feedIn = new FeedIn(node, new Complex(), new Complex(3, 4), _idGenerator);
 
             var result = feedIn.CreateSingleVoltageNode(5);
 

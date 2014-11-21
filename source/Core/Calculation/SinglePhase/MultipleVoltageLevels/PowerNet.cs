@@ -39,7 +39,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodesById = new Dictionary<long, ExternalNode>();
             _idGeneratorNodes = new IdGenerator();
             _groundNode = new ExternalNode(_idGeneratorNodes.Generate(), 0, "ground");
-            _groundFeedIn = new FeedIn(_groundNode, new Complex(0, 0), 0, 1.1, 1, _idGeneratorNodes);
+            _groundFeedIn = new FeedIn(_groundNode, new Complex(), new Complex(), _idGeneratorNodes);
             _groundNode.Connect(_groundFeedIn);
             _nodesById.Add(_groundNode.Id, _groundNode);
             _nodeGraph = nodeGraph;
@@ -192,13 +192,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(generator);
         }
 
-        public void AddFeedIn(long nodeId, Complex voltage, double shortCircuitPower, double c, double realToImaginary)
+        public void AddFeedIn(long nodeId, Complex voltage, Complex internalImpedance)
         {
             if (_feedIns.Count > 0)
                 throw new NotSupportedException("only one slack bus is supported");
 
             var node = GetNodeByIdInternal(nodeId);
-            var feedIn = new FeedIn(node, voltage, shortCircuitPower, c, realToImaginary, _idGeneratorNodes);
+            var feedIn = new FeedIn(node, voltage, internalImpedance, _idGeneratorNodes);
             _feedIns.Add(feedIn);
             _elements.Add(feedIn);
             node.Connect(feedIn);

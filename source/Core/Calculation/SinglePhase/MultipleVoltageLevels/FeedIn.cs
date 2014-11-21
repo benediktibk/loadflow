@@ -9,21 +9,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly IExternalReadOnlyNode _node;
         private readonly Complex _voltage;
-        private readonly double _shortCircuitPower;
+        private readonly Complex _internalImpedance;
         private readonly DerivedInternalSlackNode _internalNode;
-        private readonly double _c;
-        private readonly double _realToImaginary;
 
-        public FeedIn(IExternalReadOnlyNode node, Complex voltage, double shortCircuitPower, double c, double realToImaginary, IdGenerator idGenerator)
+        public FeedIn(IExternalReadOnlyNode node, Complex voltage, Complex internalImpedance, IdGenerator idGenerator)
         {
-            if (shortCircuitPower < 0)
-                throw new ArgumentOutOfRangeException("shortCircuitPower", "must not be negative");
-
             _node = node;
             _voltage = voltage;
-            _shortCircuitPower = shortCircuitPower;
-            _c = c;
-            _realToImaginary = realToImaginary;
+            _internalImpedance = internalImpedance;
             _internalNode = new DerivedInternalSlackNode(_node, idGenerator.Generate(), voltage, "");
         }
 
@@ -37,29 +30,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _voltage; }
         }
 
-        public double ShortCircuitPower
+        public Complex InternalImpedance
         {
-            get { return _shortCircuitPower; }
-        }
-
-        public Complex InputImpedance
-        {
-            get
-            {
-                if (!InternalNodeNecessary)
-                    throw new InvalidOperationException();
-
-                var nominalVoltage = NominalVoltage;
-                var Z = _c*nominalVoltage*nominalVoltage/_shortCircuitPower;
-                var X = Math.Sqrt(_realToImaginary*_realToImaginary + 1)/Z;
-                var R = _realToImaginary*X;
-                return new Complex(R, X);
-            }
+            get { return _internalImpedance; }
         }
 
         public bool InternalNodeNecessary
         {
-            get { return _shortCircuitPower > 0; }
+            get { return _internalImpedance.Magnitude > 0; }
         }
 
         public bool NominalVoltagesMatch
@@ -102,7 +80,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 return;
 
             var scaler = new DimensionScaler(NominalVoltage, scaleBasisPower);
-            var admittanceScaled = scaler.ScaleAdmittance(1/InputImpedance);
+            var admittanceScaled = scaler.ScaleAdmittance(1/InternalImpedance);
             admittances.AddConnection(_internalNode, _node, admittanceScaled);
         }
 

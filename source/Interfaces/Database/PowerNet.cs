@@ -471,9 +471,16 @@ namespace Database
                         line.ShuntCapacityPerUnitLength, line.Length, line.TransmissionEquationModel);
 
                 foreach (var feedIn in FeedIns)
+                {
+                    var nominalVoltage = feedIn.Node.NominalVoltage;
+                    var Z = feedIn.C*nominalVoltage*nominalVoltage/feedIn.ShortCircuitPower;
+                    var X = Math.Sqrt(feedIn.RealToImaginary*feedIn.RealToImaginary + 1)/Z;
+                    var R = feedIn.RealToImaginary*X;
+                    var internalImpedance = new Complex(R, X);
                     _symmetricPowerNet.AddFeedIn(feedIn.Node.Id,
                         new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        feedIn.ShortCircuitPower, feedIn.C, feedIn.RealToImaginary);
+                        internalImpedance);
+                }
 
                 foreach (var generator in Generators)
                     _symmetricPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);

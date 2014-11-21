@@ -38,7 +38,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 1, "");
             _powerNet.AddNode(1, 1, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), new Complex());
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
@@ -54,7 +54,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 7, "");
             _powerNet.AddNode(1, 7, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), new Complex());
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
             var sourceVoltageInternal = new Complex(2, 3);
@@ -95,7 +95,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(false);
             _powerNet.AddNode(0, 7, "");
             _powerNet.AddNode(1, 8, "");
-            _powerNet.AddFeedIn(0, new Complex(1.05, 0), 0, 1.1, 1);
+            _powerNet.AddFeedIn(0, new Complex(1.05, 0), new Complex());
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 

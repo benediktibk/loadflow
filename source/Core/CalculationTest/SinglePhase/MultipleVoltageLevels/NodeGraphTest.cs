@@ -283,7 +283,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
@@ -300,7 +300,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
             _powerNet.AddNode(3, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
@@ -320,7 +320,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
@@ -337,7 +337,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(2, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
@@ -355,7 +355,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(2), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
@@ -370,7 +370,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(2), "");
 
@@ -383,7 +383,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(1, 0, 3, 0.5, 0.1, 0, 1, 1, new Angle(2), "");
 
@@ -396,7 +396,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
             _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
@@ -413,7 +413,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             _powerNet.AddNode(1, 120, "");
             _powerNet.AddNode(2, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
@@ -434,7 +434,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(3, 120, "");
             _powerNet.AddNode(4, 120, "");
             _powerNet.AddNode(5, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddFeedIn(0, new Complex(234, 0), new Complex());
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
             _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
