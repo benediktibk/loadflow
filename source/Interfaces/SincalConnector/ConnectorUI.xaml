@@ -2,9 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:SincalConnector"
+        xmlns:nodeVoltageCalculators="clr-namespace:Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;assembly=Calculation"
         Title="Sincal Connector" Height="350" Width="400" MaxWidth="500">
     <Window.Resources>
         <local:ConnectorData x:Key="ConnectorData"/>
+        <nodeVoltageCalculators:SelectionToStringConverter x:Key="SelectionToStringConverter"/>
     </Window.Resources>
     <Grid DataContext="{Binding Source={StaticResource ConnectorData}}">
         <Grid.RowDefinitions>
@@ -26,7 +28,10 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="0" Grid.Row="0" Content="calculation method"/>
-            <ComboBox Grid.Column="1" Grid.Row="0" />
+            <ComboBox 
+                Grid.Column="1" Grid.Row="0" 
+                ItemsSource="{Binding Source={StaticResource SelectionToStringConverter}, Path=AllPossibleStrings}" 
+                SelectedItem="{Binding CalculatorSelection, Converter={StaticResource SelectionToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Grid.Column="0" Grid.Row="1" Content="target precision"/>
             <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding TargetPrecision,Mode=TwoWay}" TextAlignment="Right"/>
             <Label Grid.Column="0" Grid.Row="2" Content="maximum iterations"/>
