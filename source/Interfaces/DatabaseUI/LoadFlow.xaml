@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:database="clr-namespace:Database;assembly=Database"
         xmlns:databaseUi="clr-namespace:DatabaseUI"
+        xmlns:nodeVoltageCalculators="clr-namespace:Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;assembly=Calculation"
         Title="LoadFlow" Height="600" Width="1000">
     <Window.Resources>
         <database:Model x:Key="Database"/>
         <database:NodeToNodeNameConverter x:Key="NodeToNodeNameConverter"/>
-        <databaseUi:NodeVoltageCalculatorSelectionToStringConverter x:Key="NodeVoltageCalculatorSelectionToStringConverter"/>
+        <nodeVoltageCalculators:SelectionToStringConverter x:Key="SelectionToStringConverter"/>
         <databaseUi:ConnectedToButtonLabelConverter x:Key="ConnectedToButtonLabelConverter"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource Database}">
@@ -86,8 +87,8 @@
                         <DataGridTextColumn Binding="{Binding Name}" Header="name" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Frequency}" Header="f [Hz]"/>
                         <DataGridComboBoxColumn 
-                            ItemsSource="{Binding Source={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, Path=AllPossibleStrings}" 
-                            SelectedItemBinding="{Binding CalculatorSelection, Converter={StaticResource NodeVoltageCalculatorSelectionToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
+                            ItemsSource="{Binding Source={StaticResource SelectionToStringConverter}, Path=AllPossibleStrings}" 
+                            SelectedItemBinding="{Binding CalculatorSelection, Converter={StaticResource SelectionToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
                             Header="node voltage calculator"/>
                         <DataGridTextColumn Binding="{Binding Nodes.Count, Mode=OneWay}" Header="nodes"/>
                         <DataGridTextColumn Binding="{Binding NetElementCount, Mode=OneWay}" Header="net elements"/>

@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Database;
 
-namespace DatabaseUI
+namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
-    public class NodeVoltageCalculatorSelectionToStringConverter : IValueConverter
+    public class SelectionToStringConverter : IValueConverter
     {
-        private readonly Dictionary<NodeVoltageCalculatorSelection, string> _mappingForward;
-        private readonly Dictionary<string, NodeVoltageCalculatorSelection> _mappingBackward;
+        private readonly Dictionary<Selection, string> _mappingForward;
+        private readonly Dictionary<string, Selection> _mappingBackward;
 
-        public NodeVoltageCalculatorSelectionToStringConverter()
+        public SelectionToStringConverter()
         {
-            _mappingForward = new Dictionary<NodeVoltageCalculatorSelection, string>();
-            _mappingBackward = new Dictionary<string, NodeVoltageCalculatorSelection>();
+            _mappingForward = new Dictionary<Selection, string>();
+            _mappingBackward = new Dictionary<string, Selection>();
 
             var allPossibleCalculators =
-                (NodeVoltageCalculatorSelection[])Enum.GetValues(typeof(NodeVoltageCalculatorSelection));
+                (Selection[])Enum.GetValues(typeof(Selection));
 
             foreach (var calculator in allPossibleCalculators)
             {
@@ -33,10 +32,10 @@ namespace DatabaseUI
             if (value == null)
                 return null;
 
-            if (!(value is NodeVoltageCalculatorSelection))
+            if (!(value is Selection))
                 throw new ArgumentException("value has invalid type");
 
-            var calculator = (NodeVoltageCalculatorSelection) value;
+            var calculator = (Selection) value;
             return _mappingForward[calculator];
         }
 
@@ -58,30 +57,28 @@ namespace DatabaseUI
             get
             {
                 var allPossibleCalculators =
-                    (NodeVoltageCalculatorSelection[]) Enum.GetValues(typeof (NodeVoltageCalculatorSelection));
+                    (Selection[]) Enum.GetValues(typeof (Selection));
                 return from calculator in allPossibleCalculators select Convert(calculator);
             }
         }
 
-        private static string Convert(NodeVoltageCalculatorSelection calculator)
+        private static string Convert(Selection calculator)
         {
             switch (calculator)
             {
-                case NodeVoltageCalculatorSelection.NodePotential:
+                case Selection.NodePotential:
                     return "node potential";
-                case NodeVoltageCalculatorSelection.CurrentIteration:
+                case Selection.CurrentIteration:
                     return "current iteration";
-                case NodeVoltageCalculatorSelection.NewtonRaphson:
+                case Selection.NewtonRaphson:
                     return "newton raphson";
-                case NodeVoltageCalculatorSelection.FastDecoupledLoadFlow:
+                case Selection.FastDecoupledLoadFlow:
                     return "fast decoupled load flow";
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlow:
+                case Selection.HolomorphicEmbeddedLoadFlow:
                     return "holomorphic embedded load flow";
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowHighPrecision:
-                    return "holomorphic embedded load flow, high precision";
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
+                case Selection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
                     return "holomorphic embedded load flow with current iteration";
-                case NodeVoltageCalculatorSelection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
+                case Selection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
                     return "holomorphic embedded load flow with newton raphson";
                 default:
                     throw new ArgumentOutOfRangeException("calculator");
