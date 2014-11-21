@@ -56,10 +56,18 @@ namespace SincalConnector
 
             var calculator = _connectorData.CreateCalculator();
 
-            _connectorData.Log("calculating the power net");
-            var success = powerNet.CalculateNodeVoltages(calculator);
+            try
+            {
+                _connectorData.Log("calculating the power net");
+                var success = powerNet.CalculateNodeVoltages(calculator);
+                _connectorData.Log(success ? "finished calculation of power net" : "was not able to calculate the power net");
 
-            _connectorData.Log(success ? "finished calculation of power net" : "was not able to calculate the power net");
+            }
+            catch (Exception exception)
+            {
+                _connectorData.Log("was not able to calculate the power net because an exception occured:");
+                _connectorData.Log(exception.Message);
+            }
         }
     }
 }
