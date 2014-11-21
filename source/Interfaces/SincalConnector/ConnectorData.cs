@@ -112,7 +112,7 @@ namespace SincalConnector
 
         public bool IsValid
         {
-            get { return SizeOfDataType > 0 && CountOfCoefficients > 2; }
+            get { return SizeOfDataType > 0 && CountOfCoefficients > 2 && MaximumIterations > 0 && TargetPrecision > 0 && TargetPrecision < 1; }
         }
         
         public void Log(string message)

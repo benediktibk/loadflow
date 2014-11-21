@@ -31,6 +31,16 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
+        public void Constructor_Empty_SensefulInitialValues()
+        {
+            Assert.AreEqual(64, _connectorData.SizeOfDataType);
+            Assert.IsTrue(_connectorData.CountOfCoefficients > 30);
+            Assert.IsTrue(_connectorData.MaximumIterations > 0);
+            Assert.IsTrue(_connectorData.TargetPrecision < 1e-3);
+            Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
+        }
+
+        [TestMethod]
         public void IsValid_NegativeSizeOfDataType_False()
         {
             _connectorData.SizeOfDataType = -1;
@@ -42,6 +52,22 @@ namespace SincalConnectorTest
         public void IsValid_NegativeCountOfCoefficients_False()
         {
             _connectorData.CountOfCoefficients = -1;
+
+            Assert.IsFalse(_connectorData.IsValid);
+        }
+
+        [TestMethod]
+        public void IsValid_NegativeMaximumIterations_False()
+        {
+            _connectorData.MaximumIterations = -1;
+
+            Assert.IsFalse(_connectorData.IsValid);
+        }
+
+        [TestMethod]
+        public void IsValid_TargetPrecisionSetTo1_False()
+        {
+            _connectorData.TargetPrecision = 1;
 
             Assert.IsFalse(_connectorData.IsValid);
         }
@@ -105,13 +131,67 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
-        public void Constructor_Empty_SensefulInitialValues()
+        public void TargetPrecision_NewValueSet_CorrectValueSet()
         {
-            Assert.AreEqual(64, _connectorData.SizeOfDataType);
-            Assert.IsTrue(_connectorData.CountOfCoefficients > 30);
-            Assert.IsTrue(_connectorData.MaximumIterations > 0);
-            Assert.IsTrue(_connectorData.TargetPrecision < 1e-3);
-            Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
+            _connectorData.TargetPrecision = 0.1234;
+
+            Assert.AreEqual(0.1234, _connectorData.TargetPrecision, 1e-10);
+        }
+
+        [TestMethod]
+        public void TargetPrecision_NewValueSet_PropertyTargetPrecisionChanged()
+        {
+            _connectorData.TargetPrecision = 0.1234;
+
+            Assert.IsTrue(_changedProperties.Contains("TargetPrecision"));
+        }
+
+        [TestMethod]
+        public void TargetPrecision_NewValueSet_PropertyIsValidChanged()
+        {
+            _connectorData.TargetPrecision = 0.1234;
+
+            Assert.IsTrue(_changedProperties.Contains("IsValid"));
+        }
+
+        [TestMethod]
+        public void MaximumIterations_NewValueSet_CorrectValueSet()
+        {
+            _connectorData.MaximumIterations = 1234;
+
+            Assert.AreEqual(1234, _connectorData.MaximumIterations);
+        }
+
+        [TestMethod]
+        public void MaximumIterations_NewValueSet_PropertyMaximumIterationsChanged()
+        {
+            _connectorData.MaximumIterations = 1234;
+
+            Assert.IsTrue(_changedProperties.Contains("MaximumIterations"));
+        }
+
+        [TestMethod]
+        public void MaximumIterations_NewValueSet_PropertyIsValidChanged()
+        {
+            _connectorData.MaximumIterations = 1234;
+
+            Assert.IsTrue(_changedProperties.Contains("IsValid"));
+        }
+
+        [TestMethod]
+        public void CalculatorSelection_NewValueSet_CorrectValueSet()
+        {
+            _connectorData.CalculatorSelection = Selection.NodePotential;
+
+            Assert.AreEqual(Selection.NodePotential, _connectorData.CalculatorSelection);
+        }
+
+        [TestMethod]
+        public void CalculatorSelection_NewValueSet_PropertyCalculatorSelectionChanged()
+        {
+            _connectorData.CalculatorSelection = Selection.NodePotential;
+
+            Assert.IsTrue(_changedProperties.Contains("CalculatorSelection"));
         }
     }
 }
