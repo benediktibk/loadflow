@@ -1,10 +1,14 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using CalculationTest.SinglePhase.SingleVoltageLevel;
 using CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using Moq;
 
 namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -12,17 +16,23 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
     public class HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest : HolomorphicEmbeddedLoadFlowMethodTest
     {
         private HolomorphicEmbeddedLoadFlowMethod _nodeVoltageCalculator;
+        private IList<Vector<Complex>> _coefficients;
+        private IList<Vector<Complex>> _inverseCoefficients;
+        private Mock<INodeVoltageCalculator> _nodeVoltageCalculatorMock;
 
         [TestInitialize]
         public void SetUp()
         {
             _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 100, 300);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            _nodeVoltageCalculator.Dispose();
+            _nodeVoltageCalculatorMock = new Mock<INodeVoltageCalculator>();
+            _nodeVoltageCalculatorMock.Setup(x =>
+                x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
+                    It.IsAny<double>(), It.IsAny<Vector<Complex>>(),
+                    It.IsAny<Vector<Complex>>(), It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>()))
+                .Returns((IReadOnlyAdmittanceMatrix a, IList<Complex> b, double c, Vector<Complex> d, Vector<Complex> e, IList<PqNodeWithIndex> f, IList<PvNodeWithIndex> g) =>
+                    _nodeVoltageCalculator.CalculateUnknownVoltages(a, b, c, d, e, f, g, out _coefficients, out _inverseCoefficients, 3));
+            _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError)
+                .Returns(_nodeVoltageCalculator.MaximumRelativePowerError);
         }
 
         [TestMethod]
@@ -300,7 +310,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
         {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculator);
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculatorMock.Object);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
@@ -311,12 +321,12 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var firstInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.952380952380952, 0) });
             var secondInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.0262721023980629, 0.0172767519706295) });
             var thirdInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.00144946906527004, 0.00095318285344446) });
-            var firstCoefficient = _nodeVoltageCalculator.GetCoefficients(0);
-            var secondCoefficient = _nodeVoltageCalculator.GetCoefficients(1);
-            var thirdCoefficient = _nodeVoltageCalculator.GetCoefficients(2);
-            var firstInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(0);
-            var secondInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(1);
-            var thirdInverseCoefficient = _nodeVoltageCalculator.GetInverseCoefficients(2);
+            var firstCoefficient = _coefficients[0];
+            var secondCoefficient = _coefficients[1];
+            var thirdCoefficient = _coefficients[2];
+            var firstInverseCoefficient = _inverseCoefficients[0];
+            var secondInverseCoefficient = _inverseCoefficients[1];
+            var thirdInverseCoefficient = _inverseCoefficients[2];
             ComplexAssert.AreAllEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
             ComplexAssert.AreAllEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
             ComplexAssert.AreAllEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
@@ -330,7 +340,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBusVersionTwo_CorrectCoefficients()
         {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo(_nodeVoltageCalculator);
+            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo(_nodeVoltageCalculatorMock.Object);
 
             powerNetTestCase.CalculateNodeResults();
 
@@ -339,9 +349,9 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             Complex b;
             Complex c;
             CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out a, out b, out c);
-            var firstCoefficient = _nodeVoltageCalculator.GetCoefficients(0)[0];
-            var secondCoefficient = _nodeVoltageCalculator.GetCoefficients(1)[0];
-            var thirdCoefficient = _nodeVoltageCalculator.GetCoefficients(2)[0];
+            var firstCoefficient = _coefficients[0][0];
+            var secondCoefficient = _coefficients[1][0];
+            var thirdCoefficient = _coefficients[2][0];
             ComplexAssert.AreEqual(a, firstCoefficient, 0.00001);
             ComplexAssert.AreEqual(b, secondCoefficient, 0.00001);
             ComplexAssert.AreEqual(c, thirdCoefficient, 0.00001);
@@ -372,7 +382,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodeProblemWithOnePVBusAndOnePQBus_CorrectResults()
         {
-            _nodeVoltageCalculator.Dispose();
             _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 150, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
@@ -385,7 +394,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithPQAndPVBus_CorrectResults()
         {
-            _nodeVoltageCalculator.Dispose();
             _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithOnePVBusAndOnePQBus(_nodeVoltageCalculator);
 
@@ -398,7 +406,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithAsymmetricAdmittancesAndPVBusses_CorrectResults()
         {
-            _nodeVoltageCalculator.Dispose();
             _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 400);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses(_nodeVoltageCalculator);
 
@@ -411,7 +418,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestMethod]
         public void CalculateNodeVoltagesAndPowers_ThreeNodesWithRealValuesAndPQAndPVBus_CorrectResults()
         {
-            _nodeVoltageCalculator.Dispose();
             _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 200, 500);
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus(_nodeVoltageCalculator);
 
