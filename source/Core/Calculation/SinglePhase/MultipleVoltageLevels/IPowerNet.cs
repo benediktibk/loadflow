@@ -6,6 +6,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
     public interface IPowerNet
     {
+        IReadOnlyNodeGraph NodeGraph { get; }
         Angle SlackPhaseShift { get; }
         IReadOnlyDictionary<IExternalReadOnlyNode, Angle> NominalPhaseShiftPerNode { get; }
         void AddNode(int id, double nominalVoltage, string name);

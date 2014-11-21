@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -14,6 +15,10 @@ namespace SincalConnector
             out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
+
+            if (symmetricPowerNet.NodeGraph.FloatingNodesExist)
+                throw new InvalidDataException("there must not be a floating node");
+
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
