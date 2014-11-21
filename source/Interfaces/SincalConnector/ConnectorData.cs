@@ -17,6 +17,9 @@ namespace SincalConnector
         {
             SizeOfDataType = 64;
             CountOfCoefficients = 50;
+            MaximumIterations = 100;
+            TargetPrecision = 1e-5;
+            CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
         }
 
         public int SizeOfDataType

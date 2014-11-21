@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
 
@@ -101,6 +102,16 @@ namespace SincalConnectorTest
             _connectorData.Log(" 34");
 
             Assert.AreEqual("asdf\nfd3\n 34\n", _connectorData.LoggingOutput);
+        }
+
+        [TestMethod]
+        public void Constructor_Empty_SensefulInitialValues()
+        {
+            Assert.AreEqual(64, _connectorData.SizeOfDataType);
+            Assert.IsTrue(_connectorData.CountOfCoefficients > 30);
+            Assert.IsTrue(_connectorData.MaximumIterations > 0);
+            Assert.IsTrue(_connectorData.TargetPrecision < 1e-3);
+            Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
         }
     }
 }
