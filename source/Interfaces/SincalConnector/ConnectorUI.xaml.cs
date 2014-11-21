@@ -65,7 +65,9 @@ namespace SincalConnector
                 stopWatch.Start();
                 var success = powerNet.CalculateNodeVoltages(calculator, out relativePowerError);
                 stopWatch.Stop();
-                _connectorData.Log(success ? "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" : "was not able to calculate the power net");
+                _connectorData.Log(success ? 
+                    "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s with a relative power mismatch of " + relativePowerError : 
+                    "was not able to calculate the power net");
 
             }
             catch (Exception exception)
