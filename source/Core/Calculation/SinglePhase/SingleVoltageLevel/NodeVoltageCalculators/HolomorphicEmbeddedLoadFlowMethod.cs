@@ -37,20 +37,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return FetchVoltages(admittances.NodeCount, calculator);
         }
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances,
-            IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages,
-            Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses,
-            out IList<Vector<Complex>> coefficients, out IList<Vector<Complex>> inverseCoefficients, int stepCount)
+        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, out IList<Vector<Complex>> coefficients, int stepCount)
         {
             var calculator = CalculateUnknownVoltagesInternal(admittances, totalAdmittanceRowSums, nominalVoltage, constantCurrents, pqBuses, pvBuses);
             coefficients = new List<Vector<Complex>>(NumberOfCoefficients);
-            inverseCoefficients = new List<Vector<Complex>>(NumberOfCoefficients);
 
             for (var i = 0; i < stepCount; ++i)
-                coefficients.Add(FetchCoefficients(i, calculator));
-
-            for (var i = 0; i < stepCount; ++i)
-                inverseCoefficients.Add(FetchInverseCoefficients(i, calculator));
+                coefficients.Add(FetchCoefficients(i, admittances.NodeCount, calculator));
 
             return FetchVoltages(admittances.NodeCount, calculator);
         }
@@ -67,24 +60,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return calculator;
         }
 
-        private Vector<Complex> FetchCoefficients(int step, int calculator)
+        private Vector<Complex> FetchCoefficients(int step, int nodeCount, int calculator)
         {
-            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(calculator);
             var result = new DenseVector(nodeCount);
 
             for (var i = 0; i < nodeCount; ++i)
                 result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientReal(calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetCoefficientImaginary(calculator, step, i));
-
-            return result;
-        }
-
-        private Vector<Complex> FetchInverseCoefficients(int step, int calculator)
-        {
-            var nodeCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetLastNodeCount(calculator);
-            var result = new DenseVector(nodeCount);
-
-            for (var i = 0; i < nodeCount; ++i)
-                result[i] = new Complex(HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientReal(calculator, step, i), HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetInverseCoefficientImaginary(calculator, step, i));
 
             return result;
         }

@@ -17,7 +17,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
     {
         private HolomorphicEmbeddedLoadFlowMethod _nodeVoltageCalculator;
         private IList<Vector<Complex>> _coefficients;
-        private IList<Vector<Complex>> _inverseCoefficients;
         private Mock<INodeVoltageCalculator> _nodeVoltageCalculatorMock;
 
         [TestInitialize]
@@ -30,7 +29,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
                     It.IsAny<double>(), It.IsAny<Vector<Complex>>(),
                     It.IsAny<Vector<Complex>>(), It.IsAny<IList<PqNodeWithIndex>>(), It.IsAny<IList<PvNodeWithIndex>>()))
                 .Returns((IReadOnlyAdmittanceMatrix a, IList<Complex> b, double c, Vector<Complex> d, Vector<Complex> e, IList<PqNodeWithIndex> f, IList<PvNodeWithIndex> g) =>
-                    _nodeVoltageCalculator.CalculateUnknownVoltages(a, b, c, d, e, f, g, out _coefficients, out _inverseCoefficients, 3));
+                    _nodeVoltageCalculator.CalculateUnknownVoltages(a, b, c, d, e, f, g, out _coefficients, 3));
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError)
                 .Returns(_nodeVoltageCalculator.MaximumRelativePowerError);
         }
@@ -316,21 +315,12 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var firstCoefficientShouldBe = new DenseVector(new[] { new Complex(1.05, 0) });
             var secondCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0289649928938644, -0.019047619047619) });
             var thirdCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0011445548616427, 1.14628982339312E-100) });
-            var firstInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.952380952380952, 0) });
-            var secondInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.0262721023980629, 0.0172767519706295) });
-            var thirdInverseCoefficientShouldBe = new DenseVector(new[] { new Complex(0.00144946906527004, 0.00095318285344446) });
             var firstCoefficient = _coefficients[0];
             var secondCoefficient = _coefficients[1];
             var thirdCoefficient = _coefficients[2];
-            var firstInverseCoefficient = _inverseCoefficients[0];
-            var secondInverseCoefficient = _inverseCoefficients[1];
-            var thirdInverseCoefficient = _inverseCoefficients[2];
             ComplexAssert.AreAllEqual(firstCoefficientShouldBe, firstCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(firstInverseCoefficientShouldBe, firstInverseCoefficient, 0.0001);
             ComplexAssert.AreAllEqual(secondCoefficientShouldBe, secondCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(secondInverseCoefficientShouldBe, secondInverseCoefficient, 0.0001);
             ComplexAssert.AreAllEqual(thirdCoefficientShouldBe, thirdCoefficient, 0.0001);
-            ComplexAssert.AreAllEqual(thirdInverseCoefficientShouldBe, thirdInverseCoefficient, 0.0001);
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
         }

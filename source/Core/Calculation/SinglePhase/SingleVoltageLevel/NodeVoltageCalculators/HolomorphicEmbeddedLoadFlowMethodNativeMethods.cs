@@ -47,14 +47,5 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetCoefficientImaginary(int calculator, int step, int node);
-
-        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double GetInverseCoefficientReal(int calculator, int step, int node);
-
-        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double GetInverseCoefficientImaginary(int calculator, int step, int node);
-
-        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetLastNodeCount(int calculator);
     }
 }
