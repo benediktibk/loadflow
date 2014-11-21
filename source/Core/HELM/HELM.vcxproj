@@ -69,10 +69,10 @@ xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\Calcu
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\DatabaseUI\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\SincalConnector\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\SincalConnector\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,10 +93,12 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
       <Command>call $(SolutionDir)killvstest.bat
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationTest\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\DatabaseUI\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interface\SincalConnector\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Core\CalculationIntegrationTest\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\DatabaseUI\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\SincalConnector\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\SincalConnector\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
