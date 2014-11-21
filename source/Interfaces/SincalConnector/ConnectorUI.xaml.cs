@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.Win32;
 
@@ -122,6 +123,16 @@ namespace SincalConnector
                 Log(message);
             else
                 Dispatcher.Invoke(Log, new object[] { message });
+        }
+
+        private void LogTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = e.Source as TextBox;
+
+            if (textBox == null)
+                throw new Exception("could not find text box");
+
+            textBox.ScrollToEnd();
         }
     }
 }
