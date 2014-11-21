@@ -439,7 +439,8 @@ namespace Database
         {
             try
             {
-                _nodeResults = _symmetricPowerNet.CalculateNodeVoltages();
+                double relativePowerError;
+                _nodeResults = _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
 
                 if (_nodeResults != null)
                     return;

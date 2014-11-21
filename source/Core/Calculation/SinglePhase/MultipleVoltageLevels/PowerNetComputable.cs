@@ -14,7 +14,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _singleVoltagePowerNetFactory = singleVoltagePowerNetFactory;
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeResults()
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeResults(out double relativePowerError)
         {
             if (NodeGraph.FloatingNodesExist)
                 throw new InvalidDataException("there must not be a floating node");
@@ -26,7 +26,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var nodeIndexes = DetermineNodeIndexes(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerScaling);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, admittances, powerScaling);
-            var nodeResults = singleVoltagePowerNet.CalculateNodeResults();
+            var nodeResults = singleVoltagePowerNet.CalculateNodeResults(out relativePowerError);
 
             if (nodeResults == null)
                 return null;

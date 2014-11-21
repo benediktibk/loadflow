@@ -11,8 +11,7 @@ namespace SincalConnector
 {
     public class PowerNetComputable : PowerNet
     {
-        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, 
-            out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds)
+        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
 
@@ -27,7 +26,7 @@ namespace SincalConnector
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            return symmetricPowerNet.CalculateNodeVoltages();
+            return symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
         }
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)

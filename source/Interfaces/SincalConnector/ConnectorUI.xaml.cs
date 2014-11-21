@@ -61,8 +61,9 @@ namespace SincalConnector
             try
             {
                 _connectorData.Log("calculating the power net");
+                double relativePowerError;
                 stopWatch.Start();
-                var success = powerNet.CalculateNodeVoltages(calculator);
+                var success = powerNet.CalculateNodeVoltages(calculator, out relativePowerError);
                 stopWatch.Stop();
                 _connectorData.Log(success ? "finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" : "was not able to calculate the power net");
 

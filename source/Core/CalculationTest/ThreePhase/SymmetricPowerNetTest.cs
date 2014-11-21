@@ -16,12 +16,14 @@ namespace CalculationTest.ThreePhase
     {
         private SymmetricPowerNet _powerNet;
         private Mock<IPowerNetComputable> _singlePhasePowerNetMock;
+        private double _relativePowerError;
 
         [TestInitialize]
         public void SetUp()
         {
             _singlePhasePowerNetMock = new Mock<IPowerNetComputable>();
             _powerNet = new SymmetricPowerNet(_singlePhasePowerNetMock.Object);
+            _relativePowerError = 0.1;
         }
 
         [TestMethod]
@@ -139,15 +141,15 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_MockPowerNet_MockGotCallToCalculateNodeVoltages()
         {
-            _powerNet.CalculateNodeVoltages();
+            _powerNet.CalculateNodeVoltages(out _relativePowerError);
 
-            _singlePhasePowerNetMock.Verify(x => x.CalculateNodeResults(), Times.Once);
+            _singlePhasePowerNetMock.Verify(x => x.CalculateNodeResults(out _relativePowerError), Times.Once);
         }
 
         [TestMethod]
         public void CalculateNodeVoltages_CalculationFailed_Null()
         {
-            var result = _powerNet.CalculateNodeVoltages();
+            var result = _powerNet.CalculateNodeVoltages(out _relativePowerError);
 
             Assert.IsNull(result);
         }
@@ -155,10 +157,10 @@ namespace CalculationTest.ThreePhase
         [TestMethod]
         public void CalculateNodeVoltages_MockPowerNet_NodeResultsAreUnscaled()
         {
-            _singlePhasePowerNetMock.Setup(x => x.CalculateNodeResults())
+            _singlePhasePowerNetMock.Setup(x => x.CalculateNodeResults(out _relativePowerError))
                 .Returns(new Dictionary<long, NodeResult> {{3, new NodeResult(new Complex(1, 2), new Complex(3, 4))}});
 
-            var result = _powerNet.CalculateNodeVoltages();
+            var result = _powerNet.CalculateNodeVoltages(out _relativePowerError);
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(3, result.First().Key);

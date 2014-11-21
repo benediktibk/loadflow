@@ -76,9 +76,9 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages()
+        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(out double relativePowerError)
         {
-            var nodeResults = _singlePhasePowerNet.CalculateNodeResults();
+            var nodeResults = _singlePhasePowerNet.CalculateNodeResults(out relativePowerError);
             var nodeResultsUnscaled = new Dictionary<long, NodeResult>();
 
             if (nodeResults == null)

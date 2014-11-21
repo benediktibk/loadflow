@@ -19,6 +19,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         private Mock<IPowerNetComputable> _singleVoltagePowerNetMock;
         private Mock<INodeGraph> _nodeGraphMock;
         private PowerNetComputable _powerNet;
+        private double _relativePowerError;
 
         [TestInitialize]
         public void SetUp()
@@ -31,6 +32,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
                 x =>
                     x.Create(It.IsAny<Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix>(),
                         It.IsAny<double>())).Returns(_singleVoltagePowerNetMock.Object);
+            _relativePowerError = 0.1;
         }
 
         [TestMethod]
@@ -42,9 +44,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
-            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults()).Returns((IList<NodeResult>) null);
+            var relativePowerError = 0.1;
+            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults(out relativePowerError)).Returns((IList<NodeResult>) null);
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out relativePowerError);
 
             Assert.IsNull(nodeResults);
         }
@@ -61,12 +64,12 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourcePowerInternal = new Complex(4, 5);
             var loadVoltageInternal = new Complex(6, 7);
             var loadPowerInternal = new Complex(8, 9);
-            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults()).Returns(new List<NodeResult>
+            _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults(out _relativePowerError)).Returns(new List<NodeResult>
             {
                 new NodeResult(sourceVoltageInternal, sourcePowerInternal), new NodeResult(loadVoltageInternal, loadPowerInternal)
             });
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNotNull(nodeResults);
             Assert.AreEqual(2, nodeResults.Count);
@@ -85,7 +88,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         {
             _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(true);
 
-            _powerNet.CalculateNodeResults();
+            _powerNet.CalculateNodeResults(out _relativePowerError);
         }
 
         [TestMethod]
@@ -99,7 +102,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddLoad(1, new Complex(-0.6, -1));
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
 
-            _powerNet.CalculateNodeResults();
+            _powerNet.CalculateNodeResults(out _relativePowerError);
         }
     }
 }

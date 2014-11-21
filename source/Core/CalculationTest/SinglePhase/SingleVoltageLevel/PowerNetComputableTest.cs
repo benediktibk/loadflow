@@ -20,6 +20,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         private PowerNetComputable _powerNet;
         private Mock<IAdmittanceMatrix> _admittanceMatrixMock;
         private Mock<INodeVoltageCalculator> _nodeVoltageCalculatorMock;
+        private double _relativePowerError;
 
         [TestInitialize]
         public void SetUp()
@@ -60,7 +61,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new PqNode(new Complex(5, 6)));
             _powerNet.AddNode(new PvNode(3, 4));
 
-            _powerNet.CalculateNodeResults();
+            _powerNet.CalculateNodeResults(out _relativePowerError);
         }
 
         [TestMethod]
@@ -73,7 +74,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
             _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1, 2, nodeResults[0].Voltage, 0.00001);
@@ -90,7 +91,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
             _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
-            _powerNet.CalculateNodeResults();
+            _powerNet.CalculateNodeResults(out _relativePowerError);
 
             _nodeVoltageCalculatorMock.Verify(
                 x =>
@@ -109,7 +110,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
             _powerNet.AddNode(new SlackNode(new Complex(3, 4)));
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNull(nodeResults);
         }
@@ -127,7 +128,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new SlackNode(voltageTwo));
             _powerNet.AddNode(new SlackNode(voltageThree));
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1, 2, nodeResults[0].Power, 0.00001);
@@ -156,7 +157,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new PqNode(new Complex(3, 4)));
             _powerNet.AddNode(new PvNode(5, 6));
 
-            _powerNet.CalculateNodeResults();
+            _powerNet.CalculateNodeResults(out _relativePowerError);
 
             _nodeVoltageCalculatorMock.Verify(
                 x =>
@@ -200,7 +201,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new PqNode(new Complex()));
             _powerNet.AddNode(new PvNode(0, 6));
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNotNull(nodeResults);
         }
@@ -229,7 +230,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _powerNet.AddNode(new PqNode(new Complex(3, 4)));
             _powerNet.AddNode(new SlackNode(new Complex(5, 6)));
 
-            var nodeResults = _powerNet.CalculateNodeResults();
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
 
             Assert.IsNotNull(nodeResults); 
         }

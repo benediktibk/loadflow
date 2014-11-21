@@ -23,7 +23,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
              get { return _nodeVoltageCalculator; }
         }
 
-        public IList<NodeResult> CalculateNodeResults()
+        public IList<NodeResult> CalculateNodeResults(out double relativePowerError)
         {
             if (Nodes.Count != Admittances.NodeCount)
                 throw new InvalidDataException("the node count does not match the size of the admittance matrix");
@@ -50,7 +50,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             var allPowers = DeterminePowers(allVoltages, indexOfPqBuses, indexOfPvBuses);
             allVoltages = DetermineFixedVoltages(allVoltages, indexOfPvBuses, indexOfSlackBuses);
-            var relativePowerError = CalculateRelativePowerError(allPowers, allVoltages);
+            relativePowerError = CalculateRelativePowerError(allPowers, allVoltages);
             var voltageCollapse = relativePowerError > _nodeVoltageCalculator.MaximumRelativePowerError || Double.IsNaN(relativePowerError) ||
                                   Double.IsInfinity(relativePowerError);
             var nodeResults = CombineVoltagesAndPowersToNodeResults(allPowers, allVoltages);

@@ -56,11 +56,11 @@ namespace SincalConnector
 
         public string ConnectionString { get; private set; }
 
-        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator)
+        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator, out double relativePowerError)
         {
             Angle slackPhaseShift;
             IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds;
-            var nodeResults = _powerNet.CalculateNodeVoltages(calculator, out slackPhaseShift, out nominalPhaseShiftByIds);
+            var nodeResults = _powerNet.CalculateNodeVoltages(calculator, out slackPhaseShift, out nominalPhaseShiftByIds, out relativePowerError);
 
             if (nodeResults == null)
                 return false;

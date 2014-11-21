@@ -32,7 +32,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
         public IList<NodeResult> CalculateNodeResults()
         {
-            return _powerNet.CalculateNodeResults();
+            double relativePowerError;
+            return _powerNet.CalculateNodeResults(out relativePowerError);
         }
     }
 }
