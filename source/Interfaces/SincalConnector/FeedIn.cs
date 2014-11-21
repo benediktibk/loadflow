@@ -12,18 +12,18 @@ namespace SincalConnector
         {
             Id = record.Parse<int>("Element_ID");
             var admittanceType = record.Parse<int>("Flag_Typ");
+            var internalReactance = record.Parse<double>("xi") / 100;
 
             if (admittanceType != 2)
                 throw new NotSupportedException("a feed-in must be specified by R/X and Sk");
+
+            if (internalReactance != 0)
+                throw new NotSupportedException("internal impedances for feed ins are not supported");
 
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var nominalVoltage = nodes[NodeId].NominalVoltage;
             var voltageAngle = record.Parse<double>("delta")*Math.PI/180;
             var voltageType = record.Parse<int>("Flag_Lf");
-            var realToImaginary = record.Parse<double>("R_X");
-            var shortCircuitPower = record.Parse<double>("Sk2")*1e6;
-            var internalReactance = record.Parse<double>("xi") / 100;
-            var shortCircuitPowerMultiplier = record.Parse<double>("cact");
             double voltageMagnitude;
 
             switch (voltageType)
@@ -40,13 +40,9 @@ namespace SincalConnector
             }
 
             Voltage = Complex.FromPolarCoordinates(voltageMagnitude, voltageAngle);
-            InternalImpedance = internalReactance*nominalVoltage*nominalVoltage/(shortCircuitPowerMultiplier*shortCircuitPower)*
-                                new Complex(realToImaginary, 1);
         }
 
         public Complex Voltage { get; private set; }
-
-        public Complex InternalImpedance { get; private set; }
 
         public int Id { get; private set; }
 
@@ -54,7 +50,7 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet)
         {
-            powerNet.AddFeedIn(NodeId, Voltage, InternalImpedance);
+            powerNet.AddFeedIn(NodeId, Voltage, new Complex());
         }
     }
 }

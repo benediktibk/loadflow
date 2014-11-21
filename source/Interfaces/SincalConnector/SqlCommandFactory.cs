@@ -85,7 +85,7 @@ namespace SincalConnector
 
         public OleDbCommand CreateCommandToFetchAllFeedIns()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi,R_X,Sk2,cact FROM Infeeder;", _connection);
+            return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;", _connection);
         }
 
         public OleDbCommand CreateCommandToAddResult(NodeResult nodeResult, double nominalVoltage, Angle phaseShift, Angle slackPhaseShift)
