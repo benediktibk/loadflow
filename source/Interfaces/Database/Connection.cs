@@ -66,7 +66,7 @@ namespace Database
             {
                 new SqlCommand("CREATE DATABASE " + Database + ";"),
                 new SqlCommand("USE " + Database + ";"),
-                PowerNet.CreateCommandToCreateTable(),
+                SqlCommandFactory.CreateCommandToCreateTableForPowerNets(),
                 Node.CreateCommandToCreateTable(),
                 Load.CreateCommandToCreateTable(),
                 FeedIn.CreateCommandToCreateTable(),
@@ -87,21 +87,21 @@ namespace Database
 
         public void Add(PowerNet powerNet)
         {
-            var command = powerNet.CreateCommandToAddToDatabase();
+            var command = SqlCommandFactory.CreateCommandToAddToDatabase(powerNet);
             command.Connection = _sqlConnection;
             powerNet.Id = Convert.ToInt32(command.ExecuteScalar().ToString());
         }
 
-        public void Update(PowerNet powerNet)
+        public void Update(IReadOnlyPowerNet powerNet)
         {
-            var command = powerNet.CreateCommandToUpdateInDatabase();
+            var command = SqlCommandFactory.CreateCommandToUpdateInDatabase(powerNet);
             command.Connection = _sqlConnection;
             command.ExecuteNonQuery();
         }
 
-        public void Remove(PowerNet powerNet)
+        public void Remove(IReadOnlyPowerNet powerNet)
         {
-            var commands = powerNet.CreateCommandsToRemoveFromDatabase();
+            var commands = SqlCommandFactory.CreateCommandsToRemoveFromDatabase(powerNet);
 
             using (var transaction = _sqlConnection.BeginTransaction())
             {

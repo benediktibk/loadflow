@@ -6,19 +6,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Calculation;
-using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using Calculation.ThreePhase;
 using Misc;
 
 namespace Database
 {
-    public class PowerNet : INotifyPropertyChanged
+    public class PowerNet : IReadOnlyPowerNet
     {
         private ObservableCollection<Node> _nodes; 
         private ObservableCollection<TransmissionLine> _transmissionLines;
@@ -309,68 +303,6 @@ namespace Database
                 throw new ArgumentNullException("sender");
 
             Connection.Update(node);
-        }
-
-        public SqlCommand CreateCommandToAddToDatabase()
-        {
-            var command =
-                new SqlCommand(
-                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);");
-            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
-            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
-            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
-            return command;
-        }
-
-        public SqlCommand CreateCommandToUpdateInDatabase()
-        {
-            var command =
-                new SqlCommand(
-                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;");
-            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
-            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
-            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
-            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
-            return command;
-        }
-
-        public IEnumerable<SqlCommand> CreateCommandsToRemoveFromDatabase()
-        {
-            var deletePowerNetCommand = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;");
-            var deleteNodesCommand = new SqlCommand("DELETE FROM nodes WHERE PowerNet=@Id;");
-            var deleteLoadsCommand = new SqlCommand("DELETE FROM loads WHERE PowerNet=@Id;");
-            var deleteFeedInsCommand = new SqlCommand("DELETE FROM feedins WHERE PowerNet=@Id;");
-            var deleteGeneratorsCommand = new SqlCommand("DELETE FROM generators WHERE PowerNet=@Id;");
-            var deleteTransformersCommand = new SqlCommand("DELETE FROM transformers WHERE PowerNet=@Id;");
-            var deleteLinesCommand = new SqlCommand("DELETE FROM lines WHERE PowerNet=@Id;");
-            var commands = new List<SqlCommand>
-            {
-                deleteFeedInsCommand,
-                deleteGeneratorsCommand,
-                deleteTransformersCommand,
-                deleteLinesCommand,
-                deleteLoadsCommand,
-                deleteNodesCommand,
-                deletePowerNetCommand
-            };
-
-            foreach (var command in commands)
-                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
-
-            return commands;
-        }
-
-        public static SqlCommand CreateCommandToCreateTable()
-        {
-            return new SqlCommand(
-                "CREATE TABLE powernets " +
-                "(PowerNetId INTEGER NOT NULL IDENTITY, Frequency REAL NOT NULL, PowerNetName TEXT NOT NULL, CalculatorSelection INTEGER NOT NULL, " +
-                "PRIMARY KEY(PowerNetId));");
-        }
-
-        public static SqlCommand CreateCommandToFetchAll()
-        {
-            return new SqlCommand("SELECT * FROM powernets;");
         }
     }
 }

@@ -51,10 +51,12 @@
     <Compile Include="Connection.cs" />
     <Compile Include="IConnectionNetElements.cs" />
     <Compile Include="INetElement.cs" />
+    <Compile Include="IReadOnlyPowerNet.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="PowerNetComputable.cs" />
+    <Compile Include="SqlCommandFactory.cs" />
     <Compile Include="TransmissionLine.cs" />
     <Compile Include="Load.cs" />
     <Compile Include="Node.cs" />
