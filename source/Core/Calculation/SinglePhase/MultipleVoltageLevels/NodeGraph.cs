@@ -43,6 +43,21 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return Segments.Count != 1; }
         }
 
+        public IList<IExternalReadOnlyNode> FloatingNodes
+        {
+            get
+            {
+                var mainSegmentNodeCount = Segments.Max(x => x.Count);
+                var floatingSegments = Segments.Where(segment => segment.Count < mainSegmentNodeCount);
+                var floatingNodes = new List<IExternalReadOnlyNode>();
+
+                foreach (var segment in floatingSegments)
+                    floatingNodes.AddRange(segment);
+
+                return floatingNodes;
+            }
+        }
+
         public void Add(IExternalReadOnlyNode node)
         {
             _nodes.Add(node);

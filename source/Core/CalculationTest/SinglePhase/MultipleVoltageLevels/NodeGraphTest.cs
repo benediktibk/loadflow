@@ -406,5 +406,48 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
 
             Assert.AreEqual(3, nominalPhaseShifts.Count);
         }
+
+        [TestMethod]
+        public void FloatingNodes_NoFloatingNodes_EmptyList()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
+
+            var floatingNodes = _powerNet.NodeGraph.FloatingNodes;
+
+            Assert.IsFalse(_powerNet.NodeGraph.FloatingNodesExist);
+            Assert.AreEqual(0, floatingNodes.Count);
+        }
+
+        [TestMethod]
+        public void FloatingNodes_TwoSegmentsWithFloatingNodes_CorrectResults()
+        {
+            _powerNet.AddNode(0, 123, "");
+            _powerNet.AddNode(1, 120, "");
+            _powerNet.AddNode(2, 120, "");
+            _powerNet.AddNode(3, 120, "");
+            _powerNet.AddNode(4, 120, "");
+            _powerNet.AddNode(5, 120, "");
+            _powerNet.AddFeedIn(0, new Complex(234, 0), 0, 0, 0);
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(1, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.8), "");
+            _powerNet.AddTwoWindingTransformer(0, 2, 3, 0.5, 0.1, 0, 1, 1, new Angle(-1.5), "");
+            _powerNet.AddTwoWindingTransformer(0, 1, 3, 0.5, 0.1, 0, 1, 1, new Angle(0.3), "");
+            _powerNet.AddTransmissionLine(4, 5, 1, 1, 1, 1, 1, false);
+
+            var floatingNodes = _powerNet.NodeGraph.FloatingNodes;
+
+            Assert.IsTrue(_powerNet.NodeGraph.FloatingNodesExist);
+            Assert.AreEqual(3, floatingNodes.Count);
+            Assert.IsTrue(floatingNodes.Contains(_powerNet.GetNodeById(3)));
+            Assert.IsTrue(floatingNodes.Contains(_powerNet.GetNodeById(4)));
+            Assert.IsTrue(floatingNodes.Contains(_powerNet.GetNodeById(5)));
+        }
     }
 }
