@@ -120,6 +120,18 @@ namespace SincalConnector
             LoggingOutput += message + "\n";
         }
 
+        public INodeVoltageCalculator CreateCalculator()
+        {
+            var factory = new Factory
+            {
+                BitPrecision = SizeOfDataType,
+                CoefficientCount = CountOfCoefficients,
+                MaximumIterations = MaximumIterations,
+                TargetPrecision = TargetPrecision
+            };
+            return factory.CreateNodeVoltageCalculator(CalculatorSelection);
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName = null)
