@@ -17,7 +17,12 @@ namespace SincalConnector
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
 
             if (symmetricPowerNet.NodeGraph.FloatingNodesExist)
-                throw new InvalidDataException("there must not be a floating node");
+            {
+                var floatingNodes = symmetricPowerNet.NodeGraph.FloatingNodes;
+                var floatingNodeNames = floatingNodes.Select(x => x.Name);
+                var nodeNamesCombined = floatingNodeNames.Aggregate((current, next) => current + ", " + next);
+                throw new InvalidDataException("there are floating nodes: " + nodeNamesCombined);
+            }
 
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
