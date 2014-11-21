@@ -5,6 +5,7 @@ using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using Moq;
 using SincalConnector;
 
 namespace SincalConnectorIntegrationTest
@@ -13,11 +14,13 @@ namespace SincalConnectorIntegrationTest
     public class PowerNetDatabaseAdapterTest
     {
         private INodeVoltageCalculator _calculator;
+        private Mock<INodeVoltageCalculator> _calculatorMock;
 
         [TestInitialize]
         public void SetUp()
         {
             _calculator = new CurrentIteration(0.0000001, 10000);
+            _calculatorMock = new Mock<INodeVoltageCalculator>();
         }
 
         [TestMethod]
@@ -658,6 +661,14 @@ namespace SincalConnectorIntegrationTest
             var ownResults = powerNet.GetNodeResultsFromDatabase();
             AreVoltagesEqual(sincalResults, ownResults, 0.0001);
             ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_GermanNetAndMockCalculator_NoExceptionThrown()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/uebertragungsnetz_deutschland_files/database.mdb");
+
+            powerNet.CalculateNodeVoltages(_calculatorMock.Object);
         }
 
         public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
