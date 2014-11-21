@@ -15,7 +15,6 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
-using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace Database
 {
@@ -31,14 +30,8 @@ namespace Database
         private string _name;
         private long _netElementCount;
         private readonly List<string> _nodeNames;
-        private bool _isCalculationRunning;
-        private readonly Mutex _isCalculationRunningMutex;
-        private readonly BackgroundWorker _backgroundWorker;
-        private SymmetricPowerNet _symmetricPowerNet;
-        private IReadOnlyDictionary<long, NodeResult> _nodeResults;
         private string _logMessages;
         private Selection _calculatorSelection;
-        private readonly Factory _calculatorFactory;
 
         public PowerNet()
         {
@@ -65,19 +58,7 @@ namespace Database
             _nodes.CollectionChanged += UpdateDatabaseWithChangedNetElements;
             _netElementCount = 0;
             _nodeNames = new List<string>();
-            _isCalculationRunning = false;
-            _isCalculationRunningMutex = new Mutex();
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.DoWork += CalculateNodeVoltages;
-            _backgroundWorker.RunWorkerCompleted += CalculationFinished;
             _calculatorSelection = Selection.CurrentIteration;
-            _calculatorFactory = new Factory
-            {
-                TargetPrecision = 0.000001,
-                MaximumIterations = 1000,
-                BitPrecision = 200,
-                CoefficientCount = 50
-            };
         }
 
         public PowerNet(ISafeDatabaseRecord reader, IConnectionNetElements connection) : 
@@ -88,104 +69,6 @@ namespace Database
             Frequency = reader.Parse<double>("Frequency");
             CalculatorSelection = (Selection)reader.Parse<int>("CalculatorSelection");
             Connection = connection;
-        }
-
-        public void CalculateNodeVoltagesInBackground()
-        {
-            _isCalculationRunningMutex.WaitOne();
-            if (_isCalculationRunning)
-            {
-                _isCalculationRunningMutex.ReleaseMutex();
-                Log("calculation already running");
-                return;
-            }
-            _isCalculationRunning = true;
-            _isCalculationRunningMutex.ReleaseMutex();
-            var nodeVoltageCalculator = _calculatorFactory.CreateNodeVoltageCalculator(CalculatorSelection);
-
-            if (!CreatePowerNet(nodeVoltageCalculator)) 
-                return;
-
-            Log("starting with calculation of node voltages");
-            _backgroundWorker.RunWorkerAsync();
-        }
-
-        public bool CalculateAdmittanceMatrix(out Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
-        {
-            matrix = null;
-            nodeNames = null;
-            powerBase = 0;
-
-            if (!CreatePowerNet(null))
-                return false;
-
-            _symmetricPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
-
-            return true;
-        }
-
-        public SqlCommand CreateCommandToAddToDatabase()
-        {
-            var command =
-                new SqlCommand(
-                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);");
-            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
-            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
-            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
-            return command;
-        }
-
-        public SqlCommand CreateCommandToUpdateInDatabase()
-        {
-            var command =
-                new SqlCommand(
-                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;");
-            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
-            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
-            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
-            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
-            return command;
-        }
-
-        public IEnumerable<SqlCommand> CreateCommandsToRemoveFromDatabase()
-        {
-            var deletePowerNetCommand = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;");
-            var deleteNodesCommand = new SqlCommand("DELETE FROM nodes WHERE PowerNet=@Id;");
-            var deleteLoadsCommand = new SqlCommand("DELETE FROM loads WHERE PowerNet=@Id;");
-            var deleteFeedInsCommand = new SqlCommand("DELETE FROM feedins WHERE PowerNet=@Id;");
-            var deleteGeneratorsCommand = new SqlCommand("DELETE FROM generators WHERE PowerNet=@Id;");
-            var deleteTransformersCommand = new SqlCommand("DELETE FROM transformers WHERE PowerNet=@Id;");
-            var deleteLinesCommand = new SqlCommand("DELETE FROM lines WHERE PowerNet=@Id;");
-            var commands = new List<SqlCommand>
-            {
-                deleteFeedInsCommand,
-                deleteGeneratorsCommand,
-                deleteTransformersCommand,
-                deleteLinesCommand,
-                deleteLoadsCommand,
-                deleteNodesCommand,
-                deletePowerNetCommand
-            };
-
-            foreach (var command in commands)
-                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
-
-            return commands;
-        }
-
-        public bool IsNodeInUse(Node node)
-        {
-            var inUse = FeedIns.Aggregate(false, (current, element) => current || element.UsesNode(node));
-            inUse = Generators.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
-            inUse = Loads.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
-            inUse = TransmissionLines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
-            inUse = Transformers.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
-            return inUse;
-        }
-
-        public void Log(string message)
-        {
-            LogMessages += message + "\r\n";
         }
 
         public int Id { get; set; }
@@ -315,11 +198,6 @@ namespace Database
             get { return _nodeNames; }
         }
 
-        public bool IsCalculationNotRunning
-        {
-            get { return !IsCalculationRunning; }
-        }
-
         public string LogMessages
         {
             get { return _logMessages; }
@@ -329,33 +207,6 @@ namespace Database
 
                 _logMessages = value;
                 NotifyPropertyChanged();
-            }
-        }
-
-        public bool IsCalculationRunning
-        {
-            get
-            {
-                _isCalculationRunningMutex.WaitOne();
-                var isCalculationRunning = _isCalculationRunning;
-                _isCalculationRunningMutex.ReleaseMutex();
-                return isCalculationRunning;
-            }
-            set
-            {
-                var changed = false;
-
-                _isCalculationRunningMutex.WaitOne();
-                if (_isCalculationRunning != value)
-                {
-                    _isCalculationRunning = value;
-                    changed = true;
-                }
-                _isCalculationRunningMutex.ReleaseMutex();
-
-                if (!changed) return;
-                NotifyPropertyChanged();
-                NotifyPropertyChangedInternal("IsCalculationNotRunning");
             }
         }
 
@@ -369,12 +220,27 @@ namespace Database
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        public bool IsNodeInUse(Node node)
+        {
+            var inUse = FeedIns.Aggregate(false, (current, element) => current || element.UsesNode(node));
+            inUse = Generators.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = Loads.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = TransmissionLines.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            inUse = Transformers.Aggregate(inUse, (current, element) => current || element.UsesNode(node));
+            return inUse;
+        }
+
+        public void Log(string message)
+        {
+            LogMessages += message + "\r\n";
+        }
+
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             NotifyPropertyChangedInternal(propertyName);
         }
 
-        private void NotifyPropertyChangedInternal(String propertyName)
+        protected void NotifyPropertyChangedInternal(String propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -419,91 +285,6 @@ namespace Database
                 NodesChanged();
         }
 
-        private void CalculationFinished(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (_nodeResults != null)
-            {
-                foreach (var node in Nodes)
-                {
-                    var voltage = _nodeResults[node.Id].Voltage;
-                    node.VoltageReal = voltage.Real;
-                    node.VoltageImaginary = voltage.Imaginary;
-                }
-            }
-
-            Log("finished calculation");
-            IsCalculationRunning = false;
-        }
-
-        private void CalculateNodeVoltages(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                double relativePowerError;
-                _nodeResults = _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
-
-                if (_nodeResults != null)
-                    return;
-
-                Log("voltage collapse");
-            }
-            catch (Exception exception)
-            {
-                Log("an error occurred: " + exception.Message);
-            }
-        }
-
-        private bool CreatePowerNet(INodeVoltageCalculator nodeVoltageCalculator)
-        {
-            Log("creating symmetric power net");
-
-            var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
-            var singlePhasePowerNet = new PowerNetComputable(_frequency, singleVoltagePowerNetFactory, new NodeGraph());
-            _symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
-
-            try
-            {
-                foreach (var node in Nodes)
-                    _symmetricPowerNet.AddNode(node.Id, node.NominalVoltage, node.Name);
-
-                foreach (var line in TransmissionLines)
-                    _symmetricPowerNet.AddTransmissionLine(line.NodeOne.Id, line.NodeTwo.Id, line.SeriesResistancePerUnitLength,
-                        line.SeriesInductancePerUnitLength, line.ShuntConductancePerUnitLength,
-                        line.ShuntCapacityPerUnitLength, line.Length, line.TransmissionEquationModel);
-
-                foreach (var feedIn in FeedIns)
-                {
-                    var nominalVoltage = feedIn.Node.NominalVoltage;
-                    var Z = feedIn.C*nominalVoltage*nominalVoltage/feedIn.ShortCircuitPower;
-                    var X = Math.Sqrt(feedIn.RealToImaginary*feedIn.RealToImaginary + 1)/Z;
-                    var R = feedIn.RealToImaginary*X;
-                    var internalImpedance = new Complex(R, X);
-                    _symmetricPowerNet.AddFeedIn(feedIn.Node.Id,
-                        new Complex(feedIn.VoltageReal, feedIn.VoltageImaginary),
-                        internalImpedance);
-                }
-
-                foreach (var generator in Generators)
-                    _symmetricPowerNet.AddGenerator(generator.Node.Id, generator.VoltageMagnitude, generator.RealPower);
-
-                foreach (var load in Loads)
-                    _symmetricPowerNet.AddLoad(load.Node.Id, new Complex(load.Real, load.Imaginary));
-
-                foreach (var transformer in Transformers)
-                    _symmetricPowerNet.AddTwoWindingTransformer(transformer.UpperSideNode.Id, transformer.LowerSideNode.Id,
-                        transformer.NominalPower, transformer.RelativeShortCircuitVoltage, transformer.CopperLosses,
-                        transformer.IronLosses, transformer.RelativeNoLoadCurrent, transformer.Ratio, new Angle(), transformer.Name);
-            }
-            catch (Exception exception)
-            {
-                Log("an error occured during the creation of the net: " + exception.Message);
-                IsCalculationRunning = false;
-                return false;
-            }
-
-            return true;
-        }
-
         private void UpdateDatabaseWithChangedNetElements(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (ReactToChangesWithDatabaseUpdate)
@@ -528,6 +309,55 @@ namespace Database
                 throw new ArgumentNullException("sender");
 
             Connection.Update(node);
+        }
+
+        public SqlCommand CreateCommandToAddToDatabase()
+        {
+            var command =
+                new SqlCommand(
+                    "INSERT INTO powernets (PowerNetName, Frequency, CalculatorSelection) OUTPUT INSERTED.PowerNetId VALUES(@Name, @Frequency, @CalculatorSelection);");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
+            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
+            return command;
+        }
+
+        public SqlCommand CreateCommandToUpdateInDatabase()
+        {
+            var command =
+                new SqlCommand(
+                    "UPDATE powernets SET PowerNetName=@Name, Frequency=@Frequency, CalculatorSelection=@CalculatorSelection WHERE PowerNetId=@Id;");
+            command.Parameters.Add(new SqlParameter("Name", SqlDbType.Text) { Value = Name });
+            command.Parameters.Add(new SqlParameter("Frequency", SqlDbType.Real) { Value = Frequency });
+            command.Parameters.Add(new SqlParameter("CalculatorSelection", SqlDbType.Int) { Value = CalculatorSelection });
+            command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+            return command;
+        }
+
+        public IEnumerable<SqlCommand> CreateCommandsToRemoveFromDatabase()
+        {
+            var deletePowerNetCommand = new SqlCommand("DELETE FROM powernets WHERE PowerNetId=@Id;");
+            var deleteNodesCommand = new SqlCommand("DELETE FROM nodes WHERE PowerNet=@Id;");
+            var deleteLoadsCommand = new SqlCommand("DELETE FROM loads WHERE PowerNet=@Id;");
+            var deleteFeedInsCommand = new SqlCommand("DELETE FROM feedins WHERE PowerNet=@Id;");
+            var deleteGeneratorsCommand = new SqlCommand("DELETE FROM generators WHERE PowerNet=@Id;");
+            var deleteTransformersCommand = new SqlCommand("DELETE FROM transformers WHERE PowerNet=@Id;");
+            var deleteLinesCommand = new SqlCommand("DELETE FROM lines WHERE PowerNet=@Id;");
+            var commands = new List<SqlCommand>
+            {
+                deleteFeedInsCommand,
+                deleteGeneratorsCommand,
+                deleteTransformersCommand,
+                deleteLinesCommand,
+                deleteLoadsCommand,
+                deleteNodesCommand,
+                deletePowerNetCommand
+            };
+
+            foreach (var command in commands)
+                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
+
+            return commands;
         }
 
         public static SqlCommand CreateCommandToCreateTable()

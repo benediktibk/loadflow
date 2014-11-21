@@ -9,13 +9,13 @@ namespace Database
 {
     public class Model : INotifyPropertyChanged
     {
-        private PowerNet _selectedPowerNet;
+        private PowerNetComputable _selectedPowerNet;
         private Connection _connection;
         private bool _reactToChanges;
 
         public Model()
         {
-            PowerNets = new ObservableCollection<PowerNet>();
+            PowerNets = new ObservableCollection<PowerNetComputable>();
             Connection = new Connection();
             PowerNets.CollectionChanged += UpdateDatabaseWithChangedPowerNets;
             _reactToChanges = true;
@@ -39,7 +39,7 @@ namespace Database
             _reactToChanges = true;
         }
 
-        public PowerNet SelectedPowerNet 
+        public PowerNetComputable SelectedPowerNet 
         { 
             get { return _selectedPowerNet; }
             set
@@ -65,7 +65,7 @@ namespace Database
             }
         }
 
-        public ObservableCollection<PowerNet> PowerNets { get; set; }
+        public ObservableCollection<PowerNetComputable> PowerNets { get; set; }
 
         public delegate void PowerNetChangedEventHandler();
 

@@ -54,6 +54,7 @@
     <Compile Include="Model.cs" />
     <Compile Include="FeedIn.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="PowerNetComputable.cs" />
     <Compile Include="TransmissionLine.cs" />
     <Compile Include="Load.cs" />
     <Compile Include="Node.cs" />

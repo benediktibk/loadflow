@@ -124,14 +124,14 @@ namespace Database
             }
         }
 
-        public void ReadPowerNets(ObservableCollection<PowerNet> powerNets)
+        public void ReadPowerNets(ObservableCollection<PowerNetComputable> powerNets)
         {
             powerNets.Clear();
             var command = new SqlCommand("SELECT * FROM powernets;", _sqlConnection);
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    powerNets.Add(new PowerNet(reader, this));
+                    powerNets.Add(new PowerNetComputable(reader, this));
 
             ReadNetElements(powerNets);
         }
