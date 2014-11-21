@@ -664,6 +664,20 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_RuralNetWithCableVersionOne_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_GermanNetAndMockCalculator_NoExceptionThrown()
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/uebertragungsnetz_deutschland_files/database.mdb");
