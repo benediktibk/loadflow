@@ -161,6 +161,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return new AdmittanceMatrix(admittancesToUnknownVoltages);
         }
 
+        public Vector<Complex> CalculateRowSums()
+        {
+            return _values.RowSums();
+        }
+
         private static Dictionary<int, int> DetermineNewIndices(IEnumerable<int> indexOfNodesWithUnknownVoltage)
         {
             var unknownRows = new Dictionary<int, int>();
@@ -173,11 +178,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             }
 
             return unknownRows;
-        }
-
-        public Vector<Complex> CalculateRowSums()
-        {
-            return _values.RowSums();
         }
 
         private Matrix<Complex> Extract(IReadOnlyDictionary<int, int> rows, IReadOnlyDictionary<int, int> columns)
