@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
@@ -84,10 +83,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             for (var i = firstPartCount + secondPartCount; i < complete.Count; ++i)
                 thirdParts.Add(complete[i]);
-
-            Debug.Assert(firstPartCount == firstParts.Count);
-            Debug.Assert(secondPartCount == secondParts.Count);
-            Debug.Assert(thirdPartCount == thirdParts.Count);
         }
 
         public static void CalculateChangeMatrixRealPowerByAngle(Matrix<double> result, IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> currents, int startRow, int startColumn, IList<int> rows, IList<int> columns)
