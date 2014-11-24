@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -17,8 +18,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         Vector<Complex> CalculateAllPowers(Vector<Complex> allVoltages);
         Complex CalculatePowerLoss(Vector<Complex> allVoltages);
         Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents);
-
         double CalculatePowerError(Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
+        IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed();
     }
 }

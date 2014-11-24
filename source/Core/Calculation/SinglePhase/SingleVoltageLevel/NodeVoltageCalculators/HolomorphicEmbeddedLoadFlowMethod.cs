@@ -88,7 +88,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltages;
         }
 
-        private void SetRightHandSideValues(Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, int nodeCount, int calculator)
+        private static void SetRightHandSideValues(IList<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, int nodeCount, int calculator)
         {
             for (var i = 0; i < nodeCount; ++i)
                 HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetConstantCurrent(calculator, i, constantCurrents[i].Real,
@@ -103,21 +103,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     pvBuses[i].VoltageMagnitude);
         }
 
-        private void SetAdmittanceValues(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, int calculator)
+        private static void SetAdmittanceValues(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, int calculator)
         {
+            foreach (var entry in admittances.EnumerateIndexed())
+            {
+                var value = entry.Item3;
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittance(calculator, entry.Item1, entry.Item2, value.Real,
+                    value.Imaginary);
+            }
+
             for (var row = 0; row < admittances.NodeCount; ++row)
             {
-                for (var column = 0; column < admittances.NodeCount; ++column)
-                {
-                    var admittance = admittances[row, column];
-
-                    if (admittance == new Complex())
-                        continue;
-
-                    HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittance(calculator, row, column, admittance.Real,
-                        admittance.Imaginary);
-                }
-
                 var totalRowSum = totalAdmittanceRowSums[row];
                 HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(calculator, row, totalRowSum.Real,
                     totalRowSum.Imaginary);

@@ -55,6 +55,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 pvBuses.Sum(bus => Math.Abs(bus.RealPower - powers[bus.Index].Real));
         }
 
+        public IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed()
+        {
+            return _values.EnumerateIndexed(Zeros.AllowSkip);
+        }
+
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)
         {
             var currents = CalculateCurrents(voltages) - constantCurrents;
