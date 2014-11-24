@@ -161,18 +161,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public Vector<Complex> CalculateRowSums()
         {
-            var result = new SparseVector(NodeCount);
-
-            var rowIndex = 0;
-            foreach (var row in _values.EnumerateRows())
-            {
-                foreach (var value in row)
-                    result[rowIndex] += value;
-
-                ++rowIndex;
-            }
-
-            return result;
+            return _values.RowSums();
         }
 
         private Matrix<Complex> Extract(IReadOnlyList<int> rows, IReadOnlyList<int> columns)
