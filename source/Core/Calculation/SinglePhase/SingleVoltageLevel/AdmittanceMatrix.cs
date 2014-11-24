@@ -153,10 +153,26 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public IReadOnlyAdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage, IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages, out Vector<Complex> constantCurrentRightHandSide)
         {
-            var admittancesToUnknownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithUnknownVoltage);
-            var admittancesToKnownVoltages = Extract(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage);
+            var unknownVoltagesIndices = DetermineNewIndices(indexOfNodesWithUnknownVoltage);
+            var knownVoltagesIndices = DetermineNewIndices(indexOfNodesWithKnownVoltage);
+            var admittancesToUnknownVoltages = Extract(unknownVoltagesIndices, unknownVoltagesIndices);
+            var admittancesToKnownVoltages = Extract(unknownVoltagesIndices, knownVoltagesIndices);
             constantCurrentRightHandSide = admittancesToKnownVoltages.Multiply(knownVoltages)*(-1);
             return new AdmittanceMatrix(admittancesToUnknownVoltages);
+        }
+
+        private static Dictionary<int, int> DetermineNewIndices(IEnumerable<int> indexOfNodesWithUnknownVoltage)
+        {
+            var unknownRows = new Dictionary<int, int>();
+
+            var newIndex = 0;
+            foreach (var oldIndex in indexOfNodesWithUnknownVoltage)
+            {
+                unknownRows[oldIndex] = newIndex;
+                ++newIndex;
+            }
+
+            return unknownRows;
         }
 
         public Vector<Complex> CalculateRowSums()
@@ -164,22 +180,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return _values.RowSums();
         }
 
-        private Matrix<Complex> Extract(IReadOnlyList<int> rows, IReadOnlyList<int> columns)
+        private Matrix<Complex> Extract(IReadOnlyDictionary<int, int> rows, IReadOnlyDictionary<int, int> columns)
         {
             var matrix = new SparseMatrix(rows.Count, columns.Count);
 
-            for (var targetRowIndex = 0; targetRowIndex < rows.Count; ++targetRowIndex)
+            foreach (var entry in _values.EnumerateIndexed(Zeros.AllowSkip))
             {
-                var sourceRowIndex = rows[targetRowIndex];
+                int row;
+                if (!rows.TryGetValue(entry.Item1, out row)) continue;
 
-                for (var targetColumnIndex = 0; targetColumnIndex < columns.Count; ++targetColumnIndex)
-                {
-                    var sourceColumnIndex = columns[targetColumnIndex];
-                    var value = _values[sourceRowIndex, sourceColumnIndex];
-
-                    if (value.Magnitude > 0)
-                        matrix[targetRowIndex, targetColumnIndex] = value;
-                }
+                int column;
+                if (columns.TryGetValue(entry.Item2, out column))
+                    matrix[row, column] = entry.Item3;
             }
 
             return matrix;
