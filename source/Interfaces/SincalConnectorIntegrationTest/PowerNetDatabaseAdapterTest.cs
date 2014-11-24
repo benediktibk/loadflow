@@ -5,7 +5,6 @@ using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
@@ -693,6 +692,20 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/uebertragungsnetz_deutschland_files/database.mdb");
 
             powerNet.CalculateNodeVoltages(_calculatorMock.Object, out _relativePowerError);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetVersionOne_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
         }
 
         public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
