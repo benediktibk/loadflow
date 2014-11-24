@@ -78,6 +78,7 @@ template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
 	freeMemory();
+	//_admittances.compress();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
 	_factorization = new Decomposition<ComplexFloating>(_admittances);
 
