@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
@@ -22,6 +25,12 @@ namespace SincalConnectorIntegrationTest
         {
             _calculator = new CurrentIteration(0.0000001, 10000);
             _calculatorMock = new Mock<INodeVoltageCalculator>();
+            _calculatorMock.Setup(x => x.CalculateUnknownVoltages(
+                It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(), It.IsAny<double>(),
+                It.IsAny<Vector<Complex>>(), It.IsAny<Vector<Complex>>(), It.IsAny<IList<PqNodeWithIndex>>(),
+                It.IsAny<IList<PvNodeWithIndex>>()))
+                .Returns((IReadOnlyAdmittanceMatrix admittances, IList<Complex> admittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages,
+                        Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex>  pvBuses) => initialVoltages);
         }
 
         [TestMethod]
