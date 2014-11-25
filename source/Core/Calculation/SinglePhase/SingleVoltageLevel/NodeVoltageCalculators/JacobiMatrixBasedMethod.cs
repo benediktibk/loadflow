@@ -122,17 +122,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(Complex voltageRow, Complex currentRow)
+        public static double CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(Complex voltageRow, Complex currentRow)
         {
             return (-1) * voltageRow.Magnitude * currentRow.Magnitude * Math.Sin(currentRow.Phase - voltageRow.Phase);
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(Complex admittance, Complex voltageRow, Complex voltageColumn)
+        public static double CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByAngle(Complex admittance, Complex voltageRow, Complex voltageColumn)
+        public static double CalculateChangeMatrixEntryRealPowerByAngle(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
@@ -158,7 +158,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByAngle(Complex admittance, Complex voltageRow, Complex voltageColumn)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAngle(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Cos(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
@@ -204,17 +204,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(Complex admittance, Complex voltageColumn, Complex voltageRow)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(Complex admittance, Complex voltageColumn, Complex voltageRow)
         {
             return admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(Complex currentRow, Complex voltageRow, Complex admittance)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(Complex currentRow, Complex voltageRow, Complex admittance)
         {
             return currentRow.Magnitude * Math.Sin(currentRow.Phase - voltageRow.Phase) - 2 * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase);
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByAmplitude(Complex admittance, Complex voltageRow, Complex voltageColumn)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitude(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return (-1) * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
@@ -242,12 +242,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByRealPartDiagonalPart(Complex currentRow)
+        public static double CalculateChangeMatrixEntryRealPowerByRealPartDiagonalPart(Complex currentRow)
         {
             return currentRow.Real;
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByRealPartOffDiagonalPart(Complex voltageRow, Complex admittance)
+        public static double CalculateChangeMatrixEntryRealPowerByRealPartOffDiagonalPart(Complex voltageRow, Complex admittance)
         {
             return voltageRow.Real * admittance.Real + voltageRow.Imaginary * admittance.Imaginary;
         }
@@ -275,12 +275,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByImaginaryPartDiagonalPart(Complex currentRow)
+        public static double CalculateChangeMatrixEntryRealPowerByImaginaryPartDiagonalPart(Complex currentRow)
         {
             return currentRow.Imaginary;
         }
 
-        private static double CalculateChangeMatrixEntryRealPowerByImaginaryPartOffDiagonalPart(Complex voltageRow, Complex admittance)
+        public static double CalculateChangeMatrixEntryRealPowerByImaginaryPartOffDiagonalPart(Complex voltageRow, Complex admittance)
         {
             return voltageRow.Imaginary * admittance.Real - voltageRow.Real * admittance.Imaginary;
         }
@@ -308,12 +308,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByRealPartDiagonalPart(Complex currentRow)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByRealPartDiagonalPart(Complex currentRow)
         {
             return currentRow.Imaginary;
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByRealPartOffDiagonalPart(Complex voltageRow, Complex admittance)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByRealPartOffDiagonalPart(Complex voltageRow, Complex admittance)
         {
             return voltageRow.Imaginary * admittance.Real - voltageRow.Real * admittance.Imaginary;
         }
@@ -341,29 +341,29 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartDiagonalPart(Complex currentRow)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartDiagonalPart(Complex currentRow)
         {
             return currentRow.Real;
         }
 
-        private static double CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartOffDiagonalPart(Complex voltageRow, Complex admittance)
+        public static double CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartOffDiagonalPart(Complex voltageRow, Complex admittance)
         {
             return (-1) * (voltageRow.Real * admittance.Real + voltageRow.Imaginary * admittance.Imaginary);
         }
 
         public static Dictionary<int, int> CreateMappingBusIdToIndex(IList<int> buses, int totalCount)
         {
-            var busIdToAmplitudeIndex = new Dictionary<int, int>();
+            var busIdToIndex = new Dictionary<int, int>();
             var busIndex = 0;
 
             for (var i = 0; i < totalCount && busIndex < buses.Count; ++i)
                 if (i == buses[busIndex])
                 {
-                    busIdToAmplitudeIndex[buses[busIndex]] = busIndex;
+                    busIdToIndex[buses[busIndex]] = busIndex;
                     ++busIndex;
                 }
 
-            return busIdToAmplitudeIndex;
+            return busIdToIndex;
         }
 
         private static void CalculatePowerDifferences(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses,

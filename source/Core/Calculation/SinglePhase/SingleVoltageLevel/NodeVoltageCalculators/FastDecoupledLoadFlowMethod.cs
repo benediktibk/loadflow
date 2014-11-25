@@ -46,8 +46,44 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IEnumerable<double> powersImaginaryError, IList<int> pqBuses, int unknownMagnitudes)
         {
             var changeMatrixImaginaryPower = new DenseMatrix(unknownMagnitudes, unknownMagnitudes);
-            CalculateChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPower, admittances, voltages,
-                constantCurrents, 0, 0, pqBuses, pqBuses);
+
+            for (var row = 0; row < pqBuses.Count; ++row)
+            {
+                var i = pqBuses[row];
+
+                for (var column = 0; column < pqBuses.Count; ++column)
+                {
+                    var k = pqBuses[column];
+
+                    var admittance = admittances[i, k];
+                    var voltageRow = voltages[i];
+                    if (i != k)
+                    {
+                        var voltageColumn = voltages[k];
+                        changeMatrixImaginaryPower[0 + row, 0 + column] = CalculateChangeMatrixEntryImaginaryPowerByAmplitude(admittance, voltageRow, voltageColumn);
+                    }
+                    else
+                    {
+                        var currentRow = constantCurrents[i];
+                        var diagonalPart = CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(currentRow, voltageRow, admittance);
+
+                        var offDiagonalPart = 0.0;
+
+                        for (var j = 0; j < admittances.NodeCount; ++j)
+                        {
+                            if (j != i)
+                            {
+                                var admittance2 = admittances[i, j];
+                                var voltageColumn = voltages[j];
+                                offDiagonalPart += CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance2, voltageColumn, voltageRow);
+                            }
+                        }
+
+                        changeMatrixImaginaryPower[0 + row, 0 + column] = diagonalPart - offDiagonalPart;
+                    }
+                }
+            }
+
             var factorizationImaginaryPower = changeMatrixImaginaryPower.LU();
             return factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
         }
@@ -56,8 +92,41 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IEnumerable<double> powersRealError, int unknownAngles, IList<int> allNodes)
         {
             var changeMatrixRealPower = new DenseMatrix(unknownAngles, unknownAngles);
-            CalculateChangeMatrixRealPowerByAngle(changeMatrixRealPower, admittances, voltages, constantCurrents, 0,
-                0, allNodes, allNodes);
+
+            for (var row = 0; row < allNodes.Count; ++row)
+            {
+                var i = allNodes[row];
+
+                for (var column = 0; column < allNodes.Count; ++column)
+                {
+                    var k = allNodes[column];
+
+                    var voltageRow = voltages[i];
+                    if (i != k)
+                    {
+                        var admittance = admittances[i, k];
+                        var voltageColumn = voltages[k];
+                        changeMatrixRealPower[0 + row, 0 + column] = CalculateChangeMatrixEntryRealPowerByAngle(admittance, voltageRow, voltageColumn);
+                    }
+                    else
+                    {
+                        var currentRow = constantCurrents[i];
+                        var diagonalPart = CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltageRow, currentRow);
+                        var offDiagonalPart = 0.0;
+
+                        for (var j = 0; j < admittances.NodeCount; ++j)
+                            if (i != j)
+                            {
+                                var admittance = admittances[i, j];
+                                var voltageColumn = voltages[j];
+                                offDiagonalPart += CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
+                            }
+
+                        changeMatrixRealPower[0 + row, 0 + column] = diagonalPart + offDiagonalPart;
+                    }
+                }
+            }
+
             var factorizationRealPower = changeMatrixRealPower.LU();
             return factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
         }
