@@ -33,8 +33,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Debug.Assert(pvBuses.Count == voltageChangesAngle.Count);
             var nodeCount = pqBuses.Count + pvBuses.Count;
             var improvedVoltages = new DenseVector(nodeCount);
-            var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses, nodeCount);
-            var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses, nodeCount);
+            var mappingPQBusToIndex = CreateMappingBusIdToIndex(pqBuses);
+            var mappingPVBusToIndex = CreateMappingBusIdToIndex(pvBuses);
 
             foreach (var bus in pqBuses)
             {

@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
-            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses, allNodes.Count);
+            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses);
 
             var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, unknownAngles, allNodes);
 
