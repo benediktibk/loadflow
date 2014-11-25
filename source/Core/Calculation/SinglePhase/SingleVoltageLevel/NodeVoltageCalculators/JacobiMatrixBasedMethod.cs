@@ -129,26 +129,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 {
                     var k = columns[column];
 
-                    if (i != k)
-                        result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
-                                                                voltages[k].Magnitude *
-                                                                Math.Cos(admittances[i, k].Phase + voltages[k].Phase -
-                                                                         voltages[i].Phase);
-                    else
-                    {
-                        var diagonalPart = (-1) * voltages[i].Magnitude * currents[i].Magnitude *
-                                                                Math.Cos(currents[i].Phase - voltages[i].Phase);
-                        var offDiagonalPart = 0.0;
+                    if (i == k)
+                        throw new ArgumentException("a node can not be of PQ- and PV-type at the same time");
 
-                        for (var j = 0; j < admittances.NodeCount; ++j)
-                            if (j != i)
-                                offDiagonalPart += admittances[i, j].Magnitude * voltages[i].Magnitude *
-                                                                    voltages[j].Magnitude *
-                                                                    Math.Cos(admittances[i, j].Phase + voltages[j].Phase -
-                                                                             voltages[i].Phase);
-
-                        result[startRow + row, startColumn + column] = diagonalPart + offDiagonalPart;
-                    }
+                    result[startRow + row, startColumn + column] = (-1) * admittances[i, k].Magnitude * voltages[i].Magnitude *
+                                                            voltages[k].Magnitude *
+                                                            Math.Cos(admittances[i, k].Phase + voltages[k].Phase -
+                                                                        voltages[i].Phase);
                 }
             }
         }
