@@ -157,5 +157,32 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             ComplexAssert.AreEqual(35.4078734444971, -6.50249937627648, improvedVoltages[1], 0.000001);
             ComplexAssert.AreEqual(32.68406960966, -6.06776444261958, improvedVoltages[2], 0.000001);
         }
+
+        [TestMethod]
+        public void CalculateImprovedVoltages_TwoPqAndOnePvNodeDifferentOrder_CorrectResults()
+        {
+            var calculator = new FastDecoupledLoadFlowMethod(0.000001, 1000);
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
+            {
+                {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
+                {new Complex(7, 8), new Complex(9, 10), new Complex(11, 12)},
+                {new Complex(13, 14), new Complex(15, 16), new Complex(17, 18)}
+            }));
+            var voltages = new DenseVector(new[] { new Complex(19, 20), new Complex(21, 22), new Complex(23, 24) });
+            var constantCurrents = new DenseVector(new[] { new Complex(25, 26), new Complex(27, 28), new Complex(29, 30) });
+            var powersRealError = new List<double> { 31, 32, 33 };
+            var powersImaginaryError = new List<double> { 34, 35 };
+            var pqBuses = new List<int> { 0, 1 };
+            var pvBuses = new List<int> { 2 };
+            var pvBusVoltages = new List<double> { 36 };
+
+            var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+
+            Assert.AreEqual(3, improvedVoltages.Count);
+            ComplexAssert.AreEqual(27.0173142661381, -5.1870979875702, improvedVoltages[0], 0.000001);
+            ComplexAssert.AreEqual(29.841692902066, -5.80097573381533, improvedVoltages[1], 0.000001);
+            ComplexAssert.AreEqual(35.3249405264103, -6.93891755287353, improvedVoltages[2], 0.000001);
+        }
     }
 }
