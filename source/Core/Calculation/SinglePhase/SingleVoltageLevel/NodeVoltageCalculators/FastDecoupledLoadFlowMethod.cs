@@ -65,7 +65,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var admittance = entry.Item3;
                 var voltageRow = voltages[i];
 
-                if (i == k)
+                if (row == column)
                 {
                     var currentRow = constantCurrents[i];
                     changeMatrix[column, column] +=
@@ -105,7 +105,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 int row;
                 int column;
 
-                if (i == k || !busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
+                if (!busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
+                    continue;
+
+                if (row == column)
                     continue;
 
                 var admittance = entry.Item3;
