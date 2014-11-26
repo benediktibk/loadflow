@@ -194,7 +194,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                             {
                                 var admittance2 = admittances[i, j];
                                 var voltageColumn = voltages[j];
-                                offDiagonalPart += CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance2, voltageColumn, voltageRow);
+                                offDiagonalPart -= CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance2, voltageColumn, voltageRow);
                             }
                         }
 
@@ -206,7 +206,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(Complex admittance, Complex voltageColumn, Complex voltageRow)
         {
-            return admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
+            return admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
         }
 
         public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(Complex currentRow, Complex voltageRow, Complex admittance)

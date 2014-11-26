@@ -56,33 +56,31 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 var i = entry.Item1;
                 var k = entry.Item2;
-                var admittance = entry.Item3;
                 int row;
-
-                if (!busIds.TryGetValue(i, out row))
-                    continue;
-
                 int column;
 
-                if (!busIds.TryGetValue(k, out column))
+                if (!busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
                     continue;
 
+                var admittance = entry.Item3;
                 var voltageRow = voltages[i];
-                var voltageColumn = voltages[k];
 
-                if (i != k)
-                    changeMatrix[row, column] =
-                        CalculateChangeMatrixEntryImaginaryPowerByAmplitude(admittance, voltageRow, voltageColumn);
-                else
+                if (i == k)
                 {
                     var currentRow = constantCurrents[i];
-                    changeMatrix[row, column] +=
+                    changeMatrix[column, column] +=
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(currentRow, voltageRow,
                             admittance);
                 }
-
-                changeMatrix[row, column] -= CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance,
-                    voltageColumn, voltageRow);
+                else
+                {
+                    var voltageColumn = voltages[k];
+                    changeMatrix[row, column] =
+                        CalculateChangeMatrixEntryImaginaryPowerByAmplitude(admittance, voltageRow, voltageColumn);
+                    changeMatrix[row, row] +=
+                        CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn,
+                            voltageRow);
+                }
             }
 
             return changeMatrix;
