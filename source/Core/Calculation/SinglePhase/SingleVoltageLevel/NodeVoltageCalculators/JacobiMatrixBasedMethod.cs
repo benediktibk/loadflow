@@ -354,14 +354,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public static Dictionary<int, int> CreateMappingBusIdToIndex(IList<int> buses)
         {
             var busIdToIndex = new Dictionary<int, int>();
-            var busIndex = 0;
+            var i = 0;
 
-            for (var i = 0; busIndex < buses.Count; ++i)
-                if (i == buses[busIndex])
-                {
-                    busIdToIndex[buses[busIndex]] = busIndex;
-                    ++busIndex;
-                }
+            foreach (var bus in buses)
+            {
+                busIdToIndex[bus] = i;
+                ++i;
+            }
 
             return busIdToIndex;
         }
