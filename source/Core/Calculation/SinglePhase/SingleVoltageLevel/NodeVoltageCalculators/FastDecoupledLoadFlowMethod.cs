@@ -104,17 +104,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 var i = entry.Item1;
                 var k = entry.Item2;
-
-                if (i == k)
-                    continue;
                 int row;
-
-                if (!busIds.TryGetValue(i, out row))
-                    continue;
-
                 int column;
 
-                if (!busIds.TryGetValue(k, out column))
+                if (i == k || !busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
                     continue;
 
                 var admittance = entry.Item3;
