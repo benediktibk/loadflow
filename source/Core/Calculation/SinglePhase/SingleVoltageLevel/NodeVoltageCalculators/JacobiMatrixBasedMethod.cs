@@ -358,7 +358,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             foreach (var bus in buses)
             {
-                busIdToIndex[bus] = i;
+                busIdToIndex.Add(bus, i);
                 ++i;
             }
 
