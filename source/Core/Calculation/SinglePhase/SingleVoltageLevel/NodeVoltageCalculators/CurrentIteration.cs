@@ -5,7 +5,9 @@ using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -32,15 +34,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var totalAbsolutePowerSum = powers.Sum(x => Math.Abs(x.Real) + Math.Abs(x.Imaginary));
             var iterations = 0;
             bool accurateEnough;
-            var factorization = admittances.CalculateFactorization();
 
             do
             {
                 bool powerErrorTooBig;
                 var rightHandSide = CalculateRightHandSide(constantCurrents, powers, voltages);
 
-                var newVoltages = CalculateImprovedVoltagesAndPowers(admittances, constantCurrents, pvBuses, factorization,
-                    rightHandSide, powers, out powerErrorTooBig);
+                var newVoltages = CalculateImprovedVoltagesAndPowers(admittances, constantCurrents, pvBuses,
+                    rightHandSide, powers, voltages, out powerErrorTooBig);
 
                 accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, voltages, totalAbsolutePowerSum, powerErrorTooBig);
                 voltages = newVoltages;
@@ -90,11 +91,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                          relativePowerError < MaximumRelativePowerError;
         }
 
-        private Vector<Complex> CalculateImprovedVoltagesAndPowers(IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvNodeWithIndex> pvBuses,
-            ISolver<Complex> factorization, Vector<Complex> rightHandSide, IList<Complex> powers, out bool powerErrorTooBig)
+        private Vector<Complex> CalculateImprovedVoltagesAndPowers(IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvNodeWithIndex> pvBuses, Vector<Complex> rightHandSide, IList<Complex> powers, Vector<Complex> oldVoltages, out bool powerErrorTooBig)
         {
+            var newVoltages = new DenseVector(oldVoltages.Count);
+            oldVoltages.CopyTo(newVoltages);
+            admittances.Solve(newVoltages, rightHandSide);
             powerErrorTooBig = false;
-            var newVoltages = factorization.Solve(rightHandSide);
 
             foreach (var bus in pvBuses)
             {

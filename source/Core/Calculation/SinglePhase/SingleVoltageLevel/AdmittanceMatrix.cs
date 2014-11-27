@@ -6,13 +6,16 @@ using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
     public class AdmittanceMatrix : IAdmittanceMatrix
     {
         private readonly Matrix<Complex> _values;
+        private readonly BiCgStab _solver;
 
         public AdmittanceMatrix(int nodeCount)
         {
@@ -20,6 +23,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 throw new ArgumentOutOfRangeException("nodeCount", "must be positive");
 
             _values = new SparseMatrix(nodeCount, nodeCount);
+            _solver = new BiCgStab();
         }
 
         public AdmittanceMatrix(Matrix<Complex> values)
@@ -28,6 +32,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 throw new ArgumentOutOfRangeException("values", "must be quadratic");
 
             _values = values.Clone();
+            _solver = new BiCgStab();
         }
 
         public Complex CalculatePowerLoss(Vector<Complex> allVoltages)
@@ -58,6 +63,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed()
         {
             return _values.EnumerateIndexed(Zeros.AllowSkip);
+        }
+
+        public void Solve(Vector<Complex> x, Vector<Complex> b)
+        {
+            _solver.Solve(_values, b, x, new Iterator<Complex>(), new DiagonalPreconditioner());
         }
 
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)

@@ -21,5 +21,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         double CalculatePowerError(Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
         IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed();
+        void Solve(Vector<Complex> x, Vector<Complex> b);
     }
 }
