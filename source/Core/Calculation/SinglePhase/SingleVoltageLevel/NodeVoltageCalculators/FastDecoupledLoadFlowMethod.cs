@@ -114,13 +114,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var admittance = entry.Item3;
                 var voltageRow = voltages[i];
                 var voltageColumn = voltages[k];
-                var currentRow = constantCurrents[i];
                 changeMatrix[row, column] =
                     CalculateChangeMatrixEntryRealPowerByAngle(admittance, voltageRow, voltageColumn);
-                changeMatrix[column, column] +=
-                    CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltageRow, currentRow);
                 changeMatrix[row, row] += 
                     CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
+            }
+
+            foreach (var i in busIds.Select(x => x.Value))
+            {
+                var voltage = voltages[i];
+                var current = constantCurrents[i];
+                changeMatrix[i, i] +=
+                    CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltage, current);
             }
 
             return changeMatrix;
