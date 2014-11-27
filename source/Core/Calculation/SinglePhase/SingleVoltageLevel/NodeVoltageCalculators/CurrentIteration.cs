@@ -95,7 +95,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             var newVoltages = new DenseVector(oldVoltages.Count);
             oldVoltages.CopyTo(newVoltages);
-            admittances.Solve(newVoltages, rightHandSide);
+            admittances.CalculateVoltages(newVoltages, rightHandSide, new BiCgStab(), new Iterator<Complex>());
             powerErrorTooBig = false;
 
             foreach (var bus in pvBuses)

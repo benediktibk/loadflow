@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -11,7 +11,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         int NodeCount { get; }
         Vector<Complex> CalculateCurrents(Vector<Complex> voltages);
         Complex this[int row, int column] { get; }
-        ISolver<Complex> CalculateFactorization();
         Vector<Complex> GetRow(int row);
         IReadOnlyAdmittanceMatrix CreateReducedAdmittanceMatrix(IReadOnlyList<int> indexOfNodesWithUnknownVoltage, IReadOnlyList<int> indexOfNodesWithKnownVoltage, Vector<Complex> knownVoltages, out Vector<Complex> constantCurrentRightHandSide);
         Vector<Complex> CalculateRowSums();
@@ -21,6 +20,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         double CalculatePowerError(Vector<Complex> voltages,
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
         IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed();
-        void Solve(Vector<Complex> x, Vector<Complex> b);
+        void CalculateVoltages(Vector<Complex> x, Vector<Complex> b, IIterativeSolver<Complex> solver, Iterator<Complex> iterator);
     }
 }
