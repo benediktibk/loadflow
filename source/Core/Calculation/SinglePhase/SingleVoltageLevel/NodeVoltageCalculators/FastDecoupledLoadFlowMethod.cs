@@ -17,20 +17,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
-            var pqBusIdToAmplitudeIndex = CreateMappingBusIdToIndex(pqBuses);
-            var allBusIdsToAmplitudeIndex = CreateMappingBusIdToIndex(allNodes);
+            var pqBusIds = CreateMappingBusIdToIndex(pqBuses);
+            var allBusIds = CreateMappingBusIdToIndex(allNodes);
 
-            var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, allBusIdsToAmplitudeIndex);
+            var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, allBusIds);
 
             if (pqBuses.Count > 0)
             {
                 var amplitudeChange = CalculateAmplitudeChange(admittances, voltages, constantCurrents, powersImaginaryError,
-                    pqBusIdToAmplitudeIndex);
+                    pqBusIds);
 
                 foreach (var bus in pqBuses)
                     improvedVoltages[bus] =
                         Complex.FromPolarCoordinates(
-                            voltages[bus].Magnitude + amplitudeChange[pqBusIdToAmplitudeIndex[bus]],
+                            voltages[bus].Magnitude + amplitudeChange[pqBusIds[bus]],
                             voltages[bus].Phase + angleChange[bus]);
             }
 
@@ -47,10 +47,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
         }
 
-        private static DenseMatrix CalculateAmplitudeChangeMatrix(IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages,
-            IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busIds)
+        private static DenseMatrix CalculateAmplitudeChangeMatrix(IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages, IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> pqBusIds)
         {
-            var changeMatrix = new DenseMatrix(busIds.Count, busIds.Count);
+            var changeMatrix = new DenseMatrix(pqBusIds.Count, pqBusIds.Count);
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
@@ -59,11 +58,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 int row;
                 int column;
 
-                if (!busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
+                if (!pqBusIds.TryGetValue(i, out row))
                     continue;
 
                 var admittance = entry.Item3;
                 var voltageRow = voltages[i];
+
+                if (!pqBusIds.TryGetValue(k, out column))
+                {
+                    var voltageColumn = voltages[k];
+                    changeMatrix[row, row] +=
+                        CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn,
+                            voltageRow);
+                    continue;
+                }
 
                 if (row == column)
                     changeMatrix[column, column] +=
@@ -79,7 +87,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 }
             }
 
-            foreach (var i in busIds.Select(x => x.Value))
+            foreach (var i in pqBusIds.Select(x => x.Value))
             {
                 var current = constantCurrents[i];
                 var voltage = voltages[i];
