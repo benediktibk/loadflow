@@ -12,11 +12,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {
         private readonly IIterativeSolver<double> _solver;
+        private readonly IPreconditioner<double> _preconditioner;
+        private readonly Iterator<double> _stopCriterion; 
 
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations)
             : base(targetPrecision, maximumIterations)
         {
             _solver = new BiCgStab();
+            _preconditioner = new ILUTPPreconditioner();
+            _stopCriterion = new Iterator<double>();
         }
 
         public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
@@ -36,8 +40,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (powersRealError.Select(Math.Abs).Max() > TargetPrecision)
             {
                 var powersRealErrorVector = new DenseVector(powersRealError.ToArray());
-                _solver.Solve(changeMatrixRealPowerByAngle, powersRealErrorVector, angleChange, new Iterator<double>(),
-                    new ILUTPPreconditioner());
+                _solver.Solve(changeMatrixRealPowerByAngle, powersRealErrorVector, angleChange, _stopCriterion, _preconditioner);
             }
 
             if (pqBuses.Count > 0)
@@ -47,8 +50,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 if (powersImaginaryError.Select(Math.Abs).Max() > TargetPrecision)
                 {
                     var powersImaginaryErrorVector = new DenseVector(powersImaginaryError.ToArray());
-                    _solver.Solve(changeMatrixImaginaryPowerByAmplitude, powersImaginaryErrorVector, amplitudeChange,
-                        new Iterator<double>(), new ILUTPPreconditioner());
+                    _solver.Solve(changeMatrixImaginaryPowerByAmplitude, powersImaginaryErrorVector, amplitudeChange, _stopCriterion, _preconditioner);
                 }
 
                 foreach (var bus in pqBuses)
