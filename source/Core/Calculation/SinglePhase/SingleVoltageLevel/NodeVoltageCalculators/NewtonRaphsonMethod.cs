@@ -6,7 +6,6 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Solvers;
-using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -50,7 +49,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
-        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError, DenseMatrix changeMatrix, double residualImprovementFactor)
+        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError, Matrix<double> changeMatrix, double residualImprovementFactor)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
             var voltageChanges = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(rightSide.Count);
@@ -64,12 +63,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltageChanges;
         }
 
-        public static DenseMatrix CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+        public static Matrix<double> CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
             IList<int> pqBuses, IList<int> pvBuses)
         {
             var loadCurrents = admittances.CalculateCurrents(voltages);
             var totalCurrents = loadCurrents - constantCurrents;
-            var changeMatrix = new DenseMatrix(pqBuses.Count*2 + pvBuses.Count, pqBuses.Count*2 + pvBuses.Count);
+            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBuses.Count * 2 + pvBuses.Count, pqBuses.Count * 2 + pvBuses.Count);
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
