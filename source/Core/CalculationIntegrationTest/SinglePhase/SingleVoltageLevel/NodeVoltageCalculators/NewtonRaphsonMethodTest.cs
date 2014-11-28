@@ -212,31 +212,9 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBus_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnection(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPVBus_CorrectResults()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPVBus(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculator);
 
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
@@ -286,17 +264,6 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
 
             Assert.IsNotNull(nodeResults);
             NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 10);
-        }
-
-        [TestMethod]
-        public void CalculateNodeVoltagesAndPowers_ThreeNodesWithDecoupledPQAndPVBus_CorrectResults()
-        {
-            var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestThreeNodeProblemWithDecoupledPQAndPVBus(_nodeVoltageCalculator);
-
-            var nodeResults = powerNetTestCase.CalculateNodeResults();
-
-            Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 20);
         }
     }
 }

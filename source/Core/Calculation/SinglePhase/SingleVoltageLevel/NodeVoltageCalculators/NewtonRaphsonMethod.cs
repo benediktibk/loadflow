@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Double.Solvers;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
@@ -14,9 +17,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages, double residualImprovementFactor)
         {
-            Debug.Assert(pvBuses.Count == pvBusVoltages.Count);
             var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBuses, pvBuses);
-            var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix);
+            var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix, residualImprovementFactor);
             return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBuses, pvBuses, pvBusVoltages, voltageChanges);
         }
 
@@ -28,9 +30,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IList<double> voltageChangesAngle;
             DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary,
                 out voltageChangesAngle);
-            Debug.Assert(pqBuses.Count == voltageChangesReal.Count);
-            Debug.Assert(pqBuses.Count == voltageChangesImaginary.Count);
-            Debug.Assert(pvBuses.Count == voltageChangesAngle.Count);
             var nodeCount = pqBuses.Count + pvBuses.Count;
             var improvedVoltages = new DenseVector(nodeCount);
             var mappingPqBusToIndex = CreateMappingBusToMatrixIndex(pqBuses);
@@ -51,12 +50,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
-        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError,
-            DenseMatrix changeMatrix)
+        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError, DenseMatrix changeMatrix, double residualImprovementFactor)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var factorization = changeMatrix.LU();
-            var voltageChanges = factorization.Solve(rightSide);
+            var voltageChanges = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(rightSide.Count);
+            var realPowerMaximumError = powersRealError.Select(Math.Abs).Max();
+            var imaginaryPowerMaximumError = powersImaginaryError.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
+            var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
+            var stopCriterion = new Iterator<double>(new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor));
+            var preconditioner = new ILU0Preconditioner();
+            var solver = new TFQMR();
+            solver.Solve(changeMatrix, rightSide, voltageChanges, stopCriterion, preconditioner);
             return voltageChanges;
         }
 
