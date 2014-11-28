@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -163,6 +164,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public static double CalculateChangeMatrixEntryImaginaryPowerByAngle(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Cos(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
+        }
+
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAngleOffDiagonalPart(Complex admittance,
+            Complex voltageRow, Complex voltageColumn)
+        {
+            return voltageRow.Magnitude*admittance.Magnitude*voltageColumn.Magnitude*
+                   Math.Cos(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
+        }
+
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAngleDiagonalPart(Complex voltage,
+            Complex current)
+        {
+            return (-1)*current.Magnitude*voltage.Magnitude*Math.Cos(voltage.Phase - current.Phase);
         }
 
         public static void CalculateChangeMatrixImaginaryPowerByAmplitude(Matrix<double> result,

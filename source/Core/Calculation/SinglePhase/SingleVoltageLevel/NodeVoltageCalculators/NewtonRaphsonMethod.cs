@@ -68,22 +68,192 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             var loadCurrents = admittances.CalculateCurrents(voltages);
             var totalCurrents = loadCurrents - constantCurrents;
-            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBuses.Count * 2 + pvBuses.Count, pqBuses.Count * 2 + pvBuses.Count);
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
-            CalculateChangeMatrixRealPowerByRealPart(changeMatrix, admittances, voltages, totalCurrents, 0, 0, allNodes, pqBuses);
-            CalculateChangeMatrixRealPowerByImaginaryPart(changeMatrix, admittances, voltages, totalCurrents, 0, pqBuses.Count,
-                allNodes, pqBuses);
-            CalculateChangeMatrixImaginaryPowerByRealPart(changeMatrix,
-                admittances, voltages, totalCurrents, allNodes.Count, 0, pqBuses, pqBuses);
-            CalculateChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix,
-                admittances, voltages, totalCurrents, allNodes.Count, pqBuses.Count, pqBuses, pqBuses);
-            CalculateChangeMatrixRealPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, 0,
-                pqBuses.Count*2, allNodes, pvBuses);
-            CalculateChangeMatrixImaginaryPowerByAngle(changeMatrix, admittances, voltages, constantCurrents, allNodes.Count,
-                pqBuses.Count*2, pqBuses, pvBuses);
+            var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
+            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
+            var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
+            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
+
+            foreach (var entry in admittances.EnumerateIndexed())
+            {
+                var busRow = entry.Item1;
+                var busColumn = entry.Item2;
+                var admittance = entry.Item3;
+                FillChangeMatrixRealPowerByRealPart(changeMatrix, voltages, busToMatrixIndex, pqBusToMatrixIndex, busRow,
+                    busColumn, admittance);
+                FillChangeMatrixRealPowerByImaginaryPart(changeMatrix, voltages, busToMatrixIndex, pqBusToMatrixIndex, busRow,
+                    busColumn, admittance, pqBusToMatrixIndex.Count);
+                FillChangeMatrixImaginaryPowerByRealPart(changeMatrix, voltages, pqBusToMatrixIndex, busRow, busColumn,
+                    admittance, busToMatrixIndex.Count);
+                FillChangeMatrixImaginaryPowerByImaginaryPart(changeMatrix, voltages, pqBusToMatrixIndex, busRow, busColumn,
+                    admittance, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
+                FillChangeMatrixRealPowerByAngle(changeMatrix, voltages, busToMatrixIndex, pvBusToMatrixIndex, busRow, busColumn, admittance, 2 * pqBusToMatrixIndex.Count);
+                FillChangeMatrixImaginaryPowerByAngle(changeMatrix, voltages, pqBusToMatrixIndex, pvBusToMatrixIndex, busRow, busColumn,
+                    admittance, busToMatrixIndex.Count, 2*pqBusToMatrixIndex.Count);
+            }
+
+            foreach (var bus in pqBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var current = totalCurrents[busIndex];
+                changeMatrix[matrixIndex, matrixIndex] +=
+                    CalculateChangeMatrixEntryRealPowerByRealPartDiagonalPart(current);
+            }
+
+            foreach (var bus in pqBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var current = totalCurrents[busIndex];
+                changeMatrix[matrixIndex, matrixIndex + pqBusToMatrixIndex.Count] +=
+                    CalculateChangeMatrixEntryRealPowerByImaginaryPartDiagonalPart(current);
+            }
+
+            foreach (var bus in pqBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var current = totalCurrents[busIndex];
+                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex] +=
+                    CalculateChangeMatrixEntryImaginaryPowerByRealPartDiagonalPart(current);
+            }
+
+            foreach (var bus in pqBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var current = totalCurrents[busIndex];
+                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex + pqBusToMatrixIndex.Count] +=
+                    CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartDiagonalPart(current);
+            }
+
+            foreach (var bus in pvBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var voltage = voltages[busIndex];
+                var current = constantCurrents[busIndex];
+                changeMatrix[matrixIndex, matrixIndex + pqBusToMatrixIndex.Count * 2] +=
+                    CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltage, current);
+            }
+
+            foreach (var bus in pvBusToMatrixIndex)
+            {
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var voltage = voltages[busIndex];
+                var current = constantCurrents[busIndex];
+                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex + pqBusToMatrixIndex.Count * 2] +=
+                    CalculateChangeMatrixEntryImaginaryPowerByAngleDiagonalPart(voltage, current);
+            }
+
             return changeMatrix;
+        }
+
+        private static void FillChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, IList<Complex> voltages,
+            IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
+        {
+            var matrixRow = rowBusToMatrixIndex[busRow];
+            int matrixColumn;
+
+            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            changeMatrix[matrixRow, matrixColumn] = CalculateChangeMatrixEntryRealPowerByRealPartOffDiagonalPart(voltageRow, admittance);
+        }
+
+        private static void FillChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, IList<Complex> voltages,
+            IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int columnOffset)
+        {
+            var matrixRow = rowBusToMatrixIndex[busRow];
+            int matrixColumn;
+
+            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            changeMatrix[matrixRow, matrixColumn + columnOffset] = CalculateChangeMatrixEntryRealPowerByImaginaryPartOffDiagonalPart(voltageRow, admittance);
+        }
+
+        private static void FillChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, IList<Complex> voltages,
+            IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance, int rowOffset)
+        {
+            int matrixRow;
+            int matrixColumn;
+
+            if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow) || !busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            changeMatrix[matrixRow + rowOffset, matrixColumn] = CalculateChangeMatrixEntryImaginaryPowerByRealPartOffDiagonalPart(voltageRow, admittance);
+        }
+
+        private static void FillChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, IList<Complex> voltages,
+            IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance, int rowOffset, int columnOffset)
+        {
+            int matrixRow;
+            int matrixColumn;
+
+            if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow) || !busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] = CalculateChangeMatrixEntryImaginaryPowerByImaginaryPartOffDiagonalPart(voltageRow, admittance);
+        }
+
+        private static void FillChangeMatrixRealPowerByAngle(Matrix<double> changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int columnOffset)
+        {
+            var matrixRow = rowBusToMatrixIndex[busRow];
+            int matrixColumn;
+
+            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            var voltageColumn = voltages[busColumn];
+            changeMatrix[matrixRow, matrixColumn + columnOffset] =
+                CalculateChangeMatrixEntryRealPowerByAngle(admittance, voltageRow, voltageColumn);
+            changeMatrix[matrixRow, matrixRow + columnOffset] +=
+                CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
+        }
+
+        private static void FillChangeMatrixImaginaryPowerByAngle(Matrix<double> changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int rowOffset, int columnOffset)
+        {
+            int matrixRow;
+            int matrixColumn;
+
+            if (!rowBusToMatrixIndex.TryGetValue(busRow, out matrixRow) ||
+                !columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                return;
+
+            if (matrixRow == matrixColumn)
+                return;
+
+            var voltageRow = voltages[busRow];
+            var voltageColumn = voltages[busColumn];
+            changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] =
+                CalculateChangeMatrixEntryImaginaryPowerByAngle(admittance, voltageRow, voltageColumn);
+            changeMatrix[matrixRow + rowOffset, matrixRow + columnOffset] +=
+                CalculateChangeMatrixEntryImaginaryPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
         }
     }
 }
