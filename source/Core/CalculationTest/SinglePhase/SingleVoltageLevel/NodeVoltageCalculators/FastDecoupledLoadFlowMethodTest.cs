@@ -49,7 +49,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(6.07727309100956, -11.8304401215607, improvedVoltages[0], 0.000001);
@@ -74,7 +74,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(6.6741834507365, -11.4913234639654, improvedVoltages[0], 0.000001);
@@ -99,7 +99,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 21, 22 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(9.59562487332882, -18.6795070408818, improvedVoltages[0], 0.000001);
@@ -124,7 +124,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 21, 22 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(11.0492124557286, -19.0240611886151, improvedVoltages[0], 0.000001);
@@ -150,7 +150,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(27.0659000440881, -4.90582939841207 , improvedVoltages[0], 0.000001);
@@ -177,7 +177,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(27.0173142661381, -5.1870979875702, improvedVoltages[0], 0.000001);
@@ -204,7 +204,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages);
+                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(27.0161704499591, -5.18687838444674, improvedVoltages[0], 0.000001);
