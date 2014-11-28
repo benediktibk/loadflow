@@ -48,15 +48,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex,
             out Matrix<double> changeMatrixRealPowerByAngle, out Matrix<double> changeMatrixImaginaryPowerByAmplitude)
         {
-            changeMatrixRealPowerByAngle = new DenseMatrix(busToMatrixIndex.Count,
-                busToMatrixIndex.Count);
-            
-            if (pqBusToMatrixIndex.Count > 0)
-                changeMatrixImaginaryPowerByAmplitude =
-                    new DenseMatrix(pqBusToMatrixIndex.Count,
-                        pqBusToMatrixIndex.Count);
-            else
-                changeMatrixImaginaryPowerByAmplitude = null;
+            changeMatrixRealPowerByAngle = new SparseMatrix(busToMatrixIndex.Count);
+            changeMatrixImaginaryPowerByAmplitude = pqBusToMatrixIndex.Count > 0 ? new SparseMatrix(pqBusToMatrixIndex.Count) : null;
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
