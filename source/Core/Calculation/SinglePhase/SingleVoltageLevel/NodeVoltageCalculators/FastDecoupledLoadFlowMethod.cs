@@ -106,11 +106,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 var i = entry.Item1;
                 var k = entry.Item2;
-                int row;
-                int column;
-
-                if (!busIds.TryGetValue(i, out row) || !busIds.TryGetValue(k, out column))
-                    continue;
+                var row = busIds[i];
+                var column = busIds[k];
 
                 if (row == column)
                     continue;
