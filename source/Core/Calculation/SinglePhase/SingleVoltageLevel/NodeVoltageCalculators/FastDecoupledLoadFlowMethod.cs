@@ -1,15 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Double.Solvers;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class FastDecoupledLoadFlowMethod : JacobiMatrixBasedMethod
     {
-        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
-        { }
+        private readonly IIterativeSolver<double> _solver;
+
+        public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations)
+            : base(targetPrecision, maximumIterations)
+        {
+            _solver = new BiCgStab();
+        }
 
         public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages)
         {
@@ -23,13 +31,25 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Matrix<double> changeMatrixImaginaryPowerByAmplitude;
             CalculateChangeMatrices(admittances, voltages, constantCurrents, busToMatrixIndex, pqBusToMatrixIndex, out changeMatrixRealPowerByAngle, out changeMatrixImaginaryPowerByAmplitude);
 
-            var factorizationRealPower = changeMatrixRealPowerByAngle.LU();
-            var angleChange = factorizationRealPower.Solve(new DenseVector(powersRealError.ToArray()));
+            var angleChange = new DenseVector(allNodes.Count);
+
+            if (powersRealError.Select(Math.Abs).Max() > TargetPrecision)
+            {
+                var powersRealErrorVector = new DenseVector(powersRealError.ToArray());
+                _solver.Solve(changeMatrixRealPowerByAngle, powersRealErrorVector, angleChange, new Iterator<double>(),
+                    new ILUTPPreconditioner());
+            }
 
             if (pqBuses.Count > 0)
             {
-                var factorizationImaginaryPower = changeMatrixImaginaryPowerByAmplitude.LU();
-                var amplitudeChange = factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
+                var amplitudeChange = new DenseVector(pqBuses.Count);
+
+                if (powersImaginaryError.Select(Math.Abs).Max() > TargetPrecision)
+                {
+                    var powersImaginaryErrorVector = new DenseVector(powersImaginaryError.ToArray());
+                    _solver.Solve(changeMatrixImaginaryPowerByAmplitude, powersImaginaryErrorVector, amplitudeChange,
+                        new Iterator<double>(), new ILUTPPreconditioner());
+                }
 
                 foreach (var bus in pqBuses)
                     improvedVoltages[bus] =
