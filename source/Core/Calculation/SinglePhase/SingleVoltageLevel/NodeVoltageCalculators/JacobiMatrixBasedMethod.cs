@@ -35,6 +35,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             pvBusIds.AddRange(pvBuses.Select(bus => bus.Index));
             pqBusIds.AddRange(pqBuses.Select(bus => bus.Index));
             var maximumPower = pvBuses.Select(x => x.RealPower).Concat(pqBuses.Select(x => x.Power.Magnitude)).Max();
+            var powerDifferenceBase = maximumPower > 0 ? maximumPower : 1;
 
             do
             {
@@ -45,7 +46,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
                 var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
                 maximumPowerDifference = powersDifferenceAbsolute.Max();
-            } while (maximumPowerDifference > nominalVoltage*TargetPrecision && iterations <= MaximumIterations);
+            } while (10*maximumPowerDifference/powerDifferenceBase > TargetPrecision && iterations <= MaximumIterations);
             
             return currentVoltages;
         }
