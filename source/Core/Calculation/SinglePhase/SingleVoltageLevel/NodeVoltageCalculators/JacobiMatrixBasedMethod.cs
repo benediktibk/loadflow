@@ -361,7 +361,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return (-1) * (voltageRow.Real * admittance.Real + voltageRow.Imaginary * admittance.Imaginary);
         }
 
-        public static Dictionary<int, int> CreateMappingBusIdToIndex(IList<int> buses)
+        public static Dictionary<int, int> CreateMappingBusToMatrixIndex(IList<int> buses)
         {
             var busIdToIndex = new Dictionary<int, int>();
             var i = 0;

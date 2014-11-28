@@ -17,20 +17,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
-            var pqBusIds = CreateMappingBusIdToIndex(pqBuses);
-            var allBusIds = CreateMappingBusIdToIndex(allNodes);
+            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
+            var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
 
-            var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, allBusIds);
+            var angleChange = CalculateAngleChange(admittances, voltages, constantCurrents, powersRealError, busToMatrixIndex);
 
             if (pqBuses.Count > 0)
             {
                 var amplitudeChange = CalculateAmplitudeChange(admittances, voltages, constantCurrents, powersImaginaryError,
-                    pqBusIds);
+                    pqBusToMatrixIndex);
 
                 foreach (var bus in pqBuses)
                     improvedVoltages[bus] =
                         Complex.FromPolarCoordinates(
-                            voltages[bus].Magnitude + amplitudeChange[pqBusIds[bus]],
+                            voltages[bus].Magnitude + amplitudeChange[pqBusToMatrixIndex[bus]],
                             voltages[bus].Phase + angleChange[bus]);
             }
 
@@ -47,47 +47,47 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return factorizationImaginaryPower.Solve(new DenseVector(powersImaginaryError.ToArray()));
         }
 
-        private static DenseMatrix CalculateAmplitudeChangeMatrix(IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages, IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> pqBusIds)
+        private static DenseMatrix CalculateAmplitudeChangeMatrix(IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages, IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var changeMatrix = new DenseMatrix(pqBusIds.Count, pqBusIds.Count);
+            var changeMatrix = new DenseMatrix(busToMatrixIndex.Count, busToMatrixIndex.Count);
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
-                var i = entry.Item1;
-                var k = entry.Item2;
-                int row;
-                int column;
+                var busRow = entry.Item1;
+                var busColumn = entry.Item2;
+                int matrixRow;
+                int matrixColumn;
 
-                if (!pqBusIds.TryGetValue(i, out row))
+                if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow))
                     continue;
 
                 var admittance = entry.Item3;
-                var voltageRow = voltages[i];
+                var voltageRow = voltages[busRow];
 
-                if (!pqBusIds.TryGetValue(k, out column))
+                if (!busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
                 {
-                    var voltageColumn = voltages[k];
-                    changeMatrix[row, row] +=
+                    var voltageColumn = voltages[busColumn];
+                    changeMatrix[matrixRow, matrixRow] +=
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn,
                             voltageRow);
                     continue;
                 }
 
-                if (row == column)
-                    changeMatrix[column, column] +=
+                if (matrixRow == matrixColumn)
+                    changeMatrix[matrixColumn, matrixColumn] +=
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceDependent(voltageRow, admittance);
                 else
                 {
-                    var voltageColumn = voltages[k];
-                    changeMatrix[row, column] =
+                    var voltageColumn = voltages[busColumn];
+                    changeMatrix[matrixRow, matrixColumn] =
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitude(admittance, voltageRow, voltageColumn);
-                    changeMatrix[row, row] +=
+                    changeMatrix[matrixRow, matrixRow] +=
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn,
                             voltageRow);
                 }
             }
 
-            foreach (var bus in pqBusIds)
+            foreach (var bus in busToMatrixIndex)
             {
                 var matrixIndex = bus.Value;
                 var busIndex = bus.Key;
@@ -108,30 +108,30 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         private static DenseMatrix CalculateAngleChangeMatrix(IReadOnlyAdmittanceMatrix admittances, IList<Complex> voltages,
-            IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busIds)
+            IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var changeMatrix = new DenseMatrix(busIds.Count, busIds.Count);
+            var changeMatrix = new DenseMatrix(busToMatrixIndex.Count, busToMatrixIndex.Count);
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
-                var i = entry.Item1;
-                var k = entry.Item2;
-                var row = busIds[i];
-                var column = busIds[k];
+                var busRow = entry.Item1;
+                var busColumn = entry.Item2;
+                var matrixRow = busToMatrixIndex[busRow];
+                var matrixColumn = busToMatrixIndex[busColumn];
 
-                if (row == column)
+                if (matrixRow == matrixColumn)
                     continue;
 
                 var admittance = entry.Item3;
-                var voltageRow = voltages[i];
-                var voltageColumn = voltages[k];
-                changeMatrix[row, column] =
+                var voltageRow = voltages[busRow];
+                var voltageColumn = voltages[busColumn];
+                changeMatrix[matrixRow, matrixColumn] =
                     CalculateChangeMatrixEntryRealPowerByAngle(admittance, voltageRow, voltageColumn);
-                changeMatrix[row, row] += 
+                changeMatrix[matrixRow, matrixRow] += 
                     CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
             }
 
-            foreach (var bus in busIds)
+            foreach (var bus in busToMatrixIndex)
             {
                 var matrixIndex = bus.Value;
                 var busIndex = bus.Key;
