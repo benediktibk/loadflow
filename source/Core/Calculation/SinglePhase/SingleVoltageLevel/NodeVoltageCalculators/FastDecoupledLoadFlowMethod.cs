@@ -87,11 +87,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 }
             }
 
-            foreach (var i in pqBusIds.Select(x => x.Value))
+            foreach (var bus in pqBusIds)
             {
-                var current = constantCurrents[i];
-                var voltage = voltages[i];
-                changeMatrix[i, i] +=
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var current = constantCurrents[busIndex];
+                var voltage = voltages[busIndex];
+                changeMatrix[matrixIndex, matrixIndex] +=
                     CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceIndependent(current, voltage);
             }
 
@@ -129,11 +131,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
             }
 
-            foreach (var i in busIds.Select(x => x.Value))
+            foreach (var bus in busIds)
             {
-                var voltage = voltages[i];
-                var current = constantCurrents[i];
-                changeMatrix[i, i] +=
+                var matrixIndex = bus.Value;
+                var busIndex = bus.Key;
+                var voltage = voltages[busIndex];
+                var current = constantCurrents[busIndex];
+                changeMatrix[matrixIndex, matrixIndex] +=
                     CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltage, current);
             }
 
