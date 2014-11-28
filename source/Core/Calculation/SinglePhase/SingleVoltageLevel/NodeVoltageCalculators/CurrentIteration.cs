@@ -6,7 +6,6 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
-using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
@@ -43,7 +42,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var newVoltages = CalculateImprovedVoltagesAndPowers(admittances, constantCurrents, pvBuses,
                     rightHandSide, powers, voltages, out powerErrorTooBig);
 
-                accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, voltages, totalAbsolutePowerSum, powerErrorTooBig);
+                var voltageChange = CalculateVoltageChange(newVoltages, voltages);
+                accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, totalAbsolutePowerSum, powerErrorTooBig, voltageChange);
                 voltages = newVoltages;
                 ++iterations;
             } while (iterations <= MaximumIterations && !accurateEnough);
@@ -76,19 +76,19 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return powers;
         }
 
-        private bool CheckAccuracy(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses,
-            IList<PvNodeWithIndex> pvBuses, Vector<Complex> newVoltages, Vector<Complex> voltages, double totalAbsolutePowerSum, bool powerErrorTooBig)
+        private bool CheckAccuracy(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, Vector<Complex> voltages1, double totalAbsolutePowerSum, bool powerErrorTooBig, double voltageChange)
+        {
+            var absolutePowerError = admittances.CalculatePowerError(voltages1, constantCurrents, pqBuses, pvBuses);
+            var relativePowerError = totalAbsolutePowerSum != 0 ? absolutePowerError/totalAbsolutePowerSum : absolutePowerError;
+            return 10*voltageChange/nominalVoltage < TargetPrecision && !powerErrorTooBig && relativePowerError < MaximumRelativePowerError;
+        }
+
+        private static double CalculateVoltageChange(Vector<Complex> newVoltages, Vector<Complex> voltages)
         {
             var voltageDifference = newVoltages.Subtract(voltages);
             var maximumVoltageDifference = voltageDifference.AbsoluteMaximum();
-            var voltageChange = maximumVoltageDifference.Magnitude/nominalVoltage;
-            var absolutePowerError = admittances.CalculatePowerError(newVoltages, constantCurrents,
-                pqBuses, pvBuses);
-            var relativePowerError = totalAbsolutePowerSum != 0
-                ? absolutePowerError/totalAbsolutePowerSum
-                : absolutePowerError;
-            return voltageChange / nominalVoltage < TargetPrecision / 10 && !powerErrorTooBig &&
-                         relativePowerError < MaximumRelativePowerError;
+            var voltageChange = maximumVoltageDifference.Magnitude;
+            return voltageChange;
         }
 
         private Vector<Complex> CalculateImprovedVoltagesAndPowers(IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvNodeWithIndex> pvBuses, Vector<Complex> rightHandSide, IList<Complex> powers, Vector<Complex> oldVoltages, out bool powerErrorTooBig)
