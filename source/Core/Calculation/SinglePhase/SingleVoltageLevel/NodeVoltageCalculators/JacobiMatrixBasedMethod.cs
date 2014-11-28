@@ -214,6 +214,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return currentRow.Magnitude * Math.Sin(currentRow.Phase - voltageRow.Phase) - 2 * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase);
         }
 
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceDependent(Complex voltage, Complex admittance)
+        {
+            return (-2) * admittance.Magnitude * voltage.Magnitude * Math.Sin(admittance.Phase);
+        }
+
+        public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceIndependent(Complex current, Complex voltage)
+        {
+            return current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
+        }
+
         public static double CalculateChangeMatrixEntryImaginaryPowerByAmplitude(Complex admittance, Complex voltageRow, Complex voltageColumn)
         {
             return (-1) * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);

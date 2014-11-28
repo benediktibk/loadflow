@@ -66,12 +66,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var voltageRow = voltages[i];
 
                 if (row == column)
-                {
-                    var currentRow = constantCurrents[i];
                     changeMatrix[column, column] +=
-                        CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPart(currentRow, voltageRow,
-                            admittance);
-                }
+                        CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceDependent(voltageRow, admittance);
                 else
                 {
                     var voltageColumn = voltages[k];
@@ -81,6 +77,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                         CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn,
                             voltageRow);
                 }
+            }
+
+            foreach (var i in busIds.Select(x => x.Value))
+            {
+                var current = constantCurrents[i];
+                var voltage = voltages[i];
+                changeMatrix[i, i] +=
+                    CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceIndependent(current, voltage);
             }
 
             return changeMatrix;
