@@ -2,6 +2,8 @@
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -78,10 +80,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private Vector<Complex> CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
-            var ownCurrents = (knownPowers.PointwiseDivide(DenseVector.OfEnumerable(nominalVoltages))).Conjugate();
+            var voltages = DenseVector.OfEnumerable(nominalVoltages);
+            var ownCurrents = (knownPowers.PointwiseDivide(voltages)).Conjugate();
             var totalCurrents = ownCurrents.Add(constantCurrents);
-            var factorization = admittances.CalculateFactorization();
-            return factorization.Solve(totalCurrents);
+            admittances.CalculateVoltages(voltages, totalCurrents, new BiCgStab(), new Iterator<Complex>());
+            return voltages;
         }
     }
 }

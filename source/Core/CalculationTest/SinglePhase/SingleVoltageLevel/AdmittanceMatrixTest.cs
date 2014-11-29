@@ -4,6 +4,8 @@ using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
@@ -257,17 +259,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        public void CalculateFactorization_OneConnection_SolverDeliversCorrectVoltages()
+        public void CalculateVoltages_OneConnection_VoltagesAreCorrect()
         {
             _admittances = new AdmittanceMatrix(2);
             _admittances.AddConnection(0, 1, new Complex(2, 3));
             _admittances.AddUnsymmetricAdmittance(1, 1, new Complex(8, 9));
             var correctVoltages = new DenseVector(new[] {new Complex(4, 5), new Complex(6, 7)});
+            var voltages = new DenseVector(2);
             var currents = _admittances.CalculateCurrents(correctVoltages);
 
-            var factorization = _admittances.CalculateFactorization();
+            _admittances.CalculateVoltages(voltages, currents, new BiCgStab(), new Iterator<Complex>(new IterationCountStopCriterion<Complex>(2)));
 
-            var voltages = factorization.Solve(currents);
             ComplexAssert.AreAllEqual(correctVoltages, voltages, 0.0001);
         }
 

@@ -6,7 +6,9 @@ using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -58,6 +60,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed()
         {
             return _values.EnumerateIndexed(Zeros.AllowSkip);
+        }
+
+        public void CalculateVoltages(Vector<Complex> x, Vector<Complex> b, IIterativeSolver<Complex> solver, Iterator<Complex> iterator)
+        {
+            solver.Solve(_values, b, x, iterator, new DiagonalPreconditioner());
         }
 
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)
@@ -142,11 +149,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public Complex this[int row, int column]
         {
             get { return _values[row, column]; }
-        }
-
-        public ISolver<Complex> CalculateFactorization()
-        {
-            return _values.LU();
         }
 
         public Vector<Complex> GetRow(int row)
