@@ -394,7 +394,7 @@ which is exactly what Newton-Raphson does. For this the whole left part is consi
 \end{equation}
 which is developed into the Taylor-series
 \begin{equation}
-	\vec f (\vec x) = \sum_{k = 0}^\infty \frac{\vec f^{(k)} (\vec x_0}{k!} \left( \vec x - \vec x_0 \right).
+	\vec f (\vec x) = \sum_{k = 0}^\infty \frac{\vec f^{(k)} (\vec x_0)}{k!} \left( \vec x - \vec x_0 \right).
 \end{equation}
 This series is terminated after the linear term, which leads to the approximation
 \begin{equation}
@@ -403,20 +403,23 @@ This series is terminated after the linear term, which leads to the approximatio
 
 As we actually want to find the root of $\vec f (\vec x)$ we set the approximation to 0 and replace in the result
 \begin{equation}
-	0 = \vec f (\vec x_k) + \vec f' (\vec x_k) \left( \vec x_{k + 1} - \vec x_k \right)
+	0 = \vec f (\vec x^{(k)}) + \vec f' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right)
 \end{equation}
 the occurence of $\vec f (\vec x)$ with its definition to get
 \begin{equation}
-	\vec S' (\vec x_k) \left( \vec x_{k + 1} - \vec x_k \right) = \vec S (\vec x_k) - \vec S_{spec}.
+	\mat S' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:newton_raphson_equation_system}
 \end{equation}
-In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\vec S' (\vec x_k)$, the voltage changes $\Delta \vec x_k = \left( \vec x_{k + 1} - \vec x_k \right)$ and on the right side the current power mismatch 
+In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\mat S' (\vec x_k)$, the voltage changes $\Delta \vec x^{(k)} = \left( \vec x^{(k+1)} - \vec x^{(k)} \right)$ and on the right side the current power mismatch 
 \begin{equation}
-	\Delta \vec S (\vec x_k) = \vec S (\vec x_k) - \vec S_{spec}.
+	\Delta \vec S (\vec x^{(k)}) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:power_mismatch}
 \end{equation}
 
-This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. As in real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, the voltages are represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
+This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase and a representation through real and imaginary part. As the version with magnitudes and phases is the more common one I want to start with this one.
+
+\subsubsection{Magnitude and Phase}
+In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, therefore voltages are usually represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -470,6 +473,7 @@ As first step \eqref{pq_bus} is transformed into an explicit calculation of the 
 	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
 		&= U_k \left( \sum_{i \ne k} Y_{ki}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
 		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
+	\label{eq:complex_power}
 \end{align}
 Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$) which leads to the expression
 \begin{equation}
@@ -506,6 +510,7 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 			& \sum_{i \ne k} |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) \\
 			& - |I_k| \cos \left( \delta_k - \gamma_k \right)
 	\end{split}
+	\label{eq:pk_magnitudek}
 \end{equation}
 \begin{equation}
 	\begin{split}
@@ -513,29 +518,36 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 			& \sum_{i \ne k} |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) \\
 			& - |I_k| \sin \left( \delta_k - \gamma_k \right)
 	\end{split}
+	\label{eq:qk_magnitudek}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial |U_i|} = |U_k| |Y_{ki}| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:pk_magnitudei}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial |U_i|} = |U_k| |Y_{ki}| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:qk_magnitudei}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial \delta_k} = - \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) + |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right)
+	\label{eq:pk_phasek}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial \delta_k} = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	\label{eq:qk_phasek}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial \delta_i} = |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:pk_phasei}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:qk_phasei}
 \end{equation}
 
 With these derivations we can calculate the derivation of the power functions which form the Jacobian matrix
 \begin{equation}
-	\vec S' (\vec x_k) = 
+	\mat S_1' (\vec x^{(k)}) = 
 	\begin{bmatrix}
 		\frac{\partial P_1}{\partial |U_1|}	& \hdots	& \frac{\partial P_1}{\partial |U_n|}	& \frac{\partial P_1}{\partial \delta_1}	& \hdots	& \frac{\partial P_1}{\partial \delta_{n + m}} \\
 		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
@@ -547,12 +559,104 @@ With these derivations we can calculate the derivation of the power functions wh
 	\label{eq:power_jacobian_newton_raphson}
 \end{equation}
 
+\subsubsection{Real and Imaginary Part}
+For the representation of the voltages through real and imaginary parts we have one slight problem: PV-busses. For this busses the voltage magnitude is already set and we only have to calculate the phases. Therefore, this busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian system. The advantages of this are less complex formulas, as we can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has an impact on the performance of the overall algorithm, although we can only use this improvement for PQ-busses.
+
+Through a representation in cartesian coordinates we end up with the voltage change vector
+\begin{equation}
+	\vec x = 
+	\begin{bmatrix}
+		U_1^r \\
+		\vdots \\
+		U_n^r \\
+		U_1^i \\
+		\vdots \\
+		U_n^i \\
+		\delta_{n+k} \\
+		\vdots \\
+		\delta_{n+m} \\
+	\end{bmatrix},
+\end{equation}
+where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
+
+For the Jacobian matrix we need now a additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, which I have already derived in the previous section, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+\begin{equation}
+	\begin{split}
+		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
+			  & (Y_{kk}^r - j Y_{kk}^i) ( (U_k^r)^2 + (U_k^i)^2 ) - (I_k^r - j I_k^i) (U_k^r + j U_k^i)			
+	\end{split}.
+\end{equation}
+Next I will need the seperation of this into its real and imaginary parts. Therefore, I will start with the expansion of the summands
+\begin{equation}
+	\begin{split}
+		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
+			  & \sum_{i \ne k} j \left( U_k^i Y_{ki}^r U_i^r - U_k^r Y_{ki}^i U_i^r - U_k^r Y_{ki}^r U_i^i - U_k^i Y_{ki}^i U_i^i \right) + \\
+			  & Y_{kk}^r ( (U_k^r)^2 + (U_k^i)^2 ) - j Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) - \\
+			  & I_k^r U_k^r - I_k^i U_k^i + j (I_k^r U_k^i - U_k^r I_k^i)
+	\end{split}
+\end{equation}
+and separate this to get
+\begin{equation}
+	\begin{split}
+		P_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
+			  & Y_{kk}^r ( (U_k^r)^2 + (U_k^i)^2 ) - I_k^r U_k^r - I_k^i U_k^i
+	\end{split}
+\end{equation}
+and
+\begin{equation}
+	\begin{split}
+		Q_k = & \sum_{i \ne k} \left( U_k^i Y_{ki}^r U_i^r - U_k^r Y_{ki}^i U_i^r - U_k^r Y_{ki}^r U_i^i - U_k^i Y_{ki}^i U_i^i \right) - \\
+			  & Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) + I_k^r U_k^i - U_k^r I_k^i
+	\end{split}.
+\end{equation}
+
+These formulas must be differentiated with respect to $U_k^r$, $U_k^i$, $U_i^r$ ($i \ne k$) and $U_i^i$ ($i \ne k$):
+\begin{equation}
+	\frac{\partial P_k}{\partial U_k^r} = \sum_{i \ne k} \left( Y_{ki}^r U_i^r - Y_{ki}^i U_i^i \right) + 2 Y_{kk}^r U_k^r - I_k^r
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^i U_i^r + Y_{ki}^r U_i^i \right) + 2 Y_{kk}^r U_k^i - I_k^i
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_k^r} = \sum_{i \ne k} \left( - Y_{ki}^i U_i^r - Y_{ki}^r U_i^i \right) - 2 Y_{kk}^i U_k^r - I_k^i
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^r U_i^r - Y_{ki}^i U_i^i \right) - 2 Y_{kk}^i U_k^i + I_k^r
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial U_i^r} = \sum_{i \ne k} \left( U_k^r Y_{ki}^r + U_k^i Y_{ki}^i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial P_k}{\partial U_i^i} = \sum_{i \ne k} \left( U_k^i Y_{ki}^r - U_k^r Y_{ki}^i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_i^r} = \sum_{i \ne k} \left( U_k^i Y_{ki}^r - U_k^r Y_{ki}^i \right)
+\end{equation}
+\begin{equation}
+	\frac{\partial Q_k}{\partial U_i^i} = \sum_{i \ne k} \left( - U_k^r Y_{ki}^r - U_k^i Y_{ki}^i \right)
+\end{equation}
+
+This altogether is then the Jacobian matrix
+\begin{equation}
+	\mat S_2' (\vec x^{(k)}) = 
+	\begin{bmatrix}
+		\frac{\partial P_1}{\partial U_1^r}	& \hdots & \frac{\partial P_1}{\partial U_n^r} & \frac{\partial P_1}{\partial U_1^i} & \hdots & \frac{\partial P_1}{\partial U_n^i}	& \frac{\partial P_1}{\partial \delta_{n + 1}} & \hdots & \frac{\partial P_1}{\partial \delta_{n + m}} \\
+		\vdots & \ddots	& \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+		\frac{\partial P_{n + m}}{\partial U_1^r} & \hdots & \frac{\partial P_{n + m}}{\partial U_n^r} & \frac{\partial P_{n + m}}{\partial U_1^i} & \hdots & \frac{\partial P_{n + m}}{\partial U_n^i} & \frac{\partial P_{n + m}}{\partial \delta_{n + 1}} & \hdots & \frac{\partial P_{n + m}}{\partial \delta_{n + m}} \\
+		\frac{\partial Q_1}{\partial U_1^r}	& \hdots & \frac{\partial Q_1}{\partial U_n^r} & \frac{\partial Q_1}{\partial U_1^i} & \hdots & \frac{\partial Q_1}{\partial U_n^i}	& \frac{\partial Q_1}{\partial \delta_{n + 1}} & \hdots & \frac{\partial Q_1}{\partial \delta_{n + m}} \\
+		\vdots & \ddots	& \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+		\frac{\partial Q_n}{\partial U_1^r} & \hdots & \frac{\partial Q_n}{\partial U_n^r} & \frac{\partial Q_n}{\partial U_1^i} & \hdots & \frac{\partial Q_n}{\partial U_n^i} & \frac{\partial Q_n}{\partial \delta_{n + 1}} & \hdots & \frac{\partial Q_n}{\partial \delta_{n + m}} \\
+	\end{bmatrix}.
+	\label{eq:power_jacobian_newton_rapshon_2}
+\end{equation}
+
+\subsubsection{Summary}
 The iterative process to improve the voltages is then:
 \begin{enumerate}
-	\item Calculate the current power mismatch $\Delta \vec S (\vec x_k)$ with \eqref{power_mismatch}
-	\item Calculate the Jacobian matrix $\vec S' (\vec x_k)$ with \eqref{power_jacobian_newton_raphson}
-	\item Calculate the voltage changes $\Delta \vec x_k$ through solving the linear equation system \eqref{newton_raphson_equation_system}
-	\item Calculate the improved voltages through $\vec x_{k + 1} = \vec x_k + \Delta \vec x_k$
+	\item Calculate the current power mismatch $\Delta \vec S (\vec x^{(k)})$ with \eqref{power_mismatch}
+	\item Calculate the Jacobian matrix $\vec S' (\vec x^{(k)})$ with \eqref{power_jacobian_newton_raphson} or \eqref{power_jacobian_newton_rapshon_2}
+	\item Calculate the voltage changes $\Delta \vec x^{(k)}$ through solving the linear equation system \eqref{newton_raphson_equation_system}
+	\item Calculate the improved voltages through $\vec x^{(k+1)} = \vec x^{(k)} + \Delta \vec x^{(k)}$
 	\item Repeat these steps until the voltage change is small enough \emph{or} until the power mismatch is small enough
 \end{enumerate}
 
@@ -561,7 +665,7 @@ The iterative process to improve the voltages is then:
 
 The FDLF is a modification of the Newton-Raphson method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind one can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce the matrix therefore to
 \begin{equation}
-	\vec S' (\vec x_k) \approx 
+	\mat S' (\vec x^{(k)}) \approx 
 	\begin{bmatrix}
 		0	& \hdots	& 0	& \frac{\partial P_1}{\partial \delta_1}	& \hdots	& \frac{\partial P_1}{\partial \delta_{n + m}} \\
 		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
@@ -571,21 +675,21 @@ The FDLF is a modification of the Newton-Raphson method, which is based on an ob
 		\frac{\partial Q_n}{\partial |U_1|}	& \hdots	& \frac{\partial Q_n}{\partial |U_n|}	& 0	& \hdots	& 0
 	\end{bmatrix} =
 	\begin{bmatrix}
-		0								&	\frac{\partial P}{\partial \delta} \\
-		\frac{\partial Q}{\partial |U|}	&	0
+		0								&	\frac{\partial \vec P}{\partial \vec \delta} \\
+		\frac{\partial \vec Q}{\partial \vec{|U|}}	&	0
 	\end{bmatrix}.
 \end{equation}
 
-With this simplified system matrix the equation system \eqref{newton_raphson_equation_system} can be seperated into
+With this simplified system matrix the equation system \eqref{newton_raphson_equation_system} can be separated into
 \begin{equation}
-	\frac{\partial P}{\partial \delta} \cdot \Delta \delta_k = \Delta P_k
+	\frac{\partial \vec P}{\partial \vec \delta} \cdot \Delta \vec \delta^{(k)} = \Delta \vec P^{(k)}
 \end{equation}
 and
 \begin{equation}
-	\frac{\partial Q}{\partial |U|} \cdot \Delta |U|_k = \Delta Q_k.
+	\frac{\partial \vec Q}{\partial \vec{|U|}} \cdot \Delta \vec{|U|}^{(k)} = \Delta \vec Q^{(k)}.
 \end{equation}
 
-The steps for solving the load-flow problem are nearly the same as for the Newton-Raphson, the only difference lies within the smaller linear equation system which needs to be solved. This is already the reason why one may chose the FDLF instead of the Newton-Raphson: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour, therefore the FDLF is less probable to be actually capable of solving a load-flow problem.
+The steps for solving the load-flow problem are nearly the same as for the Newton-Raphson, the only difference lies within the smaller linear equation system which needs to be solved. This is already the reason why one may choose the FDLF instead of the Newton-Raphson: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour, therefore the FDLF is less probable to be actually capable of solving a load-flow problem.
 
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
