@@ -416,7 +416,10 @@ In this formula we have on the left side as a matrix the derivation of the power
 	\label{eq:power_mismatch}
 \end{equation}
 
-This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. As in real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, the voltages are represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
+This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase and a representation through real and imaginary part. As the version with magnitudes and phases is the more common one I want to start with this one.
+
+\subsubsection{Magnitude and Phase}
+In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, therefore voltages are usually represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -470,6 +473,7 @@ As first step \eqref{pq_bus} is transformed into an explicit calculation of the 
 	S_k &= \left( U_k^\star \left( \sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k - I_k \right) \right)^\star \\
 		&= U_k \left( \sum_{i \ne k} Y_{ki}^\star U_i^\star + Y_{kk}^\star U_k^\star - I_k^\star \right) \\
 		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
+	\label{eq:complex_power}
 \end{align}
 Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$) which leads to the expression
 \begin{equation}
@@ -506,6 +510,7 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 			& \sum_{i \ne k} |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) + 2 |Y_{kk}| |U_k| \cos \left( \theta_{kk} \right) \\
 			& - |I_k| \cos \left( \delta_k - \gamma_k \right)
 	\end{split}
+	\label{eq:pk_magnitudek}
 \end{equation}
 \begin{equation}
 	\begin{split}
@@ -513,29 +518,36 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 			& \sum_{i \ne k} |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) - 2 |Y_{kk}| |U_k| \sin \left( \theta_{kk} \right) \\
 			& - |I_k| \sin \left( \delta_k - \gamma_k \right)
 	\end{split}
+	\label{eq:qk_magnitudek}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial |U_i|} = |U_k| |Y_{ki}| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:pk_magnitudei}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial |U_i|} = |U_k| |Y_{ki}| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:qk_magnitudei}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial \delta_k} = - \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right) + |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right)
+	\label{eq:pk_phasek}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial \delta_k} = \sum_{i \ne k} |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right) - |I_k| |U_k| \cos \left( \delta_k - \gamma_k \right)
+	\label{eq:qk_phasek}
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial \delta_i} = |U_k| |Y_{ki}| |U_i| \sin \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:pk_phasei}
 \end{equation}
 \begin{equation}
 	\frac{\partial Q_k}{\partial \delta_i} = - |U_k| |Y_{ki}| |U_i| \cos \left( \delta_k - \theta_{ki} - \delta_i \right)
+	\label{eq:qk_phasei}
 \end{equation}
 
 With these derivations we can calculate the derivation of the power functions which form the Jacobian matrix
 \begin{equation}
-	\vec S' (\vec x_k) = 
+	\vec S_1' (\vec x_k) = 
 	\begin{bmatrix}
 		\frac{\partial P_1}{\partial |U_1|}	& \hdots	& \frac{\partial P_1}{\partial |U_n|}	& \frac{\partial P_1}{\partial \delta_1}	& \hdots	& \frac{\partial P_1}{\partial \delta_{n + m}} \\
 		\vdots								& \ddots	& \vdots								& \vdots									& \ddots	& \vdots \\
@@ -547,6 +559,52 @@ With these derivations we can calculate the derivation of the power functions wh
 	\label{eq:power_jacobian_newton_raphson}
 \end{equation}
 
+\subsubsection{Real and Imaginary Part}
+For the representation of the voltages through real and imaginary parts we have one slight problem: PV-busses. For this busses the voltage magnitude is already set and we only have to calculate the phases. Therefore, this busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian system. The advantages of this are less complex formulas, as we can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has an impact on the performance of the overall algorithm, although we can only use this improvement for PQ-busses.
+
+Through a representation in cartesian coordinates we end up with the voltage change vector
+\begin{equation}
+	\vec x = 
+	\begin{bmatrix}
+		U_1^r \\
+		\vdots \\
+		U_n^r \\
+		U_1^i \\
+		\vdots \\
+		U_n^i \\
+		\delta_{n+k} \\
+		\vdots \\
+		\delta_{n+m} \\
+	\end{bmatrix},
+\end{equation}
+where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
+
+For the Jacobian matrix we need now a additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, which I have already derived in the previous section, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+\begin{equation}
+	\begin{split}
+		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
+			  & (Y_{kk}^r - j Y_{kk}^i) ( (U_k^r)^2 + (U_k^i)^2 ) - (I_k^r - j I_k^i) (U_k^r + j U_k^i)			
+	\end{split}.
+\end{equation}
+Next I will need the seperation of this into its real and imaginary parts. Therefore, I will start with the expansion of the summands
+\begin{equation}
+	\begin{split}
+		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
+			  & \sum_{i \ne k} j \left( U_k^i Y_{ki}^r U_i^r - U_k^r Y_{ki}^i U_i^r - U_k^r Y_{ki}^r U_i^i - U_k^i Y_{ki}^i U_i^i \right) \\
+			  & Y_{kk}^r ( (U_k^r)^2 + (U_k^i)^2 ) - j Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) - \\
+			  & I_k^r U_k^r - I_k^i U_k^i + j (I_k^r U_k^i - U_k^r I_k^i)
+	\end{split}
+\end{equation}
+and separate this to get
+\begin{equation}
+	P_k = 
+\end{equation}
+and
+\begin{equation}
+	Q_k = 
+\end{equation}
+
+\subsubsection{Iterative Voltage Improvement}
 The iterative process to improve the voltages is then:
 \begin{enumerate}
 	\item Calculate the current power mismatch $\Delta \vec S (\vec x_k)$ with \eqref{power_mismatch}
