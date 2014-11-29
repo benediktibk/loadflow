@@ -31,7 +31,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return new NewtonRaphsonMethod(0.0000001, 1000);
         }
 
-
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPqNodes_CorrectResults()
         {

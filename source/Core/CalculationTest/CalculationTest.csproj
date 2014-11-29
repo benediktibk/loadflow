@@ -93,7 +93,6 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeAssert.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\JacobiMatrixBaseMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTestCase.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetTestCaseGenerator.cs" />

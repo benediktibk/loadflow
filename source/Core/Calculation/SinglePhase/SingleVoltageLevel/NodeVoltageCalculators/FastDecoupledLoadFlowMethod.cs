@@ -90,7 +90,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var voltage = voltages[busIndex];
                 var current = constantCurrents[busIndex];
                 changeMatrixRealPowerByAngle[matrixIndex, matrixIndex] +=
-                    CalculateChangeMatrixEntryRealPowerByAngleDiagonalPart(voltage, current);
+                    (-1) * voltage.Magnitude * current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
             }
 
             foreach (var bus in pqBusToMatrixIndex)
@@ -100,8 +100,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var current = constantCurrents[busIndex];
                 var voltage = voltages[busIndex];
                 changeMatrixImaginaryPowerByAmplitude[matrixIndex, matrixIndex] +=
-                    CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceIndependent(current,
-                        voltage);
+                    current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
             }
         }
 
@@ -115,10 +114,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
-            changeMatrixRealPowerByAngle[realPowerByAngleRow, realPowerByAngleColumn] =
-                CalculateChangeMatrixEntryRealPowerByAngle(admittance, voltageRow, voltageColumn);
+            changeMatrixRealPowerByAngle[realPowerByAngleRow, realPowerByAngleColumn] = (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
             changeMatrixRealPowerByAngle[realPowerByAngleRow, realPowerByAngleRow] +=
-                CalculateChangeMatrixEntryRealPowerByAngleOffDiagonalPart(admittance, voltageRow, voltageColumn);
+                admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
 
         private static void FillChangeMatrixImaginaryPowerByAmplitude(Matrix<double> changeMatrixImaginaryPowerByAmplitude, IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
@@ -132,23 +130,23 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             int imaginaryPowerByAmplitudeColumn;
             if (!pqBusToMatrixIndex.TryGetValue(busColumn, out imaginaryPowerByAmplitudeColumn))
             {
+                Complex voltageColumn1 = voltages[busColumn];
                 changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow] +=
-                    CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltages[busColumn], voltageRow);
+                    admittance.Magnitude * voltageColumn1.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn1.Phase);
                 return;
             }
 
             if (imaginaryPowerByAmplitudeRow == imaginaryPowerByAmplitudeColumn)
             {
                 changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeColumn, imaginaryPowerByAmplitudeColumn] +=
-                    CalculateChangeMatrixEntryImaginaryPowerByAmplitudeDiagonalPartAdmittanceDependent(voltageRow, admittance);
+                    (-2) * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase);
                 return;
             }
 
             var voltageColumn = voltages[busColumn];
-            changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeColumn] =
-                CalculateChangeMatrixEntryImaginaryPowerByAmplitude(admittance, voltageRow, voltageColumn);
+            changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeColumn] = (-1) * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
             changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow] +=
-                CalculateChangeMatrixEntryImaginaryPowerByAmplitudeOffDiagonalPart(admittance, voltageColumn, voltageRow);
+                admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
         }
     }
 }
