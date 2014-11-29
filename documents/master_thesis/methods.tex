@@ -624,16 +624,16 @@ These formulas must be differentiated with respect to $U_k^r$, $U_k^i$, $U_i^r$ 
 	\frac{\partial Q_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^r U_i^r - Y_{ki}^i U_i^i \right) - 2 Y_{kk}^i U_k^i + I_k^r
 \end{equation}
 \begin{equation}
-	\frac{\partial P_k}{\partial U_i^r} = \sum_{i \ne k} \left( U_k^r Y_{ki}^r + U_k^i Y_{ki}^i \right)
+	\frac{\partial P_k}{\partial U_i^r} = U_k^r Y_{ki}^r + U_k^i Y_{ki}^i
 \end{equation}
 \begin{equation}
-	\frac{\partial P_k}{\partial U_i^i} = \sum_{i \ne k} \left( U_k^i Y_{ki}^r - U_k^r Y_{ki}^i \right)
+	\frac{\partial P_k}{\partial U_i^i} = U_k^i Y_{ki}^r - U_k^r Y_{ki}^i
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial U_i^r} = \sum_{i \ne k} \left( U_k^i Y_{ki}^r - U_k^r Y_{ki}^i \right)
+	\frac{\partial Q_k}{\partial U_i^r} = U_k^i Y_{ki}^r - U_k^r Y_{ki}^i
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial U_i^i} = \sum_{i \ne k} \left( - U_k^r Y_{ki}^r - U_k^i Y_{ki}^i \right)
+	\frac{\partial Q_k}{\partial U_i^i} = - U_k^r Y_{ki}^r - U_k^i Y_{ki}^i
 \end{equation}
 
 This altogether is then the Jacobian matrix
