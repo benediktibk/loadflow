@@ -53,13 +53,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
             var voltageChanges = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(rightSide.Count);
-            var realPowerMaximumError = powersRealError.Select(Math.Abs).Max();
-            var imaginaryPowerMaximumError = powersImaginaryError.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
-            var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
-            var stopCriterion = new Iterator<double>(new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor));
-            var preconditioner = new ILU0Preconditioner();
+            var stopCriterion = CreateStopCriterion(powersRealError, powersImaginaryError, residualImprovementFactor);
             var solver = new TFQMR();
-            solver.Solve(changeMatrix, rightSide, voltageChanges, stopCriterion, preconditioner);
+            solver.Solve(changeMatrix, rightSide, voltageChanges, new Iterator<double>(stopCriterion), new ILU0Preconditioner());
             return voltageChanges;
         }
 
@@ -254,6 +250,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 changeMatrix[matrixRow + rowOffset, matrixRow + columnOffset] +=
                     voltageRow.Magnitude*admittance.Magnitude*voltageColumn.Magnitude*
                     Math.Cos(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
+        }
+
+        private static ResidualStopCriterion<double> CreateStopCriterion(IList<double> powersRealError, IList<double> powersImaginaryError,
+            double residualImprovementFactor)
+        {
+            var realPowerMaximumError = powersRealError.Select(Math.Abs).Max();
+            var imaginaryPowerMaximumError = powersImaginaryError.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
+            var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
+            var stopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
+            return stopCriterion;
         }
     }
 }
