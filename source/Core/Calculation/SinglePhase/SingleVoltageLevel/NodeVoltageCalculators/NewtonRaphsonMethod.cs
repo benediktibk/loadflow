@@ -95,8 +95,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var current = constantCurrents[busIndex];
                 changeMatrix[matrixIndex, matrixIndex] -= current.Real;
                 changeMatrix[matrixIndex, matrixIndex + pqBusToMatrixIndex.Count] -= current.Imaginary;
-                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex] -= current.Imaginary;
-                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex + pqBusToMatrixIndex.Count] += current.Real;
+                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex] += current.Imaginary;
+                changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex + pqBusToMatrixIndex.Count] -= current.Real;
             }
 
             foreach (var bus in pvBusToMatrixIndex)
