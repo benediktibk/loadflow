@@ -5,7 +5,6 @@ using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Misc;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
@@ -47,6 +46,31 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _indexOfNodesWithKnownVoltage = new List<int> { 0 };
             _indexOfNodesWithUnknownVoltage = new List<int> { 1, 2 };
             _admittanceMatrixReduced = _admittanceMatrix.CreateReducedAdmittanceMatrix(_indexOfNodesWithUnknownVoltage, _indexOfNodesWithKnownVoltage, _knownVoltages, out _constantCurrents);
+        }
+
+        [TestMethod]
+        public void CalculateUnknownVoltages_OnePqBus_CorrectResult()
+        {
+            var admittanceMatrix = new AdmittanceMatrix(2);
+            admittanceMatrix.AddConnection(0, 1, 1 / new Complex(2, 3));
+            var feedInVoltage = new Complex(10, 0.1);
+            var loadVoltage = new Complex(9.98, 0.09);
+            var knownVoltages = new DenseVector(new[] { feedInVoltage });
+            var initialVoltages = new DenseVector(new[] { new Complex(10, 0) });
+            var correctVoltages = new DenseVector(new[] { feedInVoltage, loadVoltage });
+            var correctPowers = admittanceMatrix.CalculateAllPowers(correctVoltages);
+            var indexOfNodesWithKnownVoltage = new List<int> { 0 };
+            var indexOfNodesWithUnknownVoltage = new List<int> { 1 };
+            Vector<Complex> constantCurrents;
+            var admittanceMatrixReduced = admittanceMatrix.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage, indexOfNodesWithKnownVoltage, knownVoltages, out constantCurrents);
+            var pqBuses = new List<PqNodeWithIndex> { new PqNodeWithIndex(0, correctPowers[1]) };
+            var pvBuses = new List<PvNodeWithIndex>();
+
+            var result = _nodeVoltageCalculator.CalculateUnknownVoltages(admittanceMatrixReduced,
+                admittanceMatrix.CalculateRowSums(), 10, initialVoltages, constantCurrents, pqBuses, pvBuses);
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(loadVoltage.Magnitude, result[0].Magnitude, PrecisionPqOnly);
         }
 
         [TestMethod]
@@ -102,7 +126,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var loadVoltageOne = new Complex(9.98, 0.09);
             var loadVoltageTwo = new Complex(9.96, 0.07);
             var loadVoltageThree = new Complex(9.95, 0.08);
-            var knownVoltages = new DenseVector(new[] { _feedInVoltage });
+            var knownVoltages = new DenseVector(new[] { feedInVoltage });
             var initialVoltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0), new Complex(10, 0) });
             var correctVoltages = new DenseVector(new[] { feedInVoltage, loadVoltageOne, loadVoltageTwo, loadVoltageThree });
             var correctPowers = admittanceMatrix.CalculateAllPowers(correctVoltages);
