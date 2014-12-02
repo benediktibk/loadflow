@@ -66,15 +66,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public static Matrix<double> CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
             IList<int> pqBuses, IList<int> pvBuses)
         {
-            var loadCurrents = admittances.CalculateCurrents(voltages);
-            var totalCurrents = loadCurrents - constantCurrents;
             var allNodes = new List<int>();
             allNodes.AddRange(pqBuses);
             allNodes.AddRange(pvBuses);
             var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
             var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
             var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
-            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
+            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
@@ -98,7 +96,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 var matrixIndex = bus.Value;
                 var busIndex = bus.Key;
-                var current = totalCurrents[busIndex];
+                var current = constantCurrents[busIndex];
                 changeMatrix[matrixIndex, matrixIndex] -= current.Real;
                 changeMatrix[matrixIndex, matrixIndex + pqBusToMatrixIndex.Count] -= current.Imaginary;
                 changeMatrix[matrixIndex + busToMatrixIndex.Count, matrixIndex] -= current.Imaginary;
@@ -133,11 +131,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (matrixRow == matrixColumn)
                 changeMatrix[matrixRow, matrixRow] += 2*admittance.Real*voltageRow.Real;
             else
+            {
                 changeMatrix[matrixRow, matrixRow] += admittance.Real*voltageColumn.Real -
                                                       admittance.Imaginary*voltageColumn.Imaginary;
-
-            changeMatrix[matrixRow, matrixColumn] = voltageRow.Real*admittance.Real +
-                                                    voltageRow.Imaginary*admittance.Imaginary;
+                changeMatrix[matrixRow, matrixColumn] = voltageRow.Real*admittance.Real +
+                                                        voltageRow.Imaginary*admittance.Imaginary;
+            }
         }
 
         private static void FillChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, IList<Complex> voltages,
@@ -155,10 +154,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (matrixRow == matrixColumn)
                 changeMatrix[matrixRow, matrixColumn + columnOffset] += 2*admittance.Real*voltageRow.Imaginary;
             else
+            {
                 changeMatrix[matrixRow, matrixRow + columnOffset] += admittance.Imaginary*voltageColumn.Real +
                                                                      admittance.Real*voltageColumn.Imaginary;
-
-            changeMatrix[matrixRow, matrixColumn + columnOffset] = voltageRow.Imaginary * admittance.Real - voltageRow.Real * admittance.Imaginary;
+                changeMatrix[matrixRow, matrixColumn + columnOffset] = voltageRow.Imaginary*admittance.Real -
+                                                                       voltageRow.Real*admittance.Imaginary;
+            }
         }
 
         private static void FillChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, IList<Complex> voltages,
@@ -176,10 +177,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (matrixRow == matrixColumn)
                 changeMatrix[matrixRow + rowOffset, matrixColumn] -= 2*admittance.Imaginary*voltageRow.Real;
             else
-                changeMatrix[matrixRow + rowOffset, matrixColumn] -= admittance.Imaginary*voltageColumn.Real +
+            {
+                changeMatrix[matrixRow + rowOffset, matrixRow] -= admittance.Imaginary*voltageColumn.Real +
                                                                      admittance.Real*voltageColumn.Imaginary;
-
-            changeMatrix[matrixRow + rowOffset, matrixColumn] = voltageRow.Imaginary * admittance.Real - voltageRow.Real * admittance.Imaginary;
+                changeMatrix[matrixRow + rowOffset, matrixColumn] = voltageRow.Imaginary*admittance.Real -
+                                                                    voltageRow.Real*admittance.Imaginary;
+            }
         }
 
         private static void FillChangeMatrixImaginaryPowerByImaginaryPart(Matrix<double> changeMatrix, IList<Complex> voltages,
@@ -198,11 +201,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] -= 2*admittance.Imaginary*
                                                                                     voltageRow.Imaginary;
             else
-                changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] += admittance.Real*voltageColumn.Real -
+            {
+                changeMatrix[matrixRow + rowOffset, matrixRow + columnOffset] += admittance.Real * voltageColumn.Real -
                                                                                     admittance.Imaginary*
                                                                                     voltageColumn.Imaginary;
-
-            changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] = (-1) * (voltageRow.Real * admittance.Real + voltageRow.Imaginary * admittance.Imaginary);
+                changeMatrix[matrixRow + rowOffset, matrixColumn + columnOffset] = (-1)*
+                                                                                   (voltageRow.Real*admittance.Real +
+                                                                                    voltageRow.Imaginary*
+                                                                                    admittance.Imaginary);
+            }
         }
 
         private static void FillChangeMatrixRealPowerByAngle(Matrix<double> changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int columnOffset)
