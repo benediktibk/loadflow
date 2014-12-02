@@ -592,7 +592,7 @@ Next I will need the seperation of this into its real and imaginary parts. There
 		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
 			  & \sum_{i \ne k} j \left( U_k^i Y_{ki}^r U_i^r - U_k^r Y_{ki}^i U_i^r - U_k^r Y_{ki}^r U_i^i - U_k^i Y_{ki}^i U_i^i \right) + \\
 			  & Y_{kk}^r ( (U_k^r)^2 + (U_k^i)^2 ) - j Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) - \\
-			  & I_k^r U_k^r - I_k^i U_k^i + j (I_k^r U_k^i - U_k^r I_k^i)
+			  & I_k^r U_k^r - I_k^i U_k^i + j (I_k^i U_k^r - I_k^r U_k^i)
 	\end{split}
 \end{equation}
 and separate this to get
@@ -606,7 +606,7 @@ and
 \begin{equation}
 	\begin{split}
 		Q_k = & \sum_{i \ne k} \left( U_k^i Y_{ki}^r U_i^r - U_k^r Y_{ki}^i U_i^r - U_k^r Y_{ki}^r U_i^i - U_k^i Y_{ki}^i U_i^i \right) - \\
-			  & Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) + I_k^r U_k^i - U_k^r I_k^i
+			  & Y_{kk}^i ( (U_k^r)^2 + (U_k^i)^2 ) + I_k^i U_k^r - I_k^r U_k^i
 	\end{split}.
 \end{equation}
 
@@ -618,10 +618,10 @@ These formulas must be differentiated with respect to $U_k^r$, $U_k^i$, $U_i^r$ 
 	\frac{\partial P_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^i U_i^r + Y_{ki}^r U_i^i \right) + 2 Y_{kk}^r U_k^i - I_k^i
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial U_k^r} = \sum_{i \ne k} \left( - Y_{ki}^i U_i^r - Y_{ki}^r U_i^i \right) - 2 Y_{kk}^i U_k^r - I_k^i
+	\frac{\partial Q_k}{\partial U_k^r} = \sum_{i \ne k} \left( - Y_{ki}^i U_i^r - Y_{ki}^r U_i^i \right) - 2 Y_{kk}^i U_k^r + I_k^i
 \end{equation}
 \begin{equation}
-	\frac{\partial Q_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^r U_i^r - Y_{ki}^i U_i^i \right) - 2 Y_{kk}^i U_k^i + I_k^r
+	\frac{\partial Q_k}{\partial U_k^i} = \sum_{i \ne k} \left( Y_{ki}^r U_i^r - Y_{ki}^i U_i^i \right) - 2 Y_{kk}^i U_k^i - I_k^r
 \end{equation}
 \begin{equation}
 	\frac{\partial P_k}{\partial U_i^r} = U_k^r Y_{ki}^r + U_k^i Y_{ki}^i
