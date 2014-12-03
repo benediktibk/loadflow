@@ -250,15 +250,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        private static void FillChangeMatrixRealPowerByAngle(SubMatrix changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
+        private static void FillChangeMatrixRealPowerByAngle(SubMatrix changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
         {
-            var matrixRow = rowBusToMatrixIndex[busRow];
+            var matrixRow = busToMatrixIndex[busRow];
             int matrixColumn;
 
-            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            if (!pvBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
                 return;
 
-            if (matrixRow == matrixColumn)
+            if (matrixRow == busToMatrixIndex[busColumn])
                 return;
 
             var voltageRow = voltages[busRow];
@@ -266,7 +266,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             changeMatrix[matrixRow, matrixColumn] =
                 admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
 
-            if (columnBusToMatrixIndex.TryGetValue(busRow, out matrixRow))
+            if (pvBusToMatrixIndex.TryGetValue(busRow, out matrixRow))
                 changeMatrix[matrixRow, matrixRow] +=
                     admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
