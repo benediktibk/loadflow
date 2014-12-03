@@ -133,7 +133,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 changeMatrix[matrixRow, matrixRow] += 2*admittance.Real*voltageRow.Real;
             else
             {
-                changeMatrix[matrixRow, matrixRow] += admittance.Real*voltageColumn.Real -
+                if (pqBusToMatrixIndex.ContainsKey(busRow))
+                    changeMatrix[matrixRow, matrixRow] += admittance.Real*voltageColumn.Real -
                                                       admittance.Imaginary*voltageColumn.Imaginary;
                 changeMatrix[matrixRow, matrixColumn] = voltageRow.Real*admittance.Real +
                                                         voltageRow.Imaginary*admittance.Imaginary;
