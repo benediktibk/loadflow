@@ -113,13 +113,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         private static void FillChangeMatrixRealPowerByRealPart(Matrix<double> changeMatrix, IList<Complex> voltages,
-            IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
+            IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
         {
-            var matrixRow = rowBusToMatrixIndex[busRow];
+            var matrixRow = busToMatrixIndex[busRow];
             int matrixColumn;
 
-            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            if (!pqBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            {
+                var voltage = voltages[busColumn];
+                changeMatrix[matrixRow, matrixRow] += admittance.Real * voltage.Real -
+                                                      admittance.Imaginary * voltage.Imaginary;
                 return;
+            }
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
@@ -136,13 +141,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         private static void FillChangeMatrixRealPowerByImaginaryPart(Matrix<double> changeMatrix, IList<Complex> voltages,
-            IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int columnOffset)
+            IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int columnOffset)
         {
-            var matrixRow = rowBusToMatrixIndex[busRow];
+            var matrixRow = busToMatrixIndex[busRow];
             int matrixColumn;
 
-            if (!columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            if (!pqBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            {
+                var voltage = voltages[busColumn];
+                changeMatrix[matrixRow, matrixRow + columnOffset] += admittance.Imaginary * voltage.Real +
+                                                                     admittance.Real * voltage.Imaginary;
                 return;
+            }
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
@@ -159,13 +169,21 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         private static void FillChangeMatrixImaginaryPowerByRealPart(Matrix<double> changeMatrix, IList<Complex> voltages,
-            IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance, int rowOffset)
+            IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance, int rowOffset)
         {
             int matrixRow;
             int matrixColumn;
 
-            if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow) || !busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            if (!pqBusToMatrixIndex.TryGetValue(busRow, out matrixRow))
                 return;
+
+            if (!pqBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            {
+                var voltage = voltages[busColumn];
+                changeMatrix[matrixRow + rowOffset, matrixRow] -= admittance.Imaginary * voltage.Real +
+                                                                     admittance.Real * voltage.Imaginary;
+                return;
+            }
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
@@ -187,8 +205,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             int matrixRow;
             int matrixColumn;
 
-            if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow) || !busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            if (!busToMatrixIndex.TryGetValue(busRow, out matrixRow))
                 return;
+
+            if (!busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+            {
+                var voltage = voltages[busColumn];
+                changeMatrix[matrixRow + rowOffset, matrixRow + columnOffset] += admittance.Real * voltage.Real -
+                                                                                    admittance.Imaginary *
+                                                                                    voltage.Imaginary;
+                return;
+            }
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
