@@ -251,7 +251,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageColumn = voltages[busColumn];
             int matrixColumn;
 
-            if (matrixRow == busToMatrixIndex[busColumn])
+            if (busRow == busColumn)
                 return;
 
             int matrixRowPv;
