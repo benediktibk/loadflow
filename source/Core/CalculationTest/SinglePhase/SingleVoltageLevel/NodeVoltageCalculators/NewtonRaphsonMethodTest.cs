@@ -256,7 +256,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(-4, changeMatrix[1, 1], 0.00001);
             Assert.AreEqual(-6.02, changeMatrix[2, 1], 0.00001);
             Assert.AreEqual(-40, changeMatrix[0, 2], 0.00001);
-            Assert.AreEqual(-40, changeMatrix[1, 2], 0.00001);
+            Assert.AreEqual(40, changeMatrix[1, 2], 0.00001);
             Assert.AreEqual(20, changeMatrix[2, 2], 0.00001);
         }
 

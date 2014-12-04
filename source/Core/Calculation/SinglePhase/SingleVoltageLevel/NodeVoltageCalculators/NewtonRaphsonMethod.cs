@@ -68,7 +68,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
             var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
             var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
-            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
+            var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
             var realPowerByRealPart = new SubMatrix(changeMatrix, 0, 0, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
             var realPowerByImaginaryPart = new SubMatrix(changeMatrix, 0, pqBusToMatrixIndex.Count, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
             var imaginaryPowerByRealPart = new SubMatrix(changeMatrix, busToMatrixIndex.Count, 0, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count);
