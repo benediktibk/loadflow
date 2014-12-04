@@ -232,6 +232,35 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         [TestMethod]
+        public void CalculateChangeMatrix_OnePqAndOnePvNode_CorrectResults()
+        {
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
+            {
+                {new Complex(0.6, -0.6), new Complex(-0.2, 0.4)},
+                {new Complex(-0.2, 0.4), new Complex(0.2, -0.4)}
+            }));
+            var voltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0) });
+            var constantCurrents = new DenseVector(new[] { new Complex(4.02, -1.96), new Complex(0, 0) });
+            var pqBuses = new List<int> { 0 };
+            var pvBuses = new List<int> { 1 };
+
+            var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
+                pqBuses, pvBuses);
+
+            Assert.AreEqual(3, changeMatrix.RowCount);
+            Assert.AreEqual(3, changeMatrix.ColumnCount);
+            Assert.AreEqual(5.98, changeMatrix[0, 0], 0.00001);
+            Assert.AreEqual(-2, changeMatrix[1, 0], 0.00001);
+            Assert.AreEqual(6.04, changeMatrix[2, 0], 0.00001);
+            Assert.AreEqual(5.96, changeMatrix[0, 1], 0.00001);
+            Assert.AreEqual(-4, changeMatrix[1, 1], 0.00001);
+            Assert.AreEqual(-6.02, changeMatrix[2, 1], 0.00001);
+            Assert.AreEqual(-40, changeMatrix[0, 2], 0.00001);
+            Assert.AreEqual(-40, changeMatrix[1, 2], 0.00001);
+            Assert.AreEqual(20, changeMatrix[2, 2], 0.00001);
+        }
+
+        [TestMethod]
         public void CalculateImprovedVoltages_ThreePqNodes_CorrectResults()
         {
             var calculator = new NewtonRaphsonMethod(0.000001, 1000);
