@@ -68,7 +68,7 @@ class DiagonalPreconditioner
         if(it && it.index()==j)
           m_invdiag(j) = Scalar(1)/it.value();
         else
-          m_invdiag(j) = 0;
+          m_invdiag(j) = Scalar(0);
       }
       m_isInitialized = true;
       return *this;

@@ -67,7 +67,7 @@ private:
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
 	const double _nominalVoltage;
-	Decomposition<ComplexFloating> *_factorization;
+	Eigen::BiCGSTAB<Eigen::SparseMatrix<ComplexFloating>, Eigen::DiagonalPreconditioner<ComplexFloating> > *_solver;
 	Matrix<ComplexFloating> _admittances;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
 	std::vector<ComplexFloating> _constantCurrents;

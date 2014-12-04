@@ -178,5 +178,31 @@ namespace Eigen
 			return x.real()*x.real() + x.imag()*x.imag();
 		  }
 		};
+
+		template<> struct conj_helper< Complex<long double>, Complex<long double>, true, false >
+		{
+			Complex<long double> pmul(Complex<long double> lhs, Complex<long double> rhs)
+			{
+				return std::conj(lhs)*rhs;
+			}
+
+			Complex<long double> pmadd(Complex<long double> const &a, Complex<long double> const &b, Complex<long double> const &c)
+			{
+				return pmul(a, b) + c;
+			}
+		};
+
+		template<> struct conj_helper< Complex<MultiPrecision>, Complex<MultiPrecision>, true, false >
+		{
+			Complex<MultiPrecision> pmul(Complex<MultiPrecision> lhs, Complex<MultiPrecision> rhs)
+			{
+				return std::conj(lhs)*rhs;
+			}
+
+			Complex<MultiPrecision> pmadd(Complex<MultiPrecision> const &a, Complex<MultiPrecision> const &b, Complex<MultiPrecision> const &c)
+			{
+				return pmul(a, b) + c;
+			}
+		};
 	}
 }

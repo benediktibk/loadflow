@@ -46,6 +46,7 @@ const MultiPrecision operator/(const MultiPrecision &lhs, const MultiPrecision &
 bool operator<(const MultiPrecision &lhs, const MultiPrecision &rhs);
 bool operator>(const MultiPrecision &lhs, const MultiPrecision &rhs);
 bool operator>=(const MultiPrecision &lhs, const MultiPrecision &rhs);
+bool operator<=(const MultiPrecision &lhs, const MultiPrecision &rhs);
 bool operator==(const MultiPrecision &lhs, const MultiPrecision &rhs);
 bool operator!=(const MultiPrecision &lhs, const MultiPrecision &rhs);
 std::ostream& operator<<(std::ostream &stream, MultiPrecision const& value);

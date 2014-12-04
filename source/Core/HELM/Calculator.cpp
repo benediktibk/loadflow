@@ -19,7 +19,7 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_nominalVoltage(nominalVoltage),
-	_factorization(0),
+	_solver(0),
 	_admittances(nodeCount, nodeCount),
 	_totalAdmittanceRowSums(nodeCount),
 	_constantCurrents(nodeCount),
@@ -78,9 +78,8 @@ template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
 	freeMemory();
-	//_admittances.compress();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_factorization = new Decomposition<ComplexFloating>(_admittances);
+	_solver = new Eigen::BiCGSTAB<Eigen::SparseMatrix<ComplexFloating>, Eigen::DiagonalPreconditioner<ComplexFloating> >(_admittances.getValues());
 
 	for (size_t i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
@@ -180,9 +179,9 @@ void Calculator<Floating, ComplexFloating>::writeLine(const char *text)
 }
 
 template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const vector<ComplexFloating> &rightHandSide)
+vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const vector<ComplexFloating> &rightHandSide)
 {
-	return _factorization->solveEquationSystem(rightHandSide);
+	return Matrix<ComplexFloating>::eigenToStdVector(_solver->solve(Matrix<ComplexFloating>::stdToEigenVector(rightHandSide)));
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -362,8 +361,8 @@ void Calculator<Floating, ComplexFloating>::freeMemory()
 {
 	delete _coefficientStorage;
 	_coefficientStorage = 0;
-	delete _factorization;
-	_factorization = 0;
+	delete _solver;
+	_solver = 0;
 	deleteContinuations();
 }
 

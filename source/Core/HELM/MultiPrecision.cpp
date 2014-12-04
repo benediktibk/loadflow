@@ -120,6 +120,11 @@ bool operator>=(const MultiPrecision &lhs, const MultiPrecision &rhs)
 	return lhs.getValue() >= rhs.getValue();
 }
 
+bool operator<=(const MultiPrecision &lhs, const MultiPrecision &rhs)
+{
+	return lhs.getValue() <= rhs.getValue();
+}
+
 bool operator==(const MultiPrecision &lhs, const MultiPrecision &rhs)
 {
 	return lhs.getValue() == rhs.getValue();

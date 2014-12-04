@@ -45,14 +45,14 @@ bool bicgstab(const MatrixType& mat, const Rhs& rhs, Dest& x,
   
   RealScalar r0_sqnorm = r0.squaredNorm();
   RealScalar rhs_sqnorm = rhs.squaredNorm();
-  if(rhs_sqnorm == 0)
+  if(rhs_sqnorm == RealScalar(0))
   {
     x.setZero();
     return true;
   }
-  Scalar rho    = 1;
-  Scalar alpha  = 1;
-  Scalar w      = 1;
+  Scalar rho    = Scalar(1);
+  Scalar alpha  = Scalar(1);
+  Scalar w      = Scalar(1);
   
   VectorType v = VectorType::Zero(n), p = VectorType::Zero(n);
   VectorType y(n),  z(n);
@@ -74,7 +74,8 @@ bool bicgstab(const MatrixType& mat, const Rhs& rhs, Dest& x,
       // The new residual vector became too orthogonal to the arbitrarily choosen direction r0
       // Let's restart with a new r0:
       r0 = r;
-      rho = r0_sqnorm = r.squaredNorm();
+	  r0_sqnorm = r.squaredNorm();
+      rho = Scalar(r0_sqnorm);
       if(restarts++ == 0)
         i = 0;
     }
@@ -93,7 +94,7 @@ bool bicgstab(const MatrixType& mat, const Rhs& rhs, Dest& x,
 
     RealScalar tmp = t.squaredNorm();
     if(tmp>RealScalar(0))
-      w = t.dot(s) / tmp;
+      w = t.dot(s) / Scalar(tmp);
     else
       w = Scalar(0);
     x += alpha * y + w * z;
