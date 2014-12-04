@@ -21,18 +21,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             _preconditioner = new ILU0Preconditioner();
         }
 
-        public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages, double residualImprovementFactor)
+        public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(pqBuses.Count + pvBuses.Count);
-            var allNodes = new List<int>();
-            allNodes.AddRange(pqBuses);
-            allNodes.AddRange(pvBuses);
-            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
-            var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
+            var improvedVoltages = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(busToMatrixIndex.Count);
             var realPowerMaximumError = powersRealError.Select(Math.Abs).Max();
-            var imaginaryPowerMaximumError = pqBuses.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
+            var imaginaryPowerMaximumError = pqBusToMatrixIndex.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
             var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
-            var angleChange = new DenseVector(allNodes.Count);
+            var angleChange = new DenseVector(busToMatrixIndex.Count);
             var iterator = new Iterator<double>(new ResidualStopCriterion<double>(powerMaximumError*residualImprovementFactor));
             Matrix<double> changeMatrixRealPowerByAngle;
             Matrix<double> changeMatrixImaginaryPowerByAmplitude;
@@ -44,9 +39,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _solver.Solve(changeMatrixRealPowerByAngle, powersRealErrorVector, angleChange, iterator, _preconditioner);
             }
 
-            if (pqBuses.Count > 0)
+            if (pqBusToMatrixIndex.Count > 0)
             {
-                var amplitudeChange = new DenseVector(pqBuses.Count);
+                var amplitudeChange = new DenseVector(pqBusToMatrixIndex.Count);
 
                 if (imaginaryPowerMaximumError > TargetPrecision)
                 {
@@ -54,15 +49,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     _solver.Solve(changeMatrixImaginaryPowerByAmplitude, powersImaginaryErrorVector, amplitudeChange, iterator, _preconditioner);
                 }
 
-                foreach (var bus in pqBuses)
+                foreach (var bus in pqBusToMatrixIndex.Select(x => x.Key))
                     improvedVoltages[bus] =
                         Complex.FromPolarCoordinates(
                             voltages[bus].Magnitude + amplitudeChange[pqBusToMatrixIndex[bus]],
                             voltages[bus].Phase + angleChange[bus]);
             }
 
-            for(var i = 0; i < pvBuses.Count; ++i)
-                improvedVoltages[pvBuses[i]] = Complex.FromPolarCoordinates(pvBusVoltages[i], voltages[pvBuses[i]].Phase + angleChange[pvBuses[i]]);
+            foreach (var bus in pvBusToMatrixIndex)
+                improvedVoltages[bus.Key] = Complex.FromPolarCoordinates(pvBusVoltages[bus.Value], voltages[bus.Key].Phase + angleChange[bus.Key]);
 
             return improvedVoltages;
         }

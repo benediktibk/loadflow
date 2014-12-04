@@ -49,7 +49,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(10.7080142194379, 8.72599840262781, improvedVoltages[0], 0.000001);
@@ -74,7 +74,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(10.7188134641008, 8.71539079667836, improvedVoltages[0], 0.000001);
@@ -99,7 +99,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 21, 22 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(21, 5.1869348191849, improvedVoltages[0], 0.000001);
@@ -124,7 +124,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 21, 22 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(2, improvedVoltages.Count);
             ComplexAssert.AreEqual(22, 5.2390276308319, improvedVoltages[0], 0.000001);
@@ -150,7 +150,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(20.622334959047, 18.6013743971205, improvedVoltages[0], 0.000001);
@@ -177,7 +177,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(20.3970135969122, 18.7885158385366, improvedVoltages[0], 0.000001);
@@ -196,11 +196,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }));
             var voltages = new DenseVector(new[] { new Complex(19, 20), new Complex(21, 22), new Complex(23, 24) });
             var constantCurrents = new DenseVector(new[] { new Complex(25, 26), new Complex(27, 28), new Complex(29, 30) });
-            var pqBuses = new List<int> { 0, 1 };
-            var pvBuses = new List<int> { 2 };
+            var pqBuses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
+            var pvBuses = new Dictionary<int, int> { { 2, 0 } };
+            var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 }, { 2, 2 } };
 
             var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
-                pqBuses, pvBuses);
+                pqBuses, pvBuses, buses);
 
             Assert.AreEqual(5, changeMatrix.RowCount);
             Assert.AreEqual(5, changeMatrix.ColumnCount);
@@ -241,11 +242,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }));
             var voltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0) });
             var constantCurrents = new DenseVector(new[] { new Complex(4.02, -1.96), new Complex(0, 0) });
-            var pqBuses = new List<int> { 0 };
-            var pvBuses = new List<int> { 1 };
+            var pqBuses = new Dictionary<int, int> { { 0, 0 } };
+            var pvBuses = new Dictionary<int, int> { { 1, 0 } };
+            var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
 
             var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
-                pqBuses, pvBuses);
+                pqBuses, pvBuses, buses);
 
             Assert.AreEqual(3, changeMatrix.RowCount);
             Assert.AreEqual(3, changeMatrix.ColumnCount);
@@ -270,11 +272,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }));
             var voltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0) });
             var constantCurrents = new DenseVector(new[] { new Complex(4.02, -1.96), new Complex(0, 0) });
-            var pqBuses = new List<int> { 0 };
-            var pvBuses = new List<int> { 1 };
+            var pqBuses = new Dictionary<int, int> { { 0, 0 } };
+            var pvBuses = new Dictionary<int, int> { { 1, 0 } };
+            var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
 
             var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
-                pqBuses, pvBuses);
+                pqBuses, pvBuses, buses);
 
             Assert.IsNotNull(changeMatrix as MathNet.Numerics.LinearAlgebra.Double.SparseMatrix);
         }
@@ -298,7 +301,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(20.400950369329, 18.7852777611224, improvedVoltages[0], 0.000001);
@@ -325,7 +328,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double>();
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(20.4252671775033, 18.7635714441913, improvedVoltages[0], 0.000001);
@@ -352,7 +355,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 34, 35, 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(34, 6.09350183532044, improvedVoltages[0], 0.000001);
@@ -379,7 +382,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusVoltages = new List<double> { 34, 35, 36 };
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pqBuses, pvBuses, pvBusVoltages, 1e-12);
+                powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses);
 
             Assert.AreEqual(3, improvedVoltages.Count);
             ComplexAssert.AreEqual(36, 6.19523197518303, improvedVoltages[0], 0.000001);

@@ -14,37 +14,40 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
         { }
 
-        public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages, double residualImprovementFactor)
+        public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBuses, pvBuses);
+            var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBusToMatrixIndex, pvBusToMatrixIndex, busToMatrixIndex);
             var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix, residualImprovementFactor);
-            return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBuses, pvBuses, pvBusVoltages, voltageChanges);
+            return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBusToMatrixIndex, pvBusToMatrixIndex, pvBusVoltages, voltageChanges);
         }
 
-        public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IList<int> pqBuses, IList<int> pvBuses,
+        public Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages,
+            Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages,
+            double residualImprovementFactor, IList<int> pqBuses, IList<int> pvBuses)
+        {
+            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
+            var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
+            var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses.Concat(pvBuses).ToList());
+            return CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
+                powersImaginaryError, pvBusVoltages, residualImprovementFactor, pqBusToMatrixIndex, pvBusToMatrixIndex,
+                busToMatrixIndex);
+        }
+
+        public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex,
             IList<double> pvBusVoltages, IList<double> voltageChanges)
         {
             IList<double> voltageChangesReal;
             IList<double> voltageChangesImaginary;
             IList<double> voltageChangesAngle;
-            DivideParts(voltageChanges, pqBuses.Count, pqBuses.Count, out voltageChangesReal, out voltageChangesImaginary,
+            DivideParts(voltageChanges, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count, out voltageChangesReal, out voltageChangesImaginary,
                 out voltageChangesAngle);
-            var nodeCount = pqBuses.Count + pvBuses.Count;
-            var improvedVoltages = new DenseVector(nodeCount);
-            var mappingPqBusToIndex = CreateMappingBusToMatrixIndex(pqBuses);
-            var mappingPvBusToIndex = CreateMappingBusToMatrixIndex(pvBuses);
+            var improvedVoltages = new DenseVector(pqBusToMatrixIndex.Count + pvBusToMatrixIndex.Count);
 
-            foreach (var bus in pqBuses)
-            {
-                var index = mappingPqBusToIndex[bus];
-                improvedVoltages[bus] = voltages[bus] + new Complex(voltageChangesReal[index], voltageChangesImaginary[index]);
-            }
+            foreach (var bus in pqBusToMatrixIndex)
+                improvedVoltages[bus.Key] = voltages[bus.Key] + new Complex(voltageChangesReal[bus.Value], voltageChangesImaginary[bus.Value]);
 
-            foreach (var bus in pvBuses)
-            {
-                var index = mappingPvBusToIndex[bus];
-                improvedVoltages[bus] = new Complex(pvBusVoltages[index], voltages[bus].Phase + voltageChangesAngle[index]);
-            }
+            foreach (var bus in pvBusToMatrixIndex)
+                improvedVoltages[bus.Key] = new Complex(pvBusVoltages[bus.Value], voltages[bus.Key].Phase + voltageChangesAngle[bus.Value]);
 
             return improvedVoltages;
         }
@@ -60,14 +63,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         public static Matrix<double> CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
-            IList<int> pqBuses, IList<int> pvBuses)
+            IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var allNodes = new List<int>();
-            allNodes.AddRange(pqBuses);
-            allNodes.AddRange(pvBuses);
-            var busToMatrixIndex = CreateMappingBusToMatrixIndex(allNodes);
-            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
-            var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
             var changeMatrix = new MathNet.Numerics.LinearAlgebra.Double.SparseMatrix(pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count, pqBusToMatrixIndex.Count * 2 + pvBusToMatrixIndex.Count);
             var realPowerByRealPart = new SubMatrix(changeMatrix, 0, 0, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
             var realPowerByImaginaryPart = new SubMatrix(changeMatrix, 0, pqBusToMatrixIndex.Count, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);

@@ -18,7 +18,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public int MaximumIterations { get; private set; }
         public double TargetPrecision { get; private set; }
 
-        public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<int> pqBuses, IList<int> pvBuses, IList<double> pvBusVoltages, double residualImprovementFactor);
+        public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex);
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
@@ -36,11 +36,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             pqBusIds.AddRange(pqBuses.Select(bus => bus.Index));
             var maximumPower = pvBuses.Select(x => x.RealPower).Concat(pqBuses.Select(x => x.Power.Magnitude)).Max();
             var powerDifferenceBase = maximumPower > 0 ? maximumPower : 1;
+            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds);
+            var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBusIds);
+            var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds.Concat(pvBusIds).ToList());
 
             do
             {
                 ++iterations;
-                currentVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pqBusIds, pvBusIds, pvBusVoltages, 1e-6);
+                currentVoltages = CalculateImprovedVoltages(admittances, currentVoltages, constantCurrents, powersRealDifference, powersImaginaryDifference, pvBusVoltages, 1e-6, pqBusToMatrixIndex, pvBusToMatrixIndex, busToMatrixIndex);
                 CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
                 var powersRealDifferenceAbsolute = powersRealDifference.Select(Math.Abs);
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
