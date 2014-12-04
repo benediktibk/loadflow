@@ -10,7 +10,6 @@
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
 #include "Matrix.h"
-#include "Decomposition.h"
 
 template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator

@@ -48,12 +48,6 @@ T Matrix<T>::getValue(int row, int column) const
 }
 
 template<typename T>
-void Matrix<T>::compress()
-{
-	_values.makeCompressed();
-}
-
-template<typename T>
 std::vector<T> Matrix<T>::pointwiseMultiply(const std::vector<T> &one, const std::vector<T> &two)
 {
 	assert(one.size() == two.size());

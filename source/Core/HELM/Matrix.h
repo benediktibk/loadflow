@@ -14,7 +14,6 @@ public:
 	std::vector<T> multiply(std::vector<T> const& rhs) const;
 	Eigen::SparseMatrix<T, Eigen::ColMajor > const& getValues() const;
 	T getValue(int row, int column) const;
-	void compress();
 
 public:
 	static std::vector<T> pointwiseMultiply(const std::vector<T> &one, const std::vector<T> &two);
