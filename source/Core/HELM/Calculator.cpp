@@ -90,7 +90,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 	calculateSecondCoefficient();
 	map<double, int> totalErrors;
-	std::vector< std::vector< complex<double> > > partialResults;
+	vector< vector< complex<double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
 	
 	while (_coefficientStorage->getCoefficientCount() < _numberOfCoefficients)
@@ -180,7 +180,7 @@ void Calculator<Floating, ComplexFloating>::writeLine(const char *text)
 }
 
 template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide)
+std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const vector<ComplexFloating> &rightHandSide)
 {
 	return _factorization->solveEquationSystem(rightHandSide);
 }
@@ -238,7 +238,7 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 {
-	std::vector<ComplexFloating> rightHandSide(_nodeCount);
+	vector<ComplexFloating> rightHandSide(_nodeCount);
 
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
@@ -257,7 +257,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		rightHandSide[id] = calculateRightHandSide(bus) - admittanceRowSum;
 	}
 	
-	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	_coefficientStorage->addCoefficients(coefficients);
 }
@@ -265,7 +265,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
-	std::vector<ComplexFloating> rightHandSide(_nodeCount);
+	vector<ComplexFloating> rightHandSide(_nodeCount);
 			
 	for (size_t i = 0; i < _pqBusCount; ++i)
 	{
@@ -282,7 +282,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		rightHandSide[id] = calculateRightHandSide(bus);
 	}
 	
-	std::vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	_coefficientStorage->addCoefficients(coefficients);
 }
@@ -303,9 +303,9 @@ ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PV
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 {
-	std::vector<ComplexFloating> currents = _admittances.multiply(Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
-	std::vector<ComplexFloating> totalCurrents = Matrix<ComplexFloating>::subtract(currents, _constantCurrents);
-	std::vector<ComplexFloating> powers = Matrix<ComplexFloating>::pointwiseMultiply(conjugate(totalCurrents), Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
+	vector<ComplexFloating> currents = _admittances.multiply(Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
+	vector<ComplexFloating> totalCurrents = Matrix<ComplexFloating>::subtract(currents, _constantCurrents);
+	vector<ComplexFloating> powers = Matrix<ComplexFloating>::pointwiseMultiply(conjugate(totalCurrents), Matrix<ComplexFloating>::stdComplexVectorToComplexFloatingVector(_voltages));
 	
 	assert(_nodeCount == powers.size());
 	double sum = 0;
@@ -386,7 +386,7 @@ void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
 }
 
 template<typename Floating, typename ComplexFloating>
-Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const std::vector<ComplexFloating> &values)
+Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const vector<ComplexFloating> &values)
 {
 	assert(values.size() > 0);
 	Floating result(0);
@@ -402,9 +402,9 @@ Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const std::
 }
 
 template<typename Floating, typename ComplexFloating>
-std::vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(const std::vector<ComplexFloating> &values)
+vector<ComplexFloating> Calculator<Floating, ComplexFloating>::conjugate(const vector<ComplexFloating> &values)
 {
-	std::vector<ComplexFloating> result(values.size());
+	vector<ComplexFloating> result(values.size());
 
 	for (size_t i = 0; i < values.size(); ++i)
 		result[i] = conj(values[i]);
