@@ -258,7 +258,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             if (pvBusToMatrixIndex.TryGetValue(busRow, out matrixRowPv))
             {
-                changeMatrix[matrixRowPv, matrixRowPv] +=
+                changeMatrix[matrixRow, matrixRowPv] +=
                     admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude *
                     Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
             }
