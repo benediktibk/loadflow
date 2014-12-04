@@ -124,19 +124,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private static void FillChangeMatrixRealPowerByRealPart(SubMatrix changeMatrix, IList<Complex> voltages,
             IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
         {
-            var matrixRow = busToMatrixIndex[busRow];
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
-
+            var matrixRow = busToMatrixIndex[busRow];
             int matrixColumn;
 
             if (!pqBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
             {
-                if (!pqBusToMatrixIndex.ContainsKey(busRow)) 
-                    return;
-
-                changeMatrix[matrixRow, matrixRow] += admittance.Real * voltageColumn.Real -
-                                                      admittance.Imaginary * voltageColumn.Imaginary;
+                if (pqBusToMatrixIndex.ContainsKey(busRow)) 
+                    changeMatrix[matrixRow, matrixRow] += admittance.Real * voltageColumn.Real -
+                                                        admittance.Imaginary * voltageColumn.Imaginary;
                 return;
             }
 
@@ -164,11 +161,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             if (!pqBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
             {
-                if (!pqBusToMatrixIndex.ContainsKey(busRow))
-                    return;
-
-                changeMatrix[matrixRow, matrixRow] += admittance.Imaginary * voltageColumn.Real +
-                                                                     admittance.Real * voltageColumn.Imaginary;
+                if (pqBusToMatrixIndex.ContainsKey(busRow))
+                    changeMatrix[matrixRow, matrixRow] += admittance.Imaginary * voltageColumn.Real +
+                                                        admittance.Real * voltageColumn.Imaginary;
                 return;
             }
 
@@ -230,8 +225,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (!busToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
             {
                 changeMatrix[matrixRow, matrixRow] += admittance.Real * voltageColumn.Real -
-                                                                                    admittance.Imaginary *
-                                                                                    voltageColumn.Imaginary;
+                                                    admittance.Imaginary * voltageColumn.Imaginary;
                 return;
             }
 
