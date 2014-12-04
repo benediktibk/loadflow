@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -210,6 +211,30 @@ namespace SincalConnectorIntegrationTest
             var generator = generators.First();
             Assert.AreEqual(9e5, generator.RealPower, 0.00001);
             Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void Constructor_NetWithTransmissionLine1_ExceptionThrown()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/transmissionline1_files/database.mdb");
+
+            var generators = powerNet.Data.Generators;
+            Assert.AreEqual(1, generators.Count);
+            var generator = generators.First();
+            Assert.AreEqual(9e5, generator.RealPower, 0.00001);
+            Assert.AreEqual(1030, generator.VoltageMagnitude, 0.00001);
+        }
+
+        [TestMethod]
+        public void Constructor_NetWithTransmissionLine2_ShuntConductanceIsCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/transmissionline2_files/database.mdb");
+
+            var transmissionLines = powerNet.Data.TransmissionLines;
+            Assert.AreEqual(1, transmissionLines.Count);
+            var transmissionLine = transmissionLines.First();
+            Assert.AreEqual(5/1e6, transmissionLine.ShuntConductancePerUnitLength, 0.00001);
         }
 
         [TestMethod]

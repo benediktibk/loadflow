@@ -201,6 +201,12 @@
     <None Include="testdata\transformer.sin" />
     <None Include="testdata\transformer_files\database.001.dia" />
     <None Include="testdata\transformer_files\database.ini" />
+    <None Include="testdata\transmissionline1.sin" />
+    <None Include="testdata\transmissionline1_files\database.001.dia" />
+    <None Include="testdata\transmissionline1_files\database.ini" />
+    <None Include="testdata\transmissionline2.sin" />
+    <None Include="testdata\transmissionline2_files\database.001.dia" />
+    <None Include="testdata\transmissionline2_files\database.ini" />
     <None Include="testdata\uebertragungsnetz_deutschland.sin" />
     <None Include="testdata\uebertragungsnetz_deutschland_files\database.001.dia" />
     <None Include="testdata\uebertragungsnetz_deutschland_files\database.ini" />
@@ -336,6 +342,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\transformer_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\transmissionline1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\transmissionline2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\uebertragungsnetz_deutschland_files\database.mdb">
