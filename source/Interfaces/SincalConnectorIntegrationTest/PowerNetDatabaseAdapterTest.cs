@@ -16,6 +16,7 @@ namespace SincalConnectorIntegrationTest
     public class PowerNetDatabaseAdapterTest
     {
         private INodeVoltageCalculator _calculator;
+        private INodeVoltageCalculator _calculatorHelm;
         private Mock<INodeVoltageCalculator> _calculatorMock;
         private double _relativePowerError;
 
@@ -23,6 +24,7 @@ namespace SincalConnectorIntegrationTest
         public void SetUp()
         {
             _calculator = new CurrentIteration(0.0000001, 10000);
+            _calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 50, 64);
             _calculatorMock = new Mock<INodeVoltageCalculator>();
             _calculatorMock.Setup(x => x.CalculateUnknownVoltages(
                 It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(), It.IsAny<double>(),
@@ -701,6 +703,34 @@ namespace SincalConnectorIntegrationTest
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetVersionTwo_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_CountryNetVersionOneWithHelm_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculatorHelm, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
