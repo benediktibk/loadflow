@@ -141,7 +141,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
 
-            if (matrixRow == matrixColumn)
+            if (busRow == busColumn)
                 changeMatrix[matrixRow, matrixRow] += 2*admittance.Real*voltageRow.Real;
             else
             {
@@ -173,7 +173,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
 
-            if (matrixRow == matrixColumn)
+            if (busRow == busColumn)
                 changeMatrix[matrixRow, matrixColumn] += 2*admittance.Real*voltageRow.Imaginary;
             else
             {
@@ -205,7 +205,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
 
-            if (matrixRow == matrixColumn)
+            if (busRow == busColumn)
                 changeMatrix[matrixRow, matrixColumn] -= 2*admittance.Imaginary*voltageRow.Real;
             else
             {
@@ -237,7 +237,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
 
-            if (matrixRow == matrixColumn)
+            if (busRow == busColumn)
                 changeMatrix[matrixRow, matrixColumn] -= 2*admittance.Imaginary*
                                                                                     voltageRow.Imaginary;
             else
