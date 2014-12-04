@@ -286,11 +286,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             changeMatrix[matrixRow, matrixColumn] = 
                 (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Cos(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
-
-            if (columnBusToMatrixIndex.TryGetValue(busRow, out matrixRow))
-                changeMatrix[matrixRow, matrixRow] +=
-                    voltageRow.Magnitude*admittance.Magnitude*voltageColumn.Magnitude*
-                    Math.Cos(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
         }
 
         private static ResidualStopCriterion<double> CreateStopCriterion(IEnumerable<double> powersRealError, ICollection<double> powersImaginaryError,
