@@ -281,7 +281,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 !columnBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
                 return;
 
-            if (matrixRow == matrixColumn)
+            if (busRow == busColumn)
                 return;
 
             changeMatrix[matrixRow, matrixColumn] = 
