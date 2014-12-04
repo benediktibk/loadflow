@@ -21,18 +21,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBusToMatrixIndex, pvBusToMatrixIndex, pvBusVoltages, voltageChanges);
         }
 
-        public Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages,
-            Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages,
-            double residualImprovementFactor, IList<int> pqBuses, IList<int> pvBuses)
-        {
-            var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses);
-            var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBuses);
-            var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBuses.Concat(pvBuses).ToList());
-            return CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
-                powersImaginaryError, pvBusVoltages, residualImprovementFactor, pqBusToMatrixIndex, pvBusToMatrixIndex,
-                busToMatrixIndex);
-        }
-
         public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex,
             IList<double> pvBusVoltages, IList<double> voltageChanges)
         {
