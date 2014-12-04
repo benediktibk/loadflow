@@ -32,7 +32,7 @@ namespace SincalConnector
 
                 FetchFeedIns(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchLoads(commandFactory, nodeIdsByElementIds);
-                FetchTransmissionLines(commandFactory, nodeIdsByElementIds);
+                FetchTransmissionLines(commandFactory, nodeIdsByElementIds, nodesByIds);
                 FetchTwoWindingTransformers(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchThreeWindingTransformers(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
@@ -182,13 +182,13 @@ namespace SincalConnector
                     _powerNet.Add(new ThreeWindingTransformer(reader, nodesByIds, nodeIdsByElementIds));
         }
 
-        private void FetchTransmissionLines(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        private void FetchTransmissionLines(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds)
         {
             var command = commandFactory.CreateCommandToFetchAllTransmissionLines();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _powerNet.Add(new TransmissionLine(reader, nodeIdsByElementIds, _powerNet.Frequency));
+                    _powerNet.Add(new TransmissionLine(reader, nodeIdsByElementIds, nodesByIds, _powerNet.Frequency));
         }
 
         private void FetchLoads(SqlCommandFactory commandFactory, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)

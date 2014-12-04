@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.OleDb;
+using System.Collections.Generic;
 using System.IO;
 using Calculation.ThreePhase;
 using Misc;
@@ -8,13 +8,27 @@ namespace SincalConnector
 {
     public class TransmissionLine : INetElement
     {
-        public TransmissionLine(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds, double frequency)
+        public TransmissionLine(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, double frequency)
         {
             Id = record.Parse<int>("Element_ID");
             var lineType = record.Parse<int>("Flag_LineTyp");
 
             if (lineType != 1 && lineType != 2)
                 throw new NotSupportedException("the selected transmission line type is not supported");
+
+            var nodes = nodeIdsByElementIds.Get(Id);
+
+            if (nodes.Count != 2)
+                throw new InvalidDataException("a transmission line must have exactly two connected nodes");
+
+            NodeOneId = nodes[0];
+            NodeTwoId = nodes[1];
+
+            var nodeOneNominalVoltage = nodesByIds[NodeOneId].NominalVoltage;
+            var nodeTwoNominalVoltage = nodesByIds[NodeTwoId].NominalVoltage;
+
+            if (Math.Abs(nodeOneNominalVoltage - nodeTwoNominalVoltage) > 0.000001)
+                throw new InvalidDataException("the nominal voltages at a transmission line do not match");
 
             Length = record.Parse<double>("l")*1000;
             SeriesResistancePerUnitLength = record.Parse<double>("r") / 1000;
@@ -24,13 +38,6 @@ namespace SincalConnector
             ShuntConductancePerUnitLength = shuntLosses / (nominalVoltage * nominalVoltage);
             ShuntCapacityPerUnitLength = record.Parse<double>("c") / 1e12;
             TransmissionEquationModel = record.Parse<int>("Flag_Ll") == 1;
-            var nodes = nodeIdsByElementIds.Get(Id);
-
-            if (nodes.Count != 2)
-                throw new InvalidDataException("a transmission line must have exactly two connected nodes");
-
-            NodeOneId = nodes[0];
-            NodeTwoId = nodes[1];
 
             if (Math.Abs(frequency - record.Parse<double>("fn")) > 0.00001)
                 throw new NotSupportedException("the frequency of a transmission line does not match the net frequency");
