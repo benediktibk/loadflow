@@ -261,6 +261,25 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         [TestMethod]
+        public void CalculateChangeMatrix_OnePqAndOnePvNode_SparseMatrix()
+        {
+            var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
+            {
+                {new Complex(0.6, -0.6), new Complex(-0.2, 0.4)},
+                {new Complex(-0.2, 0.4), new Complex(0.2, -0.4)}
+            }));
+            var voltages = new DenseVector(new[] { new Complex(10, 0), new Complex(10, 0) });
+            var constantCurrents = new DenseVector(new[] { new Complex(4.02, -1.96), new Complex(0, 0) });
+            var pqBuses = new List<int> { 0 };
+            var pvBuses = new List<int> { 1 };
+
+            var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
+                pqBuses, pvBuses);
+
+            Assert.IsNotNull(changeMatrix as MathNet.Numerics.LinearAlgebra.Double.SparseMatrix);
+        }
+
+        [TestMethod]
         public void CalculateImprovedVoltages_ThreePqNodes_CorrectResults()
         {
             var calculator = new NewtonRaphsonMethod(0.000001, 1000);
