@@ -254,20 +254,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (busRow == busColumn)
                 return;
 
-            int matrixRowPv;
-
-            if (pvBusToMatrixIndex.TryGetValue(busRow, out matrixRowPv))
-            {
-                changeMatrix[matrixRow, matrixRowPv] +=
+            if (pvBusToMatrixIndex.TryGetValue(busRow, out matrixColumn))
+                changeMatrix[matrixRow, matrixColumn] +=
                     admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude *
                     Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
-            }
 
-            if (!pvBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
-                return;
-
-            changeMatrix[matrixRow, matrixColumn] =
-                admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
+            if (pvBusToMatrixIndex.TryGetValue(busColumn, out matrixColumn))
+                changeMatrix[matrixRow, matrixColumn] =
+                    admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
         }
 
         private static void FillChangeMatrixImaginaryPowerByAngle(SubMatrix changeMatrix, IList<Complex> voltages, IReadOnlyDictionary<int, int> rowBusToMatrixIndex, IReadOnlyDictionary<int, int> columnBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
