@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.Win32;
 
@@ -17,6 +18,7 @@ namespace SincalConnector
         private readonly BackgroundWorker _backgroundWorker;
         private PowerNetDatabaseAdapter _powerNet;
         private INodeVoltageCalculator _calculator;
+        private readonly DispatcherTimer _progressTimer;
 
         public MainWindow()
         {
@@ -24,6 +26,10 @@ namespace SincalConnector
             _isCalculationRunning = false;
             _isCalculationRunningMutex = new Mutex();
             _backgroundWorker = new BackgroundWorker();
+            _progressTimer = new DispatcherTimer();
+            _progressTimer.Interval = new TimeSpan(0, 0, 0, 1);
+            _progressTimer.Tick += RefreshProgress;
+            _progressTimer.Start();
             _backgroundWorker.DoWork += CalculatePowerNetInternal;
             _backgroundWorker.RunWorkerCompleted += CalculationFinished;
             _connectorData = FindResource("ConnectorData") as ConnectorData;
@@ -33,6 +39,12 @@ namespace SincalConnector
 
             Log += _connectorData.Log;
             Log("application started");
+        }
+
+        private void RefreshProgress(object sender, EventArgs eventArgs)
+        {
+            _connectorData.Progress = _calculator == null ? 0 : _calculator.Progress;
+            _progressTimer.Start();
         }
 
         private delegate void LogHandler(string message);

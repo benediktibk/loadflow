@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 
@@ -8,6 +9,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class HolomorphicEmbeddedLoadFlowMethod : INodeVoltageCalculator
     {
+        private int _calculator = -1;
+        private readonly Mutex _calculatorMutex;
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision)
         {
@@ -20,11 +23,23 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             NumberOfCoefficients = numberOfCoefficients;
             TargetPrecision = targetPrecision;
             BitPrecision = bitPrecision;
+            _calculatorMutex = new Mutex();
         }
 
         public double MaximumRelativePowerError
         {
             get { return 0.1; }
+        }
+
+        public double Progress
+        {
+            get
+            {
+                _calculatorMutex.WaitOne();
+                var result = _calculator < 0 ? 0 : HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetProgress(_calculator);
+                _calculatorMutex.ReleaseMutex();
+                return result;
+            }
         }
 
         public double TargetPrecision { get; private set; }
@@ -33,35 +48,41 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
-            var calculator = CalculateUnknownVoltagesInternal(admittances, totalAdmittanceRowSums, nominalVoltage, constantCurrents, pqBuses, pvBuses);
-            var voltages = FetchVoltages(admittances.NodeCount, calculator);
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(calculator);
+            CalculateUnknownVoltagesInternal(admittances, totalAdmittanceRowSums, nominalVoltage, constantCurrents, pqBuses, pvBuses);
+            var voltages = FetchVoltages(admittances.NodeCount, _calculator);
+            _calculatorMutex.WaitOne();
+            HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
+            _calculator = -1;
+            _calculatorMutex.ReleaseMutex();
             return voltages;
         }
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, out IList<Vector<Complex>> coefficients, int stepCount)
         {
-            var calculator = CalculateUnknownVoltagesInternal(admittances, totalAdmittanceRowSums, nominalVoltage, constantCurrents, pqBuses, pvBuses);
+            CalculateUnknownVoltagesInternal(admittances, totalAdmittanceRowSums, nominalVoltage, constantCurrents, pqBuses, pvBuses);
             coefficients = new List<Vector<Complex>>(NumberOfCoefficients);
 
             for (var i = 0; i < stepCount; ++i)
-                coefficients.Add(FetchCoefficients(i, admittances.NodeCount, calculator));
+                coefficients.Add(FetchCoefficients(i, admittances.NodeCount, _calculator));
 
-            var voltages = FetchVoltages(admittances.NodeCount, calculator);
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(calculator);
+            var voltages = FetchVoltages(admittances.NodeCount, _calculator);
+            _calculatorMutex.WaitOne();
+            HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
+            _calculator = -1;
+            _calculatorMutex.ReleaseMutex();
             return voltages;
         }
 
-        private int CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums,
+        private void CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums,
             double nominalVoltage, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             var nodeCount = admittances.NodeCount;
-            var calculator = CreateNewCalculator(nominalVoltage, pqBuses, pvBuses, nodeCount);
-            SetAdmittanceValues(admittances, totalAdmittanceRowSums, calculator);
-            SetRightHandSideValues(constantCurrents, pqBuses, pvBuses, nodeCount, calculator);
-
-            HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(calculator);
-            return calculator;
+            _calculatorMutex.WaitOne();
+            _calculator = CreateNewCalculator(nominalVoltage, pqBuses, pvBuses, nodeCount);
+            _calculatorMutex.ReleaseMutex();
+            SetAdmittanceValues(admittances, totalAdmittanceRowSums, _calculator);
+            SetRightHandSideValues(constantCurrents, pqBuses, pvBuses, nodeCount, _calculator);
+            HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(_calculator);
         }
 
         private Vector<Complex> FetchCoefficients(int step, int nodeCount, int calculator)

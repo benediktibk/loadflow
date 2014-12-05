@@ -42,6 +42,7 @@
             <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding CountOfCoefficients,Mode=TwoWay}" TextAlignment="Right"/>
             <Label Grid.Column="0" Grid.Row="5" Content="power net"/>
             <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding InputFile,Mode=TwoWay}" TextAlignment="Left" IsReadOnly="True" GotFocus="OpenFileDialogForInputPowerNet" MouseDoubleClick="OpenFileDialogForInputPowerNet"/>
+            <ProgressBar Grid.Column="0" Grid.Row="6" Minimum="0" Maximum="1" Value="{Binding Progress,Mode=OneWay}"/>
             <Button Grid.Column="1" Grid.Row="6" Name="CalculateButton" Content="Calculate" Width="100" HorizontalAlignment="Right" Click="CalculatePowerNet" IsEnabled="{Binding IsValid}"/>
         </Grid>
         <TextBox Grid.Row="1" TextWrapping="Wrap" Text="{Binding LoggingOutput,Mode=OneWay}" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" TextChanged="LogTextChanged"/>

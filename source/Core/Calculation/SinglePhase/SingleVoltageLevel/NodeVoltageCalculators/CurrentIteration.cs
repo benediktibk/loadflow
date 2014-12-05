@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
-    public class CurrentIteration : INodeVoltageCalculator
+    public class CurrentIteration : NodeVoltageCalculator
     {
         public CurrentIteration(double targetPrecision, int maximumIterations)
         {
@@ -18,7 +18,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             TargetPrecision = targetPrecision;
         }
 
-        public double MaximumRelativePowerError
+        public override double MaximumRelativePowerError
         {
             get { return 0.1; }
         }
@@ -26,13 +26,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public int MaximumIterations { get; private set; }
         public double TargetPrecision { get; private set; }
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
+        public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
             var powers = CollectPowers(pqBuses, pvBuses);
             var totalAbsolutePowerSum = powers.Sum(x => Math.Abs(x.Real) + Math.Abs(x.Imaginary));
             var iterations = 0;
             bool accurateEnough;
+            Progress = 0;
 
             do
             {
@@ -46,6 +47,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, totalAbsolutePowerSum, powerErrorTooBig, voltageChange);
                 voltages = newVoltages;
                 ++iterations;
+                Progress = (double) iterations/MaximumIterations;
             } while (iterations <= MaximumIterations && !accurateEnough);
 
             return voltages;

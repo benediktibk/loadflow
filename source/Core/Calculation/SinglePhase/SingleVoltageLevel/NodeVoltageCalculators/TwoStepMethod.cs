@@ -34,5 +34,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             get { return SecondMethod.MaximumRelativePowerError; }
         }
+
+        public double Progress
+        {
+            get { return (FirstMethod.Progress + SecondMethod.Progress)/2; }
+        }
     }
 }

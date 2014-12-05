@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <complex>
+#include <mutex>
 #include "PQBus.h"
 #include "PVBus.h"
 #include "ConsoleOutput.h"
@@ -31,6 +32,7 @@ public:
 	virtual double getInverseCoefficientReal(int step, int node) const;
 	virtual double getInverseCoefficientImaginary(int step, int node) const;
 	virtual int getNodeCount() const;
+	virtual double getProgress();
 	virtual void setConsoleOutput(ConsoleOutput function);
 
 protected:
@@ -77,5 +79,7 @@ private:
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 	std::vector<AnalyticContinuation<Floating, ComplexFloating>*> _continuations;
 	ComplexFloating _embeddingModification;
+	std::mutex _progressMutex;
+	double _progress;
 };
 

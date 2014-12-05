@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
-    public abstract class JacobiMatrixBasedMethod : INodeVoltageCalculator
+    public abstract class JacobiMatrixBasedMethod : NodeVoltageCalculator
     {
         protected JacobiMatrixBasedMethod(double targetPrecision, int maximumIterations)
         {
@@ -20,7 +20,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex);
 
-        public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
+        public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             Vector<Complex> currentVoltages = MathNet.Numerics.LinearAlgebra.Complex.DenseVector.OfVector(initialVoltages);
             var iterations = 0;
@@ -39,6 +39,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds);
             var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBusIds);
             var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds.Concat(pvBusIds).ToList());
+            Progress = 0;
 
             do
             {
@@ -49,12 +50,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
                 var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
                 maximumPowerDifference = powersDifferenceAbsolute.Max();
+                Progress = (double) iterations/MaximumIterations;
             } while (10*maximumPowerDifference/powerDifferenceBase > TargetPrecision && iterations <= MaximumIterations);
             
             return currentVoltages;
         }
 
-        public double MaximumRelativePowerError
+        public override double MaximumRelativePowerError
         {
             get { return 0.1; }
         }

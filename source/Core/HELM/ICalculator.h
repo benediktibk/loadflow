@@ -21,5 +21,6 @@ public:
 	virtual double getInverseCoefficientReal(int step, int node) const = 0;
 	virtual double getInverseCoefficientImaginary(int step, int node) const = 0;
 	virtual int getNodeCount() const = 0;
+	virtual double getProgress() = 0;
 	virtual void setConsoleOutput(ConsoleOutput function) = 0;
 };

@@ -12,6 +12,7 @@ namespace SincalConnector
         private double _targetPrecision;
         private int _maximumIterations;
         private Selection _calculatorSelection;
+        private double _progress;
 
         public ConnectorData()
         {
@@ -20,6 +21,7 @@ namespace SincalConnector
             MaximumIterations = 100;
             TargetPrecision = 1e-5;
             CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
+            Progress = 0;
         }
 
         public int SizeOfDataType
@@ -83,6 +85,18 @@ namespace SincalConnector
 
                 _calculatorSelection = value;
                 OnPropertyChanged("CalculatorSelection");
+            }
+        }
+
+        public double Progress
+        {
+            get { return _progress; }
+            set
+            {
+                if (value == _progress) return;
+
+                _progress = value;
+                OnPropertyChanged("Progress");
             }
         }
 

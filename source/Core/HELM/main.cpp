@@ -93,6 +93,11 @@ extern "C" __declspec(dllexport) int __cdecl GetLastNodeCount(int calculator)
 	return calculatorRegister.get(calculator).getNodeCount();
 }
 
+extern "C" __declspec(dllexport) double __cdecl GetProgress(int calculator)
+{
+	return calculatorRegister.get(calculator).getProgress();
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTests()
 {
 	bool result = runTests();
