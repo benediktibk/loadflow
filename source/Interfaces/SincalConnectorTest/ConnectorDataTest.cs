@@ -37,6 +37,8 @@ namespace SincalConnectorTest
             Assert.IsTrue(_connectorData.CountOfCoefficients > 30);
             Assert.IsTrue(_connectorData.MaximumIterations > 0);
             Assert.IsTrue(_connectorData.TargetPrecision < 1e-3);
+            Assert.IsTrue(_connectorData.Progress >= 0);
+            Assert.IsTrue(_connectorData.Progress <= 1);
             Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
         }
 
@@ -192,6 +194,22 @@ namespace SincalConnectorTest
             _connectorData.CalculatorSelection = Selection.NodePotential;
 
             Assert.IsTrue(_changedProperties.Contains("CalculatorSelection"));
+        }
+
+        [TestMethod]
+        public void Progress_NewValueSet_CorrectValue()
+        {
+            _connectorData.Progress = 0.156465;
+
+            Assert.AreEqual(0.156465, _connectorData.Progress, 0.000000001);
+        }
+
+        [TestMethod]
+        public void Progress_NewValueSet_PropertyProgressChanged()
+        {
+            _connectorData.Progress = 156465;
+
+            Assert.IsTrue(_changedProperties.Contains("Progress"));
         }
     }
 }
