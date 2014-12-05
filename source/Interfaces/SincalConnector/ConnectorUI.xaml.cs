@@ -44,6 +44,7 @@ namespace SincalConnector
         private void RefreshProgress(object sender, EventArgs eventArgs)
         {
             _connectorData.Progress = _calculator == null ? 0 : _calculator.Progress;
+            _connectorData.RelativePowerError = _calculator == null ? 1 : _calculator.RelativePowerError;
             _progressTimer.Start();
         }
 

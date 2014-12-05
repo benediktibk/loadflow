@@ -42,6 +42,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
+        public double RelativePowerError
+        {
+            get
+            {
+                _calculatorMutex.WaitOne();
+                var result = _calculator < 0 ? 0 : HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetRelativePowerError(_calculator);
+                _calculatorMutex.ReleaseMutex();
+                return result;
+            }
+        }
+
         public double TargetPrecision { get; private set; }
         public int NumberOfCoefficients { get; private set; }
         public int BitPrecision { get; private set; }

@@ -33,6 +33,7 @@ public:
 	virtual double getInverseCoefficientImaginary(int step, int node) const;
 	virtual int getNodeCount() const;
 	virtual double getProgress();
+	virtual double getRelativePowerError();
 	virtual void setConsoleOutput(ConsoleOutput function);
 
 protected:
@@ -81,5 +82,6 @@ private:
 	ComplexFloating _embeddingModification;
 	std::mutex _progressMutex;
 	double _progress;
+	double _relativePowerError;
 };
 

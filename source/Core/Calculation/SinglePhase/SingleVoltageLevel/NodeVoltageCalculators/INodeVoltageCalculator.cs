@@ -11,5 +11,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
         double MaximumRelativePowerError { get; }
         double Progress { get; }
+        double RelativePowerError { get; }
     }
 }

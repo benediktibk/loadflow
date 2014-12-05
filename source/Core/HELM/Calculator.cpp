@@ -29,7 +29,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_consoleOutput(0),
 	_coefficientStorage(0),
 	_embeddingModification(0),
-	_progress(0)
+	_progress(0),
+	_relativePowerError(1)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -81,7 +82,11 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
 	_solver = new Eigen::BiCGSTAB<Eigen::SparseMatrix<ComplexFloating>, Eigen::DiagonalPreconditioner<ComplexFloating> >(_admittances.getValues());
-	_progress = 0;
+	{
+		lock_guard<mutex> lock(_progressMutex);
+		_progress = 0;
+		_relativePowerError = 1;
+	}
 
 	for (size_t i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
@@ -121,6 +126,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		{
 			lock_guard<mutex> lock(_progressMutex);
 			_progress = static_cast<double>(_coefficientStorage->getCoefficientCount()) / _numberOfCoefficients;
+			_relativePowerError = totalError;
 		}
 	}
 
@@ -472,4 +478,11 @@ double Calculator<Floating, ComplexFloating>::getProgress()
 {
 	lock_guard<mutex> lock(_progressMutex);
 	return _progress;
+}
+
+template<typename Floating, typename ComplexFloating>
+double Calculator<Floating, ComplexFloating>::getRelativePowerError()
+{
+	lock_guard<mutex> lock(_progressMutex);
+	return _relativePowerError;
 }

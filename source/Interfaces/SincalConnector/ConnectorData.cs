@@ -23,6 +23,7 @@ namespace SincalConnector
             TargetPrecision = 1e-5;
             CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
             Progress = 0;
+            RelativePowerError = 1;
         }
 
         public int SizeOfDataType

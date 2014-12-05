@@ -46,7 +46,7 @@
             <ProgressBar Grid.Column="0" Grid.Row="6" Minimum="0" Maximum="1" Value="{Binding Progress,Mode=OneWay}"/>
             <Button Grid.Column="1" Grid.Row="6" Name="CalculateButton" Content="Calculate" Width="100" HorizontalAlignment="Right" Click="CalculatePowerNet" IsEnabled="{Binding IsValid}"/>
             <Label Grid.Column="0" Grid.Row="7" Content="relative power error"/>
-            <Label Grid.Column="1" Grid.Row="7" Content="{Binding RelativePowerError,Mode=OneWay}"/>
+            <Label Grid.Column="1" Grid.Row="7" Content="{Binding RelativePowerError,Mode=OneWay}" ContentStringFormat="{}{0:E2}" HorizontalAlignment="Right"/>
         </Grid>
         <TextBox Grid.Row="1" TextWrapping="Wrap" Text="{Binding LoggingOutput,Mode=OneWay}" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" TextChanged="LogTextChanged"/>
     </Grid>

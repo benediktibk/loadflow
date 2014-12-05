@@ -14,6 +14,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
             Progress = 0;
+            RelativePowerError = 1;
 
             if (pvBuses.Count == 0)
             {
@@ -70,6 +71,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var unknownVoltages = CalculateUnknownVoltagesInternal(admittancesReduced, reducedNominalVoltages, totalConstantCurrents,
                 knownPowers);
             Progress = 1;
+            RelativePowerError = 0;
             return PowerNetComputable.CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnkownVoltage, unknownVoltages);
         }

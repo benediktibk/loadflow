@@ -34,6 +34,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var iterations = 0;
             bool accurateEnough;
             Progress = 0;
+            RelativePowerError = 1;
 
             do
             {
@@ -44,10 +45,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     rightHandSide, powers, voltages, out powerErrorTooBig);
 
                 var voltageChange = CalculateVoltageChange(newVoltages, voltages);
-                accurateEnough = CheckAccuracy(admittances, nominalVoltage, constantCurrents, pqBuses, pvBuses, newVoltages, totalAbsolutePowerSum, powerErrorTooBig, voltageChange);
+                var absolutePowerError = admittances.CalculatePowerError(newVoltages, constantCurrents, pqBuses, pvBuses);
+                var relativePowerError = totalAbsolutePowerSum != 0 ? absolutePowerError/totalAbsolutePowerSum : absolutePowerError;
+                accurateEnough = 10*voltageChange/nominalVoltage < TargetPrecision && !powerErrorTooBig && relativePowerError < MaximumRelativePowerError;
                 voltages = newVoltages;
                 ++iterations;
                 Progress = (double) iterations/MaximumIterations;
+                RelativePowerError = relativePowerError;
             } while (iterations <= MaximumIterations && !accurateEnough);
 
             return voltages;
@@ -76,13 +80,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 powers[bus.Index] = new Complex(bus.RealPower, 0);
 
             return powers;
-        }
-
-        private bool CheckAccuracy(IReadOnlyAdmittanceMatrix admittances, double nominalVoltage, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses, Vector<Complex> voltages1, double totalAbsolutePowerSum, bool powerErrorTooBig, double voltageChange)
-        {
-            var absolutePowerError = admittances.CalculatePowerError(voltages1, constantCurrents, pqBuses, pvBuses);
-            var relativePowerError = totalAbsolutePowerSum != 0 ? absolutePowerError/totalAbsolutePowerSum : absolutePowerError;
-            return 10*voltageChange/nominalVoltage < TargetPrecision && !powerErrorTooBig && relativePowerError < MaximumRelativePowerError;
         }
 
         private static double CalculateVoltageChange(Vector<Complex> newVoltages, Vector<Complex> voltages)

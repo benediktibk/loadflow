@@ -40,6 +40,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBusIds);
             var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds.Concat(pvBusIds).ToList());
             Progress = 0;
+            RelativePowerError = 1;
 
             do
             {
@@ -50,8 +51,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
                 var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
                 maximumPowerDifference = powersDifferenceAbsolute.Max();
+                var relativePowerError = maximumPowerDifference/powerDifferenceBase;
                 Progress = (double) iterations/MaximumIterations;
-            } while (10*maximumPowerDifference/powerDifferenceBase > TargetPrecision && iterations <= MaximumIterations);
+                RelativePowerError = relativePowerError;
+            } while (10*RelativePowerError > TargetPrecision && iterations <= MaximumIterations);
             
             return currentVoltages;
         }
