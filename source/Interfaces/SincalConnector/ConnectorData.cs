@@ -13,6 +13,7 @@ namespace SincalConnector
         private int _maximumIterations;
         private Selection _calculatorSelection;
         private double _progress;
+        private double _relativePowerError;
 
         public ConnectorData()
         {
@@ -97,6 +98,18 @@ namespace SincalConnector
 
                 _progress = value;
                 OnPropertyChanged("Progress");
+            }
+        }
+
+        public double RelativePowerError
+        {
+            get { return _relativePowerError; }
+            set
+            {
+                if (value == _relativePowerError) return;
+
+                _relativePowerError = value;
+                OnPropertyChanged("RelativePowerError");
             }
         }
 
