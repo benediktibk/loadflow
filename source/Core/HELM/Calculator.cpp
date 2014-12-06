@@ -126,7 +126,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		{
 			lock_guard<mutex> lock(_progressMutex);
 			_progress = static_cast<double>(_coefficientStorage->getCoefficientCount()) / _numberOfCoefficients;
-			_relativePowerError = totalError;
+			_relativePowerError = totalErrors.begin()->first;
 		}
 	}
 
