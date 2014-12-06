@@ -84,6 +84,8 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
