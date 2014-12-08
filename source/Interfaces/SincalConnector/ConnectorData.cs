@@ -3,7 +3,7 @@ using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace SincalConnector
 {
-    public class ConnectorData : INotifyPropertyChanged
+    public class ConnectorData : INotifyPropertyChanged, IReadOnlyConnectorData
     {
         private string _inputFile;
         private string _loggingOutput;

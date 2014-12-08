@@ -63,9 +63,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CalculationThread.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="ImpedanceLoad.cs" />
     <Compile Include="INetElement.cs" />
+    <Compile Include="IReadOnlyConnectorData.cs" />
     <Compile Include="IReadOnlyPowerNetData.cs" />
     <Compile Include="NodeResult.cs" />
     <Compile Include="NodeResultTableEntry.cs" />

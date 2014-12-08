@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:SincalConnector"
         xmlns:nodeVoltageCalculators="clr-namespace:Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;assembly=Calculation"
-        Title="Sincal Connector" Height="350" Width="400">
+        Title="Sincal Connector" Height="500" Width="500">
     <Window.Resources>
         <local:ConnectorData x:Key="ConnectorData"/>
         <nodeVoltageCalculators:SelectionToStringConverter x:Key="SelectionToStringConverter"/>
