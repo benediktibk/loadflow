@@ -10,7 +10,7 @@
     </Window.Resources>
     <Grid DataContext="{Binding Source={StaticResource ConnectorData}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="240"/>
+            <RowDefinition Height="270"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -19,6 +19,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
@@ -43,10 +44,12 @@
             <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding CountOfCoefficients,Mode=TwoWay}" TextAlignment="Right"/>
             <Label Grid.Column="0" Grid.Row="5" Content="power net"/>
             <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding InputFile,Mode=TwoWay}" TextAlignment="Left" IsReadOnly="True" GotFocus="OpenFileDialogForInputPowerNet" MouseDoubleClick="OpenFileDialogForInputPowerNet"/>
-            <ProgressBar Grid.Column="0" Grid.Row="6" Minimum="0" Maximum="1" Value="{Binding Progress,Mode=OneWay}"/>
-            <Button Grid.Column="1" Grid.Row="6" Name="CalculateButton" Content="Calculate" Width="100" HorizontalAlignment="Right" Click="CalculatePowerNet" IsEnabled="{Binding IsValid}"/>
-            <Label Grid.Column="0" Grid.Row="7" Content="relative power error"/>
-            <Label Grid.Column="1" Grid.Row="7" Content="{Binding RelativePowerError,Mode=OneWay}" ContentStringFormat="{}{0:E2}" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="6" Content="convergence border search"/>
+            <CheckBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding ConvergenceBorderSearch,Mode=TwoWay}"/>
+            <ProgressBar Grid.Column="0" Grid.Row="7" Minimum="0" Maximum="1" Value="{Binding Progress,Mode=OneWay}"/>
+            <Button Grid.Column="1" Grid.Row="7" Name="CalculateButton" Content="Calculate" Width="100" HorizontalAlignment="Right" Click="CalculatePowerNet" IsEnabled="{Binding IsValid}"/>
+            <Label Grid.Column="0" Grid.Row="8" Content="relative power error"/>
+            <Label Grid.Column="1" Grid.Row="8" Content="{Binding RelativePowerError,Mode=OneWay}" ContentStringFormat="{}{0:E2}" HorizontalAlignment="Right"/>
         </Grid>
         <TextBox Grid.Row="1" TextWrapping="Wrap" Text="{Binding LoggingOutput,Mode=OneWay}" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" TextChanged="LogTextChanged"/>
     </Grid>

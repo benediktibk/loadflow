@@ -14,6 +14,7 @@ namespace SincalConnector
         private Selection _calculatorSelection;
         private double _progress;
         private double _relativePowerError;
+        private bool _convergenceBorderSearch;
 
         public ConnectorData()
         {
@@ -24,6 +25,7 @@ namespace SincalConnector
             CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
             Progress = 0;
             RelativePowerError = 1;
+            ConvergenceBorderSearch = false;
         }
 
         public int SizeOfDataType
@@ -111,6 +113,18 @@ namespace SincalConnector
 
                 _relativePowerError = value;
                 OnPropertyChanged("RelativePowerError");
+            }
+        }
+
+        public bool ConvergenceBorderSearch
+        {
+            get { return _convergenceBorderSearch; }
+            set
+            {
+                if (value == _convergenceBorderSearch) return;
+
+                _convergenceBorderSearch = value;
+                OnPropertyChanged("ConvergenceBorderSearch");
             }
         }
 

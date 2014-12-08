@@ -31,7 +31,7 @@ namespace SincalConnectorTest
         }
 
         [TestMethod]
-        public void Constructor_Empty_SensefulInitialValues()
+        public void Constructor_Empty_ReasonableInitialValues()
         {
             Assert.AreEqual(64, _connectorData.SizeOfDataType);
             Assert.IsTrue(_connectorData.CountOfCoefficients > 30);
@@ -40,6 +40,7 @@ namespace SincalConnectorTest
             Assert.IsTrue(_connectorData.Progress >= 0);
             Assert.IsTrue(_connectorData.Progress <= 1);
             Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
+            Assert.IsFalse(_connectorData.ConvergenceBorderSearch);
         }
 
         [TestMethod]
@@ -226,6 +227,22 @@ namespace SincalConnectorTest
             _connectorData.RelativePowerError = 0.156465;
 
             Assert.IsTrue(_changedProperties.Contains("RelativePowerError"));
+        }
+
+        [TestMethod]
+        public void ConvergenceBorderSearch_NewValueSet_CorrectValue()
+        {
+            _connectorData.ConvergenceBorderSearch = true;
+
+            Assert.IsTrue(_connectorData.ConvergenceBorderSearch);
+        }
+
+        [TestMethod]
+        public void ConvergenceBorderSearch_NewValueSet_PropertyConvergenceBorderSearchChanged()
+        {
+            _connectorData.ConvergenceBorderSearch = true;
+
+            Assert.IsTrue(_changedProperties.Contains("ConvergenceBorderSearch"));
         }
     }
 }
