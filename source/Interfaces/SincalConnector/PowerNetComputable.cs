@@ -11,9 +11,9 @@ namespace SincalConnector
 {
     public class PowerNetComputable : PowerNet
     {
-        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
+        public IReadOnlyDictionary<long, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, double powerFactor, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
-            var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
+            var symmetricPowerNet = CreateSymmetricPowerNet(calculator, powerFactor);
 
             if (symmetricPowerNet.NodeGraph.FloatingNodesExist)
             {
@@ -29,7 +29,7 @@ namespace SincalConnector
             return symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
         }
 
-        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
+        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator, double powerFactor)
         {
             var singlePhasePowerNet = new Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable(Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
             var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
