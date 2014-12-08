@@ -15,6 +15,7 @@ namespace SincalConnector
         private PowerNetDatabaseAdapter _powerNet;
         private INodeVoltageCalculator _calculator;
         private readonly IReadOnlyConnectorData _connectorData;
+        private double _convergenceBorderPrecision;
 
         public CalculationThread(IReadOnlyConnectorData connectorData)
         {
@@ -64,7 +65,9 @@ namespace SincalConnector
             {
                 if (_isCalculationRunning)
                 {
-                    Log("calculation already running");
+                    Log("calculation already running, sending stop signal to the background workers");
+                    _workerConvergenceBorderSearch.CancelAsync();
+                    _workerDirectCalculation.CancelAsync();
                     return;
                 }
                 _isCalculationRunning = true;
@@ -84,6 +87,7 @@ namespace SincalConnector
             }
 
             _calculator = _connectorData.CreateCalculator();
+            _convergenceBorderPrecision = _connectorData.TargetPrecision;
 
             if (_connectorData.ConvergenceBorderSearch)
                 _workerConvergenceBorderSearch.RunWorkerAsync();
@@ -131,7 +135,7 @@ namespace SincalConnector
             {
                 Log("searching for the convergence border of the power net");
 
-                while (upper - lower > 1e-4)
+                while (upper - lower > _convergenceBorderPrecision)
                 {
                     var middle = (upper + lower)/2;
                     double relativePowerError;
@@ -143,8 +147,15 @@ namespace SincalConnector
                         upper = middle;
 
                     Log("convergence border lies within " + lower + " and " + upper);
+
+                    if (_workerConvergenceBorderSearch.CancellationPending)
+                    {
+                        Log("cancellation requested");
+                        return;
+                    }
                 }
 
+                Log("range is small enough");
             }
             catch (Exception exception)
             {

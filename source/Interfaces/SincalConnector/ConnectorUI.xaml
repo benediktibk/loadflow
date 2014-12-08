@@ -47,7 +47,7 @@
             <Label Grid.Column="0" Grid.Row="6" Content="convergence border search"/>
             <CheckBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding ConvergenceBorderSearch,Mode=TwoWay}"/>
             <ProgressBar Grid.Column="0" Grid.Row="7" Minimum="0" Maximum="1" Value="{Binding Progress,Mode=OneWay}"/>
-            <Button Grid.Column="1" Grid.Row="7" Name="CalculateButton" Content="Calculate" Width="100" HorizontalAlignment="Right" Click="CalculatePowerNet" IsEnabled="{Binding IsValid}"/>
+            <Button Grid.Column="1" Grid.Row="7" Name="CalculateButton" Content="Calculate/Stop" Width="100" HorizontalAlignment="Right" Click="CalculateClicked" IsEnabled="{Binding IsValid}"/>
             <Label Grid.Column="0" Grid.Row="8" Content="relative power error"/>
             <Label Grid.Column="1" Grid.Row="8" Content="{Binding RelativePowerError,Mode=OneWay}" ContentStringFormat="{}{0:E2}" HorizontalAlignment="Right"/>
         </Grid>

@@ -57,7 +57,7 @@ namespace SincalConnector
             _connectorData.InputFile = openFileDialog.FileName;
         }
 
-        private void CalculatePowerNet(object sender, RoutedEventArgs e)
+        private void CalculateClicked(object sender, RoutedEventArgs e)
         {
             _calculationThread.CalculatePowerNet();
         }
