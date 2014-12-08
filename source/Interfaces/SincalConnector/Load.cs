@@ -27,9 +27,9 @@ namespace SincalConnector
 
         public Complex LoadValue { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
-            powerNet.AddLoad(NodeId, LoadValue);
+            powerNet.AddLoad(NodeId, LoadValue*powerFactor);
         }
     }
 }

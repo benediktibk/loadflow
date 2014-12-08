@@ -48,7 +48,7 @@ namespace SincalConnector
 
         public int NodeId { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             powerNet.AddFeedIn(NodeId, Voltage, new Complex());
         }

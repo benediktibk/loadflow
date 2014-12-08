@@ -41,7 +41,7 @@ namespace SincalConnector
 
         public Complex Impedance { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             powerNet.AddImpedanceLoad(NodeId, Impedance);
         }

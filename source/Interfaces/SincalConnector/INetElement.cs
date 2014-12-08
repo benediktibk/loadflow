@@ -5,6 +5,6 @@ namespace SincalConnector
     public interface INetElement
     {
         int Id { get; }
-        void AddTo(SymmetricPowerNet powerNet);
+        void AddTo(SymmetricPowerNet powerNet, double powerFactor);
     }
 }

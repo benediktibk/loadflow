@@ -70,7 +70,7 @@ namespace SincalConnector
 
         public bool TransmissionEquationModel { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
                 SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,

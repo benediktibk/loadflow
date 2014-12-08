@@ -38,7 +38,7 @@ namespace SincalConnector
                 node.AddTo(symmetricPowerNet);
 
             foreach (var element in NetElements)
-                element.AddTo(symmetricPowerNet);
+                element.AddTo(symmetricPowerNet, 1);
 
             return symmetricPowerNet;
         }

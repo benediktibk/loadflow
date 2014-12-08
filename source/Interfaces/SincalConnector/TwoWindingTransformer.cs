@@ -73,7 +73,7 @@ namespace SincalConnector
 
         public double Ratio { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             powerNet.AddTwoWindingTransformer(UpperSideNodeId, LowerSideNodeId, NominalPower, RelativeShortCircuitVoltage,
                 CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift, "");

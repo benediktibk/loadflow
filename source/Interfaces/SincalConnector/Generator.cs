@@ -54,9 +54,9 @@ namespace SincalConnector
 
         public double RealPower { get; private set; }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
-            powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower);
+            powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower*powerFactor);
         }
     }
 }

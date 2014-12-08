@@ -137,7 +137,7 @@ namespace SincalConnector
             }
         }
 
-        public void AddTo(SymmetricPowerNet powerNet)
+        public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             powerNet.AddThreeWindingTransformer(NodeOneId, NodeTwoId, NodeThreeId, NominalPowerOneToTwo,
                 NominalPowerTwoToThree, NominalPowerThreeToOne, RelativeShortCircuitVoltageOneToTwo,
