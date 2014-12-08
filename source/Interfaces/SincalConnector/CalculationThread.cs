@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace SincalConnector
@@ -26,6 +27,8 @@ namespace SincalConnector
             _workerConvergenceBorderSearch = new BackgroundWorker();
             _workerDirectCalculation.DoWork += CalculatePowerNetDirect;
             _workerConvergenceBorderSearch.DoWork += SearchForConvergenceBorder;
+            _workerDirectCalculation.WorkerSupportsCancellation = true;
+            _workerConvergenceBorderSearch.WorkerSupportsCancellation = true;
             _workerDirectCalculation.RunWorkerCompleted += CalculationFinished;
             _workerConvergenceBorderSearch.RunWorkerCompleted += CalculationFinished;
         }

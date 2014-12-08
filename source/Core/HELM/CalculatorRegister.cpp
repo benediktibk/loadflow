@@ -10,10 +10,16 @@ using namespace std;
 
 CalculatorRegister::~CalculatorRegister(void)
 {
-	lock_guard<mutex> lock(_mutex);
+	try
+	{
+		lock_guard<mutex> lock(_mutex);
 
-	for (map<int, ICalculator*>::iterator i = _calculators.begin(); i != _calculators.end(); ++i)
-		delete i->second;
+		for (map<int, ICalculator*>::iterator i = _calculators.begin(); i != _calculators.end(); ++i)
+			delete i->second;
+	}
+	catch(...)
+	{ }
+
 	_calculators.clear();
 }
 
