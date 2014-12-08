@@ -11,6 +11,7 @@ namespace SincalConnector
         private bool _isCalculationRunning;
         private readonly Mutex _isCalculationRunningMutex;
         private readonly BackgroundWorker _workerDirectCalculation;
+        private readonly BackgroundWorker _workerConvergenceBorderSearch;
         private PowerNetDatabaseAdapter _powerNet;
         private INodeVoltageCalculator _calculator;
         private readonly IReadOnlyConnectorData _connectorData;
@@ -21,8 +22,11 @@ namespace SincalConnector
             _isCalculationRunningMutex = new Mutex();
             _connectorData = connectorData;
             _workerDirectCalculation = new BackgroundWorker();
+            _workerConvergenceBorderSearch = new BackgroundWorker();
             _workerDirectCalculation.DoWork += CalculatePowerNetDirect;
+            _workerConvergenceBorderSearch.DoWork += SearchForConvergenceBorder;
             _workerDirectCalculation.RunWorkerCompleted += CalculationFinished;
+            _workerConvergenceBorderSearch.RunWorkerCompleted += CalculationFinished;
         }
 
         public double Progress
@@ -80,7 +84,11 @@ namespace SincalConnector
             }
 
             _calculator = _connectorData.CreateCalculator();
-            _workerDirectCalculation.RunWorkerAsync();
+
+            if (_connectorData.ConvergenceBorderSearch)
+                _workerConvergenceBorderSearch.RunWorkerAsync();
+            else
+                _workerDirectCalculation.RunWorkerAsync();
         }
 
         public delegate void LogHandler(string message);
@@ -105,6 +113,37 @@ namespace SincalConnector
                 stopWatch.Stop();
                 Log("finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" +
                     (success ? " with a relative power mismatch of " + relativePowerError : ", but was not able to calculate the power net"));
+
+            }
+            catch (Exception exception)
+            {
+                Log("was not able to calculate the power net because an exception occured:");
+                Log(exception.Message);
+            }
+        }
+
+        private void SearchForConvergenceBorder(object sender, DoWorkEventArgs e)
+        {
+            double lower = 0;
+            double upper = 1;
+
+            try
+            {
+                Log("searching for the convergence border of the power net");
+
+                while (upper - lower > 1e-4)
+                {
+                    var middle = (upper + lower)/2;
+                    double relativePowerError;
+                    var success = _powerNet.CalculateNodeVoltages(_calculator, middle, out relativePowerError);
+
+                    if (success)
+                        lower = middle;
+                    else
+                        upper = middle;
+
+                    Log("convergence border lies within " + lower + " and " + upper);
+                }
 
             }
             catch (Exception exception)
