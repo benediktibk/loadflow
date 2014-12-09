@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+	\tikzstyle{block} = [
+	rectangle, draw, fill=blue!20,
+	text width=15em, text centered,
+	rounded corners, minimum height=2em,
+	node distance=2cm]	
+	\tikzstyle{lineOneWay} = [draw, ->, >=stealth', thick]
+	\tikzstyle{lineTwoWay} = [draw, <->, >=stealth', thick]
+	
+	\node [block] (threePhase) at (0, 3) {ThreePhase};
+	\node [block] (multipleVoltage) at (0, 1.5) {SinglePhase.MultipleVoltageLevels};
+	\node [block] (singleVoltage) at (0, 0) {SinglePhase.SingleVoltageLevel};	
+	
+	\path [lineOneWay] ($(threePhase.south)$) -- ($(multipleVoltage.north)$);
+	\path [lineOneWay] ($(multipleVoltage.south)$) -- ($(singleVoltage.north)$);
+\end{tikzpicture}

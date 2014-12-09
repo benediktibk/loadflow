@@ -722,6 +722,7 @@ As the functions are holomorph the prinicipal part of the series vanishes, which
 To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert
 \begin{equation}
 	U_i(s) = \sum_{j = 0}^\infty c_{i,j} s^j.
+	\label{eq:helm_series}
 \end{equation}
  into \eqref{pq_bus_embedded} to get
 \begin{equation}
@@ -916,7 +917,7 @@ and for all other coefficients
 	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
-\subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
+\subsubsection{Analytic Continuation with \emph{Wynn's Epsilon Algorithm}}
 
 Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of Viskovatov is suggested, but I achieved better results with Wynn's epsilon algorithm \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation, which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
 \begin{equation}

@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+	\tikzstyle{block} = [
+	rectangle, draw, fill=blue!20,
+	text width=7em, text centered,
+	rounded corners, minimum height=2em,
+	node distance=2cm]	
+	\tikzstyle{lineOneWay} = [draw, ->, >=stealth', thick]
+	\tikzstyle{lineTwoWay} = [draw, <->, >=stealth', thick]
+	
+	\node [block] (databaseUI) at (-2, 4.5) {DatabaseUI};
+	\node [block] (database) at (-2, 3) {Database};
+	\node [block] (sincalConnector) at (2, 3) {SincalConnector};
+	\node [block] (calculation) at (0, 1.5) {Calculation};
+	\node [block] (HELM) at (0, 0) {HELM};	
+	
+	\path [lineOneWay] ($(databaseUI.south)$) -- ($(database.north)$);
+	\path [lineOneWay] ($(database.south)$) -- ($(calculation.north)$);
+	\path [lineOneWay] ($(sincalConnector.south)$) -- ($(calculation.north)$);
+	\path [lineOneWay] ($(calculation.south)$) -- ($(HELM.north)$);
+\end{tikzpicture}
