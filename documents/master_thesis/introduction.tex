@@ -3,7 +3,7 @@ The energy revolution, driven by consumers, politics and the society at whole, i
 
 One of the necessary steps for a change in the power net is a static load-flow calculation, for which we had only algorithms with a bad convergence behaviour during the past. These algorithms have two things in common: They are iterative and can not guarantee to find the physical correct solution. With this drawback in mind a totally new approach was developed by Antonio Trias in \citep{helmIEEE}, called \emph{Holomorphic Embedding Load Flow} (\emph{HELM}), described more detailed in \secref{helm}. This approach guarantees to find a solution for a given load-flow problem if, and only if, the system is not collapsing. Unfortunately, this method is implemented, as far as I know, only in HELM-Flow \footnote{http://www.gridquant.com/solutions/helm-flow/} by Gridquant. The in europe common tool PSS SINCAL \footnote{http://www.simtec.cc/sites/sincal.asp} has not yet implemented this new approach, but it is the tool of choice for instance in the Institute of Power Transmission Systems at the Technische Universität München. 
 
-The main results of this are:
+The main results of this thesis are:
 \begin{itemize}
 	\item I implemented a tool which parses the format of PSS SINCAL, calculates the node voltages with HELM and writes the results back into this format
 	\item \emph{HELM} has a better convergence behaviour than the iterative methods
