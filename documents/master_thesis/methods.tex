@@ -19,16 +19,16 @@ The second step is then the actual calculation of the node voltages, which is ba
 
 \subsection{Busses}
 
-The most basic mathematical description of an electric circuit, which a power net is, would be through admittances $Y_{ki}$ between the nodes $k$ and $i$, node voltages $U_k$ and branch currents $I_k$. In this case the element-based version
+The most basic mathematical description of an electric circuit, which a power net is, would be through admittances $Y_{ki}$ between the nodes $k$ and $i$, node voltages $U_k$ and branch currents $I_k$. In this case we will use the element-based version
 \begin{equation}
 	\sum_i Y_{ki} U_i = I_k,
 	\label{eq:current_controlled}
 \end{equation}
 of
 \begin{equation}
-	\mat Y \vec U = \vec I
+	\mat Y \vec U = \vec I,
 \end{equation}
-will be used, as in the end the right hand side of this equation can not be described with a vector notation.
+as in the end the right hand side of this equation can not be described with a vector notation.
 
 If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as the result. Unfortunately, most elements in a power net are defined through power, which is fed in, or load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
