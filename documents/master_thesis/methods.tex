@@ -704,42 +704,42 @@ The steps for solving the load-flow problem are nearly the same as for the \emph
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
 
-HELM is a comparatively young algorithm for the load-flow problem, as it was developed 2012 \citep{helmIEEE}. The basic idea behind it is to replace the voltages with voltage functions and their Laurent series. Through this approach it is possible to guarantee that the algorithm will converge if, and only if, the power net is stable. With this advantage in mind I will start in this section with the theory behind HELM, the practical implications will be discussed in \secref{results}.
+\emph{HELM} is a comparatively young algorithm for the load-flow problem, as it was developed 2012 \citep{helmIEEE}. The basic idea behind it is to replace the voltages with voltage functions and their Laurent series. Through this approach it is possible to guarantee that the algorithm will converge if, and only if, the power net is stable. With this advantage in mind I will start in this section with the theory behind \emph{HELM}, the practical implications will be discussed in \secref{results}.
 
 \subsubsection{Calculation of Coefficients}
 
-The starting point for HELM is \eqref{pq_bus}, where the slack busses are already considered as constant currents. As already mentioned before, because of its structure it is not possible to solve these equations explicitly. Therefore, the voltages $U_i$ are replaced with the functions $U_i(s)$. To achieve even further that these functions are holomorph \citep{helmPatentSept2009} \eqref{pq_bus} is extended to
+The starting point for \emph{HELM} is \eqref{pq_bus}, where the slack busses are considered through constant currents. As already mentioned before, because of its structure it is not possible to solve these equations explicitly. Therefore, the voltages $U_i$ are replaced with the functions $U_i(s)$. To achieve even further that these functions are holomorph \citep{helmPatentSept2009} \eqref{pq_bus} is extended to
 \begin{equation}	
 		\sum_i Y_{ki} U_{i}(s) = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) Y_k.
 		\label{eq:pq_bus_embedded}
 \end{equation}
-In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Therefore, the target is to evalute the functions $U_i(s)$ at point $s = 1$.
+In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Consequently, the target is to evalute the functions $U_i(s)$ at the point $s = 1$.
 
 The additional term $(1 - s) Y_{total}$ vanishes at the point $s = 1$ and is only needed to avoid that the first coefficients of a Laurent series become 0. In fact, the value $Y_{total}$ can be chosen arbitrarly. In \citep{helmPatentSept2009} the expression
 \begin{equation}
 	Y_k = \sum_i Y_{ki}
 \end{equation}
-is suggested, where the sum is calculated over all nodes, including the slack busses, which turns out to work well for real world problems. For certain problems this may still produce coefficients with the value zero. In these cases a random modification to this term can be applied to force the coefficient to a value different from zero.
+was suggested, where the sum is calculated over all nodes, including the slack busses. This approach turns out to work well for real world problems, although in certain problems this may still produce coefficients with the value zero. In these cases a random modification to this term can be applied to force the coefficient to a value different from zero.
 
 To get an explicit formula for the functions $U_i(s)$ we replace them with their Laurent series
 \begin{equation}
 	U_i(s) = \sum_{j = -\infty}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
-As the functions are holomorph the prinicipal part of the series vanishes, which turns the series into
+As the functions are holomorph, the prinicipal part of the series vanishes, which turns the series into
 \begin{equation}
 	U_i(s) = \sum_{j = 0}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
-To be able to calculate the coefficients we develop these series now around the point $s_0 = 0$ and insert
+To be able to calculate the coefficients we develop these series around the point $s_0 = 0$ and insert
 \begin{equation}
 	U_i(s) = \sum_{j = 0}^\infty c_{i,j} s^j.
 	\label{eq:helm_series}
 \end{equation}
- into \eqref{pq_bus_embedded} to get
+into \eqref{pq_bus_embedded} to get
 \begin{equation}
 		\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + \frac{s S_k^\star}{\sum_{j = 0}^\infty c_{k,j}^\star s^j} + (1 - s) Y_k.
 		\label{eq:helm_series_pq_bus}
 \end{equation}
-At this point we would actually like to make a coefficient comparison, but on the right side we have the inverse of a series. So, to circumvent this, we need a power series for the inverse of a series. We can get this series
+At this point we would actually like to make a coefficient comparison, but on the right hand side we have the inverse of a series. To circumvent this, we need a power series for the inverse of a series. We can get this series
 \begin{equation}
 	W_i(s) = \sum_{j = 0}^\infty w_{i,j} s^j,
 \end{equation}
@@ -755,11 +755,11 @@ To do so, the equation is rewritten with the discrete convolution formula to
 \begin{equation}
 	1 = \sum_{j = 0}^\infty \left( \sum_{l = 0}^j w_{i,l} c_{i,j - l}^\star \right) s^j,
 \end{equation}
-where we have to consider separately the power 0 and all others. For $s^0$ the outcome of the coefficient comparison is
+where we have to consider separately the power 0 and the rest. For $s^0$ the outcome of the coefficient comparison is
 \begin{equation}
 	1 = w_{i,0} c_{i,0}^\star,
 \end{equation}
-from which the first inverse coefficient can derived to be
+from which we can derive the first inverse coefficient to be
 \begin{equation}
 	w_{i,0} = \frac{1}{c_{i,0}^\star}.
 \end{equation}
@@ -771,12 +771,12 @@ where we can assume to already know the previous inverse coefficients. Hence, we
 \begin{equation}
 	0 = \sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star + w_{i,j} c_{j,0}^\star
 \end{equation}
-and transform the result to the explicit formula 
+and transform the result into the explicit formula 
 \begin{equation}
 	w_{i,j} = - \frac{\sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}.
 \end{equation}
 
-With the power series of the inverse voltage functions we are now able to reformulate \eqref{helm_series_pq_bus} to
+With the power series of the inverse voltage functions we are able to reformulate \eqref{helm_series_pq_bus} into
 \begin{equation}
 	\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + s S_k^\star \sum_{j = 0}^\infty w_{i,j} s^j + (1 - s) Y_k.
 \end{equation}
@@ -798,9 +798,9 @@ as the coefficients $w_{i,j}$ depend only on the previous coefficients $c_{i,j}$
 
 \paragraph{PV-busses}
 
-How PV-busses can be modelled in HELM was first mentioned in \citep{helmPV}. As there the notation and handling of slack busses is different to the formulas in this work I will reformulate them to fit to the other equations here.
+How PV-busses can be modelled in HELM was first mentioned in \citep{helmPV}. As there the notation and handling of slack busses is different to the formulas in this thesis, I will reformulate them to fit to the other equations here.
 
-Starting with the definition of a PQ-bus \eqref{pq_bus} we transform this equation to the explicit definition of the power
+Starting with the definition of a PQ-bus \eqref{pq_bus} we transform this equation into the explicit definition of the power
 \begin{equation}
 	S_k = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star.
 	\label{eq:bus_power}
@@ -810,7 +810,7 @@ For the PV-bus only the real power is defined, therefore we do not have to consi
 	P_k = \Re{U_k \left( \sum_i Y_{ki}^\star U_i^\star - I_k^\star \right)}.
 	\label{eq:pv_bus_definition}
 \end{equation}
-This way we end up with only one equation. Additionally, we bring into the equation system two unknowns, therefore we will need two equations for the bus. Consequently, we can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
+This way we end up with only one equation for the bus, although we bring into the equation system two unknowns. Consequently, we can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
 \begin{equation}
 	2 P_k = S_k + S_k^\star.
 \end{equation}
@@ -821,7 +821,7 @@ If we insert here the definition of the bus power \eqref{bus_power} we get
 				& = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star + U_k^\star \left( \sum_i Y_{ki} U_i - I_k \right)
 	\end{split}.
 \end{equation}
-Multiplying this with $U_k$ gives
+Multiplying this with $U_k$ gives us
 \begin{equation}
 	\begin{split}
 		2 P_k U_k 	& = U_k^2 \left( \sum_i Y_{ki} U_i - I_k \right)^\star + |U_k|^2 \left( \sum_i Y_{ki} U_i - I_k \right) \\
@@ -853,7 +853,7 @@ which is after the division by $|U_k|^2$
 	\end{split}
 	\label{eq:pv_bus_helm}
 \end{equation}
-then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation which I want to abbreviate with
+then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation, which I want to abbreviate with
 \begin{equation}
 	\begin{split}
 		F_{PV}(s) = 
@@ -870,7 +870,7 @@ Consequently, the counter part for a PQ-bus is
 	\end{split}.
 	\label{eq:rhs_pq}
 \end{equation}
-In the implementation of HELM it is then only necessary to calculate for the next coefficient the elements of the right hand side, depending on if the lines represent PQ- or PV-busses.
+In the implementation of HELM it is then only necessary to calculate for the next coefficients the elements of the right hand side, depending on the type of the bus with a different formula.
 
 The important point for this is that all elements in $F_{PQ}(s)$ and $F_{PV}(s)$ are either constant or depending only on previous coefficients. This is ensured through the embedding, where all summands which are functions in the parameter $s$ are multiplied with $s$, which shifts the coefficients of the series.
 
@@ -896,9 +896,9 @@ and
 \begin{equation}
 	X_k(s) = U_k(s)^2 \sum_{i \ne k} Y_{ki}^\star U_i(s)^\star = \sum_j x_{k,j} s^j.
 \end{equation}
-The coefficients for $V(s)$ can be calculate with the convolution formula
+The coefficients for $V(s)$ can be calculated with the convolution formula
 \begin{equation}
-	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l}
+	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l},
 \end{equation}
 and for $X(s)$ we can convolute and weigh these coefficients to calculate
 \begin{equation}
@@ -914,7 +914,7 @@ With these two substitutions \eqref{rhs_pv} can be simplified to
 	\end{split}.
 \end{equation}
 
-For the coefficient comparison, which delivers the right hand side of the linear equation system, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first power $s^0$ we get the expression
+For the coefficient comparison, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first power $s^0$ we get the expression
 \begin{equation}
 	\sum_i Y_{ki} c_{i,0} = I_k + Y_k,
 \end{equation}
@@ -927,9 +927,9 @@ and for all other coefficients
 	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
-\subsubsection{Analytic Continuation with \emph{Wynn's Epsilon Algorithm}}
+\subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
 
-Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of Viskovatov is suggested, but I achieved better results with Wynn's epsilon algorithm \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation, which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
+Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of \emph{Viskovatov} was suggested, but I achieved better results with \emph{Wynn's epsilon algorithm} \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation, which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
 \begin{equation}
 	U_i[n] = \sum_{k = 0}^n c_{i,k}.
 \end{equation}
@@ -959,12 +959,13 @@ are calculated according to
 	\epsilon_{k + 1}^{(n)} = \epsilon_{k - 1}^{(n + 1)} + \frac{1}{\epsilon_{k}^{(n + 1)} - \epsilon_{k}^{(n)}}.
 	\label{eq:epsilon_wynn}
 \end{equation}
-The most accurate value for the total sum can then be found in the end of the last even column of \eqref{epsilon_wynn_tableau}, as the odd columns diverge and the even columns converge. This divergence is actually a big problem in HELM, because the diverging columns explode so fast that even a 64 Bit floating point datatype (\emph{double}) is not big enough for more than 50 coefficients.
 
-For the practical application a nice feature of this algorithm is that additional coefficients only cause the tableau to grow downwards. Consequently, it is no real additional effort to calculate partial results, which can be used for instance as termination criteria.
+The most accurate value for the total sum can then be found in the end of the last even column of \eqref{epsilon_wynn_tableau}, as the odd columns diverge and the even columns converge. This divergence is actually a big problem in \emph{HELM}, because the diverging columns explode so fast that even a 64 Bit floating point datatype (\emph{double}) is not big enough for more than 50 coefficients.
+
+For the practical application a nice feature of this algorithm is that additional coefficients only cause the tableau to grow downwards. Consequently, it is no real additional effort to calculate partial results, which can be used for instance in a termination criteria.
 
 \subsubsection{Summary}
-In summary, the steps of HELM are:
+In summary, the steps of \emph{HELM} are:
 \begin{enumerate}
 	\item Calculate the next coefficients through solving the linear equation system
 	\begin{equation}
@@ -975,7 +976,7 @@ In summary, the steps of HELM are:
 		\end{cases}
 		\label{eq:helm_total_equation_system}
 	\end{equation}
-	\item Evaluate the voltage functions $U_i(s = 1)$ with Wynn's Epsilon algorithm
+	\item Evaluate the voltage functions $U_i(s = 1)$ with \emph{Wynn's Epsilon algorithm}
 	\item Repeat these steps until the voltage change is small enough \emph{or} until the power mismatch is small enough
 \end{enumerate}
 
@@ -1000,7 +1001,7 @@ and
 
 The derived coefficients $w_{k,j}$ during the first step can be calculated with
 \begin{equation}
-	w_{k,0} = \frac{1}{c_{k,0}^\star},
+	w_{k,0} = \frac{1}{c_{k,0}^\star};
 \end{equation}
 in all further iterations
 \begin{equation}
@@ -1015,4 +1016,4 @@ and the values for $x_{k,j}$ are determined through
 	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
 \end{equation}
 
-As HELM is a fairly new algorithm and only little information about it is available I add a short numerical example in \chapref{helm_example}. I include there also the coefficients and steps of Wynn's Epsilon algorithm to make it easier to reimplement HELM and to have some data for debugging.
+As \emph{HELM} is a fairly new algorithm and only little information about it is available, I add a short numerical example in \chapref{helm_example}. I include there also the coefficients and steps of \emph{Wynn's Epsilon algorithm} to make it easier to reimplement \emph{HELM}.
