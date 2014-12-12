@@ -24,6 +24,7 @@
 \usepackage{blkarray}
 \usepackage[numbers]{natbib}
 \usepackage[hidelinks]{hyperref}
+\usepackage{listings}
 
 % do not display the chapter-headings
 \titleformat{\chapter}[display]
@@ -51,6 +52,28 @@
 \renewcommand{\Re}[1]{\operatorname{Re}\{#1\}}
 \renewcommand{\Im}[1]{\operatorname{Im}\left\{ #1 \right\}}
 \newcommand{\iddots}{\text{\reflectbox{$\ddots$}}}
+
+% formatting of embedded code
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=[Sharp]C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 \begin{document}	
 	% page numbers left and right on even and odd pages
@@ -91,6 +114,7 @@
 	
 	\begin{appendix}
 		\input{helm_example}
+		\input{code_calculation}
 	\end{appendix}
 	
 	\cleardoublepage

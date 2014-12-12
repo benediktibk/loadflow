@@ -1,0 +1,10 @@
+\chapter{Calculation API}
+\label{chap:calculation_api}
+
+\begin{lstlisting}
+	var nodeVoltageCalculator = new CurrentIteration(0.00001, 1000);
+	var nodeGraph = new NodeGraph();
+	var singleVoltageLevelPowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
+	var singlePhasePowerNet = new SinglePhase.MultipleVoltageLevels.PowerNetComputable(50, singleVoltageLevelPowerNetFactory, nodeGraph);
+	var symmetricPowerNet = new ThreePhase.SymmetricPowerNet(singlePhasePowerNet);
+\end{lstlisting}
