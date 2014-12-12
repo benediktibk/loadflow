@@ -47,7 +47,7 @@ The third important type of bus, besides the slack bus and PQ-bus, is the PV-bus
 
 \subsection{Admittance Matrix}
 
-The admittance matrix $\mat Y = (Y_{ki})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, have to be represented by an equivalent circuit which is voltage controlled so that they can be modelled with an admittance matrix. Fortunately, most elements, which are not voltage controlled, can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
+The admittance matrix $\mat Y = (Y_{ki})$ is filled with the admittances between the nodes. More complex elements, like controlled sources, have to be represented by an equivalent circuit which is voltage controlled, so that they can be modelled with an admittance matrix. Not voltage controlled can be transformed through a gyrator, which itself can be modelled through voltage controlled elements.
 
 As during the modelling later several kinds of electric elements will be used I will describe for each of them how they effect the admittance matrix. Each circuit element is there defined through a partial admittance matrix $\mat Y_p$. These partial matrices have to be summed up afterwards to get the total admittance matrix $\mat Y$:
 \begin{equation}
@@ -59,7 +59,7 @@ The same superposition applies also for the current sources, if there are any.
 	\vec I = \sum_i \vec I_{p,i}
 \end{equation}
 
-The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers with non-nominal ratios. The controlled source and the gyrator are actually only used to model the ideal transformer, which is build upon these elements.
+The two most important elements are the admittance, which is part of nearly every model of a net element, and the ideal transformer, which is mainly used for modelling real transformers with non-nominal ratios. The controlled source and the gyrator are actually only used to model the ideal transformer.
 
 \subsubsection{Admittance}
 
@@ -102,15 +102,16 @@ which have to be considered in the admittance matrix through
 	\label{fig:voltage_controlled_current_source}
 \end{figure}
 
-The voltage controlled current source (VCCS) is again defined through the two branch currents
+The voltage controlled current source (VCCS) is defined through the two branch currents
 \begin{equation}
 	I_\alpha = (U_{k,\gamma} - U_{k,\delta}) g_m
 \end{equation}
 and
 \begin{equation}
-	I_\beta = (U_{k,\delta} - U_{k,\gamma}) g_m,
+	I_\beta = (U_{k,\delta} - U_{k,\gamma}) g_m.
 \end{equation}
-but with the difference to the admittance matrix that this time the current is controlled by different nodes, what results in the asymmetric admittance matrix
+
+The difference to the admittance matrix is that this time the current is controlled by different nodes, what results in the asymmetric admittance matrix
 \begin{equation}
 	\mat Y_p = 	
 	\begin{blockarray}{cccccc}
@@ -169,18 +170,17 @@ can be replaced with two VCCSs like in \figref{gyrator_equivalent}.
 
 An ideal transformer like in \figref{ideal_transformer_original} is modelled with two gyrators according to the circuit \figref{ideal_transformer_equivalent}. The gyrators themselves have to be replaced by voltage controlled elements, like it was presented previously.
 
-In theory, the parameter $R$ in this model can be chosen freely, but for numerical reasons I recommend a scaling of the internal node so that its voltage is in the range of the nominal voltage. To be able to do so an estimation of the load-flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods to solve the load-flow problem will not convergence in most cases.
+In theory, the parameter $R$ in this model can be chosen freely, but for numerical reasons I recommend a scaling of the internal node so that its voltage is in the range of the nominal voltage. To be able to do so an estimation of the load-flow over the transformer is needed, but it is sufficient to have a very rough estimate. If the scaling is chosen improperly especially the iterative methods do not converge.
 
 \section{Scaling}
 \label{sec:scaling}
 
-As long as the relations are kept the same it is possible to change the scale base of all values in a system. For this purpose from the set of voltage, current, impedance and power two physical quantities can be freely chosen and the others arise out of this decision. Another term for this scaling is the transformation into a so-called per-unit system \citep[p. 90]{powerSystemAnalysis}.
+As long as the relations are kept the same it is possible to change the scale base of all values in a system. For this purpose, from the set of voltage, current, impedance and power two physical quantities can be chosen freely and the others arise out of this decision. Another term for this scaling is the transformation into a per-unit system \citep[p. 90]{powerSystemAnalysis}.
 
-For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The second degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the scale base
+For numerical stability the voltages should be in the range of 1, therefore for each voltage level in the system the nominal voltage is selected as scale base $U_B$ for the voltages. The second degree of freedom can be used to scale also the powers down into the range of 1, which can be achieved for instance roughly with the power scale base
 \begin{equation}
-	P_B = \frac{1}{2n} \left( \sum_{i}^n \left| P_{load,i} \right| + \sum_{i}^n \left| Q_{load,i} \right| \right)
+	P_B = \frac{1}{2n} \left( \sum_{i}^n \left| P_{load,i} \right| + \sum_{i}^n \left| Q_{load,i} \right|. \right)
 \end{equation}
-for the powers. 
 
 The other scale bases are then derived from these two chosen values:
 \begin{equation}
@@ -210,6 +210,8 @@ The actually scaling is achieved through a division of the values by the scale b
 	Y_{scaled} = \frac{Y}{Y_B}
 	\label{eq:scaling_admittance}
 \end{equation}
+
+The two big advantages of this scaling are the numerical stable range for values and a more simple model for transformers with a nominal ratio. These transformers would have an ideal transformer with a ratio of 1, which means that the ideal transformer can be left out.
 
 \section{Modelling of Net Elements}
 \label{sec:modelling}
@@ -247,7 +249,7 @@ also derived in \citep[p. 153]{powerSystemAnalysis}.
 \end{figure}
 
 \subsection{Load}
-A load can be modelled through a PQ-bus and no change to the admittance matrix. If there are several loads connected to one node their values sum up as already discussed before.
+A load can be modelled through a PQ-bus and no change to the admittance matrix. If there are several loads connected to one node their values sum up, as already mentioned previously.
 
 \subsection{Generator}
 
@@ -260,7 +262,7 @@ A load can be modelled through a PQ-bus and no change to the admittance matrix. 
 
 Generators are represented through a synchronous reactance $X_d$, which models internal losses, and a PV-bus \citep[p. 55]{powerSystemAnalysis}, like it can be seen in \figref{generator}. The voltage magnitude at the internal PV-bus is the excitation voltage $E$ and the real power input is determined by the mechanical power and some transformation losses. 
 
-If the synchronous reactance is not zero the external node $\alpha$ is not forced to any certain bus type, but if it is zero, the bus is forced to become a PV-bus.
+If the synchronous reactance is not zero, the external node $\alpha$ is not forced to any certain bus type, but if it is zero, the bus is forced to become a PV-bus.
 
 \subsection{Transformer}
 
@@ -271,7 +273,7 @@ If the synchronous reactance is not zero the external node $\alpha$ is not force
 	\label{fig:transformer}
 \end{figure}
 
-To model the transformer I chose to use the equivalent circuit \figref{transformer} with a $\pi$-model and an ideal transformer. As all variables are scaled to the same nominal voltage the ideal transformer is only needed, if the real transmission ratio $a$ is not the nominal transmission ratio
+To model the transformer I chose to use the equivalent circuit \figref{transformer} with a $\pi$-model and an ideal transformer. As all variables are scaled to the same nominal voltage, the ideal transformer is only needed, if the real transmission ratio $a$ is not the nominal transmission ratio
 \begin{equation}
 	a_n = \frac{U_{1n}}{U_{2n}}.
 \end{equation}
@@ -288,7 +290,7 @@ For transformers exist several different ways to specifiy their electrical chara
 	\item $\frac{I_0}{I_n}$: relative no-load current
 \end{itemize}
 
-The shunt admittance can then be derived direct from these values through
+The shunt admittance can then be derived directly from these values through
 \begin{equation}
 	Y_q = \frac{1}{2} \left( P_{Fe} - j \sqrt{\left( \frac{I_0}{I_n} S_n \right)^2 - P_{Fe}^2} \right) \frac{1}{U_{1n}^2}.
 \end{equation}
@@ -297,11 +299,11 @@ For the length admittance it is first necessary to calculate the complex relativ
 \begin{equation}
 	\Re{u_r} = \frac{P_{Cu}}{S_n}
 \end{equation}
-can be calculate from the copper losses and the nominal power. As now the magnitude and the real part of the relative short circuit voltage are known, it is possible to calculate the imaginary part
+can be calculated from the copper losses and the nominal power. As now the magnitude and the real part of the relative short circuit voltage are known, it is possible to calculate the imaginary part
 \begin{equation}
 	\Im{u_r} = \sqrt{|u_r|^2 - \Re{u_r}}.
 \end{equation}
-Therefore, the total complex short circuit voltage
+Therefore, the total complex relative short circuit voltage
 \begin{equation}
 	u_r = \Re{u_r} + j \Im{u_r}
 \end{equation}
@@ -310,8 +312,6 @@ is known too and the length admittance
 	Y_l = \frac{S_n}{U_{1n}^2 u_r}
 \end{equation}
 can be calculated.
-
-Before these admittances are inserted into the admittance matrix they have to be scaled according to \eqref{scaling_admittance}.
 
 \subsection{Feed-In}
 
@@ -339,31 +339,31 @@ These two values combined are then the input impedance
 	Z_q = R + j X.
 \end{equation}
 
-In case the short circuit power is very high compared to the actual load-flow, the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
+In case of a huge short circuit power compared to the actual load-flow, the input impedance may turn out to have a very small value, which could be neglected. This results then in a direct connection of the internal slack bus with the external node. Therefore, the external node is overriden and turns into a slack bus.
 
 \section{Calculation Methods}
 \label{sec:calculation_methods}
 
-The task for the following calculation methods is to determine the node voltages from an admittance matrix, a list of PQ- and PV-busses and a vector of constant currents. In this section I will describe in total four different algorithms for this problem:
+The task for the following calculation methods is to determine the node voltages from an admittance matrix, a list of PQ- and PV-busses, and a vector of constant currents. In this section I will describe in total four different algorithms for this problem:
 \begin{itemize}
-	\item Current Iteration \citep[p. 209]{powerSystemAnalysis}
-	\item Newton-Raphson \citep[p. 232]{powerSystemAnalysis}
-	\item Fast-decoupled-load-flow \citep[p. 240]{powerSystemAnalysis}
-	\item Holomorphic Embedding Load Flow \citep{helmIEEE, helmPatentApr2009, helmPatentSept2009}
+	\item \emph{Current Iteration} \citep[p. 209]{powerSystemAnalysis}
+	\item \emph{Newton-Raphson} \citep[p. 232]{powerSystemAnalysis}
+	\item \emph{Fast-decoupled-load-flow} \citep[p. 240]{powerSystemAnalysis}
+	\item \emph{Holomorphic Embedding Load Flow} \citep{helmIEEE, helmPatentApr2009, helmPatentSept2009}
 \end{itemize}
 
-As short overview I will start with a classification of these methods, based on their specific characteristics.
+As short overview I will start with a classification of these methods, based on their properties.
 
 \subsection{Classification of Methods}
 
-The first three methods, Current Iteration, Newton-Raphson and the FDLF, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this point leads direct to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physical, what in this case means that they do no represent a stable operating point. This happens typically only for certain constructed power nets, so in practice the bigger problem is that these methods often do not converge, although the power net is in a stable condition.
+The first three methods, the \emph{Current Iteration}, \emph{Newton-Raphson} and the \emph{FDLF}, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. And this leads directly to the second drawback: The iterative methods can not guarantee to find a solution, and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physically correct, what in this case means that they do not represent a stable operating point. This happens typically only for certain constructed power nets. In practice, the bigger problem is that these methods often do not converge at all, although the power net is in a stable condition.
 
-To circumvent these drawbacks a new approach to the load-flow problem was developed, the so-called Holomorphic Embedding Load Flow. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore, HELM would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
+To circumvent these drawbacks a new approach to the load-flow problem was developed, the \emph{Holomorphic Embedding Load Flow}. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore, \emph{HELM} would be superior to the iterative methods, but it has some drawbacks in practice which will be discussed in \secref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
 
-The basic problem of the load-flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so on the left hand side of the equation the current voltage is separated from the sum
+The basic problem of the load-flow calculation is that \eqref{pq_bus} can not be solved explicitly. The iterative approach of the Current Iteration works around this problem through a selection of initial voltages and the successive solving of one line of \eqref{pq_bus} after another. To do so, on the left hand side of the equation the current voltage is separated from the sum
 \begin{equation}
 	\sum_{i \ne k} Y_{ki} U_i + Y_{kk} U_k = I_k + \frac{S_k^\star}{U_k^\star}
 \end{equation}
@@ -371,13 +371,18 @@ and then the rest is moved to the right hand side
 \begin{equation}
 	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ki} U_i \right).
 \end{equation}
-The resulting equation is again not explicitly solved for $U_k$ as this variable still occurs on the right hand side, but at this appearance the old value, from the previous iteration, can be used. This leads then to
+The resulting equation is again not explicitly solved for $U_k$, as this variable still occurs on the right hand side, but at this appearance the old value from the previous iteration can be used. This leads then to
 \begin{equation}
-	 U_k^{j + 1} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ki} U_i^{(j)} \right),
+	 U_k^{(j + 1)} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ki} U_i^{(j)} \right),
 \end{equation}
 where the superindex $j$ denotes the iteration step. For the sake of legibilty with this formula one would actually update the node voltages only after every iteration, but they can actually be updated every time a new value is calculated.
 
-To this point only the PQ-busses were discuess, but PV-busses can be handled too. For this purpose the PV-bus is considered as a PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
+Another approach, which is very similar to the already presented one, is to leave the admittance matrix on the left hand side. With this, it is then possible to calculate all new voltages in one step through solving
+\begin{equation}
+	\sum_i Y_{ki} U_i^{(j + 1)} = I_k + \frac{S_k^\star}{U_k^{(j)\star}}.
+\end{equation}
+
+To this point I discussed only the PQ-busses, but PV-busses can be handled too. The PV-bus is considered as a PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
 \begin{equation}
 	U_k' = |U_{k,PV}| e^{j \angle U_k}.
 \end{equation}
@@ -385,7 +390,7 @@ To this point only the PQ-busses were discuess, but PV-busses can be handled too
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
 
-In general, under the name Newton-Raphson a method for finding roots of a nonlinear function is known. In the area of load-flow calculation the idea is the same, the basic problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ are the same as the specified loads $S_{spec}$:
+In general, under the name \emph{Newton-Raphson} a method for finding roots of a nonlinear function is known. In the area of load-flow calculation the idea is the same. The basic problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ are the same as the specified loads $S_{spec}$:
 \begin{equation}
 	\vec S (\vec x) = S_{spec}
 \end{equation}
@@ -393,7 +398,7 @@ With a small transformation this leads to the problem of finding the roots of
 \begin{equation}
 	\vec S (\vec x) - S_{spec} = 0,
 \end{equation}
-which is exactly what Newton-Raphson does. For this the whole left part is considered as function
+which is exactly what \emph{Newton-Raphson} does. The whole left part is considered as a function
 \begin{equation}
 	\vec f (\vec x) = \vec S (\vec x) - S_{spec},
 \end{equation}
@@ -401,7 +406,7 @@ which is developed into the Taylor-series
 \begin{equation}
 	\vec f (\vec x) = \sum_{k = 0}^\infty \frac{\vec f^{(k)} (\vec x_0)}{k!} \left( \vec x - \vec x_0 \right).
 \end{equation}
-This series is terminated after the linear term, which leads to the approximation
+From this series only the linear term is used as an approximation, which leads to
 \begin{equation}
 	\vec f (\vec x) \approx \vec f (\vec x_0) + \vec f' (\vec x_0) \left( \vec x - \vec x_0 \right).
 \end{equation}
@@ -415,16 +420,16 @@ the occurence of $\vec f (\vec x)$ with its definition to get
 	\mat S' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:newton_raphson_equation_system}
 \end{equation}
-In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\mat S' (\vec x_k)$, the voltage changes $\Delta \vec x^{(k)} = \left( \vec x^{(k+1)} - \vec x^{(k)} \right)$ and on the right side the current power mismatch 
+In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\mat S' (\vec x_k)$, the voltage changes $\Delta \vec x^{(k)} = \left( \vec x^{(k+1)} - \vec x^{(k)} \right)$, and on the right side the current power mismatch 
 \begin{equation}
 	\Delta \vec S (\vec x^{(k)}) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:power_mismatch}
 \end{equation}
 
-This is then an iterative approach, where we can calculate from the current power mismatch improved voltages, calculate the power mismatch again, ... and so on. The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase and a representation through real and imaginary part. As the version with magnitudes and phases is the more common one I want to start with this one.
+The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase, and a representation through real and imaginary part. As the version with magnitudes and phases is the more common one I want to start with this one.
 
 \subsubsection{Magnitude and Phase}
-In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power, therefore voltages are usually represented in polar coordinates. Therefore, in case we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
+In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power, and the angle of the voltage $\delta_i$ on the real power. Consquently, voltages are usually represented in polar coordinates. If we consider $n$ PQ-busses and $m$ PV-busses, we have as voltage vector 
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -471,7 +476,7 @@ and for the specified powers
 	\end{bmatrix}.
 \end{equation}
 
-The last missing part is the derivation of the power function, which means we have to start to separate the power at each node into its real and imaginary part and derive these functions then with respect to the voltage magnitudes and angles.
+To be able to apply \emph{Newton-Raphson} we now need the derivation of the power function with respect to the entries in the voltage change vector. I will start with a separation of the power at each node into its real and imaginary part, and then derive these functions with respect to the voltage magnitudes and angles.
 
 As first step \eqref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
 \begin{align}
@@ -480,7 +485,7 @@ As first step \eqref{pq_bus} is transformed into an explicit calculation of the 
 		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
 	\label{eq:complex_power}
 \end{align}
-Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$) which leads to the expression
+Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$), which leads us to the expression
 \begin{equation}
 	\begin{split}
 		S_k = 	& \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ki}| e^{-j \theta_{ki}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 \\
@@ -508,7 +513,7 @@ and
 				& - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
 	\end{split}
 \end{equation}
-These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
+We can now differentiate these formulas with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
 \begin{equation}
 	\begin{split}
 		\frac{\partial P_k}{\partial |U_k|} = 
@@ -550,7 +555,7 @@ These formulas now have to be differentiate with respect to $U_k$, $U_i$ ($i \ne
 	\label{eq:qk_phasei}
 \end{equation}
 
-With these derivations we can calculate the derivation of the power functions which form the Jacobian matrix
+With these derivations we can calculate the derivation of the power functions, which form the Jacobian matrix
 \begin{equation}
 	\mat S_1' (\vec x^{(k)}) = 
 	\begin{bmatrix}
@@ -565,9 +570,9 @@ With these derivations we can calculate the derivation of the power functions wh
 \end{equation}
 
 \subsubsection{Real and Imaginary Part}
-For the representation of the voltages through real and imaginary parts we have one slight problem: PV-busses. For this busses the voltage magnitude is already set and we only have to calculate the phases. Therefore, this busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian system. The advantages of this are less complex formulas, as we can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has an impact on the performance of the overall algorithm, although we can only use this improvement for PQ-busses.
+For the representation of the voltages through real and imaginary parts we have one slight problem: PV-busses. For this busses the voltage magnitude is already set, and we only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantages of this are less complex formulas, as we can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has an impact on the performance of the overall algorithm, although we can only use this improvement for PQ-busses.
 
-Through a representation in cartesian coordinates we end up with the voltage change vector
+Through a representation in cartesian coordinates we end up with the voltage vector
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -582,16 +587,16 @@ Through a representation in cartesian coordinates we end up with the voltage cha
 		\delta_{n+m} \\
 	\end{bmatrix},
 \end{equation}
-where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
+where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses, and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
 
-For the Jacobian matrix we need now a additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, which I have already derived in the previous section, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+For the Jacobian matrix we need now, additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this we will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
 			  & (Y_{kk}^r - j Y_{kk}^i) ( (U_k^r)^2 + (U_k^i)^2 ) - (I_k^r - j I_k^i) (U_k^r + j U_k^i)			
 	\end{split}.
 \end{equation}
-Next I will need the seperation of this into its real and imaginary parts. Therefore, I will start with the expansion of the summands
+Next we will need the seperation of this into its real and imaginary parts. Therefore, we will expand the summands
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
@@ -668,7 +673,7 @@ The iterative process to improve the voltages is then:
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
 
-The FDLF is a modification of the Newton-Raphson method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind one can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce the matrix therefore to
+The \emph{FDLF} is a modification of the \emph{Newton-Raphson} method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow, and the change in the voltage angles by the real power flow. With this in mind we can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce it to
 \begin{equation}
 	\mat S' (\vec x^{(k)}) \approx 
 	\begin{bmatrix}
@@ -685,7 +690,7 @@ The FDLF is a modification of the Newton-Raphson method, which is based on an ob
 	\end{bmatrix}.
 \end{equation}
 
-With this simplified system matrix the equation system \eqref{newton_raphson_equation_system} can be separated into
+With this simplified system matrix we can separate the equation system \eqref{newton_raphson_equation_system} into
 \begin{equation}
 	\frac{\partial \vec P}{\partial \vec \delta} \cdot \Delta \vec \delta^{(k)} = \Delta \vec P^{(k)}
 \end{equation}
@@ -694,7 +699,7 @@ and
 	\frac{\partial \vec Q}{\partial \vec{|U|}} \cdot \Delta \vec{|U|}^{(k)} = \Delta \vec Q^{(k)}.
 \end{equation}
 
-The steps for solving the load-flow problem are nearly the same as for the Newton-Raphson, the only difference lies within the smaller linear equation system which needs to be solved. This is already the reason why one may choose the FDLF instead of the Newton-Raphson: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour, therefore the FDLF is less probable to be actually capable of solving a load-flow problem.
+The steps for solving the load-flow problem are nearly the same as for the \emph{Newton-Raphson}, the only difference lies within the smaller linear equation system, which has to be solved. This is already the reason why one may choose the \emph{FDLF} instead of \emph{Newton-Raphson}: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour. Consequently, the \emph{FDLF} is less probable to be actually capable of solving a load-flow problem.
 
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
