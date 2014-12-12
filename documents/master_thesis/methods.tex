@@ -37,7 +37,7 @@ If the loads and inputs would be current-controlled we could already stop at thi
 \end{equation}
 which is already the definition of a PQ-bus. As a short side remark, a positive power means in this formulation that power is drawn from the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
 
-Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need to add a line to the equation system, but the bus is also part from neighbour busses through the branch currents $Y_{ki} U_i$. All these known branch currents are represented on the right hand side of \eqref{pq_bus} through
+Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need to add a line to the equation system, but the bus is also part from neighbour busses through the branch currents $Y_{ki} U_i$. We can represent all these known branch currents on the right hand side of \eqref{pq_bus} through
 \begin{equation}
 	I_k = -\sum_{\text{slack busses}} Y_{ki} U_i.
 \end{equation}
@@ -211,7 +211,7 @@ The actually scaling is achieved through a division of the values by the scale b
 	\label{eq:scaling_admittance}
 \end{equation}
 
-The two big advantages of this scaling are the numerical stable range for values and a more simple model for transformers with a nominal ratio. These transformers would have an ideal transformer with a ratio of 1, which means that the ideal transformer can be left out.
+The two big advantages of this scaling are the maximum numerical range for the voltage values and a more simple model for transformers with a nominal ratio. These transformers would have through the scaling in the end an ideal transformer with a ratio of 1, which means that the ideal transformer can be left out.
 
 \section{Modelling of Net Elements}
 \label{sec:modelling}
@@ -223,7 +223,7 @@ All external nodes which exist in a power net are by default PQ-busses with no l
 As it would lead to an overspecified problem PV-busses must not be connected to slack busses. Theoretically this is possible if the PV-bus has the same voltage magnitude as the slack bus, but in practice this case does not occur and can be neglected.
 
 \subsection{Transmission Line}
-A transmission line is modelled only with admittances like in \figref{transmission_line}. The values $Y_q$ and $Y_l$ can be derived from the wave impedance $Z_W$, the propagation constant $\gamma$ and the length of the transmission line through
+A transmission line is modelled only with admittances like in \figref{transmission_line}. We can derive the values $Y_q$ and $Y_l$ with the wave impedance $Z_W$, the propagation constant $\gamma$, and the length of the transmission line through
 \begin{equation}
 	Y_l = \frac{1}{Z_W \sinh \left( \gamma l \right)}
 \end{equation}
