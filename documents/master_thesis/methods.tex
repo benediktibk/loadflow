@@ -32,13 +32,12 @@ will be used, as in the end the right hand side of this equation can not be desc
 
 If the loads and inputs would be current-controlled we could already stop at this point, solve the equation system and receive the node voltages as the result. Unfortunately, most elements in a power net are defined through power, which is fed in, or load, which is drawn from the power net. Therefore, we have to extend \eqref{current_controlled} with a term for a constant power $S_k = P_k + j Q_k = U_k I_k^\star$ at the node $k$ and receive
 \begin{equation}
-	\sum_i Y_{ki} U_i = I_k + \frac{S_k^\star}{U_k^\star}.
+	\sum_i Y_{ki} U_i = I_k + \frac{S_k^\star}{U_k^\star},
 	\label{eq:pq_bus}
 \end{equation}
+which is already the definition of a PQ-bus. As a short side remark, a positive power means in this formulation that power is drawn from the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
 
-As a short side remark, a positive power means in this formulation that power is drawn from the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
-
-This formula is already the definition of a so-called PQ-bus, as at the node the real and reactive power is defined. Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need to add a line to the equation system, but the bus is also part from neighbour busses through the branch currents $Y_{ki} U_i$. All these known branch currents are represented on the right hand side of \eqref{pq_bus} through
+Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore we do not need to add a line to the equation system, but the bus is also part from neighbour busses through the branch currents $Y_{ki} U_i$. All these known branch currents are represented on the right hand side of \eqref{pq_bus} through
 \begin{equation}
 	I_k = -\sum_{\text{slack busses}} Y_{ki} U_i.
 \end{equation}
