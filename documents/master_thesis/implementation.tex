@@ -1,6 +1,6 @@
 \chapter{Implementation}
 During this thesis I developed an application which is able to apply all the previously mentioned calculation methods for the load-flow calculation. Most of the application is written in \emph{C\#}, only \emph{HELM} is implemented as a \emph{C++}-library. This became necessary because of the superior abilities of templates over generics. I will give a more detailed explanation of these implementation details of the calculation methods in \secref{implementation_calculation_methods}.
-As input formats are two options available: a custom format, stored in a \emph{MS SQL}-Database, or the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secref{link_sincal}. But before I discuss the implementation details I want to give you a short overview of the software architecture in the next section.
+As input formats are two options available: a custom format, stored in a \emph{MS SQL}-Database, and the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secref{link_sincal}. But before I discuss the implementation details I want to give you a short overview of the software architecture in the next section.
 
 \section{Software Architecture}
 
@@ -55,7 +55,7 @@ The last important detail of the implementation of the calculation methods is th
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
-The tool of choice in europe, especially at the Institute of Power Transmission Systems at the Technische Universität München, for load flow calculations is \emph{PSS SINCAL}. Consequently, the tool developed during this thesis has a parser for this file format. This parser allows to read a power net from the file and write back the calculated node voltages.
+The tool of choice in europe, especially at the Institute of Power Transmission Systems at the Technische Universität München, for load-flow calculations is \emph{PSS SINCAL}. Consequently, the tool developed during this thesis has a parser for this file format. This parser allows to read a power net from the file and write back the calculated node voltages.
 
 The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 \begin{itemize}
@@ -68,4 +68,16 @@ The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 	\end{itemize}
 \end{itemize}
 
-The main information about the electrical characteristics of the power net are stored in the \emph{MS Access}-database. Fortunately, this database is well documented online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf} and the documents delivered together with the application.
+The main information about the electrical characteristics of the power net are stored in the \emph{MS Access}-database. Fortunately, this database is documented very well online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf} and by the documents delivered together with the application.
+
+The most important tables in this database are:
+\begin{itemize}
+	\item Terminal: contains information about the connection of the net elements with the nodes
+	\item VoltageLevel: mostly used for the frequency of the power net
+	\item Element: contains all net elements
+	\item Node: contains all nodes with their ID, name, voltage level, ... etc.
+	\item TwoWindingTransformer, ThreeWindingTransformer, Line, SynchronousMachine, Load, Infeeder: contain the corresponding net elements
+	\item LFNodeResult: contains the node results of the load-flow calculation
+\end{itemize}
+
+For more detailed information about the database I would like to refer to the official documentation, or the implementation of the parser in the subsystem \emph{SincalConnector}.
