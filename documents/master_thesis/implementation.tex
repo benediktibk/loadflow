@@ -25,7 +25,7 @@ In \chapref{calculation_api} I show how the API of the Calculation subsystem can
 \section{Calculation Methods}
 \label{sec:implementation_calculation_methods}
 
-\subsection{\emph{HELM}}
+\subsection{Holomorphic Embedding Load Flow}
 For the implementation of the calculation methods I want to explain first the decision to implement \emph{HELM} in a separate library, written in \emph{C++}. Unfortunately, in some cases the mantissa of a 64 Bit floating point is not sufficient to benefit from the theoretical ideal convergence behaviour of \emph{HELM}. The problem here lies within the very small convergence radius of \eqref{helm_series}. As already mentioned before, the theoretical solution to this is an analytic continuation. At this point then the actual problem is buried, in \emph{Wynn's Epsilon Algorithm} only every second column is converging, the other columns between diverge. Approximately with 50 coefficients the divergence is already at the barrier of the precision of a 64 Bit floating point. The calculation of more coefficients does not improve the results anymore, because the numerical error, caused by the machine epsilon, is bigger than the possible gain in accuracy.
 
 \begin{figure}
@@ -55,3 +55,17 @@ The last important detail of the implementation of the calculation methods is th
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
+The tool of choice in europe, especially at the Institute of Power Transmission Systems at the Technische Universität München, for load flow calculations is \emph{PSS SINCAL}. Consequently, the tool developed during this thesis has a parser for this file format. This parser allows to read a power net from the file and write back the calculated node voltages.
+
+The basic structure of a power net in \emph{PSS SINCAL} is as follows:
+\begin{itemize}
+	\item {\textlangle}name{\textrangle}.sin
+	\item {\textlangle}name{\textrangle\_}files
+	\begin{itemize}
+		\item database.001.dia
+		\item database.ini
+		\item database.mdb
+	\end{itemize}
+\end{itemize}
+
+The main information about the electrical characteristics of the power net are stored in the \emph{MS Access}-database. Fortunately, this database is well documented online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf} and the documents delivered together with the application.
