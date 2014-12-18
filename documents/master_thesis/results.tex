@@ -55,6 +55,13 @@ The last important message is the insufficient performance of \emph{HELM} with a
 
 \subsection{Accuracy}
 
+As benchmark for the accuracy I used the relative power error, which is the ratio between power error and total power, both summed up absolutely:
+\begin{equation}
+	\epsilon_r = \frac{\sum |P_i - P_{spec,i}| + \sum |Q_i - Q_{spec,i}|}{\sum |P_{spec,i}| + \sum |Q_{spec,i}|}
+\end{equation}
+
+The accuracies of the algorithms \figref{comparison_accuracy} were all sufficient for most applications, although a difference can be seen between the pure iterative approaches and the ones with \emph{HELM}. The later ones are able to deliver more accurate results for these nets.
+
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.7]{figures/comparison_accuracy}
