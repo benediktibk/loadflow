@@ -26,6 +26,7 @@ In \chapref{calculation_api} I show how the API of the Calculation subsystem can
 \label{sec:implementation_calculation_methods}
 
 \subsection{Holomorphic Embedding Load Flow}
+\label{sec:implementation_helm}
 For the implementation of the calculation methods I want to explain first the decision to implement \emph{HELM} in a separate library, written in \emph{C++}. Unfortunately, in some cases the mantissa of a 64 Bit floating point is not sufficient to benefit from the theoretical ideal convergence behaviour of \emph{HELM}. The problem here lies within the very small convergence radius of \eqref{helm_series}. As already mentioned before, the theoretical solution to this is an analytic continuation. At this point then the actual problem is buried, in \emph{Wynn's Epsilon Algorithm} only every second column is converging, the other columns between diverge. Approximately with 50 coefficients the divergence is already at the barrier of the precision of a 64 Bit floating point. The calculation of more coefficients does not improve the results anymore, because the numerical error, caused by the machine epsilon, is bigger than the possible gain in accuracy.
 
 \begin{figure}
