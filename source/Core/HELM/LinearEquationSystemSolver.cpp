@@ -53,7 +53,6 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 
 		if (i > 0)
 		{
-
 			if (abs(omega) < Floating(epsilonSquared) || abs(lastRho) < Floating(epsilonSquared))
 				return Matrix<ComplexFloating>::eigenToStdVector(x);
 
@@ -74,13 +73,20 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		auto s = residual - alpha*v;
 		auto sWithPreconditioner = _preconditioner*s;
 		auto t = _systemMatrix*sWithPreconditioner;
-		auto tDotT = t.dot(t);
 		auto tDotS = t.dot(s);
 
-		if (abs(tDotT) < Floating(1e-100) && abs(tDotS) > Floating(0))
-			return Matrix<ComplexFloating>::eigenToStdVector(x);
+		if (tDotS == ComplexFloating(0))
+			omega = ComplexFloating(0);
+		else
+		{
+			auto tDotT = t.dot(t);
 
-		omega = tDotS/tDotT;
+			if (abs(tDotT) < Floating(1e-100))
+				return Matrix<ComplexFloating>::eigenToStdVector(x);
+
+			omega = tDotS/tDotT;
+		}
+
 		x = x + alpha*pWithPreconditioner + omega*sWithPreconditioner;
 		residual = s - omega*t;
 		lastRho = rho;
