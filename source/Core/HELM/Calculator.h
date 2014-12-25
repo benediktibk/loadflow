@@ -11,6 +11,7 @@
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
 #include "Matrix.h"
+#include "LinearEquationSystemSolver.h"
 
 template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
@@ -44,7 +45,6 @@ private:
 	void writeLine(const char *description, std::vector<ComplexFloating> const& values);
 	void writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix);
 	void writeLine(const char *text);
-	std::vector<ComplexFloating> solveAdmittanceEquationSystem(const std::vector<ComplexFloating> &rightHandSide);
 	bool calculateFirstCoefficient();
 	std::vector<ComplexFloating> calculateFirstCoefficientInternal();
 	bool isPQCoefficientZero(std::vector<ComplexFloating> const& coefficients) const;
@@ -69,8 +69,8 @@ private:
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
 	const double _nominalVoltage;
-	Eigen::BiCGSTAB<Eigen::SparseMatrix<ComplexFloating>, Eigen::DiagonalPreconditioner<ComplexFloating> > *_solver;
 	Matrix<ComplexFloating> _admittances;
+	LinearEquationSystemSolver<ComplexFloating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
 	std::vector<ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;

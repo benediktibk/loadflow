@@ -19,8 +19,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_nominalVoltage(nominalVoltage),
-	_solver(0),
 	_admittances(nodeCount, nodeCount),
+	_solver(0),
 	_totalAdmittanceRowSums(nodeCount),
 	_constantCurrents(nodeCount),
 	_pqBuses(pqBusCount, PQBus()),
@@ -81,7 +81,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 {          
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_solver = new Eigen::BiCGSTAB<Eigen::SparseMatrix<ComplexFloating>, Eigen::DiagonalPreconditioner<ComplexFloating> >(_admittances.getValues());
+	_solver = new LinearEquationSystemSolver<ComplexFloating>(_admittances);
 	{
 		lock_guard<mutex> lock(_progressMutex);
 		_progress = 0;
@@ -192,12 +192,6 @@ void Calculator<Floating, ComplexFloating>::writeLine(const char *text)
 }
 
 template<typename Floating, typename ComplexFloating>
-vector<ComplexFloating> Calculator<Floating, ComplexFloating>::solveAdmittanceEquationSystem(const vector<ComplexFloating> &rightHandSide)
-{
-	return Matrix<ComplexFloating>::eigenToStdVector(_solver->solve(Matrix<ComplexFloating>::stdToEigenVector(rightHandSide)));
-}
-
-template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 {
 	vector<ComplexFloating> coefficients = calculateFirstCoefficientInternal();
@@ -242,7 +236,7 @@ vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 		rightHandSide[id] = admittanceRowSum + constantCurrent;
 	}
 
-	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = _solver->solve(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	return coefficients;
 }
@@ -269,7 +263,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		rightHandSide[id] = calculateRightHandSide(bus) - admittanceRowSum;
 	}
 	
-	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = _solver->solve(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	_coefficientStorage->addCoefficients(coefficients);
 }
@@ -294,7 +288,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		rightHandSide[id] = calculateRightHandSide(bus);
 	}
 	
-	vector<ComplexFloating> coefficients = solveAdmittanceEquationSystem(rightHandSide);
+	vector<ComplexFloating> coefficients = _solver->solve(rightHandSide);
 	assert(coefficients.size() == _nodeCount);
 	_coefficientStorage->addCoefficients(coefficients);
 }
