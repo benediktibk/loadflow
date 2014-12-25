@@ -4,16 +4,18 @@
 #include <Eigen\Sparse>
 #include "Matrix.h"
 
-template<class T>
+template<class ComplexFloating, class Floating>
 class LinearEquationSystemSolver
 {
 public:
-	LinearEquationSystemSolver(const Matrix<T> &systemMatrix);
+	LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon);
 	~LinearEquationSystemSolver();
 
-	std::vector<T> solve(const std::vector<T> &b) const;
+	std::vector<ComplexFloating> solve(const std::vector<ComplexFloating> &b) const;
 
 private:	
-	Eigen::BiCGSTAB<Eigen::SparseMatrix<T>, Eigen::DiagonalPreconditioner<T> > *_solver;
+	const Floating _epsilon;
+	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> const &_systemMatrix;
+	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> _preconditioner;
 };
 

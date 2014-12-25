@@ -4,23 +4,66 @@
 
 using namespace std;
 
-template class LinearEquationSystemSolver< std::complex<long double> >;
-template class LinearEquationSystemSolver< Complex<MultiPrecision> >;
+template class LinearEquationSystemSolver< std::complex<long double>, long double >;
+template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
 
-template<class T>
-LinearEquationSystemSolver<T>::LinearEquationSystemSolver(const Matrix<T> &systemMatrix) :
-	_solver(new Eigen::BiCGSTAB<Eigen::SparseMatrix<T>, Eigen::DiagonalPreconditioner<T> >(systemMatrix.getValues()))
-{ }
-
-template<class T>
-LinearEquationSystemSolver<T>::~LinearEquationSystemSolver()
+template<class ComplexFloating, class Floating>
+LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon) :
+	_epsilon(epsilon),
+	_systemMatrix(systemMatrix.getValues()),
+	_preconditioner(_systemMatrix.rows(), _systemMatrix.cols())
 {
-	delete _solver;
-	_solver = 0;
+	for (auto i = 0; i < _systemMatrix.rows(); ++i)
+	{
+		auto diagonalValue = _systemMatrix.coeff(i, i);
+		_preconditioner.coeffRef(i, i) = ComplexFloating(1)/diagonalValue;
+	}
 }
 
-template<class T>
-vector<T> LinearEquationSystemSolver<T>::solve(const vector<T> &b) const
+template<class ComplexFloating, class Floating>
+LinearEquationSystemSolver<ComplexFloating, Floating>::~LinearEquationSystemSolver()
+{
+}
+
+template<class ComplexFloating, class Floating>
+vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const vector<ComplexFloating> &b) const
 {	
-	return Matrix<T>::eigenToStdVector(_solver->solve(Matrix<T>::stdToEigenVector(b)));
+	auto n = b.size();
+	typedef Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Vector;
+	typedef Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> SparseVector;
+	Vector x = SparseVector(n, 1);
+	auto bConverted = Matrix<ComplexFloating>::stdToEigenVector(b);
+	Vector residual = bConverted - _systemMatrix*x;
+	auto firstResidual = residual;
+	auto lastRho = ComplexFloating(1.0);
+	auto lastOmega = ComplexFloating(1.0);
+	auto alpha = ComplexFloating(1.0);
+	Vector lastV = SparseVector(n, 1);
+	Vector lastP = SparseVector(n, 1);
+	auto residualNorm = _epsilon + Floating(1);
+
+	for (size_t i = 0; i < 2*n && residualNorm > _epsilon; ++i)
+	{
+		auto rho = firstResidual.dot(residual);
+		auto beta = (rho/lastRho)*(alpha/lastOmega);
+		auto p = residual + beta*(lastP - lastOmega*lastV);
+		auto y = _preconditioner*p;
+		auto v = _systemMatrix*y;
+		alpha = rho/(firstResidual.dot(v));
+		auto s = residual - alpha*v;
+		auto z = _preconditioner*s;
+		auto t = _systemMatrix*z;
+		auto tWithPreconditioner = _preconditioner*t;
+		auto sWithPreconditioner = _preconditioner*s;
+		auto omega = tWithPreconditioner.dot(sWithPreconditioner)/(tWithPreconditioner.dot(tWithPreconditioner));
+		x = x + alpha*y + omega*z;
+		residual = s - omega*t;
+		lastRho = rho;
+		lastOmega = omega;
+		lastV = v;
+		lastP = p;
+		residualNorm = residual.norm();
+	}
+
+	return Matrix<ComplexFloating>::eigenToStdVector(x);
 }

@@ -70,7 +70,7 @@ private:
 	const size_t _pvBusCount;
 	const double _nominalVoltage;
 	Matrix<ComplexFloating> _admittances;
-	LinearEquationSystemSolver<ComplexFloating> *_solver;
+	LinearEquationSystemSolver<ComplexFloating, Floating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
 	std::vector<ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;

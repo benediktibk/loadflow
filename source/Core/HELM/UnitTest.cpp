@@ -405,7 +405,7 @@ bool runTestsLinearEquationSystem()
 	x.push_back(complex<long double>(17, 18));
 	x.push_back(complex<long double>(19, 20));
 	vector< complex<long double> > b = A.multiply(x);
-	LinearEquationSystemSolver< complex<long double> > solver(A);
+	LinearEquationSystemSolver< complex<long double>, long double > solver(A, 1e-10);
 
 	vector< complex<long double> > result = solver.solve(b);
 
