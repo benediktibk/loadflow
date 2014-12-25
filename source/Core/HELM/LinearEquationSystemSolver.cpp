@@ -36,33 +36,39 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector residual = bConverted - _systemMatrix*x;
 	auto firstResidual = residual;
 	auto lastRho = ComplexFloating(1.0);
-	auto lastOmega = ComplexFloating(1.0);
+	auto omega = ComplexFloating(1.0);
 	auto alpha = ComplexFloating(1.0);
-	Vector lastV = SparseVector(n, 1);
-	Vector lastP = SparseVector(n, 1);
-	auto residualNorm = _epsilon + Floating(1);
+	Vector p = SparseVector(n, 1);
+	Vector v = SparseVector(n, 1);
+	auto residualNormRelative = _epsilon + Floating(1);
+	auto bNorm = bConverted.norm();
 
-	for (size_t i = 0; i < 2*n && residualNorm > _epsilon; ++i)
+	if (bNorm <= Floating(0))
+		bNorm = Floating(1);
+
+	for (size_t i = 0; i < 2*n && residualNormRelative > _epsilon; ++i)
 	{
 		auto rho = firstResidual.dot(residual);
-		auto beta = (rho/lastRho)*(alpha/lastOmega);
-		auto p = residual + beta*(lastP - lastOmega*lastV);
-		auto y = _preconditioner*p;
-		auto v = _systemMatrix*y;
+
+		if (i > 0)
+		{
+			auto beta = (rho/lastRho)*(alpha/omega);
+			p = residual + beta*(p - omega*v);
+		}
+		else
+			p = residual;
+
+		auto pWithPreconditioner = _preconditioner*p;
+		v = _systemMatrix*pWithPreconditioner;
 		alpha = rho/(firstResidual.dot(v));
 		auto s = residual - alpha*v;
-		auto z = _preconditioner*s;
-		auto t = _systemMatrix*z;
-		auto tWithPreconditioner = _preconditioner*t;
 		auto sWithPreconditioner = _preconditioner*s;
-		auto omega = tWithPreconditioner.dot(sWithPreconditioner)/(tWithPreconditioner.dot(tWithPreconditioner));
-		x = x + alpha*y + omega*z;
+		auto t = _systemMatrix*sWithPreconditioner;
+		omega = (t.dot(s))/(t.dot(t));
+		x = x + alpha*pWithPreconditioner + omega*sWithPreconditioner;
 		residual = s - omega*t;
 		lastRho = rho;
-		lastOmega = omega;
-		lastV = v;
-		lastP = p;
-		residualNorm = residual.norm();
+		residualNormRelative = residual.norm()/bNorm;;
 	}
 
 	return Matrix<ComplexFloating>::eigenToStdVector(x);
