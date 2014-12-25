@@ -81,7 +81,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 {          
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_solver = new LinearEquationSystemSolver<ComplexFloating, Floating>(_admittances, Floating(1e-10));
+	_solver = new LinearEquationSystemSolver<ComplexFloating, Floating>(_admittances, Floating(_targetPrecision*1e-3));
 	{
 		lock_guard<mutex> lock(_progressMutex);
 		_progress = 0;
