@@ -75,11 +75,12 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		auto sWithPreconditioner = _preconditioner*s;
 		auto t = _systemMatrix*sWithPreconditioner;
 		auto tDotT = t.dot(t);
+		auto tDotS = t.dot(s);
 
-		/*if (abs(tDotT) < Floating(1e-20))
-			return Matrix<ComplexFloating>::eigenToStdVector(x);*/
+		if (abs(tDotT) < Floating(1e-100) && abs(tDotS) > Floating(0))
+			return Matrix<ComplexFloating>::eigenToStdVector(x);
 
-		omega = (t.dot(s))/tDotT;
+		omega = tDotS/tDotT;
 		x = x + alpha*pWithPreconditioner + omega*sWithPreconditioner;
 		residual = s - omega*t;
 		lastRho = rho;
