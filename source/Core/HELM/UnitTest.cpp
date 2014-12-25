@@ -2,6 +2,7 @@
 #include "Complex.h"
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
+#include "LinearEquationSystemSolver.h"
 #include <complex>
 
 using namespace std;
@@ -389,6 +390,37 @@ bool runTestsAnalyticContinuation()
 	return true;
 }
 
+bool runTestsLinearEquationSystem()
+{
+	Matrix< complex<long double> > A(3, 3);
+	A.setValue(0, 0, complex<long double>(1, 2));
+	A.setValue(0, 1, complex<long double>(3, 4));
+	A.setValue(0, 2, complex<long double>(5, 6));
+	A.setValue(1, 1, complex<long double>(7, 8));
+	A.setValue(1, 2, complex<long double>(9, 10));
+	A.setValue(2, 0, complex<long double>(11, 12));
+	A.setValue(2, 2, complex<long double>(13, 14));
+	vector< complex<long double> > x;
+	x.push_back(complex<long double>(15, 16));
+	x.push_back(complex<long double>(17, 18));
+	x.push_back(complex<long double>(19, 20));
+	vector< complex<long double> > b = A.multiply(x);
+	LinearEquationSystemSolver< complex<long double> > solver(A);
+
+	vector< complex<long double> > result = solver.solve(b);
+
+	if (result.size() != 3)
+		return false;
+	if (!areEqual(x[0], result[0], 0.000001))
+		return false;
+	if (!areEqual(x[1], result[1], 0.000001))
+		return false;
+	if (!areEqual(x[2], result[2], 0.000001))
+		return false;
+
+	return true;
+}
+
 bool runTests()
 {
 	if (!runTestsMultiPrecision())
@@ -404,6 +436,9 @@ bool runTests()
 		return false;
 
 	if (!runTestsAnalyticContinuation())
+		return false;
+
+	if (!runTestsLinearEquationSystem())
 		return false;
 
 	return true;
