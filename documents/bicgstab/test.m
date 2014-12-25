@@ -5,8 +5,8 @@ x = [15+16i; 17+18i; 19+20i];
 b = A*x;
 P = diag(diag(A));
 x0 = zeros(3, 1);
-maximumIterations = 10;
-epsilon = 1e-10;
+maximumIterations = 100;
+epsilon = 1e-15;
 
 xMatlab = bicgstab(A, b, epsilon, maximumIterations, P);
 matlabError = norm(xMatlab - x);
