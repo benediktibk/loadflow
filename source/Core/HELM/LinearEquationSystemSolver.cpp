@@ -29,82 +29,69 @@ LinearEquationSystemSolver<ComplexFloating, Floating>::~LinearEquationSystemSolv
 template<class ComplexFloating, class Floating>
 vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const vector<ComplexFloating> &b) const
 {	
-	auto n = b.size();
 	typedef Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Vector;
 	typedef Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> SparseVector;
+	auto n = b.size();
 	auto bConverted = Matrix<ComplexFloating>::stdToEigenVector(b);
 	Vector x = _preconditioner*bConverted;
-	Vector residual = bConverted - _systemMatrix*x;
-	auto firstResidual = residual;
-	auto lastRho = ComplexFloating(1.0);
-	auto omega = ComplexFloating(1.0);
-	auto alpha = ComplexFloating(1.0);
-	Vector p = SparseVector(n, 1);
+	int maxIters = 2*n;
+	Vector r = bConverted - _systemMatrix * x;
+	auto r0 = r;  
+	auto r0_sqnorm = r0.squaredNorm();
+	auto rhs_sqnorm = bConverted.squaredNorm();
+
+	if(rhs_sqnorm == Floating(0))
+		return b;
+
+	auto rho = ComplexFloating(1);
+	auto alpha = ComplexFloating(1);
+	auto w = ComplexFloating(1);
+  
 	Vector v = SparseVector(n, 1);
-	auto residualNormRelative = _epsilon + Floating(1);
-	auto bNorm = bConverted.squaredNorm();
-	auto firstResidualSquaredNorm = firstResidual.squaredNorm();
+	Vector p = SparseVector(n, 1);
+	Vector y = SparseVector(n, 1);
+	Vector z = SparseVector(n, 1);
+	Vector kt = SparseVector(n, 1);
+	Vector ks = SparseVector(n, 1);
+	Vector s = SparseVector(n, 1);
+	Vector t = SparseVector(n, 1);;
+
+	auto tol2 = _epsilon*_epsilon;
+	auto i = 0;
 	auto restarts = 0;
 
-	if (bNorm == Floating(0))
-		return Matrix<ComplexFloating>::eigenToStdVector(SparseVector(n, 1));
-
-	for (size_t i = 0; i < 2*n && residualNormRelative > _epsilon; ++i)
+	while (r.squaredNorm()/rhs_sqnorm > tol2 && i < maxIters)
 	{
-		auto rho = firstResidual.dot(residual);
+		auto rho_old = rho;
+		rho = r0.dot(r);
 
-		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-30) && i > 0)
+		if (abs(abs(rho) - r0_sqnorm) < Floating(1e-20))
 		{
-			firstResidual = residual;
-			firstResidualSquaredNorm = firstResidual.squaredNorm();
-			rho = ComplexFloating(firstResidualSquaredNorm);
-			i = 0;
-			++restarts;
-
-			if (restarts >= 5)
-				break;
+			r0 = r;
+			r0_sqnorm = r.squaredNorm();
+			rho = ComplexFloating(r0_sqnorm);
+			if(restarts++ == 0)
+				i = 0;
 		}
 
-		if (i > 0)
-		{
-			if (abs(omega) < _nearlyZero || abs(lastRho) < _nearlyZero)
-				break;
+		auto beta = (rho/rho_old) * (alpha / w);
+		p = r + beta * (p - w * v);    
+		y = _preconditioner*p;    
+		v = _systemMatrix * y;
+		alpha = rho / r0.dot(v);
+		s = r - alpha * v;
+		z = _preconditioner*s;
+		t = _systemMatrix * z;
 
-			auto beta = (rho/lastRho)*(alpha/omega);
-			p = residual + beta*(p - omega*v);
-		}
+		auto tmp = t.squaredNorm();
+		if(tmp > Floating(0))
+			w = t.dot(s) / ComplexFloating(tmp);
 		else
-			p = residual;
+			w = ComplexFloating(0);
 
-		auto pWithPreconditioner = _preconditioner*p;
-		v = _systemMatrix*pWithPreconditioner;
-		auto firstResidualDotV = firstResidual.dot(v);
-
-		if (abs(firstResidualDotV) < _nearlyZero)
-			break;
-
-		alpha = rho/firstResidualDotV;
-		auto s = residual - alpha*v;
-		auto sWithPreconditioner = _preconditioner*s;
-		auto t = _systemMatrix*sWithPreconditioner;
-		auto tDotS = t.dot(s);
-
-		if (tDotS == ComplexFloating(0))
-			omega = ComplexFloating(0);
-		else
-		{
-			auto tDotT = t.dot(t);
-
-			if (abs(tDotT) < _nearlyZero)
-				break;
-
-			omega = tDotS/tDotT;
-		}
-
-		x = x + alpha*pWithPreconditioner + omega*sWithPreconditioner;
-		residual = s - omega*t;
-		lastRho = rho;
-		residualNormRelative = residual.squaredNorm()/bNorm;;
+		x += alpha * y + w * z;
+		r = s - w * t;
+		++i;
 	}
 
 	return Matrix<ComplexFloating>::eigenToStdVector(x);
