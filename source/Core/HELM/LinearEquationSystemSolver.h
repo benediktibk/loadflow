@@ -14,8 +14,6 @@ public:
 	std::vector<ComplexFloating> solve(const std::vector<ComplexFloating> &b) const;
 
 private:	
-	const Floating _epsilon;
-	const Floating _nearlyZero;
 	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> const &_systemMatrix;
 	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> _preconditioner;
 };

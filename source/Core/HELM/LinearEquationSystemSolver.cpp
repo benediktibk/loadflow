@@ -9,8 +9,6 @@ template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecisi
 
 template<class ComplexFloating, class Floating>
 LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon) :
-	_epsilon(Eigen::NumTraits<ComplexFloating>::epsilon()),
-	_nearlyZero(1e-100),
 	_systemMatrix(systemMatrix.getValues()),
 	_preconditioner(_systemMatrix.rows(), _systemMatrix.cols())
 {
@@ -34,12 +32,13 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto n = b.size();
 	auto bConverted = Matrix<ComplexFloating>::stdToEigenVector(b);
 	Vector x = _preconditioner*bConverted;
-	int maximumIterations = 2*n;
+	int maximumIterations = 10*n;
 	Vector residual = bConverted - _systemMatrix*x;
 	auto firstResidual = residual;  
 	auto firstResidualSquaredNorm = firstResidual.squaredNorm();
 	auto rhsSquaredNorm = bConverted.squaredNorm();
-	auto epsilonSquared = _epsilon*_epsilon;
+	auto epsilon = Eigen::NumTraits<ComplexFloating>::epsilon();
+	auto epsilonSquared = epsilon*epsilon;
 	auto i = 0;
 	auto restarts = 0;
 	auto rho = ComplexFloating(1);
