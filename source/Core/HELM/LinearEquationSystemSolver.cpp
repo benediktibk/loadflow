@@ -32,8 +32,8 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto n = b.size();
 	typedef Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Vector;
 	typedef Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> SparseVector;
-	Vector x = SparseVector(n, 1);
 	auto bConverted = Matrix<ComplexFloating>::stdToEigenVector(b);
+	Vector x = _preconditioner*bConverted;
 	Vector residual = bConverted - _systemMatrix*x;
 	auto firstResidual = residual;
 	auto lastRho = ComplexFloating(1.0);
