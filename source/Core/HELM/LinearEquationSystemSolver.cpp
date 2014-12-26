@@ -42,7 +42,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector p = SparseVector(n, 1);
 	Vector v = SparseVector(n, 1);
 	auto residualNormRelative = _epsilon + Floating(1);
-	auto bNorm = bConverted.norm();
+	auto bNorm = bConverted.squaredNorm();
 
 	if (bNorm == Floating(0))
 		return Matrix<ComplexFloating>::eigenToStdVector(SparseVector(n, 1));
@@ -90,7 +90,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		x = x + alpha*pWithPreconditioner + omega*sWithPreconditioner;
 		residual = s - omega*t;
 		lastRho = rho;
-		residualNormRelative = residual.norm()/bNorm;;
+		residualNormRelative = residual.squaredNorm()/bNorm;;
 	}
 
 	return Matrix<ComplexFloating>::eigenToStdVector(x);
