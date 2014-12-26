@@ -43,6 +43,8 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector v = SparseVector(n, 1);
 	auto residualNormRelative = _epsilon + Floating(1);
 	auto bNorm = bConverted.squaredNorm();
+	auto firstResidualSquaredNorm = firstResidual.squaredNorm();
+	auto restarts = 0;
 
 	if (bNorm == Floating(0))
 		return Matrix<ComplexFloating>::eigenToStdVector(SparseVector(n, 1));
@@ -51,10 +53,22 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	{
 		auto rho = firstResidual.dot(residual);
 
+		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-20) && i > 0)
+		{
+			firstResidual = residual;
+			firstResidualSquaredNorm = firstResidual.squaredNorm();
+			rho = ComplexFloating(firstResidualSquaredNorm);
+			i = 0;
+			++restarts;
+
+			if (restarts >= 5)
+				break;
+		}
+
 		if (i > 0)
 		{
 			if (abs(omega) < _nearlyZero || abs(lastRho) < _nearlyZero)
-				return Matrix<ComplexFloating>::eigenToStdVector(x);
+				break;
 
 			auto beta = (rho/lastRho)*(alpha/omega);
 			p = residual + beta*(p - omega*v);
@@ -67,7 +81,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		auto firstResidualDotV = firstResidual.dot(v);
 
 		if (abs(firstResidualDotV) < _nearlyZero)
-			return Matrix<ComplexFloating>::eigenToStdVector(x);
+			break;
 
 		alpha = rho/firstResidualDotV;
 		auto s = residual - alpha*v;
@@ -82,7 +96,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 			auto tDotT = t.dot(t);
 
 			if (abs(tDotT) < _nearlyZero)
-				return Matrix<ComplexFloating>::eigenToStdVector(x);
+				break;
 
 			omega = tDotS/tDotT;
 		}
