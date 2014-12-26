@@ -9,7 +9,7 @@ template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecisi
 
 template<class ComplexFloating, class Floating>
 LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon) :
-	_epsilon(epsilon),
+	_epsilon(Eigen::NumTraits<ComplexFloating>::epsilon()),
 	_nearlyZero(1e-100),
 	_systemMatrix(systemMatrix.getValues()),
 	_preconditioner(_systemMatrix.rows(), _systemMatrix.cols())
@@ -44,8 +44,8 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto residualNormRelative = _epsilon + Floating(1);
 	auto bNorm = bConverted.norm();
 
-	if (bNorm <= Floating(0))
-		bNorm = Floating(1);
+	if (bNorm == Floating(0))
+		return Matrix<ComplexFloating>::eigenToStdVector(SparseVector(n, 1));
 
 	for (size_t i = 0; i < 2*n && residualNormRelative > _epsilon; ++i)
 	{
