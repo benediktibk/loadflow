@@ -10,6 +10,7 @@ template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecisi
 template<class ComplexFloating, class Floating>
 LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon) :
 	_epsilon(epsilon),
+	_nearlyZero(1e-100),
 	_systemMatrix(systemMatrix.getValues()),
 	_preconditioner(_systemMatrix.rows(), _systemMatrix.cols())
 {
@@ -42,7 +43,6 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector v = SparseVector(n, 1);
 	auto residualNormRelative = _epsilon + Floating(1);
 	auto bNorm = bConverted.norm();
-	auto epsilonSquared = _epsilon*_epsilon;
 
 	if (bNorm <= Floating(0))
 		bNorm = Floating(1);
@@ -53,7 +53,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 
 		if (i > 0)
 		{
-			if (abs(omega) < Floating(epsilonSquared) || abs(lastRho) < Floating(epsilonSquared))
+			if (abs(omega) < _nearlyZero || abs(lastRho) < _nearlyZero)
 				return Matrix<ComplexFloating>::eigenToStdVector(x);
 
 			auto beta = (rho/lastRho)*(alpha/omega);
@@ -66,7 +66,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		v = _systemMatrix*pWithPreconditioner;
 		auto firstResidualDotV = firstResidual.dot(v);
 
-		if (abs(firstResidualDotV) < Floating(epsilonSquared))
+		if (abs(firstResidualDotV) < _nearlyZero)
 			return Matrix<ComplexFloating>::eigenToStdVector(x);
 
 		alpha = rho/firstResidualDotV;
@@ -81,7 +81,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		{
 			auto tDotT = t.dot(t);
 
-			if (abs(tDotT) < Floating(1e-100))
+			if (abs(tDotT) < _nearlyZero)
 				return Matrix<ComplexFloating>::eigenToStdVector(x);
 
 			omega = tDotS/tDotT;
