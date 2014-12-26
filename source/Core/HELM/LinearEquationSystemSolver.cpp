@@ -36,8 +36,8 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector x = _preconditioner*bConverted;
 	int maxIters = 2*n;
 	Vector residual = bConverted - _systemMatrix * x;
-	auto r0 = residual;  
-	auto r0_sqnorm = r0.squaredNorm();
+	auto firstResidual = residual;  
+	auto firstResidualSquaredNorm = firstResidual.squaredNorm();
 	auto rhs_sqnorm = bConverted.squaredNorm();
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto i = 0;
@@ -60,13 +60,13 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	while (residual.squaredNorm()/rhs_sqnorm > epsilonSquared && i < maxIters)
 	{
 		auto rho_old = rho;
-		rho = r0.dot(residual);
+		rho = firstResidual.dot(residual);
 
-		if (abs(abs(rho) - r0_sqnorm) < Floating(1e-20))
+		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-20))
 		{
-			r0 = residual;
-			r0_sqnorm = residual.squaredNorm();
-			rho = ComplexFloating(r0_sqnorm);
+			firstResidual = residual;
+			firstResidualSquaredNorm = residual.squaredNorm();
+			rho = ComplexFloating(firstResidualSquaredNorm);
 			i = 0;
 			++restarts;
 
@@ -78,7 +78,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		p = residual + beta * (p - w * v);    
 		y = _preconditioner*p;    
 		v = _systemMatrix * y;
-		alpha = rho / r0.dot(v);
+		alpha = rho / firstResidual.dot(v);
 		s = residual - alpha * v;
 		z = _preconditioner*s;
 		t = _systemMatrix * z;
