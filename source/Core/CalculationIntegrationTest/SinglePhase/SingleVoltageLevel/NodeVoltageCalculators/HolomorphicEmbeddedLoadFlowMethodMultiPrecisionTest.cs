@@ -315,6 +315,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(_nodeVoltageCalculator);
+            Assert.IsTrue(_coefficients.Count >= 3);
             var firstCoefficientShouldBe = new DenseVector(new[] { new Complex(1.05, 0) });
             var secondCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0289649928938644, -0.019047619047619) } );
             var thirdCoefficientShouldBe = new DenseVector(new[] { new Complex(-0.0011445548616427, 1.14628982339312E-100) });
@@ -340,6 +341,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             Complex b;
             Complex c;
             CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out a, out b, out c);
+            Assert.IsTrue(_coefficients.Count >= 3);
             var firstCoefficient = _coefficients[0][0];
             var secondCoefficient = _coefficients[1][0];
             var thirdCoefficient = _coefficients[2][0];
