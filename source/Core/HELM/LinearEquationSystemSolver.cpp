@@ -39,14 +39,12 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto r0 = r;  
 	auto r0_sqnorm = r0.squaredNorm();
 	auto rhs_sqnorm = bConverted.squaredNorm();
-
-	if(rhs_sqnorm == Floating(0))
-		return b;
-
+	auto epsilonSquared = _epsilon*_epsilon;
+	auto i = 0;
+	auto restarts = 0;
 	auto rho = ComplexFloating(1);
 	auto alpha = ComplexFloating(1);
-	auto w = ComplexFloating(1);
-  
+	auto w = ComplexFloating(1);  
 	Vector v = SparseVector(n, 1);
 	Vector p = SparseVector(n, 1);
 	Vector y = SparseVector(n, 1);
@@ -56,11 +54,10 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	Vector s = SparseVector(n, 1);
 	Vector t = SparseVector(n, 1);;
 
-	auto tol2 = _epsilon*_epsilon;
-	auto i = 0;
-	auto restarts = 0;
+	if(rhs_sqnorm == Floating(0))
+		return b;	
 
-	while (r.squaredNorm()/rhs_sqnorm > tol2 && i < maxIters)
+	while (r.squaredNorm()/rhs_sqnorm > epsilonSquared && i < maxIters)
 	{
 		auto rho_old = rho;
 		rho = r0.dot(r);
@@ -70,8 +67,11 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 			r0 = r;
 			r0_sqnorm = r.squaredNorm();
 			rho = ComplexFloating(r0_sqnorm);
-			if(restarts++ == 0)
-				i = 0;
+			i = 0;
+			++restarts;
+
+			if(restarts >= 5)
+				break;
 		}
 
 		auto beta = (rho/rho_old) * (alpha / w);
