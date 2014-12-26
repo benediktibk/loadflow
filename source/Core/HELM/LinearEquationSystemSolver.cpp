@@ -53,7 +53,7 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	{
 		auto rho = firstResidual.dot(residual);
 
-		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-20) && i > 0)
+		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-30) && i > 0)
 		{
 			firstResidual = residual;
 			firstResidualSquaredNorm = firstResidual.squaredNorm();
