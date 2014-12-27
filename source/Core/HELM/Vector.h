@@ -1,0 +1,27 @@
+#pragma once
+
+template<class T>
+class Vector
+{
+public:
+	Vector(size_t n);
+	Vector(Vector<T> const &rhs);
+	~Vector();
+
+	size_t getCount() const;
+	void set(size_t i, T const &value);
+
+	T const& operator()(size_t i) const;
+	Vector<T> const& operator=(Vector<T> const &rhs);
+
+private:
+	void allocateMemory();
+	void freeMemory();
+	void copyValues(Vector<T> const &rhs);
+	void setToZero();
+
+private:
+	const size_t _count;
+	T *_values;
+};
+

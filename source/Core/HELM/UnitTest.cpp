@@ -3,6 +3,7 @@
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
 #include "LinearEquationSystemSolver.h"
+#include "Vector.h"
 #include <complex>
 
 using namespace std;
@@ -421,6 +422,86 @@ bool runTestsLinearEquationSystem()
 	return true;
 }
 
+bool runTestsVectorConstructor()
+{
+	Vector<long double> a(3);
+
+	if (a.getCount() != 3)
+		return false;
+
+	if (a(0) != 0)
+		return false;
+
+	if (a(1) != 0)
+		return false;
+
+	if (a(2) != 0)
+		return false;
+
+	return true;
+}
+
+bool runTestsVectorCopyConstructor()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(a);
+
+	if (b.getCount() != 3)
+		return false;
+
+	if (b(0) != 1)
+		return false;
+
+	if (b(1) != 2)
+		return false;
+
+	if (b(2) != 3)
+		return false;
+
+	return true;
+}
+
+bool runTestsVectorAssignment()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(3);
+	b = a;
+
+	if (b.getCount() != 3)
+		return false;
+
+	if (b(0) != 1)
+		return false;
+
+	if (b(1) != 2)
+		return false;
+
+	if (b(2) != 3)
+		return false;
+
+	return true;
+}
+
+bool runTestsVector()
+{
+	if (!runTestsVectorConstructor())
+		return false;
+
+	if (!runTestsVectorCopyConstructor())
+		return false;
+
+	if (!runTestsVectorAssignment())
+		return false;
+
+	return true;
+}
+
 bool runTests()
 {
 	if (!runTestsMultiPrecision())
@@ -439,6 +520,9 @@ bool runTests()
 		return false;
 
 	if (!runTestsLinearEquationSystem())
+		return false;
+
+	if (!runTestsVector())
 		return false;
 
 	return true;

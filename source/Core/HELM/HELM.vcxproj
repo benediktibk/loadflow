@@ -130,6 +130,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClCompile Include="PQBus.cpp" />
     <ClCompile Include="PVBus.cpp" />
     <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnalyticContinuation.h" />
@@ -147,6 +148,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClInclude Include="PQBus.h" />
     <ClInclude Include="PVBus.h" />
     <ClInclude Include="UnitTest.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
