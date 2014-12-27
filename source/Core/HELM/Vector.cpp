@@ -1,8 +1,13 @@
 #include "Vector.h"
+#include "Complex.h"
+#include "MultiPrecision.h"
+#include <complex>
 #include <assert.h>
 #include <string.h>
 
 template class Vector<long double>;
+template class Vector< std::complex<long double> >;
+template class Vector< Complex<MultiPrecision> >;
 
 template<class T>
 Vector<T>::Vector(size_t n) :
@@ -35,8 +40,20 @@ size_t Vector<T>::getCount() const
 template<class T>
 void Vector<T>::set(size_t i, T const &value)
 {
-	assert(i < _count);
+	assert(i < getCount());
 	_values[i] = value;
+}
+
+template<class T>
+T Vector<T>::dot(Vector<T> const &rhs) const
+{
+	assert(getCount() == rhs.getCount());
+	T result(0);
+
+	for (size_t i = 0; i < getCount(); ++i)
+		result += _values[i]*rhs._values[i];
+
+	return result;
 }
 
 template<class T>
@@ -49,7 +66,7 @@ T const& Vector<T>::operator()(size_t i) const
 template<class T>
 Vector<T> const& Vector<T>::operator=(Vector<T> const& rhs)
 {
-	assert(_count == rhs.getCount());
+	assert(getCount() == rhs.getCount());
 	copyValues(rhs);
 	return *this;
 }
@@ -57,7 +74,7 @@ Vector<T> const& Vector<T>::operator=(Vector<T> const& rhs)
 template<class T>
 void Vector<T>::allocateMemory()
 {
-	assert(_count > 0);
+	assert(getCount() > 0);
 	_values = new T[_count];
 }
 
@@ -77,6 +94,6 @@ void Vector<T>::copyValues(Vector<T> const &rhs)
 template<class T>
 void Vector<T>::setToZero()
 {
-	memset(_values, T(0), sizeof(T)*_count);
+	memset(_values, 0, sizeof(T)*_count);
 }
 
