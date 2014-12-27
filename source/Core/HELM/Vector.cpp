@@ -71,6 +71,16 @@ T Vector<T>::squaredNorm() const
 }
 
 template<class T>
+void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> const &y)
+{
+	assert(getCount() == x.getCount());
+	assert(getCount() == y.getCount());
+
+	for (size_t i = 0; i < getCount(); ++i)
+		_values[i] = x._values[i] + yWeight*y._values[i];
+}
+
+template<class T>
 T const& Vector<T>::operator()(size_t i) const
 {
 	assert(i < _count);

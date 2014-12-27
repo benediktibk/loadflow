@@ -516,6 +516,32 @@ bool runTestsVectorSquaredNorm()
 	return result == 1*1 + 2*2 + 3*3;
 }
 
+bool runTestsVectorWeightedSum()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(3);
+	b.set(0, 4);
+	b.set(1, 5);
+	b.set(2, 6);
+	Vector<long double> result(3);
+
+	result.weightedSum(a, 5, b);
+
+	if (result(0) != 21)
+		return false;
+
+	if (result(1) != 27)
+		return false;
+
+	if (result(2) != 33)
+		return false;
+
+	return true;
+}
+
 bool runTestsVector()
 {
 	if (!runTestsVectorConstructor())
@@ -528,6 +554,12 @@ bool runTestsVector()
 		return false;
 
 	if (!runTestsVectorDotProduct())
+		return false;
+
+	if (!runTestsVectorSquaredNorm())
+		return false;
+
+	if (!runTestsVectorWeightedSum())
 		return false;
 
 	return true;

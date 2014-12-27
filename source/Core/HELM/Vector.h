@@ -12,6 +12,7 @@ public:
 	void set(size_t i, T const &value);
 	T dot(Vector<T> const &rhs) const;
 	T squaredNorm() const;
+	void weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> const &y);
 
 	T const& operator()(size_t i) const;
 	Vector<T> const& operator=(Vector<T> const &rhs);
