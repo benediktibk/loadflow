@@ -542,6 +542,35 @@ bool runTestsVectorWeightedSum()
 	return true;
 }
 
+bool runTestsVectorAddWeightedSum()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(3);
+	b.set(0, 4);
+	b.set(1, 5);
+	b.set(2, 6);
+	Vector<long double> result(3);
+	result.set(0, 7);
+	result.set(1, 8);
+	result.set(2, 9);
+
+	result.addWeightedSum(10, a, 5, b);
+
+	if (result(0) != 7 + 10*1 + 5*4)
+		return false;
+
+	if (result(1) != 8 + 10*2 + 5*5)
+		return false;
+
+	if (result(2) != 9 + 10*3 + 5*6)
+		return false;
+
+	return true;
+}
+
 bool runTestsVector()
 {
 	if (!runTestsVectorConstructor())
@@ -560,6 +589,9 @@ bool runTestsVector()
 		return false;
 
 	if (!runTestsVectorWeightedSum())
+		return false;
+
+	if (!runTestsVectorAddWeightedSum())
 		return false;
 
 	return true;

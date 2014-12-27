@@ -81,6 +81,16 @@ void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> cons
 }
 
 template<class T>
+void Vector<T>::addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yWeight, Vector<T> const &y)
+{
+	assert(getCount() == x.getCount());
+	assert(getCount() == y.getCount());
+	
+	for (size_t i = 0; i < getCount(); ++i)
+		_values[i] += xWeight*x._values[i] + yWeight*y._values[i];
+}
+
+template<class T>
 T const& Vector<T>::operator()(size_t i) const
 {
 	assert(i < _count);
