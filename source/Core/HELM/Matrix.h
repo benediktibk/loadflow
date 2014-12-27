@@ -17,7 +17,6 @@ public:
 
 public:
 	static std::vector<T> pointwiseMultiply(const std::vector<T> &one, const std::vector<T> &two);
-	static std::vector<T> pointwiseDivide(const std::vector<T> &one, const std::vector<T> &two);
 	static std::vector<T> subtract(const std::vector<T> &one, const std::vector<T> &two);
 	static std::vector<T> multiply(const std::vector<T> &one, const T &two);
 	static std::vector<T> divide(const T &one, const std::vector<T> &two);
