@@ -19,7 +19,6 @@ public:
 	static std::vector<T> pointwiseMultiply(const std::vector<T> &one, const std::vector<T> &two);
 	static std::vector<T> subtract(const std::vector<T> &one, const std::vector<T> &two);
 	static std::vector<T> multiply(const std::vector<T> &one, const T &two);
-	static std::vector<T> divide(const T &one, const std::vector<T> &two);
 	static std::vector<T> eigenToStdVector(const Eigen::Matrix<T, Eigen::Dynamic, 1> &values);
 	static Eigen::Matrix<T, Eigen::Dynamic, 1> stdToEigenVector(const std::vector<T> &values);
 	static Eigen::Matrix<T, Eigen::Dynamic, 1> stdToEigenVector(const std::vector< std::complex<double> > &values);

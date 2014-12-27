@@ -85,17 +85,6 @@ std::vector<T> Matrix<T>::multiply(const std::vector<T> &one, const T &two)
 }
 
 template<typename T>
-std::vector<T> Matrix<T>::divide(const T &one, const std::vector<T> &two)
-{
-	std::vector<T> result(two);
-
-	for (size_t i = 0; i < result.size(); ++i)
-		result[i] = one/result[i];
-
-	return result;
-}
-
-template<typename T>
 std::vector<T> Matrix<T>::eigenToStdVector(const Eigen::Matrix<T, Eigen::Dynamic, 1> &values)
 {
 	std::vector<T> result(values.size());
