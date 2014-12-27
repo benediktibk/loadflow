@@ -504,6 +504,18 @@ bool runTestsVectorDotProduct()
 	return result == 1*4 + 2*5 + 3*6;
 }
 
+bool runTestsVectorSquaredNorm()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+
+	auto result = a.squaredNorm();
+
+	return result == 1*1 + 2*2 + 3*3;
+}
+
 bool runTestsVector()
 {
 	if (!runTestsVectorConstructor())

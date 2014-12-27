@@ -57,6 +57,20 @@ T Vector<T>::dot(Vector<T> const &rhs) const
 }
 
 template<class T>
+T Vector<T>::squaredNorm() const
+{
+	T result(0);
+
+	for (size_t i = 0; i < getCount(); ++i)
+	{
+		T const& value(_values[i]);
+		result += value*value;
+	}
+
+	return result;
+}
+
+template<class T>
 T const& Vector<T>::operator()(size_t i) const
 {
 	assert(i < _count);

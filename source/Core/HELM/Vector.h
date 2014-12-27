@@ -11,6 +11,7 @@ public:
 	size_t getCount() const;
 	void set(size_t i, T const &value);
 	T dot(Vector<T> const &rhs) const;
+	T squaredNorm() const;
 
 	T const& operator()(size_t i) const;
 	Vector<T> const& operator=(Vector<T> const &rhs);
