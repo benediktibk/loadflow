@@ -4,6 +4,7 @@
 #include "AnalyticContinuation.h"
 #include "LinearEquationSystemSolver.h"
 #include "Vector.h"
+#include "SparseMatrix.h"
 #include <complex>
 
 using namespace std;
@@ -597,6 +598,76 @@ bool runTestsVector()
 	return true;
 }
 
+bool runTestsSparseMatrixConstructor()
+{
+	SparseMatrix<long double> matrix(4, 5);
+
+	if (matrix.getRowCount() != 4)
+		return false;
+
+	if (matrix.getColumnCount() != 5)
+		return false;
+
+	auto value = matrix(0, 0);
+	if (value != 0)
+		return false;
+
+	value = matrix(1, 2);
+	if (value != 0)
+		return false;
+
+	value = matrix(3, 4);
+	if (value != 0)
+		return false;
+
+	return true;
+}
+
+bool runTestsSparseMatrixSet()
+{
+	SparseMatrix<long double> matrix(3, 3);
+
+	matrix.set(0, 0, 4);
+	matrix.set(2, 2, 5);
+	matrix.set(2, 1, 6);
+	matrix.set(2, 2, 7);
+	matrix.set(1, 0, 8);
+	matrix.set(1, 1, 9);
+	matrix.set(1, 2, 10);
+	matrix.set(1, 1, 11);
+
+	if (matrix(0, 0) != 4)
+		return false;
+
+	if (matrix(1, 0) != 8)
+		return false;
+
+	if (matrix(1, 1) != 11)
+		return false;
+
+	if (matrix(1, 2) != 10)
+		return false;
+
+	if (matrix(2, 1) != 6)
+		return false;
+
+	if (matrix(2, 2) != 7)
+		return false;
+
+	return true;
+}
+
+bool runTestsSparseMatrix()
+{
+	if (!runTestsSparseMatrixConstructor())
+		return false;
+	
+	if (!runTestsSparseMatrixSet())
+		return false;
+
+	return true;
+}
+
 bool runTests()
 {
 	if (!runTestsMultiPrecision())
@@ -618,6 +689,9 @@ bool runTests()
 		return false;
 
 	if (!runTestsVector())
+		return false;
+
+	if (!runTestsSparseMatrix())
 		return false;
 
 	return true;
