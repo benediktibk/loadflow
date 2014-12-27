@@ -29,17 +29,12 @@ size_t SparseMatrix<T>::getColumnCount() const
 template<class T>
 void SparseMatrix<T>::set(size_t row, size_t column, T const &value)
 {
-	auto rowPosition = _rowPointers[row];
+	size_t position;
 
-	for (auto i = rowPosition; i < _rowPointers[row + 1]; ++i)
+	if (findPosition(row, column, position))
 	{
-		auto currentColumn = _columns[i];
-
-		if (currentColumn == column)
-		{
-			_values[i] = value;
-			return;
-		}
+		_values[position] = value;
+		return;
 	}
 
 	auto nextRowPosition = _rowPointers[row + 1];
@@ -56,17 +51,32 @@ T const& SparseMatrix<T>::operator()(size_t row, size_t column) const
 	assert(row < getRowCount());
 	assert(column < getColumnCount());
 
+	size_t position;
+	T result(0);
+
+	if (findPosition(row, column, position))
+		result = _values[position];
+
+	return result;
+}
+
+template<class T>
+bool SparseMatrix<T>::findPosition(size_t row, size_t column, size_t &position) const
+{
 	auto rowPosition = _rowPointers[row];
 
 	for (auto i = rowPosition; i < _rowPointers[row + 1]; ++i)
 	{
 		auto currentColumn = _columns[i];
 
-		if (currentColumn == column)
-			return _values[i];
+		if (currentColumn != column)
+			continue;
+
+		position = i;
+		return true;
 	}
 
-	auto result = T(0);
-	return result;
+	position = _values.size() + 1;
+	return false;
 }
 

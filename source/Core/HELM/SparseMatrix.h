@@ -15,6 +15,9 @@ public:
 	T const& operator()(size_t row, size_t column) const;
 
 private:
+	bool findPosition(size_t row, size_t column, size_t &position) const;
+
+private:
 	const size_t _rowCount;
 	const size_t _columnCount;
 	std::vector<size_t> _columns;
