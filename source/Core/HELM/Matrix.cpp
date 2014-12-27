@@ -74,19 +74,6 @@ std::vector<T> Matrix<T>::pointwiseDivide(const std::vector<T> &one, const std::
 }
 
 template<typename T>
-std::vector<T> Matrix<T>::add(const std::vector<T> &one, const std::vector<T> &two)
-{
-	assert(one.size() == two.size());
-	size_t n = one.size();
-	std::vector<T> result(n);
-
-	for (size_t i = 0; i < n; ++i)
-		result[i] = one[i] + two[i];
-	
-	return result;
-}
-
-template<typename T>
 std::vector<T> Matrix<T>::subtract(const std::vector<T> &one, const std::vector<T> &two)
 {
 	assert(one.size() == two.size());
