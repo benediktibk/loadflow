@@ -46,6 +46,29 @@ void SparseMatrix<T>::set(size_t row, size_t column, T const &value)
 }
 
 template<class T>
+void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) const
+{
+	assert(destination.getCount() == getRowCount());
+	assert(source.getCount() == getColumnCount());
+
+	for (size_t i = 0; i < _rowCount; ++i)
+	{
+		auto rowPointer = _rowPointers[i];
+		auto nextRowPointer = _rowPointers[i + 1];
+		T result(0);
+
+		for (auto j = rowPointer; j < nextRowPointer; ++j)
+		{
+			auto column = _columns[j];
+			T const &value = _values[j];
+			result += value*source(column);
+		}
+
+		destination.set(i, result);
+	}
+}
+
+template<class T>
 T const& SparseMatrix<T>::operator()(size_t row, size_t column) const
 {
 	assert(row < getRowCount());

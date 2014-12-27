@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Vector.h"
 
 template<class T>
 class SparseMatrix
@@ -11,6 +12,7 @@ public:
 	size_t getRowCount() const;
 	size_t getColumnCount() const;
 	void set(size_t row, size_t column, T const &value);
+	void multiply(Vector<T> &destination, Vector<T> const &source) const;
 
 	T const& operator()(size_t row, size_t column) const;
 

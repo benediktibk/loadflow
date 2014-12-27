@@ -748,12 +748,46 @@ bool runTestsSparseMatrixSet()
 	return true;
 }
 
+bool runTestsSparseMatrixMultiply()
+{
+	SparseMatrix<long double> matrix(3, 4);
+	matrix.set(0, 1, 2);
+	matrix.set(0, 2, 3);
+	matrix.set(0, 3, 4);
+	matrix.set(1, 0, 5);
+	matrix.set(1, 3, 60);
+	matrix.set(2, 2, 7);
+	matrix.set(2, 0, 80);
+	Vector<long double> result(3);
+	Vector<long double> source(4);
+	source.set(0, 1);
+	source.set(1, 2);
+	source.set(2, 3);
+	source.set(3, 4);
+
+	matrix.multiply(result, source);
+
+	if (result(0) != 2*2 + 3*3 + 4*4)
+		return false;
+
+	if (result(1) != 60*4 + 5*1)
+		return false;
+
+	if (result(2) != 7*3 + 80*1)
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
 		return false;
 	
 	if (!runTestsSparseMatrixSet())
+		return false;
+
+	if (!runTestsSparseMatrixMultiply())
 		return false;
 
 	return true;
