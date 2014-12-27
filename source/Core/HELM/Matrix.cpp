@@ -74,17 +74,6 @@ std::vector<T> Matrix<T>::subtract(const std::vector<T> &one, const std::vector<
 }
 
 template<typename T>
-std::vector<T> Matrix<T>::multiply(const std::vector<T> &one, const T &two)
-{
-	std::vector<T> result(one);
-
-	for (size_t i = 0; i < result.size(); ++i)
-		result[i] *= two;
-
-	return result;
-}
-
-template<typename T>
 std::vector<T> Matrix<T>::eigenToStdVector(const Eigen::Matrix<T, Eigen::Dynamic, 1> &values)
 {
 	std::vector<T> result(values.size());
