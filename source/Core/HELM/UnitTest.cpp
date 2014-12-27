@@ -528,6 +528,9 @@ bool runTestsVectorWeightedSum()
 	b.set(1, 5);
 	b.set(2, 6);
 	Vector<long double> result(3);
+	result.set(0, 7);
+	result.set(1, 8);
+	result.set(2, 9);
 
 	result.weightedSum(a, 5, b);
 
@@ -572,6 +575,85 @@ bool runTestsVectorAddWeightedSum()
 	return true;
 }
 
+bool runTestsVectorPointwiseMultiply()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(3);
+	b.set(0, 4);
+	b.set(1, 5);
+	b.set(2, 6);
+	Vector<long double> result(3);
+	result.set(0, 7);
+	result.set(1, 8);
+	result.set(2, 9);
+
+	result.pointwiseMultiply(a, b);
+
+	if (result(0) != 4)
+		return false;
+
+	if (result(1) != 10)
+		return false;
+
+	if (result(2) != 18)
+		return false;
+
+	return true;
+}
+
+bool runTestsVectorSubtract()
+{
+	Vector<long double> a(3);
+	a.set(0, 1);
+	a.set(1, 2);
+	a.set(2, 3);
+	Vector<long double> b(3);
+	b.set(0, 6);
+	b.set(1, 5);
+	b.set(2, 4);
+	Vector<long double> result(3);
+	result.set(0, 7);
+	result.set(1, 8);
+	result.set(2, 9);
+
+	result.subtract(a, b);
+
+	if (result(0) != -5)
+		return false;
+
+	if (result(1) != -3)
+		return false;
+
+	if (result(2) != -1)
+		return false;
+
+	return true;
+}
+
+bool runTestsVectorConjugate()
+{
+	Vector< complex<long double> > a(3);
+	a.set(0, complex<long double>(1, 2));
+	a.set(1, complex<long double>(-3, -4));
+	a.set(2, complex<long double>(5, 6));
+
+	a.conjugate();
+
+	if (a(0) != complex<long double>(1, -2))
+		return false;
+
+	if (a(1) != complex<long double>(-3, 4))
+		return false;
+
+	if (a(2) != complex<long double>(5, -6))
+		return false;
+
+	return true;
+}
+
 bool runTestsVector()
 {
 	if (!runTestsVectorConstructor())
@@ -593,6 +675,15 @@ bool runTestsVector()
 		return false;
 
 	if (!runTestsVectorAddWeightedSum())
+		return false;
+
+	if (!runTestsVectorPointwiseMultiply())
+		return false;
+
+	if (!runTestsVectorSubtract())
+		return false;
+
+	if (!runTestsVectorConjugate())
 		return false;
 
 	return true;

@@ -50,7 +50,7 @@ T Vector<T>::dot(Vector<T> const &rhs) const
 	assert(getCount() == rhs.getCount());
 	T result(0);
 
-	for (size_t i = 0; i < getCount(); ++i)
+	for (size_t i = 0; i < _count; ++i)
 		result += _values[i]*rhs._values[i];
 
 	return result;
@@ -61,7 +61,7 @@ T Vector<T>::squaredNorm() const
 {
 	T result(0);
 
-	for (size_t i = 0; i < getCount(); ++i)
+	for (size_t i = 0; i < _count; ++i)
 	{
 		T const& value(_values[i]);
 		result += value*value;
@@ -76,7 +76,7 @@ void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> cons
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 
-	for (size_t i = 0; i < getCount(); ++i)
+	for (size_t i = 0; i < _count; ++i)
 		_values[i] = x._values[i] + yWeight*y._values[i];
 }
 
@@ -86,8 +86,35 @@ void Vector<T>::addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yW
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 	
-	for (size_t i = 0; i < getCount(); ++i)
+	for (size_t i = 0; i < _count; ++i)
 		_values[i] += xWeight*x._values[i] + yWeight*y._values[i];
+}
+
+template<class T>
+void Vector<T>::pointwiseMultiply(Vector<T> const &x, Vector<T> const &y)
+{
+	assert(getCount() == x.getCount());
+	assert(getCount() == y.getCount());
+
+	for (size_t i = 0; i < _count; ++i)
+		_values[i] = x._values[i]*y._values[i];
+}
+
+template<class T>
+void Vector<T>::subtract(Vector<T> const &x, Vector<T> const &y)
+{
+	assert(getCount() == x.getCount());
+	assert(getCount() == y.getCount());
+
+	for (size_t i = 0; i < _count; ++i)
+		_values[i] = x._values[i] - y._values[i];
+}
+
+template<class T>
+void Vector<T>::conjugate()
+{
+	for (size_t i = 0; i < _count; ++i)
+		_values[i] = std::conj(_values[i]);
 }
 
 template<class T>

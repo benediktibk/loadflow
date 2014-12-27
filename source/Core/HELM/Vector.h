@@ -14,8 +14,9 @@ public:
 	T squaredNorm() const;
 	void weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> const &y);
 	void addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yWeight, Vector<T> const &y);
-
-	//Vector<T> pointwiseMultiply(Vector<T> const &rhs) const;
+	void pointwiseMultiply(Vector<T> const &x, Vector<T> const &y);
+	void subtract(Vector<T> const &x, Vector<T> const &y);
+	void conjugate();
 
 	T const& operator()(size_t i) const;
 	Vector<T> const& operator=(Vector<T> const &rhs);
