@@ -30,5 +30,6 @@ private:
 private:
 	const int _count;
 	T *_values;
+	T *_temp;
 };
 

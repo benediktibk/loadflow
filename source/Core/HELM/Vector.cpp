@@ -51,17 +51,8 @@ T Vector<T>::dot(Vector<T> const &rhs) const
 	assert(getCount() == rhs.getCount());
 	T result(0);
 	
-	#pragma omp parallel
-	{
-		T partialResult(0);
-
-		#pragma omp for nowait
-		for (auto i = 0; i < _count; ++i)
-			partialResult += _values[i]*rhs._values[i];
-
-		#pragma omp critical
-		result += partialResult;
-	}
+	for (auto i = 0; i < _count; ++i)
+		result += _values[i]*rhs._values[i];
 
 	return result;
 }
@@ -71,19 +62,10 @@ T Vector<T>::squaredNorm() const
 {
 	T result(0);
 	
-	#pragma omp parallel
+	for (auto i = 0; i < _count; ++i)
 	{
-		T partialResult(0);
-
-		#pragma omp for nowait
-		for (auto i = 0; i < _count; ++i)
-		{
-			T const& value(_values[i]);
-			result += value*value;
-		}
-
-		#pragma omp critical
-		result += partialResult;
+		T const& value(_values[i]);
+		result += value*value;
 	}
 
 	return result;
@@ -162,6 +144,7 @@ void Vector<T>::allocateMemory()
 {
 	assert(getCount() > 0);
 	_values = new T[_count];
+	_temp = new T[_count];
 }
 
 template<class T>
@@ -169,6 +152,8 @@ void Vector<T>::freeMemory()
 {
 	delete[] _values;
 	_values = 0;
+	delete[] _temp;
+	_temp = 0;
 }
 
 template<class T>
