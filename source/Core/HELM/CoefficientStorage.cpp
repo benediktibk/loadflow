@@ -129,7 +129,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficients
 		return;
 	}
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 		calculateNextInverseCoefficient(_pqBuses[i]);
 }
@@ -155,8 +155,8 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateFirstInverseCoefficients()
 {
-	#pragma omp parallel for
-	for (auto i = 0; i < _pqBuses.size(); ++i)
+	//#pragma omp parallel for
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		auto node = _pqBuses[i];
 		ComplexType const& coefficient = getCoefficient(node, 0);
@@ -167,7 +167,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateFirstInverseCoefficient
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficients()
 {
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextSquaredCoefficient(_pvBuses[i]);
 }
@@ -187,7 +187,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficient(
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficients()
 {
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextWeightedCoefficient(_pvBuses[i]);
 }
@@ -213,7 +213,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficient
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficients()
 {
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextCombinedCoefficient(_pvBuses[i]);
 }

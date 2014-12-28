@@ -178,7 +178,7 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
@@ -187,7 +187,7 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 		rightHandSide.set(id, constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
@@ -205,7 +205,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		PQBus const& bus = _pqBuses[i];
@@ -215,7 +215,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		rightHandSide.set(id, current + (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
@@ -233,7 +233,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 			
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
@@ -242,7 +242,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		rightHandSide.set(id, conj(power*_coefficientStorage->getLastInverseCoefficient(id)));
 	}
 		
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
@@ -280,7 +280,7 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	powers.pointwiseMultiply(currents, voltages);	
 	double sum = 0;
 	
-	#pragma omp parallel for reduction(+:sum)
+	//#pragma omp parallel for reduction(+:sum)
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		complex<double> currentPower = static_cast< complex<double> >(powers(_pqBuses[i].getId()));
@@ -291,7 +291,7 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 		sum += abs(realDifferenceRelative) + abs(imaginaryDifferenceRelative);
 	}
 	
-	#pragma omp parallel for reduction(+:sum)
+	//#pragma omp parallel for reduction(+:sum)
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		double currentPower = static_cast<double>(powers(_pvBuses[i].getId()).real());
@@ -309,7 +309,7 @@ double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
 {	
 	double sum = 0;
 	
-	#pragma omp parallel for reduction(+:sum)
+	//#pragma omp parallel for reduction(+:sum)
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const &bus = _pvBuses[i];
@@ -351,7 +351,7 @@ void Calculator<Floating, ComplexFloating>::deleteContinuations()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
 {
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto i = 0; i < _nodeCount; ++i)
 	{
 		_continuations[i]->updateWithLastCoefficients();
