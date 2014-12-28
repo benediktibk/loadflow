@@ -2,8 +2,10 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "SparseMatrixRowIterator.h"
+#include "ComplexGreaterCompare.h"
 #include <assert.h>
 #include <complex>
+#include <algorithm>
 
 template class SparseMatrix<long double, long double>;
 template class SparseMatrix<long double, std::complex<long double> >;
@@ -64,14 +66,22 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 	{
 		auto rowPointer = _rowPointers[i];
 		auto nextRowPointer = _rowPointers[i + 1];
-		ComplexFloating result(0);
+		std::vector<ComplexFloating> summands;
+		summands.reserve(nextRowPointer - rowPointer);
 
 		for (auto j = rowPointer; j < nextRowPointer; ++j)
 		{
 			auto column = _columns[j];
 			ComplexFloating const &value = _values[j];
-			result += value*source(column);
+			summands.push_back(value*source(column));
 		}
+
+		std::sort(summands.begin(), summands.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
+
+		ComplexFloating result(0);
+
+		for (auto i = summands.cbegin(); i != summands.cend(); ++i)
+			result += *i;
 
 		destination.set(i, result);
 	}
