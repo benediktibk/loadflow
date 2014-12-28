@@ -122,5 +122,8 @@
     <ClInclude Include="ComplexGreaterCompare.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NumericalTraits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

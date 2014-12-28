@@ -1,6 +1,7 @@
 #include "LinearEquationSystemSolver.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
+#include "NumericalTraits.h"
 
 template class LinearEquationSystemSolver< std::complex<long double>, long double >;
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
@@ -33,7 +34,7 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 	auto firstResidual = residual;  
 	auto firstResidualSquaredNorm = std::abs(firstResidual.squaredNorm());
 	auto rhsSquaredNorm = b.squaredNorm();
-	auto epsilon = Eigen::NumTraits<ComplexFloating>::epsilon();
+	auto epsilon = NumericalTraits<Floating>::epsilon();
 	auto epsilonSquared = epsilon*epsilon;
 	auto i = 0;
 	auto restarts = 0;
