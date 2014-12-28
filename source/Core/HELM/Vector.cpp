@@ -149,12 +149,14 @@ void Vector<T>::freeMemory()
 template<class T>
 void Vector<T>::copyValues(Vector<T> const &rhs)
 {
-	memcpy(_values, rhs._values, _count*sizeof(T));
+	for (size_t i = 0; i < _count; ++i)
+		_values[i] = rhs._values[i];
 }
 
 template<class T>
 void Vector<T>::setToZero()
 {
-	memset(_values, 0, sizeof(T)*_count);
+	for (size_t i = 0; i < _count; ++i)
+		_values[i] = T(0);
 }
 

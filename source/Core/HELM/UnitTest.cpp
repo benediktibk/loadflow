@@ -129,6 +129,12 @@ bool runTestsMultiPrecision()
 	if (oneThird == zero)
 		return false;
 
+	MultiPrecision::setDefaultPrecision(123);
+	one = MultiPrecision(4);
+
+	if (static_cast<double>(one) != 4)
+		return false;
+
 	return true;
 }
 
