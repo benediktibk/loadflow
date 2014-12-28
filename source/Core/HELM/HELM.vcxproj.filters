@@ -45,9 +45,6 @@
     <ClCompile Include="AnalyticContinuation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CalculatorLongDouble.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,9 +93,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnalyticContinuation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CalculatorLongDouble.h">

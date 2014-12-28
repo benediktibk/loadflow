@@ -63,11 +63,6 @@ extern "C" __declspec(dllexport) double __cdecl GetVoltageImaginary(int calculat
 	return calculatorRegister.get(calculator).getVoltageImaginary(node);
 }
 
-extern "C" __declspec(dllexport) void __cdecl SetConsoleOutput(int calculator, ConsoleOutput function)
-{
-	calculatorRegister.get(calculator).setConsoleOutput(function);
-}
-
 extern "C" __declspec(dllexport) double __cdecl GetCoefficientReal(int calculator, int step, int node)
 {
 	return calculatorRegister.get(calculator).getCoefficientReal(step, node);

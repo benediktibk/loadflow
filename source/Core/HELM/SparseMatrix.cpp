@@ -1,12 +1,18 @@
 #include "SparseMatrix.h"
+#include "Complex.h"
+#include "MultiPrecision.h"
 #include <assert.h>
+#include <complex>
 
 template class SparseMatrix<long double>;
+template class SparseMatrix< std::complex<long double> >;
+template class SparseMatrix< Complex<MultiPrecision> >;
 
 template<class T>
 SparseMatrix<T>::SparseMatrix(size_t rows, size_t columns) :
 	_rowCount(rows),
-	_columnCount(columns)
+	_columnCount(columns),
+	_zero(0)
 {
 	assert(getRowCount() > 0);
 	assert(getColumnCount() > 0);
@@ -75,12 +81,10 @@ T const& SparseMatrix<T>::operator()(size_t row, size_t column) const
 	assert(column < getColumnCount());
 
 	size_t position;
-	T result(0);
-
 	if (findPosition(row, column, position))
-		result = _values[position];
+		return _values[position];
 
-	return result;
+	return _zero;
 }
 
 template<class T>

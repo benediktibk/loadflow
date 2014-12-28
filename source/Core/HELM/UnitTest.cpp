@@ -5,6 +5,7 @@
 #include "LinearEquationSystemSolver.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
+#include "MultiPrecision.h"
 #include <complex>
 
 using namespace std;
@@ -136,30 +137,30 @@ bool runTestsCoefficientStoragePQ()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Matrix< complex<long double> > admittances(1, 1);
+	SparseMatrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	vector< complex<long double> > coefficients;
+	Vector< complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients.push_back(complex<long double>(2, 0));
+	coefficients.set(0, complex<long double>(2, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(2, 0), storage.getLastCoefficient(0), 0.000001))
 		return false;
 	if (!areEqual(complex<long double>(0.5, 0), storage.getLastInverseCoefficient(0), 0.000001))
 		return false;
-
-	coefficients[0] = complex<long double>(3, 0);
+	
+	coefficients.set(0, complex<long double>(3, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(3, 0), storage.getLastCoefficient(0), 0.000001))
 		return false;
 	if (!areEqual(complex<long double>(-0.75, 0), storage.getLastInverseCoefficient(0), 0.000001))
 		return false;
-
-	coefficients[0] = complex<long double>(5, 0);
+	
+	coefficients.set(0, complex<long double>(5, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(5, 0), storage.getLastCoefficient(0), 0.000001))
@@ -188,26 +189,26 @@ bool runTestsCoefficientStoragePV()
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 1));
-	Matrix< complex<long double> > admittances(1, 1);
+	SparseMatrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	vector< complex<long double> > coefficients;
+	Vector< complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients.push_back(complex<long double>(2, 0));
+	coefficients.set(0, complex<long double>(2, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(4, 0), storage.getLastSquaredCoefficient(0), 0.000001))
 		return false;
-
-	coefficients[0] = complex<long double>(3, 0);
+	
+	coefficients.set(0, complex<long double>(3, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(12, 0), storage.getLastSquaredCoefficient(0), 0.000001))
 		return false;
-
-	coefficients[0] = complex<long double>(5, 0);
+	
+	coefficients.set(0, complex<long double>(5, 0));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(29, 0), storage.getLastSquaredCoefficient(0), 0.000001))
@@ -229,25 +230,25 @@ bool runTestsCoefficientStorageMixed()
 	pqBuses.push_back(PQBus(1, complex<double>()));
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 0.7));
-	Matrix< complex<long double> > admittances(2, 2);
-	admittances.setValue(0, 0, complex<double>(100, 100));
-	admittances.setValue(0, 1, complex<double>(-10, 1));
-	admittances.setValue(1, 0, complex<double>(-10, 0));
-	admittances.setValue(1, 1, complex<double>(20, 0));
+	SparseMatrix< complex<long double> > admittances(2, 2);
+	admittances.set(0, 0, complex<double>(100, 100));
+	admittances.set(0, 1, complex<double>(-10, 1));
+	admittances.set(1, 0, complex<double>(-10, 0));
+	admittances.set(1, 1, complex<double>(20, 0));
 	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
-	vector< complex<long double> > coefficients(2);
+	Vector< complex<long double> > coefficients(2);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients[0] = complex<long double>(2, 0);
-	coefficients[1] = complex<long double>(0, 3);
+	coefficients.set(0, complex<long double>(2, 0));
+	coefficients.set(1, complex<long double>(0, 3));
 	storage.addCoefficients(coefficients);
-	coefficients[0] = complex<long double>(3, 0);
-	coefficients[1] = complex<long double>(0, 7);
+	coefficients.set(0, complex<long double>(3, 0));
+	coefficients.set(1, complex<long double>(0, 7));
 	storage.addCoefficients(coefficients);
-	coefficients[0] = complex<long double>(5, 0);
-	coefficients[1] = complex<long double>(1, 1);
+	coefficients.set(0, complex<long double>(5, 0));
+	coefficients.set(1, complex<long double>(1, 1));
 	storage.addCoefficients(coefficients);
 
 	if (!areEqual(complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
@@ -300,42 +301,42 @@ bool runTestsAnalyticContinuationStepByStep()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Matrix< complex<long double> > admittances(1, 1);
+	SparseMatrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	vector< complex<long double> > coefficients(1);
+	Vector< complex<long double> > coefficients(1);
 
-	coefficients[0] = 0;
+	coefficients.set(0, 0);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0, 0), continuation.getResult(), 0.00001))
 		return false;
-
-	coefficients[0] = 0.5;
+	
+	coefficients.set(0, 0.5);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.5, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients[0] = 0.0625;
+	coefficients.set(0, 0.0625);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.57142857, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients[0] = 0.01660156;
+	coefficients.set(0, 0.01660156);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58510638, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients[0] = 0.00473809;
+	coefficients.set(0, 0.00473809);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58574349, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients[0] = 0.00137754;
+	coefficients.set(0, 0.00137754);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
@@ -349,30 +350,30 @@ bool runTestsAnalyticContinuationBunchAtOnce()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	Matrix< complex<long double> > admittances(1, 1);
+	SparseMatrix< complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	vector< complex<long double> > coefficients(1);
+	Vector< complex<long double> > coefficients(1);
 
-	coefficients[0] = 0;
+	coefficients.set(0, 0);
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients[0] = 0.5;
+	coefficients.set(0, 0.5);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.5, 0), continuation.getResult(), 0.00001))
 		return false;
-
-	coefficients[0] = 0.0625;
+	
+	coefficients.set(0, 0.0625);
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients[0] = 0.01660156;
+	coefficients.set(0, 0.01660156);
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients[0] = 0.00473809;
+	coefficients.set(0, 0.00473809);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58574349, 0), continuation.getResult(), 0.00001))
 		return false;
-
-	coefficients[0] = 0.00137754;
+	
+	coefficients.set(0, 0.00137754);
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
 	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
@@ -394,30 +395,31 @@ bool runTestsAnalyticContinuation()
 
 bool runTestsLinearEquationSystem()
 {
-	Matrix< complex<long double> > A(3, 3);
-	A.setValue(0, 0, complex<long double>(1, 2));
-	A.setValue(0, 1, complex<long double>(3, 4));
-	A.setValue(0, 2, complex<long double>(5, 6));
-	A.setValue(1, 1, complex<long double>(7, 8));
-	A.setValue(1, 2, complex<long double>(9, 10));
-	A.setValue(2, 0, complex<long double>(11, 12));
-	A.setValue(2, 2, complex<long double>(13, 14));
-	vector< complex<long double> > x;
-	x.push_back(complex<long double>(15, 16));
-	x.push_back(complex<long double>(17, 18));
-	x.push_back(complex<long double>(19, 20));
-	vector< complex<long double> > b = A.multiply(x);
+	SparseMatrix< complex<long double> > A(3, 3);
+	A.set(0, 0, complex<long double>(1, 2));
+	A.set(0, 1, complex<long double>(3, 4));
+	A.set(0, 2, complex<long double>(5, 6));
+	A.set(1, 1, complex<long double>(7, 8));
+	A.set(1, 2, complex<long double>(9, 10));
+	A.set(2, 0, complex<long double>(11, 12));
+	A.set(2, 2, complex<long double>(13, 14));
+	Vector< complex<long double> > x(3);
+	x.set(0, complex<long double>(15, 16));
+	x.set(1, complex<long double>(17, 18));
+	x.set(2, complex<long double>(19, 20));
+	Vector< complex<long double> > b(3);
+	A.multiply(b, x);
 	LinearEquationSystemSolver< complex<long double>, long double > solver(A, 1e-10);
 
-	vector< complex<long double> > result = solver.solve(b);
+	auto result = solver.solve(b);
 
-	if (result.size() != 3)
+	if (result.getCount() != 3)
 		return false;
-	if (!areEqual(x[0], result[0], 0.000001))
+	if (!areEqual(x(0), result(0), 0.000001))
 		return false;
-	if (!areEqual(x[1], result[1], 0.000001))
+	if (!areEqual(x(1), result(1), 0.000001))
 		return false;
-	if (!areEqual(x[2], result[2], 0.000001))
+	if (!areEqual(x(2), result(2), 0.000001))
 		return false;
 
 	return true;
@@ -654,6 +656,22 @@ bool runTestsVectorConjugate()
 	return true;
 }
 
+bool runTestsVectorMultiPrecision()
+{
+	MultiPrecision::setDefaultPrecision(100);
+	Vector< Complex<MultiPrecision> > a(1);
+	
+	a.set(0, Complex<MultiPrecision>(MultiPrecision(5), MultiPrecision(6)));
+
+	if (static_cast<double>(a(0).real()) != 5)
+		return false;
+
+	if (static_cast<double>(a(0).imag()) != 6)
+		return false;
+
+	return true;
+}
+
 bool runTestsVector()
 {
 	if (!runTestsVectorConstructor())
@@ -684,6 +702,9 @@ bool runTestsVector()
 		return false;
 
 	if (!runTestsVectorConjugate())
+		return false;
+
+	if (!runTestsVectorMultiPrecision())
 		return false;
 
 	return true;

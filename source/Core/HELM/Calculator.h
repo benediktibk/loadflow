@@ -10,7 +10,7 @@
 #include "ICalculator.h"
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
-#include "Matrix.h"
+#include "SparseMatrix.h"
 #include "LinearEquationSystemSolver.h"
 
 template<typename Floating, typename ComplexFloating>
@@ -35,19 +35,15 @@ public:
 	virtual int getNodeCount() const;
 	virtual double getProgress();
 	virtual double getRelativePowerError();
-	virtual void setConsoleOutput(ConsoleOutput function);
 
 protected:
 	virtual Floating createFloating(double value) const = 0;
 	ComplexFloating createComplexFloating(std::complex<double> const &value) const;
 
 private:
-	void writeLine(const char *description, std::vector<ComplexFloating> const& values);
-	void writeLine(const char *description, Eigen::SparseMatrix<ComplexFloating> const& matrix);
-	void writeLine(const char *text);
 	bool calculateFirstCoefficient();
-	std::vector<ComplexFloating> calculateFirstCoefficientInternal();
-	bool isPQCoefficientZero(std::vector<ComplexFloating> const& coefficients) const;
+	Vector<ComplexFloating> calculateFirstCoefficientInternal();
+	bool isPQCoefficientZero(Vector<ComplexFloating> const& coefficients) const;
 	void calculateSecondCoefficient();
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
@@ -57,10 +53,10 @@ private:
 	void freeMemory();
 	void deleteContinuations();
 	void calculateVoltagesFromCoefficients();
+	void getVoltagesAsVectorComplexFloating(Vector<ComplexFloating> &result) const;
 
 private:
 	static Floating findMaximumMagnitude(const std::vector<ComplexFloating> &values);
-	static std::vector<ComplexFloating> conjugate(const std::vector<ComplexFloating> &values);
 
 private:
 	const double _targetPrecision;
@@ -69,14 +65,13 @@ private:
 	const size_t _pqBusCount;
 	const size_t _pvBusCount;
 	const double _nominalVoltage;
-	Matrix<ComplexFloating> _admittances;
+	SparseMatrix<ComplexFloating> _admittances;
 	LinearEquationSystemSolver<ComplexFloating, Floating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
-	std::vector<ComplexFloating> _constantCurrents;
+	Vector<ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;
-	ConsoleOutput _consoleOutput;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 	std::vector<AnalyticContinuation<Floating, ComplexFloating>*> _continuations;
 	ComplexFloating _embeddingModification;

@@ -22,6 +22,7 @@ private:
 private:
 	const size_t _rowCount;
 	const size_t _columnCount;
+	const T _zero;
 	std::vector<size_t> _columns;
 	std::vector<size_t> _rowPointers;
 	std::vector<T> _values;

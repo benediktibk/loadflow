@@ -4,8 +4,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     static class HolomorphicEmbeddedLoadFlowMethodNativeMethods
     {
-        public delegate void StringCallback(string text);
-
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int CreateLoadFlowCalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
 
@@ -38,9 +36,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetVoltageImaginary(int calculator, int node);
-
-        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double SetConsoleOutput(int calculator, StringCallback function);
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetCoefficientReal(int calculator, int step, int node);

@@ -5,15 +5,16 @@
 #include <complex>
 #include "PQBus.h"
 #include "PVBus.h"
-#include "Matrix.h"
+#include "SparseMatrix.h"
+#include "Vector.h"
 
 template<typename ComplexType, typename RealType>
 class CoefficientStorage
 {
 public:
-	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses, Matrix<ComplexType> const& admittances);
+	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses, SparseMatrix<ComplexType> const& admittances);
 
-	void addCoefficients(std::vector<ComplexType> const &coefficients);
+	void addCoefficients(Vector<ComplexType> const &coefficients);
 	ComplexType const& getCoefficient(int node, int step) const;
 	ComplexType const& getLastCoefficient(int node) const;
 	ComplexType const& getInverseCoefficient(int node, int step) const;
@@ -42,8 +43,8 @@ private:
 
 private:
 	const int _nodeCount;
-	Matrix<ComplexType> const& _admittances;
-	std::vector< std::vector<ComplexType> > _coefficients;
+	SparseMatrix<ComplexType> const& _admittances;
+	std::vector< Vector<ComplexType> > _coefficients;
 	std::map<int, std::vector<ComplexType> > _inverseCoefficients;
 	std::vector<int> _pqBuses;
 	std::map<int, std::vector<ComplexType> > _squaredCoefficients;

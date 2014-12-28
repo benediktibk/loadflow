@@ -1,20 +1,19 @@
 #pragma once
 
-#include <vector>
-#include <Eigen\Sparse>
-#include "Matrix.h"
+#include "SparseMatrix.h"
+#include "Vector.h"
 
 template<class ComplexFloating, class Floating>
 class LinearEquationSystemSolver
 {
 public:
-	LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon);
-	~LinearEquationSystemSolver();
+	LinearEquationSystemSolver(const SparseMatrix<ComplexFloating> &systemMatrix, Floating epsilon);
 
-	std::vector<ComplexFloating> solve(const std::vector<ComplexFloating> &b) const;
+	Vector<ComplexFloating> solve(const Vector<ComplexFloating> &b) const;
 
 private:	
-	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> const &_systemMatrix;
-	Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> _preconditioner;
+	const size_t _dimension;
+	SparseMatrix<ComplexFloating> const &_systemMatrix;
+	SparseMatrix<ComplexFloating> _preconditioner;
 };
 

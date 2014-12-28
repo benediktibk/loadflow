@@ -2,41 +2,37 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 
-using namespace std;
-
 template class LinearEquationSystemSolver< std::complex<long double>, long double >;
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
 
 template<class ComplexFloating, class Floating>
-LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const Matrix<ComplexFloating> &systemMatrix, Floating epsilon) :
-	_systemMatrix(systemMatrix.getValues()),
-	_preconditioner(_systemMatrix.rows(), _systemMatrix.cols())
+LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const SparseMatrix<ComplexFloating> &systemMatrix, Floating epsilon) :
+	_dimension(systemMatrix.getRowCount()),
+	_systemMatrix(systemMatrix),
+	_preconditioner(_systemMatrix.getRowCount(), _systemMatrix.getColumnCount())
 {
-	for (auto i = 0; i < _systemMatrix.rows(); ++i)
+	assert(_systemMatrix.getRowCount() == _systemMatrix.getColumnCount());
+
+	for (size_t i = 0; i < _dimension; ++i)
 	{
-		auto diagonalValue = _systemMatrix.coeff(i, i);
-		_preconditioner.coeffRef(i, i) = ComplexFloating(1)/diagonalValue;
+		ComplexFloating const &diagonalValue = _systemMatrix(i, i);
+		_preconditioner.set(i, i, ComplexFloating(1)/diagonalValue);
 	}
 }
 
 template<class ComplexFloating, class Floating>
-LinearEquationSystemSolver<ComplexFloating, Floating>::~LinearEquationSystemSolver()
-{
-}
-
-template<class ComplexFloating, class Floating>
-vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const vector<ComplexFloating> &b) const
+Vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const Vector<ComplexFloating> &b) const
 {	
-	typedef Eigen::Matrix<ComplexFloating, Eigen::Dynamic, 1> Vector;
-	typedef Eigen::SparseMatrix<ComplexFloating, Eigen::ColMajor> SparseVector;
-	auto n = b.size();
-	auto bConverted = Matrix<ComplexFloating>::stdToEigenVector(b);
-	Vector x = _preconditioner*bConverted;
-	int maximumIterations = 10*n;
-	Vector residual = bConverted - _systemMatrix*x;
+	Vector<ComplexFloating> x(_dimension);
+	_preconditioner.multiply(x, b);
+	int maximumIterations = 10*_dimension;
+	Vector<ComplexFloating> residual(_dimension);
+	Vector<ComplexFloating> temp(_dimension); 
+	_systemMatrix.multiply(temp, x);
+	residual.subtract(b, temp);
 	auto firstResidual = residual;  
-	auto firstResidualSquaredNorm = firstResidual.squaredNorm();
-	auto rhsSquaredNorm = bConverted.squaredNorm();
+	auto firstResidualSquaredNorm = std::abs(firstResidual.squaredNorm());
+	auto rhsSquaredNorm = b.squaredNorm();
 	auto epsilon = Eigen::NumTraits<ComplexFloating>::epsilon();
 	auto epsilonSquared = epsilon*epsilon;
 	auto i = 0;
@@ -44,27 +40,27 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto rho = ComplexFloating(1);
 	auto alpha = ComplexFloating(1);
 	auto w = ComplexFloating(1);  
-	Vector v = SparseVector(n, 1);
-	Vector p = SparseVector(n, 1);
-	Vector y = SparseVector(n, 1);
-	Vector z = SparseVector(n, 1);
-	Vector kt = SparseVector(n, 1);
-	Vector ks = SparseVector(n, 1);
-	Vector s = SparseVector(n, 1);
-	Vector t = SparseVector(n, 1);;
+	auto v = Vector<ComplexFloating>(_dimension);
+	auto p = Vector<ComplexFloating>(_dimension);
+	auto y = Vector<ComplexFloating>(_dimension);
+	auto z = Vector<ComplexFloating>(_dimension);
+	auto kt = Vector<ComplexFloating>(_dimension);
+	auto ks = Vector<ComplexFloating>(_dimension);
+	auto s = Vector<ComplexFloating>(_dimension);
+	auto t = Vector<ComplexFloating>(_dimension);
 
-	if(rhsSquaredNorm == Floating(0))
+	if(std::abs(rhsSquaredNorm) == Floating(0))
 		return b;	
 
-	while (residual.squaredNorm()/rhsSquaredNorm > epsilonSquared && i < maximumIterations)
+	while (std::abs(residual.squaredNorm()/rhsSquaredNorm) > epsilonSquared && i < maximumIterations)
 	{
 		auto rho_old = rho;
 		rho = firstResidual.dot(residual);
 
-		if (abs(abs(rho) - firstResidualSquaredNorm) < Floating(1e-20))
+		if (std::abs(std::abs(rho) - firstResidualSquaredNorm) < Floating(1e-20))
 		{
 			firstResidual = residual;
-			firstResidualSquaredNorm = residual.squaredNorm();
+			firstResidualSquaredNorm = std::abs(residual.squaredNorm());
 			rho = ComplexFloating(firstResidualSquaredNorm);
 			i = 0;
 			++restarts;
@@ -74,24 +70,25 @@ vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 		}
 
 		auto beta = (rho/rho_old)*(alpha/w);
-		p = residual + beta*(p - w*v);    
-		y = _preconditioner*p;    
-		v = _systemMatrix*y;
+		temp.weightedSum(p, w*ComplexFloating(-1), v);
+		p.weightedSum(residual, beta, temp);
+		_preconditioner.multiply(y, p);
+		_systemMatrix.multiply(v, y);
 		alpha = rho / firstResidual.dot(v);
-		s = residual - alpha*v;
-		z = _preconditioner*s;
-		t = _systemMatrix*z;
+		s.weightedSum(residual, alpha*ComplexFloating(-1), v);
+		_preconditioner.multiply(z, s);
+		_systemMatrix.multiply(t, z);
 
-		auto tmp = t.squaredNorm();
+		auto tmp = std::abs(t.squaredNorm());
 		if(tmp > Floating(0))
 			w = t.dot(s) / ComplexFloating(tmp);
 		else
 			w = ComplexFloating(0);
 
-		x += alpha*y + w*z;
-		residual = s - w*t;
+		x.addWeightedSum(alpha, y, w, z);
+		residual.weightedSum(s, w*ComplexFloating(-1), t);
 		++i;
 	}
 
-	return Matrix<ComplexFloating>::eigenToStdVector(x);
+	return x;
 }

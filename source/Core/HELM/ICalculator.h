@@ -23,5 +23,4 @@ public:
 	virtual int getNodeCount() const = 0;
 	virtual double getProgress() = 0;
 	virtual double getRelativePowerError() = 0;
-	virtual void setConsoleOutput(ConsoleOutput function) = 0;
 };
