@@ -50,9 +50,18 @@ T Vector<T>::dot(Vector<T> const &rhs) const
 {
 	assert(getCount() == rhs.getCount());
 	T result(0);
+	
+	#pragma omp parallel
+	{
+		T partialResult(0);
 
-	for (auto i = 0; i < _count; ++i)
-		result += _values[i]*rhs._values[i];
+		#pragma omp for nowait
+		for (auto i = 0; i < _count; ++i)
+			partialResult += _values[i]*rhs._values[i];
+
+		#pragma omp critical
+		result += partialResult;
+	}
 
 	return result;
 }
@@ -61,7 +70,7 @@ template<class T>
 T Vector<T>::squaredNorm() const
 {
 	T result(0);
-
+	
 	for (auto i = 0; i < _count; ++i)
 	{
 		T const& value(_values[i]);

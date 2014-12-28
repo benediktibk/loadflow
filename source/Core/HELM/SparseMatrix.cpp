@@ -47,8 +47,9 @@ void SparseMatrix<T>::set(int row, int column, T const &value)
 	auto nextRowPosition = _rowPointers[row + 1];
 	_columns.insert(_columns.begin() + nextRowPosition, column);
 	_values.insert(_values.begin() + nextRowPosition, value);
-
-	for (auto i = row + 1; i < _rowPointers.size(); ++i)
+	
+	#pragma omp parallel for
+	for (auto i = row + 1; i < static_cast<int>(_rowPointers.size()); ++i)
 		_rowPointers[i] += 1;
 }
 
@@ -58,6 +59,7 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 	assert(destination.getCount() == getRowCount());
 	assert(source.getCount() == getColumnCount());
 
+	#pragma omp parallel for
 	for (auto i = 0; i < _rowCount; ++i)
 	{
 		auto rowPointer = _rowPointers[i];

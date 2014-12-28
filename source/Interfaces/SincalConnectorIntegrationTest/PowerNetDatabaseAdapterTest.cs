@@ -759,8 +759,8 @@ namespace SincalConnectorIntegrationTest
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
-            AreVoltagesEqual(sincalResults, ownResults, 0.00001);
-            ArePowersEqual(sincalResults, ownResults, 0.1);
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 1);
         }
 
         public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
