@@ -806,6 +806,52 @@ bool runTestsSparseMatrixMultiply()
 	return true;
 }
 
+bool runTestsSparseMatrixRowIteration()
+{
+	SparseMatrix<long double> matrix(3, 4);
+	matrix.set(0, 1, 2);
+	matrix.set(0, 2, 3);
+	matrix.set(0, 3, 4);
+	matrix.set(1, 0, 5);
+	matrix.set(1, 3, 60);
+	matrix.set(2, 2, 7);
+	matrix.set(2, 0, 80);
+	vector<long double> values;
+	vector<size_t> columns;
+
+	for (size_t row = 0; row < 3; ++row)
+		for (auto i = matrix.getRowIterator(row); i.isValid(); i.next())
+		{
+			values.push_back(i.getValue());
+			columns.push_back(i.getColumn());
+		}
+
+	vector<long double> valuesShouldBe;
+	vector<size_t> columnsShouldBe;
+	valuesShouldBe.push_back(2);
+	valuesShouldBe.push_back(3);
+	valuesShouldBe.push_back(4);
+	valuesShouldBe.push_back(5);
+	valuesShouldBe.push_back(60);
+	valuesShouldBe.push_back(7);
+	valuesShouldBe.push_back(80);
+	columnsShouldBe.push_back(1);
+	columnsShouldBe.push_back(2);
+	columnsShouldBe.push_back(3);
+	columnsShouldBe.push_back(0);
+	columnsShouldBe.push_back(3);
+	columnsShouldBe.push_back(2);
+	columnsShouldBe.push_back(0);
+
+	if (columnsShouldBe != columns)
+		return false;
+
+	if (valuesShouldBe != values)
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -815,6 +861,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixMultiply())
+		return false;
+
+	if (!runTestsSparseMatrixRowIteration())
 		return false;
 
 	return true;

@@ -1,6 +1,7 @@
 #include "SparseMatrix.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
+#include "SparseMatrixRowIterator.h"
 #include <assert.h>
 #include <complex>
 
@@ -72,6 +73,12 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 
 		destination.set(i, result);
 	}
+}
+
+template<class T>
+SparseMatrixRowIterator<T> SparseMatrix<T>::getRowIterator(size_t row) const
+{
+	return SparseMatrixRowIterator<T>(_values, _rowPointers, _columns, row);
 }
 
 template<class T>

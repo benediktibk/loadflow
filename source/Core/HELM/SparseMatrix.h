@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Vector.h"
+#include "SparseMatrixRowIterator.h"
 
 template<class T>
 class SparseMatrix
@@ -13,6 +14,7 @@ public:
 	size_t getColumnCount() const;
 	void set(size_t row, size_t column, T const &value);
 	void multiply(Vector<T> &destination, Vector<T> const &source) const;
+	SparseMatrixRowIterator<T> getRowIterator(size_t row) const;
 
 	T const& operator()(size_t row, size_t column) const;
 

@@ -129,6 +129,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClCompile Include="PQBus.cpp" />
     <ClCompile Include="PVBus.cpp" />
     <ClCompile Include="SparseMatrix.cpp" />
+    <ClCompile Include="SparseMatrixRowIterator.cpp" />
     <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClInclude Include="PQBus.h" />
     <ClInclude Include="PVBus.h" />
     <ClInclude Include="SparseMatrix.h" />
+    <ClInclude Include="SparseMatrixRowIterator.h" />
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
