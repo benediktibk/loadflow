@@ -363,7 +363,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.05, 50);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.1, 50);
         }
 
         [TestMethod]

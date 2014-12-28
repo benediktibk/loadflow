@@ -23,8 +23,9 @@ CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberO
 	_pqBuses.reserve(_pqBusCount);
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
-		_inverseCoefficients.insert(pair<int, vector<ComplexType> >(pqBuses[i].getId(), vector<ComplexType>()));
-		_pqBuses.push_back(pqBuses[i].getId());
+		auto id = pqBuses[i].getId();
+		_inverseCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
+		_pqBuses.push_back(id);
 	}
 
 	_pvBuses.reserve(_pvBusCount);
