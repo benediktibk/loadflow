@@ -1,6 +1,7 @@
 #include "Vector.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
+#include "ComplexGreaterCompare.h"
 #include <complex>
 #include <assert.h>
 #include <string.h>
@@ -47,7 +48,7 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 	for (auto i = 0; i < _count; ++i)
 		_temp[i] = _values[i]*rhs._values[i];
 
-	//std::sort(_temp.begin(), _temp.end(), std::greater<Floating>());
+	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
 
 	ComplexFloating result(0);
 	
