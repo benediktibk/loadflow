@@ -45,11 +45,11 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 	assert(getCount() == rhs.getCount());
 	_temp.resize(getCount());
 	
+	//#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_temp[i] = _values[i]*rhs._values[i];
 
 	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
-
 	ComplexFloating result(0);
 	
 	for (auto i = 0; i < _count; ++i)
@@ -61,13 +61,20 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 template<class Floating, class ComplexFloating>
 ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 {
-	ComplexFloating result(0);
+	_temp.resize(getCount());
 	
+	//#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 	{
 		ComplexFloating const& value(_values[i]);
-		result += value*value;
+		_temp[i] = value*value;
 	}
+
+	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
+	ComplexFloating result(0);
+	
+	for (auto i = 0; i < _count; ++i)
+		result += _temp[i];
 
 	return result;
 }
