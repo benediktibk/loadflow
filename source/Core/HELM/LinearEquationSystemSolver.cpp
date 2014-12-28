@@ -6,7 +6,7 @@ template class LinearEquationSystemSolver< std::complex<long double>, long doubl
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
 
 template<class ComplexFloating, class Floating>
-LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const SparseMatrix<ComplexFloating> &systemMatrix, Floating epsilon) :
+LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon) :
 	_dimension(systemMatrix.getRowCount()),
 	_systemMatrix(systemMatrix),
 	_preconditioner(_systemMatrix.getRowCount(), _systemMatrix.getColumnCount())
@@ -21,13 +21,13 @@ LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolve
 }
 
 template<class ComplexFloating, class Floating>
-Vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const Vector<ComplexFloating> &b) const
+Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {	
-	Vector<ComplexFloating> x(_dimension);
+	Vector<Floating, ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);
 	auto maximumIterations = 10*_dimension;
-	Vector<ComplexFloating> residual(_dimension);
-	Vector<ComplexFloating> temp(_dimension); 
+	Vector<Floating, ComplexFloating> residual(_dimension);
+	Vector<Floating, ComplexFloating> temp(_dimension); 
 	_systemMatrix.multiply(temp, x);
 	residual.subtract(b, temp);
 	auto firstResidual = residual;  
@@ -40,14 +40,14 @@ Vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 	auto rho = ComplexFloating(1);
 	auto alpha = ComplexFloating(1);
 	auto w = ComplexFloating(1);  
-	auto v = Vector<ComplexFloating>(_dimension);
-	auto p = Vector<ComplexFloating>(_dimension);
-	auto y = Vector<ComplexFloating>(_dimension);
-	auto z = Vector<ComplexFloating>(_dimension);
-	auto kt = Vector<ComplexFloating>(_dimension);
-	auto ks = Vector<ComplexFloating>(_dimension);
-	auto s = Vector<ComplexFloating>(_dimension);
-	auto t = Vector<ComplexFloating>(_dimension);
+	auto v = Vector<Floating, ComplexFloating>(_dimension);
+	auto p = Vector<Floating, ComplexFloating>(_dimension);
+	auto y = Vector<Floating, ComplexFloating>(_dimension);
+	auto z = Vector<Floating, ComplexFloating>(_dimension);
+	auto kt = Vector<Floating, ComplexFloating>(_dimension);
+	auto ks = Vector<Floating, ComplexFloating>(_dimension);
+	auto s = Vector<Floating, ComplexFloating>(_dimension);
+	auto t = Vector<Floating, ComplexFloating>(_dimension);
 
 	if(std::abs(rhsSquaredNorm) == Floating(0))
 		return b;	

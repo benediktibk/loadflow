@@ -42,8 +42,8 @@ protected:
 
 private:
 	bool calculateFirstCoefficient();
-	Vector<ComplexFloating> calculateFirstCoefficientInternal();
-	bool isPQCoefficientZero(Vector<ComplexFloating> const& coefficients) const;
+	Vector<Floating, ComplexFloating> calculateFirstCoefficientInternal();
+	bool isPQCoefficientZero(Vector<Floating, ComplexFloating> const& coefficients) const;
 	void calculateSecondCoefficient();
 	ComplexFloating calculateRightHandSide(PVBus const& bus);
 	void calculateNextCoefficient();
@@ -53,7 +53,7 @@ private:
 	void freeMemory();
 	void deleteContinuations();
 	void calculateVoltagesFromCoefficients();
-	void getVoltagesAsVectorComplexFloating(Vector<ComplexFloating> &result) const;
+	void getVoltagesAsVectorComplexFloating(Vector<Floating, ComplexFloating> &result) const;
 
 private:
 	static Floating findMaximumMagnitude(const std::vector<ComplexFloating> &values);
@@ -65,10 +65,10 @@ private:
 	const int _pqBusCount;
 	const int _pvBusCount;
 	const double _nominalVoltage;
-	SparseMatrix<ComplexFloating> _admittances;
+	SparseMatrix<Floating, ComplexFloating> _admittances;
 	LinearEquationSystemSolver<ComplexFloating, Floating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
-	Vector<ComplexFloating> _constantCurrents;
+	Vector<Floating, ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
 	std::vector< std::complex<double> > _voltages;

@@ -7,13 +7,13 @@ template<class ComplexFloating, class Floating>
 class LinearEquationSystemSolver
 {
 public:
-	LinearEquationSystemSolver(const SparseMatrix<ComplexFloating> &systemMatrix, Floating epsilon);
+	LinearEquationSystemSolver(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon);
 
-	Vector<ComplexFloating> solve(const Vector<ComplexFloating> &b) const;
+	Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 
 private:	
 	const int _dimension;
-	SparseMatrix<ComplexFloating> const &_systemMatrix;
-	SparseMatrix<ComplexFloating> _preconditioner;
+	SparseMatrix<Floating, ComplexFloating> const &_systemMatrix;
+	SparseMatrix<Floating, ComplexFloating> _preconditioner;
 };
 

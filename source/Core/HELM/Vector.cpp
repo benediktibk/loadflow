@@ -4,67 +4,75 @@
 #include <complex>
 #include <assert.h>
 #include <string.h>
+#include <algorithm>
 
-template class Vector<long double>;
-template class Vector< std::complex<long double> >;
-template class Vector< Complex<MultiPrecision> >;
+template class Vector<long double, long double>;
+template class Vector<long double, std::complex<long double> >;
+template class Vector<MultiPrecision, Complex<MultiPrecision> >;
 
-template<class T>
-Vector<T>::Vector(int n) :
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating>::Vector(int n) :
 	_count(n),
 	_values(_count)
 {
 	setToZero();
 }
 
-template<class T>
-Vector<T>::Vector(Vector<T> const &rhs) :
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating>::Vector(Vector<Floating, ComplexFloating> const &rhs) :
 	_count(rhs.getCount()),
 	_values(rhs._values)
 { }
 
-template<class T>
-int Vector<T>::getCount() const
+template<class Floating, class ComplexFloating>
+int Vector<Floating, ComplexFloating>::getCount() const
 {
 	return _count;
 }
 
-template<class T>
-void Vector<T>::set(int i, T const &value)
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::set(int i, ComplexFloating const &value)
 {
 	assert(i < getCount());
 	assert(i >= 0);
 	_values[i] = value;
 }
 
-template<class T>
-T Vector<T>::dot(Vector<T> const &rhs) const
+template<class Floating, class ComplexFloating>
+ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexFloating> const &rhs) const
 {
 	assert(getCount() == rhs.getCount());
-	T result(0);
+	_temp.resize(getCount());
 	
 	for (auto i = 0; i < _count; ++i)
-		result += _values[i]*rhs._values[i];
+		_temp[i] = _values[i]*rhs._values[i];
+
+	//std::sort(_temp.begin(), _temp.end(), std::greater<Floating>());
+
+	ComplexFloating result(0);
+	
+	for (auto i = 0; i < _count; ++i)
+		result += _temp[i];
 
 	return result;
 }
 
-template<class T>
-T Vector<T>::squaredNorm() const
+template<class Floating, class ComplexFloating>
+ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 {
-	T result(0);
+	ComplexFloating result(0);
 	
 	for (auto i = 0; i < _count; ++i)
 	{
-		T const& value(_values[i]);
+		ComplexFloating const& value(_values[i]);
 		result += value*value;
 	}
 
 	return result;
 }
 
-template<class T>
-void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> const &y)
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::weightedSum(Vector<Floating, ComplexFloating> const &x, ComplexFloating const &yWeight, Vector<Floating, ComplexFloating> const &y)
 {
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
@@ -74,8 +82,8 @@ void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> cons
 		_values[i] = x._values[i] + yWeight*y._values[i];
 }
 
-template<class T>
-void Vector<T>::addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yWeight, Vector<T> const &y)
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::addWeightedSum(ComplexFloating const &xWeight, Vector<Floating, ComplexFloating> const &x, ComplexFloating const &yWeight, Vector<Floating, ComplexFloating> const &y)
 {
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
@@ -85,8 +93,8 @@ void Vector<T>::addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yW
 		_values[i] += xWeight*x._values[i] + yWeight*y._values[i];
 }
 
-template<class T>
-void Vector<T>::pointwiseMultiply(Vector<T> const &x, Vector<T> const &y)
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::pointwiseMultiply(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y)
 {
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
@@ -96,8 +104,8 @@ void Vector<T>::pointwiseMultiply(Vector<T> const &x, Vector<T> const &y)
 		_values[i] = x._values[i]*y._values[i];
 }
 
-template<class T>
-void Vector<T>::subtract(Vector<T> const &x, Vector<T> const &y)
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::subtract(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y)
 {
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
@@ -107,34 +115,34 @@ void Vector<T>::subtract(Vector<T> const &x, Vector<T> const &y)
 		_values[i] = x._values[i] - y._values[i];
 }
 
-template<class T>
-void Vector<T>::conjugate()
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::conjugate()
 {
 	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = std::conj(_values[i]);
 }
 
-template<class T>
-T const& Vector<T>::operator()(int i) const
+template<class Floating, class ComplexFloating>
+ComplexFloating const& Vector<Floating, ComplexFloating>::operator()(int i) const
 {
 	assert(i < _count);
 	assert(i >= 0);
 	return _values[i];
 }
 
-template<class T>
-Vector<T> const& Vector<T>::operator=(Vector<T> const& rhs)
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> const& Vector<Floating, ComplexFloating>::operator=(Vector<Floating, ComplexFloating> const& rhs)
 {
 	assert(getCount() == rhs.getCount());
 	_values = rhs._values;
 	return *this;
 }
 
-template<class T>
-void Vector<T>::setToZero()
+template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::setToZero()
 {
-	T zero(0);
+	ComplexFloating zero(0);
 	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = zero;

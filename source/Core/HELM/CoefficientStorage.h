@@ -12,9 +12,9 @@ template<typename ComplexType, typename RealType>
 class CoefficientStorage
 {
 public:
-	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses, SparseMatrix<ComplexType> const& admittances);
+	CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, std::vector<PQBus> const& pqBuses, std::vector<PVBus> const &pvBuses, SparseMatrix<RealType, ComplexType> const& admittances);
 
-	void addCoefficients(Vector<ComplexType> const &coefficients);
+	void addCoefficients(Vector<RealType, ComplexType> const &coefficients);
 	ComplexType const& getCoefficient(int node, int step) const;
 	ComplexType const& getLastCoefficient(int node) const;
 	ComplexType const& getInverseCoefficient(int node, int step) const;
@@ -45,8 +45,8 @@ private:
 	const int _nodeCount;
 	const int _pqBusCount;
 	const int _pvBusCount;
-	SparseMatrix<ComplexType> const& _admittances;
-	std::vector< Vector<ComplexType> > _coefficients;
+	SparseMatrix<RealType, ComplexType> const& _admittances;
+	std::vector< Vector<RealType, ComplexType> > _coefficients;
 	std::map<int, std::vector<ComplexType> > _inverseCoefficients;
 	std::vector<int> _pqBuses;
 	std::map<int, std::vector<ComplexType> > _squaredCoefficients;

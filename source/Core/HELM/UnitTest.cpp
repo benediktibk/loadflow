@@ -143,9 +143,9 @@ bool runTestsCoefficientStoragePQ()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix< complex<long double> > admittances(1, 1);
+	SparseMatrix<long double, complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	Vector< complex<long double> > coefficients(1);
+	Vector<long double, complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
@@ -195,9 +195,9 @@ bool runTestsCoefficientStoragePV()
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 1));
-	SparseMatrix< complex<long double> > admittances(1, 1);
+	SparseMatrix<long double, complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	Vector< complex<long double> > coefficients(1);
+	Vector<long double, complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
@@ -236,13 +236,13 @@ bool runTestsCoefficientStorageMixed()
 	pqBuses.push_back(PQBus(1, complex<double>()));
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 0.7));
-	SparseMatrix< complex<long double> > admittances(2, 2);
+	SparseMatrix<long double, complex<long double> > admittances(2, 2);
 	admittances.set(0, 0, complex<double>(100, 100));
 	admittances.set(0, 1, complex<double>(-10, 1));
 	admittances.set(1, 0, complex<double>(-10, 0));
 	admittances.set(1, 1, complex<double>(20, 0));
 	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
-	Vector< complex<long double> > coefficients(2);
+	Vector<long double, complex<long double> > coefficients(2);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
@@ -307,10 +307,10 @@ bool runTestsAnalyticContinuationStepByStep()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix< complex<long double> > admittances(1, 1);
+	SparseMatrix<long double, complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	Vector< complex<long double> > coefficients(1);
+	Vector<long double, complex<long double> > coefficients(1);
 
 	coefficients.set(0, 0);
 	coefficientStorage.addCoefficients(coefficients);
@@ -356,10 +356,10 @@ bool runTestsAnalyticContinuationBunchAtOnce()
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, complex<double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix< complex<long double> > admittances(1, 1);
+	SparseMatrix<long double, complex<long double> > admittances(1, 1);
 	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	Vector< complex<long double> > coefficients(1);
+	Vector<long double, complex<long double> > coefficients(1);
 
 	coefficients.set(0, 0);
 	coefficientStorage.addCoefficients(coefficients);
@@ -401,7 +401,7 @@ bool runTestsAnalyticContinuation()
 
 bool runTestsLinearEquationSystem()
 {
-	SparseMatrix< complex<long double> > A(3, 3);
+	SparseMatrix<long double, complex<long double> > A(3, 3);
 	A.set(0, 0, complex<long double>(1, 2));
 	A.set(0, 1, complex<long double>(3, 4));
 	A.set(0, 2, complex<long double>(5, 6));
@@ -409,11 +409,11 @@ bool runTestsLinearEquationSystem()
 	A.set(1, 2, complex<long double>(9, 10));
 	A.set(2, 0, complex<long double>(11, 12));
 	A.set(2, 2, complex<long double>(13, 14));
-	Vector< complex<long double> > x(3);
+	Vector<long double, complex<long double> > x(3);
 	x.set(0, complex<long double>(15, 16));
 	x.set(1, complex<long double>(17, 18));
 	x.set(2, complex<long double>(19, 20));
-	Vector< complex<long double> > b(3);
+	Vector<long double, complex<long double> > b(3);
 	A.multiply(b, x);
 	LinearEquationSystemSolver< complex<long double>, long double > solver(A, 1e-10);
 
@@ -433,7 +433,7 @@ bool runTestsLinearEquationSystem()
 
 bool runTestsVectorConstructor()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 
 	if (a.getCount() != 3)
 		return false;
@@ -452,11 +452,11 @@ bool runTestsVectorConstructor()
 
 bool runTestsVectorCopyConstructor()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(a);
+	Vector<long double, long double> b(a);
 
 	if (b.getCount() != 3)
 		return false;
@@ -475,11 +475,11 @@ bool runTestsVectorCopyConstructor()
 
 bool runTestsVectorAssignment()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b = a;
 
 	if (b.getCount() != 3)
@@ -499,11 +499,11 @@ bool runTestsVectorAssignment()
 
 bool runTestsVectorDotProduct()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b.set(0, 4);
 	b.set(1, 5);
 	b.set(2, 6);
@@ -515,7 +515,7 @@ bool runTestsVectorDotProduct()
 
 bool runTestsVectorSquaredNorm()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
@@ -527,15 +527,15 @@ bool runTestsVectorSquaredNorm()
 
 bool runTestsVectorWeightedSum()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b.set(0, 4);
 	b.set(1, 5);
 	b.set(2, 6);
-	Vector<long double> result(3);
+	Vector<long double, long double> result(3);
 	result.set(0, 7);
 	result.set(1, 8);
 	result.set(2, 9);
@@ -556,15 +556,15 @@ bool runTestsVectorWeightedSum()
 
 bool runTestsVectorAddWeightedSum()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b.set(0, 4);
 	b.set(1, 5);
 	b.set(2, 6);
-	Vector<long double> result(3);
+	Vector<long double, long double> result(3);
 	result.set(0, 7);
 	result.set(1, 8);
 	result.set(2, 9);
@@ -585,15 +585,15 @@ bool runTestsVectorAddWeightedSum()
 
 bool runTestsVectorPointwiseMultiply()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b.set(0, 4);
 	b.set(1, 5);
 	b.set(2, 6);
-	Vector<long double> result(3);
+	Vector<long double, long double> result(3);
 	result.set(0, 7);
 	result.set(1, 8);
 	result.set(2, 9);
@@ -614,15 +614,15 @@ bool runTestsVectorPointwiseMultiply()
 
 bool runTestsVectorSubtract()
 {
-	Vector<long double> a(3);
+	Vector<long double, long double> a(3);
 	a.set(0, 1);
 	a.set(1, 2);
 	a.set(2, 3);
-	Vector<long double> b(3);
+	Vector<long double, long double> b(3);
 	b.set(0, 6);
 	b.set(1, 5);
 	b.set(2, 4);
-	Vector<long double> result(3);
+	Vector<long double, long double> result(3);
 	result.set(0, 7);
 	result.set(1, 8);
 	result.set(2, 9);
@@ -643,7 +643,7 @@ bool runTestsVectorSubtract()
 
 bool runTestsVectorConjugate()
 {
-	Vector< complex<long double> > a(3);
+	Vector<long double, complex<long double> > a(3);
 	a.set(0, complex<long double>(1, 2));
 	a.set(1, complex<long double>(-3, -4));
 	a.set(2, complex<long double>(5, 6));
@@ -665,7 +665,7 @@ bool runTestsVectorConjugate()
 bool runTestsVectorMultiPrecision()
 {
 	MultiPrecision::setDefaultPrecision(100);
-	Vector< Complex<MultiPrecision> > a(1);
+	Vector<MultiPrecision, Complex<MultiPrecision> > a(1);
 	
 	a.set(0, Complex<MultiPrecision>(MultiPrecision(5), MultiPrecision(6)));
 
@@ -718,7 +718,7 @@ bool runTestsVector()
 
 bool runTestsSparseMatrixConstructor()
 {
-	SparseMatrix<long double> matrix(4, 5);
+	SparseMatrix<long double, long double> matrix(4, 5);
 
 	if (matrix.getRowCount() != 4)
 		return false;
@@ -743,7 +743,7 @@ bool runTestsSparseMatrixConstructor()
 
 bool runTestsSparseMatrixSet()
 {
-	SparseMatrix<long double> matrix(3, 3);
+	SparseMatrix<long double, long double> matrix(3, 3);
 
 	matrix.set(0, 0, 4);
 	matrix.set(2, 2, 5);
@@ -777,7 +777,7 @@ bool runTestsSparseMatrixSet()
 
 bool runTestsSparseMatrixMultiply()
 {
-	SparseMatrix<long double> matrix(3, 4);
+	SparseMatrix<long double, long double> matrix(3, 4);
 	matrix.set(0, 1, 2);
 	matrix.set(0, 2, 3);
 	matrix.set(0, 3, 4);
@@ -785,8 +785,8 @@ bool runTestsSparseMatrixMultiply()
 	matrix.set(1, 3, 60);
 	matrix.set(2, 2, 7);
 	matrix.set(2, 0, 80);
-	Vector<long double> result(3);
-	Vector<long double> source(4);
+	Vector<long double, long double> result(3);
+	Vector<long double, long double> source(4);
 	source.set(0, 1);
 	source.set(1, 2);
 	source.set(2, 3);
@@ -808,7 +808,7 @@ bool runTestsSparseMatrixMultiply()
 
 bool runTestsSparseMatrixRowIteration()
 {
-	SparseMatrix<long double> matrix(3, 4);
+	SparseMatrix<long double, long double> matrix(3, 4);
 	matrix.set(0, 1, 2);
 	matrix.set(0, 2, 3);
 	matrix.set(0, 3, 4);

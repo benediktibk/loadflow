@@ -174,15 +174,15 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 }
 
 template<typename Floating, typename ComplexFloating>
-Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoefficientInternal()
+Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoefficientInternal()
 {
-	Vector<ComplexFloating> rightHandSide(_nodeCount);
+	Vector<Floating, ComplexFloating> rightHandSide(_nodeCount);
 	
 	#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		int id = bus.getId();
+		auto id = bus.getId();
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
 		rightHandSide.set(id, constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
@@ -191,7 +191,7 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		int id = bus.getId();
+		auto id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
 		rightHandSide.set(id, admittanceRowSum + constantCurrent);
@@ -203,14 +203,14 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 {
-	Vector<ComplexFloating> rightHandSide(_nodeCount);
+	Vector<Floating, ComplexFloating> rightHandSide(_nodeCount);
 	
 	#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		PQBus const& bus = _pqBuses[i];
-		int id = bus.getId();
-		ComplexFloating power = createComplexFloating(bus.getPower());
+		auto id = bus.getId();
+		auto power = createComplexFloating(bus.getPower());
 		ComplexFloating const& current = conj(power*_coefficientStorage->getLastInverseCoefficient(id));
 		rightHandSide.set(id, current + (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
@@ -219,7 +219,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		int id = bus.getId();
+		auto id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		rightHandSide.set(id, calculateRightHandSide(bus) - admittanceRowSum);
 	}
@@ -231,14 +231,14 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
-	Vector<ComplexFloating> rightHandSide(_nodeCount);
+	Vector<Floating, ComplexFloating> rightHandSide(_nodeCount);
 			
 	#pragma omp parallel for
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
-		int id = bus.getId();
-		ComplexFloating power = createComplexFloating(bus.getPower());
+		auto id = bus.getId();
+		auto power = createComplexFloating(bus.getPower());
 		rightHandSide.set(id, conj(power*_coefficientStorage->getLastInverseCoefficient(id)));
 	}
 		
@@ -246,7 +246,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
-		int id = bus.getId();
+		auto id = bus.getId();
 		rightHandSide.set(id, calculateRightHandSide(bus));
 	}
 	
@@ -257,47 +257,47 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 template<typename Floating, typename ComplexFloating>
 ComplexFloating Calculator<Floating, ComplexFloating>::calculateRightHandSide(PVBus const& bus)
 {
-	int id = bus.getId();
-	Floating realPower = createFloating(bus.getPowerReal());
+	auto id = bus.getId();
+	auto realPower = createFloating(bus.getPowerReal());
 	ComplexFloating const& previousCoefficient = _coefficientStorage->getLastCoefficient(id);
 	ComplexFloating const& previousCombinedCoefficient = _coefficientStorage->getLastCombinedCoefficient(id);
 	ComplexFloating const& previousSquaredCoefficient = _coefficientStorage->getLastSquaredCoefficient(id);
 	ComplexFloating const& constantCurrent = _constantCurrents(id);
-	Floating magnitudeSquare = createFloating(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
+	auto magnitudeSquare = createFloating(bus.getVoltageMagnitude()*bus.getVoltageMagnitude());
 	return (previousCoefficient*ComplexFloating(realPower*createFloating(2)) - previousCombinedCoefficient + previousSquaredCoefficient*conj(constantCurrent))/ComplexFloating(magnitudeSquare);
 }
 
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 {
-	Vector<ComplexFloating> currents(_nodeCount);
-	Vector<ComplexFloating> voltages(_nodeCount);
+	Vector<Floating, ComplexFloating> currents(_nodeCount);
+	Vector<Floating, ComplexFloating> voltages(_nodeCount);
 	getVoltagesAsVectorComplexFloating(voltages);
 	_admittances.multiply(currents, voltages);
 	currents.subtract(currents, _constantCurrents);
 	currents.conjugate();
-	Vector<ComplexFloating> powers(_nodeCount);
+	Vector<Floating, ComplexFloating> powers(_nodeCount);
 	powers.pointwiseMultiply(currents, voltages);	
 	double sum = 0;
 	
 	#pragma omp parallel for reduction(+:sum)
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
-		complex<double> currentPower = static_cast< complex<double> >(powers(_pqBuses[i].getId()));
-		complex<double> powerShouldBe = _pqBuses[i].getPower();
-		complex<double> difference = currentPower - powerShouldBe;
-		double realDifferenceRelative = powerShouldBe.real() != 0 ? difference.real()/powerShouldBe.real() : difference.real();
-		double imaginaryDifferenceRelative = powerShouldBe.imag() != 0 ? difference.imag()/powerShouldBe.imag() : difference.imag();
+		auto currentPower = static_cast< complex<double> >(powers(_pqBuses[i].getId()));
+		auto powerShouldBe = _pqBuses[i].getPower();
+		auto difference = currentPower - powerShouldBe;
+		auto realDifferenceRelative = powerShouldBe.real() != 0 ? difference.real()/powerShouldBe.real() : difference.real();
+		auto imaginaryDifferenceRelative = powerShouldBe.imag() != 0 ? difference.imag()/powerShouldBe.imag() : difference.imag();
 		sum += abs(realDifferenceRelative) + abs(imaginaryDifferenceRelative);
 	}
 	
 	#pragma omp parallel for reduction(+:sum)
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
-		double currentPower = static_cast<double>(powers(_pvBuses[i].getId()).real());
-		double powerShouldBe  = _pvBuses[i].getPowerReal();
-		double difference = currentPower - powerShouldBe;
-		double differenceRelative = powerShouldBe != 0 ? difference/powerShouldBe : difference;
+		auto currentPower = static_cast<double>(powers(_pvBuses[i].getId()).real());
+		auto powerShouldBe  = _pvBuses[i].getPowerReal();
+		auto difference = currentPower - powerShouldBe;
+		auto differenceRelative = powerShouldBe != 0 ? difference/powerShouldBe : difference;
 		sum += abs(differenceRelative);
 	}
 
@@ -313,9 +313,9 @@ double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
 	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const &bus = _pvBuses[i];
-		int id = bus.getId();
-		double currentMagnitude = abs(_voltages[id]);
-		double magnitudeShouldBe = bus.getVoltageMagnitude();
+		auto id = bus.getId();
+		auto currentMagnitude = abs(_voltages[id]);
+		auto magnitudeShouldBe = bus.getVoltageMagnitude();
 		sum += abs((currentMagnitude - magnitudeShouldBe)/magnitudeShouldBe);
 	}
 
@@ -325,8 +325,8 @@ double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
 template<typename Floating, typename ComplexFloating>
 double Calculator<Floating, ComplexFloating>::calculateTotalRelativeError() const
 {	
-	double powerError = calculatePowerError();
-	double voltageError = calculateVoltageError();
+	auto powerError = calculatePowerError();
+	auto voltageError = calculateVoltageError();
 	return powerError + voltageError;
 }
 
@@ -375,12 +375,12 @@ Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const vecto
 }
 
 template<typename Floating, typename ComplexFloating>
-bool Calculator<Floating, ComplexFloating>::isPQCoefficientZero(Vector<ComplexFloating> const& coefficients) const
+bool Calculator<Floating, ComplexFloating>::isPQCoefficientZero(Vector<Floating, ComplexFloating> const& coefficients) const
 {
 	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		PQBus const& bus = _pqBuses[i];
-		int id = bus.getId();
+		auto id = bus.getId();
 
 		if (coefficients(id) == ComplexFloating())
 			return true;
@@ -438,7 +438,7 @@ double Calculator<Floating, ComplexFloating>::getRelativePowerError()
 }
 
 template<typename Floating, typename ComplexFloating>
-void Calculator<Floating, ComplexFloating>::getVoltagesAsVectorComplexFloating(Vector<ComplexFloating> &result) const
+void Calculator<Floating, ComplexFloating>::getVoltagesAsVectorComplexFloating(Vector<Floating, ComplexFloating> &result) const
 {
 	int count = _voltages.size();
 

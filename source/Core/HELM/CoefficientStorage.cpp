@@ -11,7 +11,7 @@ template class CoefficientStorage< complex<long double>, long double >;
 template class CoefficientStorage< Complex<MultiPrecision>, MultiPrecision >;
 
 template<typename ComplexType, typename RealType>
-CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, vector<PQBus> const& pqBuses, vector<PVBus> const &pvBuses, SparseMatrix<ComplexType> const& admittances) :
+CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, vector<PQBus> const& pqBuses, vector<PVBus> const &pvBuses, SparseMatrix<RealType, ComplexType> const& admittances) :
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBuses.size()),
 	_pvBusCount(pvBuses.size()),
@@ -43,7 +43,7 @@ CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberO
 }
 
 template<typename ComplexType, typename RealType>
-void CoefficientStorage<ComplexType, RealType>::addCoefficients(Vector<ComplexType> const &coefficients)
+void CoefficientStorage<ComplexType, RealType>::addCoefficients(Vector<RealType, ComplexType> const &coefficients)
 {
 	_coefficients.push_back(coefficients);
 	calculateNextInverseCoefficients();

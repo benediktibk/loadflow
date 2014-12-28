@@ -5,12 +5,12 @@
 #include <assert.h>
 #include <complex>
 
-template class SparseMatrix<long double>;
-template class SparseMatrix< std::complex<long double> >;
-template class SparseMatrix< Complex<MultiPrecision> >;
+template class SparseMatrix<long double, long double>;
+template class SparseMatrix<long double, std::complex<long double> >;
+template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
 
-template<class T>
-SparseMatrix<T>::SparseMatrix(int rows, int columns) :
+template<class Floating, class ComplexFloating>
+SparseMatrix<Floating, ComplexFloating>::SparseMatrix(int rows, int columns) :
 	_rowCount(rows),
 	_columnCount(columns),
 	_zero(0)
@@ -21,20 +21,20 @@ SparseMatrix<T>::SparseMatrix(int rows, int columns) :
 	_rowPointers.resize(getRowCount() + 1, 0);
 }
 
-template<class T>
-int SparseMatrix<T>::getRowCount() const
+template<class Floating, class ComplexFloating>
+int SparseMatrix<Floating, ComplexFloating>::getRowCount() const
 {
 	return _rowCount;
 }
 
-template<class T>
-int SparseMatrix<T>::getColumnCount() const
+template<class Floating, class ComplexFloating>
+int SparseMatrix<Floating, ComplexFloating>::getColumnCount() const
 {
 	return _columnCount;
 }
 
-template<class T>
-void SparseMatrix<T>::set(int row, int column, T const &value)
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::set(int row, int column, ComplexFloating const &value)
 {
 	int position;
 
@@ -53,8 +53,8 @@ void SparseMatrix<T>::set(int row, int column, T const &value)
 		_rowPointers[i] += 1;
 }
 
-template<class T>
-void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) const
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> &destination, Vector<Floating, ComplexFloating> const &source) const
 {
 	assert(destination.getCount() == getRowCount());
 	assert(source.getCount() == getColumnCount());
@@ -64,12 +64,12 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 	{
 		auto rowPointer = _rowPointers[i];
 		auto nextRowPointer = _rowPointers[i + 1];
-		T result(0);
+		ComplexFloating result(0);
 
 		for (auto j = rowPointer; j < nextRowPointer; ++j)
 		{
 			auto column = _columns[j];
-			T const &value = _values[j];
+			ComplexFloating const &value = _values[j];
 			result += value*source(column);
 		}
 
@@ -77,16 +77,16 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 	}
 }
 
-template<class T>
-SparseMatrixRowIterator<T> SparseMatrix<T>::getRowIterator(int row) const
+template<class Floating, class ComplexFloating>
+SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row) const
 {
 	assert(row >= 0);
 	assert(row < getRowCount());
-	return SparseMatrixRowIterator<T>(_values, _rowPointers, _columns, row);
+	return SparseMatrixRowIterator<ComplexFloating>(_values, _rowPointers, _columns, row);
 }
 
-template<class T>
-T const& SparseMatrix<T>::operator()(int row, int column) const
+template<class Floating, class ComplexFloating>
+ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	assert(row < getRowCount());
 	assert(column < getColumnCount());
@@ -100,8 +100,8 @@ T const& SparseMatrix<T>::operator()(int row, int column) const
 	return _zero;
 }
 
-template<class T>
-bool SparseMatrix<T>::findPosition(int row, int column, int &position) const
+template<class Floating, class ComplexFloating>
+bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, int &position) const
 {
 	auto rowPosition = _rowPointers[row];
 
