@@ -12,6 +12,7 @@ public:
 	void next();
 	T const& getValue() const;
 	int getColumn() const;
+	int getNonZeroCount() const;
 
 private:
 	const std::vector<T> &_values;

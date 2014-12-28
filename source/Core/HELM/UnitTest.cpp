@@ -818,16 +818,23 @@ bool runTestsSparseMatrixRowIteration()
 	matrix.set(2, 0, 80);
 	vector<long double> values;
 	vector<int> columns;
+	vector<int> nonZeroCounts;
 
 	for (auto row = 0; row < 3; ++row)
-		for (auto i = matrix.getRowIterator(row); i.isValid(); i.next())
+	{
+		auto iterator = matrix.getRowIterator(row);
+		nonZeroCounts.push_back(iterator.getNonZeroCount());
+
+		for (auto i = iterator; i.isValid(); i.next())
 		{
 			values.push_back(i.getValue());
 			columns.push_back(i.getColumn());
 		}
+	}
 
 	vector<long double> valuesShouldBe;
 	vector<int> columnsShouldBe;
+	vector<int> nonZeroCountsShouldBe;
 	valuesShouldBe.push_back(2);
 	valuesShouldBe.push_back(3);
 	valuesShouldBe.push_back(4);
@@ -842,11 +849,17 @@ bool runTestsSparseMatrixRowIteration()
 	columnsShouldBe.push_back(3);
 	columnsShouldBe.push_back(2);
 	columnsShouldBe.push_back(0);
+	nonZeroCountsShouldBe.push_back(3);
+	nonZeroCountsShouldBe.push_back(2);
+	nonZeroCountsShouldBe.push_back(2);
 
 	if (columnsShouldBe != columns)
 		return false;
 
 	if (valuesShouldBe != values)
+		return false;
+
+	if (nonZeroCountsShouldBe != nonZeroCounts)
 		return false;
 
 	return true;

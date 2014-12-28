@@ -15,7 +15,9 @@ SparseMatrixRowIterator<T>::SparseMatrixRowIterator(std::vector<T> const &values
 	_startPosition(rowPointers[row]),
 	_endPosition(rowPointers[row + 1]),
 	_position(_startPosition)
-{ }
+{
+	assert(_endPosition >= _startPosition);
+}
 
 template<class T>
 bool SparseMatrixRowIterator<T>::isValid() const
@@ -41,5 +43,12 @@ int SparseMatrixRowIterator<T>::getColumn() const
 {
 	assert(isValid());
 	return _columns[_position];
+}
+
+template<class T>
+int SparseMatrixRowIterator<T>::getNonZeroCount() const
+{
+	assert(isValid());
+	return _endPosition - _startPosition;
 }
 
