@@ -11,25 +11,17 @@ template class Vector< Complex<MultiPrecision> >;
 
 template<class T>
 Vector<T>::Vector(int n) :
-	_count(n)
+	_count(n),
+	_values(_count)
 {
-	allocateMemory();
 	setToZero();
 }
 
 template<class T>
 Vector<T>::Vector(Vector<T> const &rhs) :
-	_count(rhs.getCount())
-{
-	allocateMemory();
-	copyValues(rhs);
-}
-
-template<class T>
-Vector<T>::~Vector()
-{
-	freeMemory();
-}
+	_count(rhs.getCount()),
+	_values(rhs._values)
+{ }
 
 template<class T>
 int Vector<T>::getCount() const
@@ -135,33 +127,8 @@ template<class T>
 Vector<T> const& Vector<T>::operator=(Vector<T> const& rhs)
 {
 	assert(getCount() == rhs.getCount());
-	copyValues(rhs);
+	_values = rhs._values;
 	return *this;
-}
-
-template<class T>
-void Vector<T>::allocateMemory()
-{
-	assert(getCount() > 0);
-	_values = new T[_count];
-	_temp = new T[_count];
-}
-
-template<class T>
-void Vector<T>::freeMemory()
-{
-	delete[] _values;
-	_values = 0;
-	delete[] _temp;
-	_temp = 0;
-}
-
-template<class T>
-void Vector<T>::copyValues(Vector<T> const &rhs)
-{
-	#pragma omp parallel for
-	for (auto i = 0; i < _count; ++i)
-		_values[i] = rhs._values[i];
 }
 
 template<class T>

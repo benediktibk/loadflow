@@ -1,12 +1,13 @@
 #pragma once
 
+#include <vector>
+
 template<class T>
 class Vector
 {
 public:
 	Vector(int n);
 	Vector(Vector<T> const &rhs);
-	~Vector();
 
 	int getCount() const;
 	void set(int i, T const &value);
@@ -22,14 +23,10 @@ public:
 	Vector<T> const& operator=(Vector<T> const &rhs);
 
 private:
-	void allocateMemory();
-	void freeMemory();
-	void copyValues(Vector<T> const &rhs);
 	void setToZero();
 
 private:
 	const int _count;
-	T *_values;
-	T *_temp;
+	std::vector<T> _values;
 };
 
