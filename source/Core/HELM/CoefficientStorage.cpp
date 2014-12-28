@@ -190,17 +190,14 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficient
 {
 	ComplexType coefficient;
 	
-	for (int i = 0; i < _nodeCount; ++i) //! @TODO iterate only over non zero values
+	for (auto i = _admittances.getRowIterator(node); i.isValid(); i.next())
 	{
-		if (i == node)
+		auto column = i.getColumn();
+
+		if (column == node)
 			continue;
 
-		ComplexType admittance = _admittances(node, i);
-
-		if (admittance == ComplexType(RealType(0), RealType(0)))
-			continue;
-
-		coefficient += conj(admittance*getLastCoefficient(i));
+		coefficient += conj(i.getValue()*getLastCoefficient(column));
 	}
 
 	insertWeightedCoefficent(node, coefficient);
