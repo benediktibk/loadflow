@@ -2,6 +2,7 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
+#include <assert.h>
 
 template class LinearEquationSystemSolver< std::complex<long double>, long double >;
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;

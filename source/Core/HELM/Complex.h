@@ -1,10 +1,8 @@
 #pragma once
 
 #include <complex>
-#include <Eigen/Core>
 #include <ostream>
 #include "MultiPrecision.h"
-#include <Eigen/src/Core/MathFunctions.h>
 
 template<typename T>
 class Complex
@@ -108,101 +106,5 @@ namespace std
 	const T imag(Complex<T> const& value)
 	{
 		return value.imag();
-	}
-}
-
-namespace Eigen 
-{
-	template<> struct NumTraits< Complex<long double> > : NumTraits<double>
-	{
-		typedef long double Real;
-		typedef long double NonInteger;
-		typedef Complex<long double> Nested;
-
-		enum 
-		{
-			IsComplex = 1,
-			IsInteger = 0,
-			IsSigned = 1,
-			RequireInitialization = 1,
-			ReadCost = 1,
-			AddCost = 3,
-			MulCost = 3
-		};
-	};
-
-	template<> struct NumTraits< Complex<MultiPrecision> >
-	{
-		typedef MultiPrecision Real;
-		typedef MultiPrecision NonInteger;
-		typedef Complex<MultiPrecision> Nested;
-
-		enum 
-		{
-			IsComplex = 1,
-			IsInteger = 0,
-			IsSigned = 1,
-			RequireInitialization = 1,
-			ReadCost = 1,
-			AddCost = 3,
-			MulCost = 3
-		};
-
-		static inline Real epsilon() 
-		{ 
-			return static_cast<Real>(std::pow(2, static_cast<double>(MultiPrecision::getBitPrecision())*(-1))); 
-		}
-
-		static inline Real dummy_precision()
-		{
-			return static_cast<Real>(std::pow(2, static_cast<double>(MultiPrecision::getBitPrecision() - 4)*(-1))); 
-		}
-	};
-
-	namespace internal
-	{
-		template<>
-		struct abs2_impl< Complex<long double> >
-		{
-		  static inline long double run(const Complex<long double>& x)
-		  {
-			return x.real()*x.real() + x.imag()*x.imag();
-		  }
-		};
-
-		template<>
-		struct abs2_impl< Complex<MultiPrecision> >
-		{
-		  static inline MultiPrecision run(const Complex<MultiPrecision>& x)
-		  {
-			return x.real()*x.real() + x.imag()*x.imag();
-		  }
-		};
-
-		template<> struct conj_helper< Complex<long double>, Complex<long double>, true, false >
-		{
-			Complex<long double> pmul(Complex<long double> lhs, Complex<long double> rhs)
-			{
-				return std::conj(lhs)*rhs;
-			}
-
-			Complex<long double> pmadd(Complex<long double> const &a, Complex<long double> const &b, Complex<long double> const &c)
-			{
-				return pmul(a, b) + c;
-			}
-		};
-
-		template<> struct conj_helper< Complex<MultiPrecision>, Complex<MultiPrecision>, true, false >
-		{
-			Complex<MultiPrecision> pmul(Complex<MultiPrecision> lhs, Complex<MultiPrecision> rhs)
-			{
-				return std::conj(lhs)*rhs;
-			}
-
-			Complex<MultiPrecision> pmadd(Complex<MultiPrecision> const &a, Complex<MultiPrecision> const &b, Complex<MultiPrecision> const &c)
-			{
-				return pmul(a, b) + c;
-			}
-		};
 	}
 }

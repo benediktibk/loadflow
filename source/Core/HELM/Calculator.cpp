@@ -5,6 +5,7 @@
 #include <map>
 #include <cmath>
 #include <stdexcept>
+#include <assert.h>
 
 using namespace std;
 
