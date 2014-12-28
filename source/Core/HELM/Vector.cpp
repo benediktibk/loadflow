@@ -51,15 +51,15 @@ T Vector<T>::dot(Vector<T> const &rhs) const
 	assert(getCount() == rhs.getCount());
 	T result(0);
 	
-	//#pragma omp parallel
+	#pragma omp parallel
 	{
 		T partialResult(0);
 
-		//#pragma omp for nowait
+		#pragma omp for nowait
 		for (auto i = 0; i < _count; ++i)
 			partialResult += _values[i]*rhs._values[i];
 
-		//#pragma omp critical
+		#pragma omp critical
 		result += partialResult;
 	}
 
@@ -71,18 +71,18 @@ T Vector<T>::squaredNorm() const
 {
 	T result(0);
 	
-	//#pragma omp parallel
+	#pragma omp parallel
 	{
 		T partialResult(0);
 
-		//#pragma omp for nowait
+		#pragma omp for nowait
 		for (auto i = 0; i < _count; ++i)
 		{
 			T const& value(_values[i]);
 			result += value*value;
 		}
 
-		//#pragma omp critical
+		#pragma omp critical
 		result += partialResult;
 	}
 
@@ -95,7 +95,7 @@ void Vector<T>::weightedSum(Vector<T> const &x, T const &yWeight, Vector<T> cons
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = x._values[i] + yWeight*y._values[i];
 }
@@ -106,7 +106,7 @@ void Vector<T>::addWeightedSum(T const &xWeight, Vector<T> const &x, T const &yW
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 	
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] += xWeight*x._values[i] + yWeight*y._values[i];
 }
@@ -117,7 +117,7 @@ void Vector<T>::pointwiseMultiply(Vector<T> const &x, Vector<T> const &y)
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 	
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = x._values[i]*y._values[i];
 }
@@ -128,7 +128,7 @@ void Vector<T>::subtract(Vector<T> const &x, Vector<T> const &y)
 	assert(getCount() == x.getCount());
 	assert(getCount() == y.getCount());
 	
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = x._values[i] - y._values[i];
 }
@@ -136,7 +136,7 @@ void Vector<T>::subtract(Vector<T> const &x, Vector<T> const &y)
 template<class T>
 void Vector<T>::conjugate()
 {
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = std::conj(_values[i]);
 }
@@ -174,7 +174,7 @@ void Vector<T>::freeMemory()
 template<class T>
 void Vector<T>::copyValues(Vector<T> const &rhs)
 {
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = rhs._values[i];
 }
@@ -183,7 +183,7 @@ template<class T>
 void Vector<T>::setToZero()
 {
 	T zero(0);
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = zero;
 }
