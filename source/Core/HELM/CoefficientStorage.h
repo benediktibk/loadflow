@@ -24,7 +24,7 @@ public:
 	ComplexType const& getWeightedCoefficient(int node, int step) const;
 	ComplexType const& getCombinedCoefficient(int node, int step) const;
 	ComplexType const& getLastCombinedCoefficient(int node) const;
-	size_t getCoefficientCount() const;
+	int getCoefficientCount() const;
 
 private:
 	void calculateNextInverseCoefficients();
@@ -43,6 +43,8 @@ private:
 
 private:
 	const int _nodeCount;
+	const int _pqBusCount;
+	const int _pvBusCount;
 	SparseMatrix<ComplexType> const& _admittances;
 	std::vector< Vector<ComplexType> > _coefficients;
 	std::map<int, std::vector<ComplexType> > _inverseCoefficients;

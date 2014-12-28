@@ -9,7 +9,7 @@ template class SparseMatrixRowIterator< std::complex<long double> >;
 template class SparseMatrixRowIterator< Complex<MultiPrecision> >;
 
 template<class T>
-SparseMatrixRowIterator<T>::SparseMatrixRowIterator(std::vector<T> const &values, std::vector<size_t> const &rowPointers, std::vector<size_t> const &columns, size_t row) :
+SparseMatrixRowIterator<T>::SparseMatrixRowIterator(std::vector<T> const &values, std::vector<int> const &rowPointers, std::vector<int> const &columns, int row) :
 	_values(values),
 	_columns(columns),
 	_startPosition(rowPointers[row]),
@@ -37,7 +37,7 @@ T const& SparseMatrixRowIterator<T>::getValue() const
 }
 
 template<class T>
-size_t SparseMatrixRowIterator<T>::getColumn() const
+int SparseMatrixRowIterator<T>::getColumn() const
 {
 	assert(isValid());
 	return _columns[_position];

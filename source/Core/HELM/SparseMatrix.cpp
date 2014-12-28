@@ -10,7 +10,7 @@ template class SparseMatrix< std::complex<long double> >;
 template class SparseMatrix< Complex<MultiPrecision> >;
 
 template<class T>
-SparseMatrix<T>::SparseMatrix(size_t rows, size_t columns) :
+SparseMatrix<T>::SparseMatrix(int rows, int columns) :
 	_rowCount(rows),
 	_columnCount(columns),
 	_zero(0)
@@ -22,21 +22,21 @@ SparseMatrix<T>::SparseMatrix(size_t rows, size_t columns) :
 }
 
 template<class T>
-size_t SparseMatrix<T>::getRowCount() const
+int SparseMatrix<T>::getRowCount() const
 {
 	return _rowCount;
 }
 
 template<class T>
-size_t SparseMatrix<T>::getColumnCount() const
+int SparseMatrix<T>::getColumnCount() const
 {
 	return _columnCount;
 }
 
 template<class T>
-void SparseMatrix<T>::set(size_t row, size_t column, T const &value)
+void SparseMatrix<T>::set(int row, int column, T const &value)
 {
-	size_t position;
+	int position;
 
 	if (findPosition(row, column, position))
 	{
@@ -58,7 +58,7 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 	assert(destination.getCount() == getRowCount());
 	assert(source.getCount() == getColumnCount());
 
-	for (size_t i = 0; i < _rowCount; ++i)
+	for (auto i = 0; i < _rowCount; ++i)
 	{
 		auto rowPointer = _rowPointers[i];
 		auto nextRowPointer = _rowPointers[i + 1];
@@ -76,18 +76,22 @@ void SparseMatrix<T>::multiply(Vector<T> &destination, Vector<T> const &source) 
 }
 
 template<class T>
-SparseMatrixRowIterator<T> SparseMatrix<T>::getRowIterator(size_t row) const
+SparseMatrixRowIterator<T> SparseMatrix<T>::getRowIterator(int row) const
 {
+	assert(row >= 0);
+	assert(row < getRowCount());
 	return SparseMatrixRowIterator<T>(_values, _rowPointers, _columns, row);
 }
 
 template<class T>
-T const& SparseMatrix<T>::operator()(size_t row, size_t column) const
+T const& SparseMatrix<T>::operator()(int row, int column) const
 {
 	assert(row < getRowCount());
 	assert(column < getColumnCount());
+	assert(row >= 0);
+	assert(column >= 0);
 
-	size_t position;
+	int position;
 	if (findPosition(row, column, position))
 		return _values[position];
 
@@ -95,7 +99,7 @@ T const& SparseMatrix<T>::operator()(size_t row, size_t column) const
 }
 
 template<class T>
-bool SparseMatrix<T>::findPosition(size_t row, size_t column, size_t &position) const
+bool SparseMatrix<T>::findPosition(int row, int column, int &position) const
 {
 	auto rowPosition = _rowPointers[row];
 

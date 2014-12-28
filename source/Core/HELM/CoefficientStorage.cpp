@@ -13,24 +13,26 @@ template class CoefficientStorage< Complex<MultiPrecision>, MultiPrecision >;
 template<typename ComplexType, typename RealType>
 CoefficientStorage<ComplexType, RealType>::CoefficientStorage(int maximumNumberOfCoefficients, int nodeCount, vector<PQBus> const& pqBuses, vector<PVBus> const &pvBuses, SparseMatrix<ComplexType> const& admittances) :
 	_nodeCount(nodeCount),
+	_pqBusCount(pqBuses.size()),
+	_pvBusCount(pvBuses.size()),
 	_admittances(admittances)
 {
-	assert(nodeCount == pqBuses.size() + pvBuses.size());
+	assert(nodeCount ==_pqBusCount + _pvBusCount);
 	_coefficients.reserve(maximumNumberOfCoefficients);
 
-	_pqBuses.reserve(pqBuses.size());
-	for (size_t i = 0; i < pqBuses.size(); ++i)
+	_pqBuses.reserve(_pqBusCount);
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		_inverseCoefficients.insert(pair<int, vector<ComplexType> >(pqBuses[i].getId(), vector<ComplexType>()));
 		_pqBuses.push_back(pqBuses[i].getId());
 	}
 
-	_pvBuses.reserve(pvBuses.size());
-	for (size_t i = 0; i < pvBuses.size(); ++i)
+	_pvBuses.reserve(_pvBusCount);
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = pvBuses[i];
-		int id = bus.getId();
-		double voltageMagnitude = bus.getVoltageMagnitude();
+		auto id = bus.getId();
+		auto voltageMagnitude = bus.getVoltageMagnitude();
 		_squaredCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
 		_combinedCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
 		_weightedCoefficients.insert(pair<int, vector<ComplexType> >(id, vector<ComplexType>()));
@@ -112,7 +114,7 @@ ComplexType const& CoefficientStorage<ComplexType, RealType>::getLastCombinedCoe
 }
 
 template<typename ComplexType, typename RealType>
-size_t CoefficientStorage<ComplexType, RealType>::getCoefficientCount() const
+int CoefficientStorage<ComplexType, RealType>::getCoefficientCount() const
 {
 	return _coefficients.size();
 }
@@ -126,7 +128,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficients
 		return;
 	}
 
-	for (size_t i = 0; i < _pqBuses.size(); ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 		calculateNextInverseCoefficient(_pqBuses[i]);
 }
 
@@ -136,7 +138,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(
 	ComplexType result(0);
 
 	int n = _coefficients.size() - 1;
-	for (int i = 0; i < n; ++i)
+	for (auto i = 0; i < n; ++i)
 	{
 		ComplexType const& coefficient = getCoefficient(node, n - i);
 		ComplexType const& inverseCoefficient = getInverseCoefficient(node, i);
@@ -151,18 +153,18 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateFirstInverseCoefficients()
 {
-	for (size_t i = 0; i < _pqBuses.size(); ++i)
+	for (auto i = 0; i < _pqBuses.size(); ++i)
 	{
-		int node = _pqBuses[i];
+		auto node = _pqBuses[i];
 		ComplexType const& coefficient = getCoefficient(node, 0);
-		ComplexType inverseCoefficient = ComplexType(1)/coefficient;
+		auto inverseCoefficient = ComplexType(1)/coefficient;
 		insertInverseCoefficient(node, inverseCoefficient);
 	}
 }
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficients()
 {
-	for (size_t i = 0; i < _pvBuses.size(); ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextSquaredCoefficient(_pvBuses[i]);
 }
 
@@ -172,7 +174,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficient(
 	int n = _coefficients.size() - 1;
 	ComplexType coefficient;
 
-	for (int j = 0; j <= n; ++j)
+	for (auto j = 0; j <= n; ++j)
 		coefficient += getCoefficient(node, j)*getCoefficient(node, n - j);
 
 	insertSquaredCoefficient(node, coefficient);
@@ -181,7 +183,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextSquaredCoefficient(
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficients()
 {
-	for (size_t i = 0; i < _pvBuses.size(); ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextWeightedCoefficient(_pvBuses[i]);
 }
 
@@ -206,7 +208,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextWeightedCoefficient
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficients()
 {
-	for (size_t i = 0; i < _pvBuses.size(); ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 		calculateNextCombinedCoefficient(_pvBuses[i]);
 }
 
@@ -216,7 +218,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextCombinedCoefficient
 	ComplexType result;
 	int n = _coefficients.size() - 1;
 
-	for (int i = 0; i <= n; ++i)
+	for (auto i = 0; i <= n; ++i)
 			result += getWeightedCoefficient(node, n - i)*getSquaredCoefficient(node, i);
 	
 	result += conj(_admittances(node, node))*getLastCoefficient(node)*ComplexType(_pvBusVoltageMagnitudeSquares[node]);

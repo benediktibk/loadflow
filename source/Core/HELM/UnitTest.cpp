@@ -817,9 +817,9 @@ bool runTestsSparseMatrixRowIteration()
 	matrix.set(2, 2, 7);
 	matrix.set(2, 0, 80);
 	vector<long double> values;
-	vector<size_t> columns;
+	vector<int> columns;
 
-	for (size_t row = 0; row < 3; ++row)
+	for (auto row = 0; row < 3; ++row)
 		for (auto i = matrix.getRowIterator(row); i.isValid(); i.next())
 		{
 			values.push_back(i.getValue());
@@ -827,7 +827,7 @@ bool runTestsSparseMatrixRowIteration()
 		}
 
 	vector<long double> valuesShouldBe;
-	vector<size_t> columnsShouldBe;
+	vector<int> columnsShouldBe;
 	valuesShouldBe.push_back(2);
 	valuesShouldBe.push_back(3);
 	valuesShouldBe.push_back(4);

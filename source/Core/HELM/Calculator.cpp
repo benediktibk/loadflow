@@ -87,7 +87,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		_relativePowerError = 1;
 	}
 
-	for (size_t i = 0; i < _nodeCount; ++i)
+	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 	
 	if (!calculateFirstCoefficient())
@@ -178,7 +178,7 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 
-	for (size_t i = 0; i < _pqBusCount; ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
@@ -186,7 +186,7 @@ Vector<ComplexFloating> Calculator<Floating, ComplexFloating>::calculateFirstCoe
 		rightHandSide.set(id, constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
 
-	for (size_t i = 0; i < _pvBusCount; ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
@@ -203,7 +203,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 
-	for (size_t i = 0; i < _pqBusCount; ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		PQBus const& bus = _pqBuses[i];
 		int id = bus.getId();
@@ -212,7 +212,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		rightHandSide.set(id, current + (_totalAdmittanceRowSums[id] + _embeddingModification));
 	}
 
-	for (size_t i = 0; i < _pvBusCount; ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
@@ -229,7 +229,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 {
 	Vector<ComplexFloating> rightHandSide(_nodeCount);
 			
-	for (size_t i = 0; i < _pqBusCount; ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		const PQBus &bus = _pqBuses[i];
 		int id = bus.getId();
@@ -237,7 +237,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		rightHandSide.set(id, conj(power*_coefficientStorage->getLastInverseCoefficient(id)));
 	}
 		
-	for (size_t i = 0; i < _pvBusCount; ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const& bus = _pvBuses[i];
 		int id = bus.getId();
@@ -274,7 +274,7 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 	powers.pointwiseMultiply(currents, voltages);	
 	double sum = 0;
 
-	for (size_t i = 0; i < _pqBusCount; ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		complex<double> currentPower = static_cast< complex<double> >(powers(_pqBuses[i].getId()));
 		complex<double> powerShouldBe = _pqBuses[i].getPower();
@@ -284,7 +284,7 @@ double Calculator<Floating, ComplexFloating>::calculatePowerError() const
 		sum += abs(realDifferenceRelative) + abs(imaginaryDifferenceRelative);
 	}
 
-	for (size_t i = 0; i < _pvBusCount; ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		double currentPower = static_cast<double>(powers(_pvBuses[i].getId()).real());
 		double powerShouldBe  = _pvBuses[i].getPowerReal();
@@ -301,7 +301,7 @@ double Calculator<Floating, ComplexFloating>::calculateVoltageError() const
 {	
 	double sum = 0;
 
-	for (size_t i = 0; i < _pvBusCount; ++i)
+	for (auto i = 0; i < _pvBusCount; ++i)
 	{
 		PVBus const &bus = _pvBuses[i];
 		int id = bus.getId();
@@ -334,7 +334,7 @@ void Calculator<Floating, ComplexFloating>::freeMemory()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::deleteContinuations()
 {
-	for (size_t i = 0; i < _continuations.size(); ++i)
+	for (auto i = 0; i < static_cast<int>(_continuations.size()); ++i)
 		delete _continuations[i];
 	_continuations.clear();
 }
@@ -342,7 +342,7 @@ void Calculator<Floating, ComplexFloating>::deleteContinuations()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculateVoltagesFromCoefficients()
 {
-	for (size_t i = 0; i < _nodeCount; ++i)
+	for (auto i = 0; i < _nodeCount; ++i)
 	{
 		_continuations[i]->updateWithLastCoefficients();
 		_voltages[i] = _continuations[i]->getResult();
@@ -355,7 +355,7 @@ Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const vecto
 	assert(values.size() > 0);
 	Floating result(0);
 
-	for (size_t i = 0; i < values.size(); ++i)
+	for (auto i = 0; i < static_cast<int>(values.size()); ++i)
 	{
 		Floating magnitude = abs(values[i]);
 		if (magnitude > result)
@@ -368,7 +368,7 @@ Floating Calculator<Floating, ComplexFloating>::findMaximumMagnitude(const vecto
 template<typename Floating, typename ComplexFloating>
 bool Calculator<Floating, ComplexFloating>::isPQCoefficientZero(Vector<ComplexFloating> const& coefficients) const
 {
-	for (size_t i = 0; i < _pqBusCount; ++i)
+	for (auto i = 0; i < _pqBusCount; ++i)
 	{
 		PQBus const& bus = _pqBuses[i];
 		int id = bus.getId();
@@ -431,8 +431,8 @@ double Calculator<Floating, ComplexFloating>::getRelativePowerError()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::getVoltagesAsVectorComplexFloating(Vector<ComplexFloating> &result) const
 {
-	auto count = _voltages.size();
+	int count = _voltages.size();
 
-	for (size_t i = 0; i < count; ++i)
+	for (auto i = 0; i < count; ++i)
 		result.set(i, static_cast<ComplexFloating>(_voltages[i]));
 }

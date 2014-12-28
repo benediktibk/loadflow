@@ -42,7 +42,7 @@ void AnalyticContinuation<Floating, ComplexFloating>::updateWithLastCoefficients
 	{
 		_next[1] = calculateImprovement(_current[0], _next[0], ComplexFloating());
 
-		for (size_t i = 2; i <= _alreadyProcessed; ++i)
+		for (auto i = 2; i <= _alreadyProcessed; ++i)
 			_next[i] = calculateImprovement(_current[i - 1], _next[i - 1], _current[i - 2]);
 	}
 

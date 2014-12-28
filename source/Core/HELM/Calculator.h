@@ -60,10 +60,10 @@ private:
 
 private:
 	const double _targetPrecision;
-	const size_t _numberOfCoefficients;
-	const size_t _nodeCount;
-	const size_t _pqBusCount;
-	const size_t _pvBusCount;
+	const int _numberOfCoefficients;
+	const int _nodeCount;
+	const int _pqBusCount;
+	const int _pvBusCount;
 	const double _nominalVoltage;
 	SparseMatrix<ComplexFloating> _admittances;
 	LinearEquationSystemSolver<ComplexFloating, Floating> *_solver;

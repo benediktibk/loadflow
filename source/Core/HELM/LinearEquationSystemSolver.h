@@ -12,7 +12,7 @@ public:
 	Vector<ComplexFloating> solve(const Vector<ComplexFloating> &b) const;
 
 private:	
-	const size_t _dimension;
+	const int _dimension;
 	SparseMatrix<ComplexFloating> const &_systemMatrix;
 	SparseMatrix<ComplexFloating> _preconditioner;
 };

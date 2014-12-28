@@ -20,10 +20,10 @@ private:
 
 private:
 	CoefficientStorage<ComplexFloating, Floating> const& _coefficients;
-	const size_t _node;
-	const size_t _maximumNumberOfCoefficients;
+	const int _node;
+	const int _maximumNumberOfCoefficients;
 	std::vector<ComplexFloating> _current;
 	std::vector<ComplexFloating> _next;
-	size_t _alreadyProcessed;
+	int _alreadyProcessed;
 };
 

@@ -13,7 +13,7 @@ LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolve
 {
 	assert(_systemMatrix.getRowCount() == _systemMatrix.getColumnCount());
 
-	for (size_t i = 0; i < _dimension; ++i)
+	for (auto i = 0; i < _dimension; ++i)
 	{
 		ComplexFloating const &diagonalValue = _systemMatrix(i, i);
 		_preconditioner.set(i, i, ComplexFloating(1)/diagonalValue);
@@ -25,7 +25,7 @@ Vector<ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::s
 {	
 	Vector<ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);
-	int maximumIterations = 10*_dimension;
+	auto maximumIterations = 10*_dimension;
 	Vector<ComplexFloating> residual(_dimension);
 	Vector<ComplexFloating> temp(_dimension); 
 	_systemMatrix.multiply(temp, x);
