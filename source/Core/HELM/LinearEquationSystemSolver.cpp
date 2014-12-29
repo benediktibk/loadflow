@@ -4,7 +4,7 @@
 #include "NumericalTraits.h"
 #include <assert.h>
 
-template class LinearEquationSystemSolver< std::complex<long double>, long double >;
+template class LinearEquationSystemSolver< Complex<long double>, long double >;
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
 
 template<class ComplexFloating, class Floating>
@@ -18,7 +18,7 @@ LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolve
 	for (auto i = 0; i < _dimension; ++i)
 	{
 		ComplexFloating const &diagonalValue = _systemMatrix(i, i);
-		_preconditioner.set(i, i, ComplexFloating(1)/diagonalValue);
+		_preconditioner.set(i, i, ComplexFloating(Floating(1))/diagonalValue);
 	}
 }
 
@@ -39,9 +39,9 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 	auto epsilonSquared = epsilon*epsilon;
 	auto i = 0;
 	auto restarts = 0;
-	auto rho = ComplexFloating(1);
-	auto alpha = ComplexFloating(1);
-	auto w = ComplexFloating(1);  
+	auto rho = ComplexFloating(Floating(1));
+	auto alpha = ComplexFloating(Floating(1));
+	auto w = ComplexFloating(Floating(1));  
 	auto v = Vector<Floating, ComplexFloating>(_dimension);
 	auto p = Vector<Floating, ComplexFloating>(_dimension);
 	auto y = Vector<Floating, ComplexFloating>(_dimension);
@@ -72,12 +72,12 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 		}
 
 		auto beta = (rho/rho_old)*(alpha/w);
-		temp.weightedSum(p, w*ComplexFloating(-1), v);
+		temp.weightedSum(p, w*ComplexFloating(Floating(-1)), v);
 		p.weightedSum(residual, beta, temp);
 		_preconditioner.multiply(y, p);
 		_systemMatrix.multiply(v, y);
 		alpha = rho / firstResidual.dot(v);
-		s.weightedSum(residual, alpha*ComplexFloating(-1), v);
+		s.weightedSum(residual, alpha*ComplexFloating(Floating(-1)), v);
 		_preconditioner.multiply(z, s);
 		_systemMatrix.multiply(t, z);
 
@@ -85,10 +85,10 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 		if(tmp > Floating(0))
 			w = t.dot(s) / ComplexFloating(tmp);
 		else
-			w = ComplexFloating(0);
+			w = ComplexFloating(Floating(0));
 
 		x.addWeightedSum(alpha, y, w, z);
-		residual.weightedSum(s, w*ComplexFloating(-1), t);
+		residual.weightedSum(s, w*ComplexFloating(Floating(-1)), t);
 		++i;
 	}
 

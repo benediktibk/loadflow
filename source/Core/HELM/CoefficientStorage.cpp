@@ -1,13 +1,12 @@
 #include "CoefficientStorage.h"
 #include "MultiPrecision.h"
 #include "Complex.h"
-#include <complex>
 #include <assert.h>
 #include <stdexcept>
 
 using namespace std;
 
-template class CoefficientStorage< complex<long double>, long double >;
+template class CoefficientStorage< Complex<long double>, long double >;
 template class CoefficientStorage< Complex<MultiPrecision>, MultiPrecision >;
 
 template<typename ComplexType, typename RealType>
@@ -137,7 +136,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficients
 template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(int node)
 {
-	ComplexType result(0);
+	ComplexType result(RealType(0));
 
 	int n = _coefficients.size() - 1;
 	for (auto i = 0; i < n; ++i)
@@ -148,7 +147,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateNextInverseCoefficient(
 	}
 
 	ComplexType const& firstCoefficient = getCoefficient(node, 0);
-	result = result/firstCoefficient*ComplexType(RealType(-1), RealType(0));
+	result = result/firstCoefficient*ComplexType(RealType(-1));
 	insertInverseCoefficient(node, result);
 }
 
@@ -160,7 +159,7 @@ void CoefficientStorage<ComplexType, RealType>::calculateFirstInverseCoefficient
 	{
 		auto node = _pqBuses[i];
 		ComplexType const& coefficient = getCoefficient(node, 0);
-		auto inverseCoefficient = ComplexType(1)/coefficient;
+		auto inverseCoefficient = ComplexType(RealType(1))/coefficient;
 		insertInverseCoefficient(node, inverseCoefficient);
 	}
 }

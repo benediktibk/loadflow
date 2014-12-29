@@ -6,7 +6,6 @@
 #include "Vector.h"
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
-#include <complex>
 
 using namespace std;
 
@@ -16,7 +15,7 @@ bool areEqual(Complex<double> const& one, Complex<double> const& two, double del
 			std::abs(one.imag() - two.imag()) < delta;
 }
 
-bool areEqual(complex<long double> const& one, complex<long double> const& two, double delta)
+bool areEqual(Complex<long double> const& one, Complex<long double> const& two, double delta)
 {
 	return	std::abs(one.real() - two.real()) < delta &&
 			std::abs(one.imag() - two.imag()) < delta;
@@ -141,50 +140,50 @@ bool runTestsMultiPrecision()
 bool runTestsCoefficientStoragePQ()
 {
 	vector<PQBus> pqBuses;
-	pqBuses.push_back(PQBus(0, complex<double>()));
+	pqBuses.push_back(PQBus(0, Complex<long double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix<long double, complex<long double> > admittances(1, 1);
-	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	Vector<long double, complex<long double> > coefficients(1);
+	SparseMatrix<long double, Complex<long double> > admittances(1, 1);
+	CoefficientStorage< Complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
+	Vector<long double, Complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients.set(0, complex<long double>(2, 0));
+	coefficients.set(0, Complex<long double>(2, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(2, 0), storage.getLastCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(2, 0), storage.getLastCoefficient(0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(0.5, 0), storage.getLastInverseCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(0.5, 0), storage.getLastInverseCoefficient(0), 0.000001))
 		return false;
 	
-	coefficients.set(0, complex<long double>(3, 0));
+	coefficients.set(0, Complex<long double>(3, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(3, 0), storage.getLastCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(3, 0), storage.getLastCoefficient(0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(-0.75, 0), storage.getLastInverseCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(-0.75, 0), storage.getLastInverseCoefficient(0), 0.000001))
 		return false;
 	
-	coefficients.set(0, complex<long double>(5, 0));
+	coefficients.set(0, Complex<long double>(5, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(5, 0), storage.getLastCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(5, 0), storage.getLastCoefficient(0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>((-1.0)/8, 0), storage.getLastInverseCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>((-1.0)/8, 0), storage.getLastInverseCoefficient(0), 0.000001))
 		return false;
 
-	if (!areEqual(complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(0.5, 0), storage.getInverseCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(0.5, 0), storage.getInverseCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(-0.75, 0), storage.getInverseCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(-0.75, 0), storage.getInverseCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>((-1.0)/8, 0), storage.getInverseCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>((-1.0)/8, 0), storage.getInverseCoefficient(0, 2), 0.000001))
 		return false;
 
 	return true;
@@ -195,36 +194,36 @@ bool runTestsCoefficientStoragePV()
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 1));
-	SparseMatrix<long double, complex<long double> > admittances(1, 1);
-	CoefficientStorage< complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
-	Vector<long double, complex<long double> > coefficients(1);
+	SparseMatrix<long double, Complex<long double> > admittances(1, 1);
+	CoefficientStorage< Complex<long double>, long double> storage(10, 1, pqBuses, pvBuses, admittances);
+	Vector<long double, Complex<long double> > coefficients(1);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients.set(0, complex<long double>(2, 0));
+	coefficients.set(0, Complex<long double>(2, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(4, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(4, 0), storage.getLastSquaredCoefficient(0), 0.000001))
 		return false;
 	
-	coefficients.set(0, complex<long double>(3, 0));
+	coefficients.set(0, Complex<long double>(3, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(12, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(12, 0), storage.getLastSquaredCoefficient(0), 0.000001))
 		return false;
 	
-	coefficients.set(0, complex<long double>(5, 0));
+	coefficients.set(0, Complex<long double>(5, 0));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(29, 0), storage.getLastSquaredCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(29, 0), storage.getLastSquaredCoefficient(0), 0.000001))
 		return false;
 
-	if (!areEqual(complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
 		return false;
 
 	return true;
@@ -233,56 +232,56 @@ bool runTestsCoefficientStoragePV()
 bool runTestsCoefficientStorageMixed()
 {
 	vector<PQBus> pqBuses;
-	pqBuses.push_back(PQBus(1, complex<double>()));
+	pqBuses.push_back(PQBus(1, Complex<long double>()));
 	vector<PVBus> pvBuses;
 	pvBuses.push_back(PVBus(0, 0, 0.7));
-	SparseMatrix<long double, complex<long double> > admittances(2, 2);
-	admittances.set(0, 0, complex<double>(100, 100));
-	admittances.set(0, 1, complex<double>(-10, 1));
-	admittances.set(1, 0, complex<double>(-10, 0));
-	admittances.set(1, 1, complex<double>(20, 0));
-	CoefficientStorage< complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
-	Vector<long double, complex<long double> > coefficients(2);
+	SparseMatrix<long double, Complex<long double> > admittances(2, 2);
+	admittances.set(0, 0, Complex<long double>(100, 100));
+	admittances.set(0, 1, Complex<long double>(-10, 1));
+	admittances.set(1, 0, Complex<long double>(-10, 0));
+	admittances.set(1, 1, Complex<long double>(20, 0));
+	CoefficientStorage< Complex<long double>, long double> storage(10, 2, pqBuses, pvBuses, admittances);
+	Vector<long double, Complex<long double> > coefficients(2);
 
 	if (0 != storage.getCoefficientCount())
 		return false;
 
-	coefficients.set(0, complex<long double>(2, 0));
-	coefficients.set(1, complex<long double>(0, 3));
+	coefficients.set(0, Complex<long double>(2, 0));
+	coefficients.set(1, Complex<long double>(0, 3));
 	storage.addCoefficients(coefficients);
-	coefficients.set(0, complex<long double>(3, 0));
-	coefficients.set(1, complex<long double>(0, 7));
+	coefficients.set(0, Complex<long double>(3, 0));
+	coefficients.set(1, Complex<long double>(0, 7));
 	storage.addCoefficients(coefficients);
-	coefficients.set(0, complex<long double>(5, 0));
-	coefficients.set(1, complex<long double>(1, 1));
+	coefficients.set(0, Complex<long double>(5, 0));
+	coefficients.set(1, Complex<long double>(1, 1));
 	storage.addCoefficients(coefficients);
 
-	if (!areEqual(complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(2, 0), storage.getCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(3, 0), storage.getCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>(5, 0), storage.getCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(0, 3), storage.getCoefficient(1, 0), 0.000001))
+	if (!areEqual(Complex<long double>(0, 3), storage.getCoefficient(1, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(0, 7), storage.getCoefficient(1, 1), 0.000001))
+	if (!areEqual(Complex<long double>(0, 7), storage.getCoefficient(1, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(1, 1), storage.getCoefficient(1, 2), 0.000001))
+	if (!areEqual(Complex<long double>(1, 1), storage.getCoefficient(1, 2), 0.000001))
 		return false;
 	
-	if (!areEqual(complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(4, 0), storage.getSquaredCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(12, 0), storage.getSquaredCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>(29, 0), storage.getSquaredCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(86, 22), storage.getCombinedCoefficient(0, 0), 0.000001))
+	if (!areEqual(Complex<long double>(86, 22), storage.getCombinedCoefficient(0, 0), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(83, 493), storage.getCombinedCoefficient(0, 1), 0.000001))
+	if (!areEqual(Complex<long double>(83, 493), storage.getCombinedCoefficient(0, 1), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(30, 1501), storage.getCombinedCoefficient(0, 2), 0.000001))
+	if (!areEqual(Complex<long double>(30, 1501), storage.getCombinedCoefficient(0, 2), 0.000001))
 		return false;
-	if (!areEqual(complex<long double>(30, 1501), storage.getLastCombinedCoefficient(0), 0.000001))
+	if (!areEqual(Complex<long double>(30, 1501), storage.getLastCombinedCoefficient(0), 0.000001))
 		return false;
 
 	return true;
@@ -305,47 +304,47 @@ bool runTestsCoefficientStorage()
 bool runTestsAnalyticContinuationStepByStep()
 {
 	vector<PQBus> pqBuses;
-	pqBuses.push_back(PQBus(0, complex<double>()));
+	pqBuses.push_back(PQBus(0, Complex<long double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix<long double, complex<long double> > admittances(1, 1);
-	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
-	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	Vector<long double, complex<long double> > coefficients(1);
+	SparseMatrix<long double, Complex<long double> > admittances(1, 1);
+	CoefficientStorage< Complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
+	AnalyticContinuation< long double, Complex<long double> > continuation(coefficientStorage, 0, 6);
+	Vector<long double, Complex<long double> > coefficients(1);
 
-	coefficients.set(0, 0);
+	coefficients.set(0, Complex<long double>(0, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0, 0), continuation.getResult(), 0.00001))
 		return false;
 	
-	coefficients.set(0, 0.5);
+	coefficients.set(0, Complex<long double>(0.5, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.5, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.5, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients.set(0, 0.0625);
+	coefficients.set(0, Complex<long double>(0.0625, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.57142857, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.57142857, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients.set(0, 0.01660156);
+	coefficients.set(0, Complex<long double>(0.01660156, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.58510638, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.58510638, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients.set(0, 0.00473809);
+	coefficients.set(0, Complex<long double>(0.00473809, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.58574349, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.58574349, 0), continuation.getResult(), 0.00001))
 		return false;
 
-	coefficients.set(0, 0.00137754);
+	coefficients.set(0, Complex<long double>(0.00137754, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.58578573, 0), continuation.getResult(), 0.00001))
 		return false;
 
 	return true;
@@ -354,35 +353,35 @@ bool runTestsAnalyticContinuationStepByStep()
 bool runTestsAnalyticContinuationBunchAtOnce()
 {
 	vector<PQBus> pqBuses;
-	pqBuses.push_back(PQBus(0, complex<double>()));
+	pqBuses.push_back(PQBus(0, Complex<long double>()));
 	vector<PVBus> pvBuses;
-	SparseMatrix<long double, complex<long double> > admittances(1, 1);
-	CoefficientStorage< complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
-	AnalyticContinuation< long double, complex<long double> > continuation(coefficientStorage, 0, 6);
-	Vector<long double, complex<long double> > coefficients(1);
+	SparseMatrix<long double, Complex<long double> > admittances(1, 1);
+	CoefficientStorage< Complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
+	AnalyticContinuation< long double, Complex<long double> > continuation(coefficientStorage, 0, 6);
+	Vector<long double, Complex<long double> > coefficients(1);
 
-	coefficients.set(0, 0);
+	coefficients.set(0, Complex<long double>(0, 0));
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients.set(0, 0.5);
+	coefficients.set(0, Complex<long double>(0.5, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.5, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.5, 0), continuation.getResult(), 0.00001))
 		return false;
 	
-	coefficients.set(0, 0.0625);
+	coefficients.set(0, Complex<long double>(0.0625, 0));
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients.set(0, 0.01660156);
+	coefficients.set(0, Complex<long double>(0.01660156, 0));
 	coefficientStorage.addCoefficients(coefficients);
-	coefficients.set(0, 0.00473809);
+	coefficients.set(0, Complex<long double>(0.00473809, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.58574349, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.58574349, 0), continuation.getResult(), 0.00001))
 		return false;
 	
-	coefficients.set(0, 0.00137754);
+	coefficients.set(0, Complex<long double>(0.00137754, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(complex<double>(0.58578573, 0), continuation.getResult(), 0.00001))
+	if (!areEqual(Complex<long double>(0.58578573, 0), continuation.getResult(), 0.00001))
 		return false;
 
 	return true;
@@ -401,21 +400,21 @@ bool runTestsAnalyticContinuation()
 
 bool runTestsLinearEquationSystem()
 {
-	SparseMatrix<long double, complex<long double> > A(3, 3);
-	A.set(0, 0, complex<long double>(1, 2));
-	A.set(0, 1, complex<long double>(3, 4));
-	A.set(0, 2, complex<long double>(5, 6));
-	A.set(1, 1, complex<long double>(7, 8));
-	A.set(1, 2, complex<long double>(9, 10));
-	A.set(2, 0, complex<long double>(11, 12));
-	A.set(2, 2, complex<long double>(13, 14));
-	Vector<long double, complex<long double> > x(3);
-	x.set(0, complex<long double>(15, 16));
-	x.set(1, complex<long double>(17, 18));
-	x.set(2, complex<long double>(19, 20));
-	Vector<long double, complex<long double> > b(3);
+	SparseMatrix<long double, Complex<long double> > A(3, 3);
+	A.set(0, 0, Complex<long double>(1, 2));
+	A.set(0, 1, Complex<long double>(3, 4));
+	A.set(0, 2, Complex<long double>(5, 6));
+	A.set(1, 1, Complex<long double>(7, 8));
+	A.set(1, 2, Complex<long double>(9, 10));
+	A.set(2, 0, Complex<long double>(11, 12));
+	A.set(2, 2, Complex<long double>(13, 14));
+	Vector<long double, Complex<long double> > x(3);
+	x.set(0, Complex<long double>(15, 16));
+	x.set(1, Complex<long double>(17, 18));
+	x.set(2, Complex<long double>(19, 20));
+	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
-	LinearEquationSystemSolver< complex<long double>, long double > solver(A, 1e-10);
+	LinearEquationSystemSolver< Complex<long double>, long double > solver(A, 1e-10);
 
 	auto result = solver.solve(b);
 
@@ -433,18 +432,18 @@ bool runTestsLinearEquationSystem()
 
 bool runTestsVectorConstructor()
 {
-	Vector<long double, complex<long double> > a(3);
+	Vector<long double, Complex<long double> > a(3);
 
 	if (a.getCount() != 3)
 		return false;
 
-	if (a(0) != complex<long double>(0, 0))
+	if (a(0) != Complex<long double>(0, 0))
 		return false;
 
-	if (a(1) != complex<long double>(0, 0))
+	if (a(1) != Complex<long double>(0, 0))
 		return false;
 
-	if (a(2) != complex<long double>(0, 0))
+	if (a(2) != Complex<long double>(0, 0))
 		return false;
 
 	return true;
@@ -452,22 +451,22 @@ bool runTestsVectorConstructor()
 
 bool runTestsVectorCopyConstructor()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(a);
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(a);
 
 	if (b.getCount() != 3)
 		return false;
 
-	if (b(0) != complex<long double>(1, 0))
+	if (b(0) != Complex<long double>(1, 0))
 		return false;
 
-	if (b(1) != complex<long double>(2, 0))
+	if (b(1) != Complex<long double>(2, 0))
 		return false;
 
-	if (b(2) != complex<long double>(3, 0))
+	if (b(2) != Complex<long double>(3, 0))
 		return false;
 
 	return true;
@@ -475,23 +474,23 @@ bool runTestsVectorCopyConstructor()
 
 bool runTestsVectorAssignment()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
 	b = a;
 
 	if (b.getCount() != 3)
 		return false;
 
-	if (b(0) != complex<long double>(1, 0))
+	if (b(0) != Complex<long double>(1, 0))
 		return false;
 
-	if (b(1) != complex<long double>(2, 0))
+	if (b(1) != Complex<long double>(2, 0))
 		return false;
 
-	if (b(2) != complex<long double>(3, 0))
+	if (b(2) != Complex<long double>(3, 0))
 		return false;
 
 	return true;
@@ -499,56 +498,56 @@ bool runTestsVectorAssignment()
 
 bool runTestsVectorDotProduct()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
-	b.set(0, complex<long double>(4, 0));
-	b.set(1, complex<long double>(5, 0));
-	b.set(2, complex<long double>(6, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
+	b.set(0, Complex<long double>(4, 0));
+	b.set(1, Complex<long double>(5, 0));
+	b.set(2, Complex<long double>(6, 0));
 
 	auto result = a.dot(b);
 
-	return result == complex<long double>(1*4 + 2*5 + 3*6, 0);
+	return result == Complex<long double>(1*4 + 2*5 + 3*6, 0);
 }
 
 bool runTestsVectorSquaredNorm()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
 
 	auto result = a.squaredNorm();
 
-	return result == complex<long double>(1*1 + 2*2 + 3*3, 0);
+	return result == Complex<long double>(1*1 + 2*2 + 3*3, 0);
 }
 
 bool runTestsVectorWeightedSum()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
-	b.set(0, complex<long double>(4, 0));
-	b.set(1, complex<long double>(5, 0));
-	b.set(2, complex<long double>(6, 0));
-	Vector<long double, complex<long double> > result(3);
-	result.set(0, complex<long double>(7, 0));
-	result.set(1, complex<long double>(8, 0));
-	result.set(2, complex<long double>(9, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
+	b.set(0, Complex<long double>(4, 0));
+	b.set(1, Complex<long double>(5, 0));
+	b.set(2, Complex<long double>(6, 0));
+	Vector<long double, Complex<long double> > result(3);
+	result.set(0, Complex<long double>(7, 0));
+	result.set(1, Complex<long double>(8, 0));
+	result.set(2, Complex<long double>(9, 0));
 
-	result.weightedSum(a, 5, b);
+	result.weightedSum(a, Complex<long double>(5, 0), b);
 
-	if (result(0) != complex<long double>(21, 0))
+	if (result(0) != Complex<long double>(21, 0))
 		return false;
 
-	if (result(1) != complex<long double>(27, 0))
+	if (result(1) != Complex<long double>(27, 0))
 		return false;
 
-	if (result(2) != complex<long double>(33, 0))
+	if (result(2) != Complex<long double>(33, 0))
 		return false;
 
 	return true;
@@ -556,28 +555,28 @@ bool runTestsVectorWeightedSum()
 
 bool runTestsVectorAddWeightedSum()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
-	b.set(0, complex<long double>(4, 0));
-	b.set(1, complex<long double>(5, 0));
-	b.set(2, complex<long double>(6, 0));
-	Vector<long double, complex<long double> > result(3);
-	result.set(0, complex<long double>(7, 0));
-	result.set(1, complex<long double>(8, 0));
-	result.set(2, complex<long double>(9, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
+	b.set(0, Complex<long double>(4, 0));
+	b.set(1, Complex<long double>(5, 0));
+	b.set(2, Complex<long double>(6, 0));
+	Vector<long double, Complex<long double> > result(3);
+	result.set(0, Complex<long double>(7, 0));
+	result.set(1, Complex<long double>(8, 0));
+	result.set(2, Complex<long double>(9, 0));
 
-	result.addWeightedSum(10, a, 5, b);
+	result.addWeightedSum(Complex<long double>(10, 0), a, Complex<long double>(5, 0), b);
 
-	if (result(0) != complex<long double>(7 + 10*1 + 5*4, 0))
+	if (result(0) != Complex<long double>(7 + 10*1 + 5*4, 0))
 		return false;
 
-	if (result(1) != complex<long double>(8 + 10*2 + 5*5, 0))
+	if (result(1) != Complex<long double>(8 + 10*2 + 5*5, 0))
 		return false;
 
-	if (result(2) != complex<long double>(9 + 10*3 + 5*6, 0))
+	if (result(2) != Complex<long double>(9 + 10*3 + 5*6, 0))
 		return false;
 
 	return true;
@@ -585,28 +584,28 @@ bool runTestsVectorAddWeightedSum()
 
 bool runTestsVectorPointwiseMultiply()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
-	b.set(0, complex<long double>(4, 0));
-	b.set(1, complex<long double>(5, 0));
-	b.set(2, complex<long double>(6, 0));
-	Vector<long double, complex<long double> > result(3);
-	result.set(0, complex<long double>(7, 0));
-	result.set(1, complex<long double>(8, 0));
-	result.set(2, complex<long double>(9, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
+	b.set(0, Complex<long double>(4, 0));
+	b.set(1, Complex<long double>(5, 0));
+	b.set(2, Complex<long double>(6, 0));
+	Vector<long double, Complex<long double> > result(3);
+	result.set(0, Complex<long double>(7, 0));
+	result.set(1, Complex<long double>(8, 0));
+	result.set(2, Complex<long double>(9, 0));
 
 	result.pointwiseMultiply(a, b);
 
-	if (result(0) != complex<long double>(4, 0))
+	if (result(0) != Complex<long double>(4, 0))
 		return false;
 
-	if (result(1) != complex<long double>(10, 0))
+	if (result(1) != Complex<long double>(10, 0))
 		return false;
 
-	if (result(2) != complex<long double>(18, 0))
+	if (result(2) != Complex<long double>(18, 0))
 		return false;
 
 	return true;
@@ -614,28 +613,28 @@ bool runTestsVectorPointwiseMultiply()
 
 bool runTestsVectorSubtract()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 0));
-	a.set(1, complex<long double>(2, 0));
-	a.set(2, complex<long double>(3, 0));
-	Vector<long double, complex<long double> > b(3);
-	b.set(0, complex<long double>(6, 0));
-	b.set(1, complex<long double>(5, 0));
-	b.set(2, complex<long double>(4, 0));
-	Vector<long double, complex<long double> > result(3);
-	result.set(0, complex<long double>(7, 0));
-	result.set(1, complex<long double>(8, 0));
-	result.set(2, complex<long double>(9, 0));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 0));
+	a.set(1, Complex<long double>(2, 0));
+	a.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > b(3);
+	b.set(0, Complex<long double>(6, 0));
+	b.set(1, Complex<long double>(5, 0));
+	b.set(2, Complex<long double>(4, 0));
+	Vector<long double, Complex<long double> > result(3);
+	result.set(0, Complex<long double>(7, 0));
+	result.set(1, Complex<long double>(8, 0));
+	result.set(2, Complex<long double>(9, 0));
 
 	result.subtract(a, b);
 
-	if (result(0) != complex<long double>(-5, 0))
+	if (result(0) != Complex<long double>(-5, 0))
 		return false;
 
-	if (result(1) != complex<long double>(-3, 0))
+	if (result(1) != Complex<long double>(-3, 0))
 		return false;
 
-	if (result(2) != complex<long double>(-1, 0))
+	if (result(2) != Complex<long double>(-1, 0))
 		return false;
 
 	return true;
@@ -643,20 +642,20 @@ bool runTestsVectorSubtract()
 
 bool runTestsVectorConjugate()
 {
-	Vector<long double, complex<long double> > a(3);
-	a.set(0, complex<long double>(1, 2));
-	a.set(1, complex<long double>(-3, -4));
-	a.set(2, complex<long double>(5, 6));
+	Vector<long double, Complex<long double> > a(3);
+	a.set(0, Complex<long double>(1, 2));
+	a.set(1, Complex<long double>(-3, -4));
+	a.set(2, Complex<long double>(5, 6));
 
 	a.conjugate();
 
-	if (a(0) != complex<long double>(1, -2))
+	if (a(0) != Complex<long double>(1, -2))
 		return false;
 
-	if (a(1) != complex<long double>(-3, 4))
+	if (a(1) != Complex<long double>(-3, 4))
 		return false;
 
-	if (a(2) != complex<long double>(5, -6))
+	if (a(2) != Complex<long double>(5, -6))
 		return false;
 
 	return true;
@@ -718,7 +717,7 @@ bool runTestsVector()
 
 bool runTestsSparseMatrixConstructor()
 {
-	SparseMatrix<long double, complex<long double> > matrix(4, 5);
+	SparseMatrix<long double, Complex<long double> > matrix(4, 5);
 
 	if (matrix.getRowCount() != 4)
 		return false;
@@ -727,15 +726,15 @@ bool runTestsSparseMatrixConstructor()
 		return false;
 
 	auto value = matrix(0, 0);
-	if (value != complex<long double>(0, 0))
+	if (value != Complex<long double>(0, 0))
 		return false;
 
 	value = matrix(1, 2);
-	if (value != complex<long double>(0, 0))
+	if (value != Complex<long double>(0, 0))
 		return false;
 
 	value = matrix(3, 4);
-	if (value != complex<long double>(0, 0))
+	if (value != Complex<long double>(0, 0))
 		return false;
 
 	return true;
@@ -743,33 +742,33 @@ bool runTestsSparseMatrixConstructor()
 
 bool runTestsSparseMatrixSet()
 {
-	SparseMatrix<long double, complex<long double> > matrix(3, 3);
+	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
 
-	matrix.set(0, 0, complex<long double>(4, 0));
-	matrix.set(2, 2, complex<long double>(5, 0));
-	matrix.set(2, 1, complex<long double>(6, 0));
-	matrix.set(2, 2, complex<long double>(7, 0));
-	matrix.set(1, 0, complex<long double>(8, 0));
-	matrix.set(1, 1, complex<long double>(9, 0));
-	matrix.set(1, 2, complex<long double>(10, 0));
-	matrix.set(1, 1, complex<long double>(11, 0));
+	matrix.set(0, 0, Complex<long double>(4, 0));
+	matrix.set(2, 2, Complex<long double>(5, 0));
+	matrix.set(2, 1, Complex<long double>(6, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(1, 0, Complex<long double>(8, 0));
+	matrix.set(1, 1, Complex<long double>(9, 0));
+	matrix.set(1, 2, Complex<long double>(10, 0));
+	matrix.set(1, 1, Complex<long double>(11, 0));
 
-	if (matrix(0, 0) != complex<long double>(4, 0))
+	if (matrix(0, 0) != Complex<long double>(4, 0))
 		return false;
 
-	if (matrix(1, 0) != complex<long double>(8, 0))
+	if (matrix(1, 0) != Complex<long double>(8, 0))
 		return false;
 
-	if (matrix(1, 1) != complex<long double>(11, 0))
+	if (matrix(1, 1) != Complex<long double>(11, 0))
 		return false;
 
-	if (matrix(1, 2) != complex<long double>(10, 0))
+	if (matrix(1, 2) != Complex<long double>(10, 0))
 		return false;
 
-	if (matrix(2, 1) != complex<long double>(6, 0))
+	if (matrix(2, 1) != Complex<long double>(6, 0))
 		return false;
 
-	if (matrix(2, 2) != complex<long double>(7, 0))
+	if (matrix(2, 2) != Complex<long double>(7, 0))
 		return false;
 
 	return true;
@@ -777,30 +776,30 @@ bool runTestsSparseMatrixSet()
 
 bool runTestsSparseMatrixMultiply()
 {
-	SparseMatrix<long double, complex<long double> > matrix(3, 4);
-	matrix.set(0, 1, complex<long double>(2, 0));
-	matrix.set(0, 2, complex<long double>(3, 0));
-	matrix.set(0, 3, complex<long double>(4, 0));
-	matrix.set(1, 0, complex<long double>(5, 0));
-	matrix.set(1, 3, complex<long double>(60, 0));
-	matrix.set(2, 2, complex<long double>(7, 0));
-	matrix.set(2, 0, complex<long double>(80, 0));
-	Vector<long double, complex<long double> > result(3);
-	Vector<long double, complex<long double> > source(4);
-	source.set(0, complex<long double>(1, 0));
-	source.set(1, complex<long double>(2, 0));
-	source.set(2, complex<long double>(3, 0));
-	source.set(3, complex<long double>(4, 0));
+	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	Vector<long double, Complex<long double> > result(3);
+	Vector<long double, Complex<long double> > source(4);
+	source.set(0, Complex<long double>(1, 0));
+	source.set(1, Complex<long double>(2, 0));
+	source.set(2, Complex<long double>(3, 0));
+	source.set(3, Complex<long double>(4, 0));
 
 	matrix.multiply(result, source);
 
-	if (result(0) != complex<long double>(2*2 + 3*3 + 4*4, 0))
+	if (result(0) != Complex<long double>(2*2 + 3*3 + 4*4, 0))
 		return false;
 
-	if (result(1) != complex<long double>(60*4 + 5*1, 0))
+	if (result(1) != Complex<long double>(60*4 + 5*1, 0))
 		return false;
 
-	if (result(2) != complex<long double>(7*3 + 80*1, 0))
+	if (result(2) != Complex<long double>(7*3 + 80*1, 0))
 		return false;
 
 	return true;
@@ -808,15 +807,15 @@ bool runTestsSparseMatrixMultiply()
 
 bool runTestsSparseMatrixRowIteration()
 {
-	SparseMatrix<long double, complex<long double> > matrix(3, 4);
-	matrix.set(0, 1, complex<long double>(2, 0));
-	matrix.set(0, 2, complex<long double>(3, 0));
-	matrix.set(0, 3, complex<long double>(4, 0));
-	matrix.set(1, 0, complex<long double>(5, 0));
-	matrix.set(1, 3, complex<long double>(60, 0));
-	matrix.set(2, 2, complex<long double>(7, 0));
-	matrix.set(2, 0, complex<long double>(80, 0));
-	vector< complex<long double> > values;
+	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	vector< Complex<long double> > values;
 	vector<int> columns;
 	vector<int> nonZeroCounts;
 
@@ -832,16 +831,16 @@ bool runTestsSparseMatrixRowIteration()
 		}
 	}
 
-	vector< complex<long double> > valuesShouldBe;
+	vector< Complex<long double> > valuesShouldBe;
 	vector<int> columnsShouldBe;
 	vector<int> nonZeroCountsShouldBe;
-	valuesShouldBe.push_back(complex<long double>(2, 0));
-	valuesShouldBe.push_back(complex<long double>(3, 0));
-	valuesShouldBe.push_back(complex<long double>(4, 0));
-	valuesShouldBe.push_back(complex<long double>(5, 0));
-	valuesShouldBe.push_back(complex<long double>(60, 0));
-	valuesShouldBe.push_back(complex<long double>(7, 0));
-	valuesShouldBe.push_back(complex<long double>(80, 0));
+	valuesShouldBe.push_back(Complex<long double>(2, 0));
+	valuesShouldBe.push_back(Complex<long double>(3, 0));
+	valuesShouldBe.push_back(Complex<long double>(4, 0));
+	valuesShouldBe.push_back(Complex<long double>(5, 0));
+	valuesShouldBe.push_back(Complex<long double>(60, 0));
+	valuesShouldBe.push_back(Complex<long double>(7, 0));
+	valuesShouldBe.push_back(Complex<long double>(80, 0));
 	columnsShouldBe.push_back(1);
 	columnsShouldBe.push_back(2);
 	columnsShouldBe.push_back(3);

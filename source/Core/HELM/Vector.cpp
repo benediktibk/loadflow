@@ -2,12 +2,11 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "ComplexGreaterCompare.h"
-#include <complex>
 #include <assert.h>
 #include <string.h>
 #include <algorithm>
 
-template class Vector<long double, std::complex<long double> >;
+template class Vector<long double, Complex<long double> >;
 template class Vector<MultiPrecision, Complex<MultiPrecision> >;
 
 template<class Floating, class ComplexFloating>
@@ -49,7 +48,7 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 		_temp[i] = _values[i]*rhs._values[i];
 
 	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
-	ComplexFloating result(0);
+	ComplexFloating result(Floating(0));
 	
 	for (auto i = 0; i < _count; ++i)
 		result += _temp[i];
@@ -70,7 +69,7 @@ ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 	}
 
 	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
-	ComplexFloating result(0);
+	ComplexFloating result(Floating(0));
 	
 	for (auto i = 0; i < _count; ++i)
 		result += _temp[i];
@@ -149,7 +148,7 @@ Vector<Floating, ComplexFloating> const& Vector<Floating, ComplexFloating>::oper
 template<class Floating, class ComplexFloating>
 void Vector<Floating, ComplexFloating>::setToZero()
 {
-	ComplexFloating zero(0);
+	ComplexFloating zero(Floating(0));
 	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = zero;

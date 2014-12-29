@@ -4,17 +4,16 @@
 #include "SparseMatrixRowIterator.h"
 #include "ComplexGreaterCompare.h"
 #include <assert.h>
-#include <complex>
 #include <algorithm>
 
-template class SparseMatrix<long double, std::complex<long double> >;
+template class SparseMatrix<long double, Complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
 
 template<class Floating, class ComplexFloating>
 SparseMatrix<Floating, ComplexFloating>::SparseMatrix(int rows, int columns) :
 	_rowCount(rows),
 	_columnCount(columns),
-	_zero(0)
+	_zero(Floating(0), Floating(0))
 {
 	assert(getRowCount() > 0);
 	assert(getColumnCount() > 0);
@@ -77,7 +76,7 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 
 		std::sort(summands.begin(), summands.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
 
-		ComplexFloating result(0);
+		ComplexFloating result(Floating(0), Floating(0));
 
 		for (auto i = summands.cbegin(); i != summands.cend(); ++i)
 			result += *i;

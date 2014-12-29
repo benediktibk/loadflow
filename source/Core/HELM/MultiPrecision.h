@@ -13,10 +13,12 @@ public:
 	explicit MultiPrecision(ValueType const& valueType);
 	explicit MultiPrecision(float value);
 	explicit MultiPrecision(double value);
+	explicit MultiPrecision(long double value);
 	explicit MultiPrecision(double value, int bitPrecision);
 	explicit MultiPrecision(int value);
 	
 	operator double() const;
+	operator long double() const;
 	operator int() const;
 	MultiPrecision& operator=(const MultiPrecision &rhs);
 	MultiPrecision& operator+=(const MultiPrecision &rhs);

@@ -3,7 +3,7 @@
 #include "Calculator.h"
 
 class CalculatorLongDouble :
-	public Calculator< long double, std::complex<long double> >
+	public Calculator< long double, Complex<long double> >
 {
 public:
 	CalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);

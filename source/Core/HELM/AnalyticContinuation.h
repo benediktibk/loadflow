@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoefficientStorage.h"
-#include <complex>
 
 template<typename Floating, typename ComplexFloating>
 class AnalyticContinuation
@@ -10,7 +9,7 @@ public:
 	AnalyticContinuation(CoefficientStorage<ComplexFloating, Floating> const& coefficients, int node, int maximumNumberOfCoefficients);
 
 	void updateWithLastCoefficients();
-	std::complex<double> getResult() const;
+	Complex<long double> getResult() const;
 
 private:
 	void updateWithLastCoefficientsOnce();

@@ -22,6 +22,10 @@ MultiPrecision::MultiPrecision(double value) :
 	_value(value, _precision)
 { }
 
+MultiPrecision::MultiPrecision(long double value) :
+	_value(static_cast<double>(value), _precision)
+{ }
+
 MultiPrecision::MultiPrecision(double value, int bitPrecision) :
 	_value(value, bitPrecision)
 { }
@@ -33,6 +37,11 @@ MultiPrecision::MultiPrecision(int value) :
 MultiPrecision::operator double() const
 {
 	return static_cast<double>(_value.get_d());
+}
+
+MultiPrecision::operator long double() const
+{
+	return static_cast<long double>(_value.get_d());
 }
 
 MultiPrecision::operator int() const

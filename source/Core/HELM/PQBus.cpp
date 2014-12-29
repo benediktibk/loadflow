@@ -8,7 +8,7 @@ PQBus::PQBus() :
 	_power(0, 0)
 { }
 
-PQBus::PQBus(int id, complex<double> power) :
+PQBus::PQBus(int id, Complex<long double> power) :
 	_id(id),
 	_power(power)
 {
@@ -20,7 +20,7 @@ int PQBus::getId() const
 	return _id;
 }
 
-const complex<double>& PQBus::getPower() const
+const Complex<long double>& PQBus::getPower() const
 {
 	return _power;
 }

@@ -1,10 +1,9 @@
 #include "SparseMatrixRowIterator.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
-#include <complex>
 #include <assert.h>
 
-template class SparseMatrixRowIterator< std::complex<long double> >;
+template class SparseMatrixRowIterator< Complex<long double> >;
 template class SparseMatrixRowIterator< Complex<MultiPrecision> >;
 
 template<class T>

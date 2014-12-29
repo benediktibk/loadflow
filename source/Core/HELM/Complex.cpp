@@ -5,7 +5,9 @@ template class Complex<long double>;
 template class Complex<MultiPrecision>;
 
 template<typename T>
-Complex<T>::Complex()
+Complex<T>::Complex() :
+	_real(0),
+	_imag(0)
 { }
 
 template<typename T>
@@ -21,12 +23,6 @@ Complex<T>::Complex(T const& real) :
 { }
 
 template<typename T>
-Complex<T>::Complex(std::complex<double> const& rhs) :
-	_real(static_cast<T>(rhs.real())),
-	_imag(static_cast<T>(rhs.imag()))
-{ }
-
-template<typename T>
 T const& Complex<T>::real() const
 {
 	return _real;
@@ -36,12 +32,6 @@ template<typename T>
 T const& Complex<T>::imag() const
 {
 	return _imag;
-}
-
-template<typename T>
-Complex<T>::operator std::complex<double>() const
-{
-	return std::complex<double>(static_cast<double>(_real), static_cast<double>(_imag));
 }
 
 template<typename T>

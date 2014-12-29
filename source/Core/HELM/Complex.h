@@ -1,6 +1,5 @@
 #pragma once
 
-#include <complex>
 #include <ostream>
 #include "MultiPrecision.h"
 
@@ -11,12 +10,10 @@ public:
 	Complex();
 	Complex(T const& real, T const& imag);
 	explicit Complex(T const& real);
-	explicit Complex(std::complex<double> const& rhs);
 
 	T const& real() const;
 	T const& imag() const;
 	
-	operator std::complex<double>() const;
 	Complex<T>& operator=(Complex<T> const& rhs);
 	Complex<T>& operator+=(Complex<T> const& rhs);
 	Complex<T>& operator-=(Complex<T> const& rhs);

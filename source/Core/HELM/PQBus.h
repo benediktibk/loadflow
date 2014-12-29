@@ -1,18 +1,18 @@
 #pragma once
 
-#include <complex>
+#include "Complex.h"
 
 class PQBus
 {
 public:
 	PQBus();
-	PQBus(int id, std::complex<double> power);
+	PQBus(int id, Complex<long double> power);
 
 	int getId() const;
-	const std::complex<double>& getPower() const;
+	const Complex<long double>& getPower() const;
 
 private:
 	int _id;
-	std::complex<double> _power;
+	Complex<long double> _power;
 };
 

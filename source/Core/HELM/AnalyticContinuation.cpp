@@ -7,7 +7,7 @@
 
 using namespace std;
 
-template class AnalyticContinuation< long double, complex<long double> >;
+template class AnalyticContinuation< long double, Complex<long double> >;
 template class AnalyticContinuation< MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
@@ -60,9 +60,9 @@ ComplexFloating AnalyticContinuation<Floating, ComplexFloating>::calculateImprov
 }
 
 template<typename Floating, typename ComplexFloating>
-std::complex<double> AnalyticContinuation<Floating, ComplexFloating>::getResult() const
+Complex<long double> AnalyticContinuation<Floating, ComplexFloating>::getResult() const
 {	
 	assert(_alreadyProcessed > 0);
 	ComplexFloating const& result =  _alreadyProcessed % 2 == 0 ? _current[_alreadyProcessed - 2] : _current[_alreadyProcessed - 1];
-	return static_cast< complex<double> >(result);
+	return Complex<long double>(static_cast<long double>(real(result)), static_cast<long double>(imag(result)));
 }

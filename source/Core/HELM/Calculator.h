@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <complex>
 #include <mutex>
 #include "PQBus.h"
 #include "PVBus.h"
@@ -20,11 +19,11 @@ public:
 	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
 	virtual ~Calculator();
 
-	virtual void setAdmittance(int row, int column, std::complex<double> value);
-	virtual void setAdmittanceRowSum(int row, std::complex<double> value);
-	virtual void setPQBus(int busId, int node, std::complex<double> power);
+	virtual void setAdmittance(int row, int column, Complex<long double> value);
+	virtual void setAdmittanceRowSum(int row, Complex<long double> value);
+	virtual void setPQBus(int busId, int node, Complex<long double> power);
 	virtual void setPVBus(int busId, int node, double powerReal, double voltageMagnitude);
-	virtual void setConstantCurrent(int node, std::complex<double> value);
+	virtual void setConstantCurrent(int node, Complex<long double> value);
 	virtual void calculate();
 	virtual double getVoltageReal(int node) const;
 	virtual double getVoltageImaginary(int node) const;
@@ -38,7 +37,7 @@ public:
 
 protected:
 	virtual Floating createFloating(double value) const = 0;
-	ComplexFloating createComplexFloating(std::complex<double> const &value) const;
+	ComplexFloating createComplexFloating(Complex<long double> const &value) const;
 
 private:
 	bool calculateFirstCoefficient();
@@ -71,7 +70,7 @@ private:
 	Vector<Floating, ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
 	std::vector<PVBus> _pvBuses;
-	std::vector< std::complex<double> > _voltages;
+	std::vector< Complex<long double> > _voltages;
 	CoefficientStorage<ComplexFloating, Floating> *_coefficientStorage;
 	std::vector<AnalyticContinuation<Floating, ComplexFloating>*> _continuations;
 	ComplexFloating _embeddingModification;

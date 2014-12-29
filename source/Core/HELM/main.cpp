@@ -25,17 +25,17 @@ extern "C" __declspec(dllexport) void __cdecl DeleteLoadFlowCalculator(int calcu
 
 extern "C" __declspec(dllexport) void __cdecl SetAdmittance(int calculator, int row, int column, double real, double imaginary)
 {
-	calculatorRegister.get(calculator).setAdmittance(row, column, complex<double>(real, imaginary));
+	calculatorRegister.get(calculator).setAdmittance(row, column, Complex<long double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetAdmittanceRowSum(int calculator, int row, double real, double imaginary)
 {
-	calculatorRegister.get(calculator).setAdmittanceRowSum(row, complex<double>(real, imaginary));
+	calculatorRegister.get(calculator).setAdmittanceRowSum(row, Complex<long double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetPQBus(int calculator, int busId, int node, double powerReal, double powerImaginary)
 {
-	calculatorRegister.get(calculator).setPQBus(busId, node, complex<double>(powerReal, powerImaginary));
+	calculatorRegister.get(calculator).setPQBus(busId, node, Complex<long double>(powerReal, powerImaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetPVBus(int calculator, int busId, int node, double powerReal, double voltageMagnitude)
@@ -45,7 +45,7 @@ extern "C" __declspec(dllexport) void __cdecl SetPVBus(int calculator, int busId
 
 extern "C" __declspec(dllexport) void __cdecl SetConstantCurrent(int calculator, int node, double real, double imaginary)
 {
-	calculatorRegister.get(calculator).setConstantCurrent(node, complex<double>(real, imaginary));
+	calculatorRegister.get(calculator).setConstantCurrent(node, Complex<long double>(real, imaginary));
 }
 
 extern "C" __declspec(dllexport) void __cdecl Calculate(int calculator)

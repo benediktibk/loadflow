@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <map>
-#include <complex>
 #include "PQBus.h"
 #include "PVBus.h"
 #include "SparseMatrix.h"
