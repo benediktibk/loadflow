@@ -7,7 +7,6 @@
 #include <string.h>
 #include <algorithm>
 
-template class Vector<long double, long double>;
 template class Vector<long double, std::complex<long double> >;
 template class Vector<MultiPrecision, Complex<MultiPrecision> >;
 

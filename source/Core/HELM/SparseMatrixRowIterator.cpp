@@ -4,7 +4,6 @@
 #include <complex>
 #include <assert.h>
 
-template class SparseMatrixRowIterator<long double>;
 template class SparseMatrixRowIterator< std::complex<long double> >;
 template class SparseMatrixRowIterator< Complex<MultiPrecision> >;
 

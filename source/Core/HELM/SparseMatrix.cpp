@@ -7,7 +7,6 @@
 #include <complex>
 #include <algorithm>
 
-template class SparseMatrix<long double, long double>;
 template class SparseMatrix<long double, std::complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
 
