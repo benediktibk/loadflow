@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -64,10 +65,13 @@ namespace SincalConnector
 
         private void LogThreadSafe(string message)
         {
+            if (Log == null)
+                throw new NoNullAllowedException();
+
             if (Dispatcher.CheckAccess())
                 Log(message);
             else
-                Dispatcher.Invoke(Log, new object[] { message });
+                Dispatcher.Invoke(Log, message);
         }
 
         private void LogTextChanged(object sender, TextChangedEventArgs e)
