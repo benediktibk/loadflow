@@ -1,7 +1,6 @@
 #include "Vector.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
-#include "ComplexGreaterCompare.h"
 #include <assert.h>
 #include <string.h>
 #include <algorithm>
@@ -53,8 +52,8 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 		_tempImaginary[i] = std::imag(value);
 	}
 
-	std::sort(_tempReal.begin(), _tempReal.end(), std::greater<Floating>());
-	std::sort(_tempImaginary.begin(), _tempImaginary.end(), std::greater<Floating>());
+	std::sort(_tempReal.begin(), _tempReal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+	std::sort(_tempImaginary.begin(), _tempImaginary.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
 	ComplexFloating result;
 	
 	for (auto i = 0; i < _count; ++i)
@@ -78,8 +77,8 @@ ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 		_tempImaginary[i] = std::imag(valueSquared);
 	}
 	
-	std::sort(_tempReal.begin(), _tempReal.end(), std::greater<Floating>());
-	std::sort(_tempImaginary.begin(), _tempImaginary.end(), std::greater<Floating>());
+	std::sort(_tempReal.begin(), _tempReal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+	std::sort(_tempImaginary.begin(), _tempImaginary.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
 	ComplexFloating result;
 	
 	for (auto i = 0; i < _count; ++i)

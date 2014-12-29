@@ -123,7 +123,6 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClCompile Include="CalculatorRegister.cpp" />
     <ClCompile Include="CoefficientStorage.cpp" />
     <ClCompile Include="Complex.cpp" />
-    <ClCompile Include="ComplexGreaterCompare.cpp" />
     <ClCompile Include="LinearEquationSystemSolver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiPrecision.cpp" />
@@ -142,7 +141,6 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClInclude Include="CalculatorRegister.h" />
     <ClInclude Include="CoefficientStorage.h" />
     <ClInclude Include="Complex.h" />
-    <ClInclude Include="ComplexGreaterCompare.h" />
     <ClInclude Include="ConsoleOutput.h" />
     <ClInclude Include="ICalculator.h" />
     <ClInclude Include="LinearEquationSystemSolver.h" />

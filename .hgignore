@@ -42,3 +42,5 @@ documents/master_thesis/*.lot
 documents/master_thesis/figures/*.pdf
 documents/master_thesis/tikz/*.aux
 documents/bicgstab/*.asv
+source/*.vspx
+source/*.psess

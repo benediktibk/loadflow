@@ -63,9 +63,6 @@
     <ClCompile Include="SparseMatrixRowIterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComplexGreaterCompare.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalculatorRegister.h">
@@ -117,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SparseMatrixRowIterator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComplexGreaterCompare.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NumericalTraits.h">

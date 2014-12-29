@@ -2,7 +2,6 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "SparseMatrixRowIterator.h"
-#include "ComplexGreaterCompare.h"
 #include <assert.h>
 #include <algorithm>
 #include <functional>
@@ -85,9 +84,8 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 				summandsImaginary.push_back(std::imag(summand));
 			}
 
-			std::sort(summandsReal.begin(), summandsReal.end(), std::greater<Floating>());
-			std::sort(summandsImaginary.begin(), summandsImaginary.end(), std::greater<Floating>());
-
+			std::sort(summandsReal.begin(), summandsReal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+			std::sort(summandsImaginary.begin(), summandsImaginary.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
 			ComplexFloating result;
 
 			for (auto j = 0; j < count; ++j)
