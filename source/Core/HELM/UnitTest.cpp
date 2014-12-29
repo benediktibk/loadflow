@@ -31,6 +31,7 @@ bool runTestsComplexDouble()
 {
 	Complex<double> one(2, 3);
 	Complex<double> two(5, 7);
+	Complex<double> zero;
 
 	Complex<double> add = one + two;
 	Complex<double> subtract = one - two;
@@ -42,6 +43,10 @@ bool runTestsComplexDouble()
 	Complex<double> multiplyExpected(-11, 29);
 	Complex<double> divideExpected(0.418918918, 0.013513513);
 
+	if (zero.real() != 0)
+		return false;
+	if (zero.imag() != 0)
+		return false;
 	if (!areEqual(addExpected, add, 0.0001))
 		return false;
 	if (!areEqual(subtractExpected, subtract, 0.0001))
