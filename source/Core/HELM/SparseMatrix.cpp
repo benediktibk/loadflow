@@ -5,6 +5,7 @@
 #include "ComplexGreaterCompare.h"
 #include <assert.h>
 #include <algorithm>
+#include <functional>
 
 template class SparseMatrix<long double, Complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
@@ -64,22 +65,28 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 	{
 		auto rowPointer = _rowPointers[i];
 		auto nextRowPointer = _rowPointers[i + 1];
-		std::vector<ComplexFloating> summands;
-		summands.reserve(nextRowPointer - rowPointer);
+		std::vector<Floating> summandsReal;
+		std::vector<Floating> summandsImaginary;
+		const auto count = nextRowPointer - rowPointer;
+		summandsReal.reserve(count);
+		summandsImaginary.reserve(count);
 
 		for (auto j = rowPointer; j < nextRowPointer; ++j)
 		{
 			auto column = _columns[j];
 			ComplexFloating const &value = _values[j];
-			summands.push_back(value*source(column));
+			auto summand = value*source(column);
+			summandsReal.push_back(std::real(summand));
+			summandsImaginary.push_back(std::imag(summand));
 		}
 
-		std::sort(summands.begin(), summands.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
+		std::sort(summandsReal.begin(), summandsReal.end(), std::greater<Floating>());
+		std::sort(summandsImaginary.begin(), summandsImaginary.end(), std::greater<Floating>());
 
-		ComplexFloating result(Floating(0), Floating(0));
+		ComplexFloating result;
 
-		for (auto i = summands.cbegin(); i != summands.cend(); ++i)
-			result += *i;
+		for (auto i = 0; i < count; ++i)
+			result += ComplexFloating(summandsReal[i], summandsImaginary[i]);
 
 		destination.set(i, result);
 	}
