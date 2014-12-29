@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <algorithm>
+#include <functional>
 
 template class Vector<long double, Complex<long double> >;
 template class Vector<MultiPrecision, Complex<MultiPrecision> >;
@@ -41,17 +42,23 @@ template<class Floating, class ComplexFloating>
 ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexFloating> const &rhs) const
 {
 	assert(getCount() == rhs.getCount());
-	_temp.resize(getCount());
+	_tempReal.resize(getCount());
+	_tempImaginary.resize(getCount());
 	
 	//#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
-		_temp[i] = _values[i]*rhs._values[i];
+	{
+		auto value = _values[i]*rhs._values[i];
+		_tempReal[i] = std::real(value);
+		_tempImaginary[i] = std::imag(value);
+	}
 
-	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
-	ComplexFloating result(Floating(0));
+	std::sort(_tempReal.begin(), _tempReal.end(), std::greater<Floating>());
+	std::sort(_tempImaginary.begin(), _tempImaginary.end(), std::greater<Floating>());
+	ComplexFloating result;
 	
 	for (auto i = 0; i < _count; ++i)
-		result += _temp[i];
+		result += ComplexFloating(_tempReal[i], _tempImaginary[i]);
 
 	return result;
 }
@@ -59,20 +66,24 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 template<class Floating, class ComplexFloating>
 ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 {
-	_temp.resize(getCount());
+	_tempReal.resize(getCount());
+	_tempImaginary.resize(getCount());
 	
 	//#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 	{
 		ComplexFloating const& value(_values[i]);
-		_temp[i] = value*value;
+		auto valueSquared = value*value;
+		_tempReal[i] = std::real(valueSquared);
+		_tempImaginary[i] = std::imag(valueSquared);
 	}
-
-	std::sort(_temp.begin(), _temp.end(), ComplexGreaterCompare<Floating, ComplexFloating>());
-	ComplexFloating result(Floating(0));
+	
+	std::sort(_tempReal.begin(), _tempReal.end(), std::greater<Floating>());
+	std::sort(_tempImaginary.begin(), _tempImaginary.end(), std::greater<Floating>());
+	ComplexFloating result;
 	
 	for (auto i = 0; i < _count; ++i)
-		result += _temp[i];
+		result += ComplexFloating(_tempReal[i], _tempImaginary[i]);
 
 	return result;
 }

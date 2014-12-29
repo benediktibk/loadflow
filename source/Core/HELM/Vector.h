@@ -28,6 +28,7 @@ private:
 private:
 	const int _count;
 	std::vector<ComplexFloating> _values;
-	mutable std::vector<ComplexFloating> _temp;
+	mutable std::vector<Floating> _tempReal;
+	mutable std::vector<Floating> _tempImaginary;
 };
 
