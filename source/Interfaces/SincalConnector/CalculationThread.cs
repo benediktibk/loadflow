@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace SincalConnector
@@ -11,26 +10,20 @@ namespace SincalConnector
     {
         private bool _isCalculationRunning;
         private readonly Mutex _isCalculationRunningMutex;
-        private readonly BackgroundWorker _workerDirectCalculation;
-        private readonly BackgroundWorker _workerConvergenceBorderSearch;
+        private readonly BackgroundWorker _worker;
         private PowerNetDatabaseAdapter _powerNet;
         private INodeVoltageCalculator _calculator;
         private readonly IReadOnlyConnectorData _connectorData;
-        private double _convergenceBorderPrecision;
 
         public CalculationThread(IReadOnlyConnectorData connectorData)
         {
             _isCalculationRunning = false;
             _isCalculationRunningMutex = new Mutex();
             _connectorData = connectorData;
-            _workerDirectCalculation = new BackgroundWorker();
-            _workerConvergenceBorderSearch = new BackgroundWorker();
-            _workerDirectCalculation.DoWork += CalculatePowerNetDirect;
-            _workerConvergenceBorderSearch.DoWork += SearchForConvergenceBorder;
-            _workerDirectCalculation.WorkerSupportsCancellation = true;
-            _workerConvergenceBorderSearch.WorkerSupportsCancellation = true;
-            _workerDirectCalculation.RunWorkerCompleted += CalculationFinished;
-            _workerConvergenceBorderSearch.RunWorkerCompleted += CalculationFinished;
+            _worker = new BackgroundWorker();
+            _worker.DoWork += CalculatePowerNetDirect;
+            _worker.WorkerSupportsCancellation = true;
+            _worker.RunWorkerCompleted += CalculationFinished;
         }
 
         public double Progress
@@ -68,9 +61,7 @@ namespace SincalConnector
             {
                 if (_isCalculationRunning)
                 {
-                    Log("calculation already running, sending stop signal to the background workers");
-                    _workerConvergenceBorderSearch.CancelAsync();
-                    _workerDirectCalculation.CancelAsync();
+                    Log("calculation already running");
                     return;
                 }
                 _isCalculationRunning = true;
@@ -90,12 +81,7 @@ namespace SincalConnector
             }
 
             _calculator = _connectorData.CreateCalculator();
-            _convergenceBorderPrecision = _connectorData.TargetPrecision;
-
-            if (_connectorData.ConvergenceBorderSearch)
-                _workerConvergenceBorderSearch.RunWorkerAsync();
-            else
-                _workerDirectCalculation.RunWorkerAsync();
+            _worker.RunWorkerAsync();
         }
 
         public delegate void LogHandler(string message);
@@ -121,44 +107,6 @@ namespace SincalConnector
                 Log("finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" +
                     (success ? " with a relative power mismatch of " + relativePowerError : ", but was not able to calculate the power net"));
 
-            }
-            catch (Exception exception)
-            {
-                Log("was not able to calculate the power net because an exception occured:");
-                Log(exception.Message);
-            }
-        }
-
-        private void SearchForConvergenceBorder(object sender, DoWorkEventArgs e)
-        {
-            double lower = 0;
-            double upper = 1;
-
-            try
-            {
-                Log("searching for the convergence border of the power net");
-
-                while (upper - lower > _convergenceBorderPrecision)
-                {
-                    var middle = (upper + lower)/2;
-                    double relativePowerError;
-                    var success = _powerNet.CalculateNodeVoltages(_calculator, middle, out relativePowerError);
-
-                    if (success)
-                        lower = middle;
-                    else
-                        upper = middle;
-
-                    Log("convergence border lies within " + lower + " and " + upper);
-
-                    if (_workerConvergenceBorderSearch.CancellationPending)
-                    {
-                        Log("cancellation requested");
-                        return;
-                    }
-                }
-
-                Log("range is small enough");
             }
             catch (Exception exception)
             {

@@ -11,7 +11,6 @@ namespace SincalConnector
         Selection CalculatorSelection { get; }
         double Progress { get; }
         double RelativePowerError { get; }
-        bool ConvergenceBorderSearch { get; }
         string InputFile { get; }
         INodeVoltageCalculator CreateCalculator();
     }
