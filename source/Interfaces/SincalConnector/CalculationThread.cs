@@ -21,7 +21,7 @@ namespace SincalConnector
             _isCalculationRunningMutex = new Mutex();
             _connectorData = connectorData;
             _worker = new BackgroundWorker();
-            _worker.DoWork += CalculatePowerNetDirect;
+            _worker.DoWork += CalculatePowerNetInternal;
             _worker.WorkerSupportsCancellation = true;
             _worker.RunWorkerCompleted += CalculationFinished;
         }
@@ -93,7 +93,7 @@ namespace SincalConnector
             IsCalculationRunning = false;
         }
 
-        private void CalculatePowerNetDirect(object sender, DoWorkEventArgs e)
+        private void CalculatePowerNetInternal(object sender, DoWorkEventArgs e)
         {
             var stopWatch = new Stopwatch();
 

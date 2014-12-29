@@ -92,7 +92,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 	
 	if (!calculateFirstCoefficient())
-		return;
+		throw new exception("could not calculate the first coefficients");
 
 	calculateSecondCoefficient();
 	map<double, int> totalErrors;
@@ -107,7 +107,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		{
 			calculateVoltagesFromCoefficients();
 		}
-		catch (overflow_error e)
+		catch(overflow_error const &e)
 		{
 			break;
 		}
@@ -115,9 +115,6 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		double totalError = calculateTotalRelativeError();
 		totalErrors.insert(pair<double, int>(totalError, partialResults.size()));
 		partialResults.push_back(_voltages);
-
-		if (totalError < _targetPrecision)
-			break;
 
 		{
 			lock_guard<mutex> lock(_progressMutex);
