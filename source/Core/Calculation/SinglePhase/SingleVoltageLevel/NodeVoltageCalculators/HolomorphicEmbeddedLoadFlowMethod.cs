@@ -11,6 +11,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     {
         private int _calculator = -1;
         private readonly Mutex _calculatorMutex;
+        private int _maximumPossibleCoefficientCount;
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision)
         {
@@ -24,6 +25,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             TargetPrecision = targetPrecision;
             BitPrecision = bitPrecision;
             _calculatorMutex = new Mutex();
+            _maximumPossibleCoefficientCount = -1;
         }
 
         public double MaximumRelativePowerError
@@ -57,17 +59,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             get
             {
-                _calculatorMutex.WaitOne();
                 var result = "";
 
-                if (_calculator >= 0)
-                {
-                    var coefficientCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetMaximumPossibleCoefficientCount(_calculator);
-                    if (coefficientCount >= 0)
-                        result = "could only calculate " + coefficientCount +
-                                 " coefficients because of numerical issues";
-                }
-                _calculatorMutex.ReleaseMutex();
+                if (_maximumPossibleCoefficientCount >= 0)
+                    result = "could only calculate " + _maximumPossibleCoefficientCount +
+                                " coefficients because of numerical issues";
+
                 return result;
             }
         }
@@ -113,6 +110,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             SetAdmittanceValues(admittances, totalAdmittanceRowSums, _calculator);
             SetRightHandSideValues(constantCurrents, pqBuses, pvBuses, nodeCount, _calculator);
             HolomorphicEmbeddedLoadFlowMethodNativeMethods.Calculate(_calculator);
+            _maximumPossibleCoefficientCount =
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetMaximumPossibleCoefficientCount(_calculator);
         }
 
         private Vector<Complex> FetchCoefficients(int step, int nodeCount, int calculator)
