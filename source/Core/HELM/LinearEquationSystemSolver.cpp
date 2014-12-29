@@ -7,6 +7,13 @@
 template class LinearEquationSystemSolver< Complex<long double>, long double >;
 template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
 
+template<typename T> bool isfinite(T const &arg)
+{
+    return arg == arg && 
+           arg != std::numeric_limits<T>::infinity() &&
+           arg != -std::numeric_limits<T>::infinity();
+}
+
 template<class ComplexFloating, class Floating>
 LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon) :
 	_dimension(systemMatrix.getRowCount()),
@@ -90,6 +97,13 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 		x.addWeightedSum(alpha, y, w, z);
 		residual.weightedSum(s, w*ComplexFloating(Floating(-1)), t);
 		++i;
+	}
+
+	for (auto i = 0; i < _dimension; ++i)
+	{
+		auto value = static_cast<double>(std::abs2(x(i)));
+		if (!isfinite(value))
+			throw new exception("BiCGSTAB did not converge to a proper value");
 	}
 
 	return x;
