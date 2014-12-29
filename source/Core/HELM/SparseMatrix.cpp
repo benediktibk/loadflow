@@ -60,35 +60,41 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 	assert(destination.getCount() == getRowCount());
 	assert(source.getCount() == getColumnCount());
 
-	#pragma omp parallel for
-	for (auto i = 0; i < _rowCount; ++i)
+	#pragma omp parallel
 	{
-		auto rowPointer = _rowPointers[i];
-		auto nextRowPointer = _rowPointers[i + 1];
 		std::vector<Floating> summandsReal;
 		std::vector<Floating> summandsImaginary;
-		const auto count = nextRowPointer - rowPointer;
-		summandsReal.reserve(count);
-		summandsImaginary.reserve(count);
 
-		for (auto j = rowPointer; j < nextRowPointer; ++j)
+		#pragma omp for
+		for (auto i = 0; i < _rowCount; ++i)
 		{
-			auto column = _columns[j];
-			ComplexFloating const &value = _values[j];
-			auto summand = value*source(column);
-			summandsReal.push_back(std::real(summand));
-			summandsImaginary.push_back(std::imag(summand));
+			auto rowPointer = _rowPointers[i];
+			auto nextRowPointer = _rowPointers[i + 1];
+			const auto count = nextRowPointer - rowPointer;
+			summandsReal.clear();
+			summandsImaginary.clear();
+			summandsReal.reserve(count);
+			summandsImaginary.reserve(count);
+
+			for (auto j = rowPointer; j < nextRowPointer; ++j)
+			{
+				auto column = _columns[j];
+				ComplexFloating const &value = _values[j];
+				auto summand = value*source(column);
+				summandsReal.push_back(std::real(summand));
+				summandsImaginary.push_back(std::imag(summand));
+			}
+
+			std::sort(summandsReal.begin(), summandsReal.end(), std::greater<Floating>());
+			std::sort(summandsImaginary.begin(), summandsImaginary.end(), std::greater<Floating>());
+
+			ComplexFloating result;
+
+			for (auto j = 0; j < count; ++j)
+				result += ComplexFloating(summandsReal[j], summandsImaginary[j]);
+
+			destination.set(i, result);
 		}
-
-		std::sort(summandsReal.begin(), summandsReal.end(), std::greater<Floating>());
-		std::sort(summandsImaginary.begin(), summandsImaginary.end(), std::greater<Floating>());
-
-		ComplexFloating result;
-
-		for (auto j = 0; j < count; ++j)
-			result += ComplexFloating(summandsReal[j], summandsImaginary[j]);
-
-		destination.set(i, result);
 	}
 }
 
