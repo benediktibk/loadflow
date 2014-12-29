@@ -85,8 +85,8 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 
 		ComplexFloating result;
 
-		for (auto i = 0; i < count; ++i)
-			result += ComplexFloating(summandsReal[i], summandsImaginary[i]);
+		for (auto j = 0; j < count; ++j)
+			result += ComplexFloating(summandsReal[j], summandsImaginary[j]);
 
 		destination.set(i, result);
 	}
