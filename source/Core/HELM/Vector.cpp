@@ -45,7 +45,7 @@ ComplexFloating Vector<Floating, ComplexFloating>::dot(Vector<Floating, ComplexF
 	_tempReal.resize(getCount());
 	_tempImaginary.resize(getCount());
 	
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 	{
 		auto value = _values[i]*rhs._values[i];
@@ -69,7 +69,7 @@ ComplexFloating Vector<Floating, ComplexFloating>::squaredNorm() const
 	_tempReal.resize(getCount());
 	_tempImaginary.resize(getCount());
 	
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 	{
 		ComplexFloating const& value(_values[i]);
