@@ -106,7 +106,10 @@ namespace SincalConnector
                 stopWatch.Stop();
                 Log("finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" +
                     (success ? " with a relative power mismatch of " + relativePowerError : ", but was not able to calculate the power net"));
+                var statusMessage = _calculator.StatusMessage;
 
+                if (statusMessage != "")
+                    Log(statusMessage);
             }
             catch (Exception exception)
             {

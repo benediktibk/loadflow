@@ -48,5 +48,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetRelativePowerError(int calculator);
+
+        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetMaximumPossibleCoefficientCount(int calculator);
     }
 }

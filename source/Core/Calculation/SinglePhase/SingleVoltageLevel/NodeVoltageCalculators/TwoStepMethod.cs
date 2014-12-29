@@ -62,5 +62,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 return result;
             }
         }
+
+        public string StatusMessage
+        {
+            get { return ""; }
+        }
     }
 }

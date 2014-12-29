@@ -98,6 +98,11 @@ extern "C" __declspec(dllexport) double __cdecl GetRelativePowerError(int calcul
 	return calculatorRegister.get(calculator).getRelativePowerError();
 }
 
+extern "C" __declspec(dllexport) int __cdecl GetMaximumPossibleCoefficientCount(int calculator)
+{
+	return calculatorRegister.get(calculator).getMaximumPossibleCoefficientCount();
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTests()
 {
 	bool result = runTests();

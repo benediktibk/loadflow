@@ -9,6 +9,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private readonly object _progressLock = new object();
         private double _progress;
         private double _relativePowerError;
+        private string _statusMessage;
 
         public abstract Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums,
             double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
@@ -51,6 +52,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     _relativePowerError = value;
                 }
             }
+        }
+
+        public string StatusMessage
+        {
+            get { return ""; }
         }
     }
 }

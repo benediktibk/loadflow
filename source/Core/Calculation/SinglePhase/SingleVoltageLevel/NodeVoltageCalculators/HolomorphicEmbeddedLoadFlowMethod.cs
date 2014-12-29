@@ -53,6 +53,25 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
+        public string StatusMessage
+        {
+            get
+            {
+                _calculatorMutex.WaitOne();
+                var result = "";
+
+                if (_calculator >= 0)
+                {
+                    var coefficientCount = HolomorphicEmbeddedLoadFlowMethodNativeMethods.GetMaximumPossibleCoefficientCount(_calculator);
+                    if (coefficientCount >= 0)
+                        result = "could only calculate " + coefficientCount +
+                                 " coefficients because of numerical issues";
+                }
+                _calculatorMutex.ReleaseMutex();
+                return result;
+            }
+        }
+
         public double TargetPrecision { get; private set; }
         public int NumberOfCoefficients { get; private set; }
         public int BitPrecision { get; private set; }

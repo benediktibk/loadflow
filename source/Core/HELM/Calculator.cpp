@@ -30,7 +30,8 @@ Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int nu
 	_coefficientStorage(0),
 	_embeddingModification(Floating(0), Floating(0)),
 	_progress(0),
-	_relativePowerError(1)
+	_relativePowerError(1),
+	_maximumPossibleCoefficientCount(-1)
 { 
 	assert(numberOfCoefficients > 0);
 	assert(nodeCount > 0);
@@ -79,14 +80,16 @@ void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, Complex
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
-	freeMemory();
-	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_solver = new LinearEquationSystemSolver<ComplexFloating, Floating>(_admittances, Floating(_targetPrecision*1e-3));
 	{
 		lock_guard<mutex> lock(_progressMutex);
 		_progress = 0;
 		_relativePowerError = 1;
+		_maximumPossibleCoefficientCount = -1;
 	}
+
+	freeMemory();
+	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
+	_solver = new LinearEquationSystemSolver<ComplexFloating, Floating>(_admittances, Floating(_targetPrecision*1e-3));
 
 	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
@@ -109,6 +112,8 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		}
 		catch(overflow_error const &e)
 		{
+			lock_guard<mutex> lock(_progressMutex);
+			_maximumPossibleCoefficientCount = _coefficientStorage->getCoefficientCount();
 			break;
 		}
 
@@ -434,6 +439,13 @@ double Calculator<Floating, ComplexFloating>::getRelativePowerError()
 {
 	lock_guard<mutex> lock(_progressMutex);
 	return _relativePowerError;
+}
+
+template<typename Floating, typename ComplexFloating>
+int Calculator<Floating, ComplexFloating>::getMaximumPossibleCoefficientCount()
+{
+	lock_guard<mutex> lock(_progressMutex);
+	return _maximumPossibleCoefficientCount;
 }
 
 template<typename Floating, typename ComplexFloating>

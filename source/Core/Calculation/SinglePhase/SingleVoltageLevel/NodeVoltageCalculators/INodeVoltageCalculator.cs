@@ -12,5 +12,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         double MaximumRelativePowerError { get; }
         double Progress { get; }
         double RelativePowerError { get; }
+        string StatusMessage { get; }
     }
 }

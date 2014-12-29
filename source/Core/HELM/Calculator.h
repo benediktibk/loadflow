@@ -34,6 +34,7 @@ public:
 	virtual int getNodeCount() const;
 	virtual double getProgress();
 	virtual double getRelativePowerError();
+	virtual int getMaximumPossibleCoefficientCount();
 
 protected:
 	virtual Floating createFloating(double value) const = 0;
@@ -77,5 +78,6 @@ private:
 	std::mutex _progressMutex;
 	double _progress;
 	double _relativePowerError;
+	int _maximumPossibleCoefficientCount;
 };
 
