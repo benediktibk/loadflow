@@ -44,9 +44,8 @@ void SparseMatrix<Floating, ComplexFloating>::set(int row, int column, ComplexFl
 		return;
 	}
 
-	auto nextRowPosition = _rowPointers[row + 1];
-	_columns.insert(_columns.begin() + nextRowPosition, column);
-	_values.insert(_values.begin() + nextRowPosition, value);
+	_columns.insert(_columns.begin() + position, column);
+	_values.insert(_values.begin() + position, value);
 	
 	#pragma omp parallel for
 	for (auto i = row + 1; i < static_cast<int>(_rowPointers.size()); ++i)
@@ -122,20 +121,35 @@ ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int r
 template<class Floating, class ComplexFloating>
 bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, int &position) const
 {
-	auto rowPosition = _rowPointers[row];
+	auto start = _rowPointers[row];
+	auto end = _rowPointers[row + 1];
 
-	for (auto i = rowPosition; i < _rowPointers[row + 1]; ++i)
+	if (end == start)
 	{
-		auto currentColumn = _columns[i];
-
-		if (currentColumn != column)
-			continue;
-
-		position = i;
-		return true;
+		position = end;
+		return false;
 	}
 
-	position = _values.size() + 1;
-	return false;
+	auto rangeBecameSmaller = true;
+	auto previousRangeSize = end - start;
+
+	while(rangeBecameSmaller)
+	{
+		auto middle = (start + end)/2;
+		auto middleColumn = _columns[middle];
+
+		if (middleColumn < column)
+			start = middle;
+		else
+			end = middle;
+
+		auto rangeSize = end - start;
+
+		rangeBecameSmaller = rangeSize < previousRangeSize;
+		previousRangeSize = rangeSize;
+	}
+
+	position = end;
+	return position < _rowPointers[row + 1] && column == _columns[position];
 }
 

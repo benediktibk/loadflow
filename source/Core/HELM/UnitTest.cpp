@@ -745,6 +745,18 @@ bool runTestsSparseMatrixConstructor()
 	return true;
 }
 
+bool runTestsSparseMatrixGet()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
+
+	for (auto row = 0; row < 3; ++row)
+		for (auto column = 0; column < 3; ++column)
+			if (matrix(row, column) != Complex<long double>(0, 0))
+				return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrixSet()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
@@ -844,15 +856,15 @@ bool runTestsSparseMatrixRowIteration()
 	valuesShouldBe.push_back(Complex<long double>(4, 0));
 	valuesShouldBe.push_back(Complex<long double>(5, 0));
 	valuesShouldBe.push_back(Complex<long double>(60, 0));
-	valuesShouldBe.push_back(Complex<long double>(7, 0));
 	valuesShouldBe.push_back(Complex<long double>(80, 0));
+	valuesShouldBe.push_back(Complex<long double>(7, 0));
 	columnsShouldBe.push_back(1);
 	columnsShouldBe.push_back(2);
 	columnsShouldBe.push_back(3);
 	columnsShouldBe.push_back(0);
 	columnsShouldBe.push_back(3);
-	columnsShouldBe.push_back(2);
 	columnsShouldBe.push_back(0);
+	columnsShouldBe.push_back(2);
 	nonZeroCountsShouldBe.push_back(3);
 	nonZeroCountsShouldBe.push_back(2);
 	nonZeroCountsShouldBe.push_back(2);
@@ -872,6 +884,9 @@ bool runTestsSparseMatrixRowIteration()
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
+		return false;
+
+	if (!runTestsSparseMatrixGet())
 		return false;
 	
 	if (!runTestsSparseMatrixSet())
@@ -897,6 +912,12 @@ bool runTests()
 	if (!runTestsComplexMultiPrecision())
 		return false;
 
+	if (!runTestsVector())
+		return false;
+
+	if (!runTestsSparseMatrix())
+		return false;
+
 	if (!runTestsCoefficientStorage())
 		return false;
 
@@ -904,12 +925,6 @@ bool runTests()
 		return false;
 
 	if (!runTestsLinearEquationSystem())
-		return false;
-
-	if (!runTestsVector())
-		return false;
-
-	if (!runTestsSparseMatrix())
 		return false;
 
 	return true;
