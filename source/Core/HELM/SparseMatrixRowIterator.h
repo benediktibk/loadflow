@@ -6,7 +6,7 @@ template<class T>
 class SparseMatrixRowIterator
 {
 public:
-	SparseMatrixRowIterator(std::vector<T> const &values, std::vector<int> const &rowPointers, std::vector<int> const &columns, int row);
+	SparseMatrixRowIterator(std::vector<T> const &values, std::vector<int> const &columns, int start, int end);
 
 	bool isValid() const;
 	void next();

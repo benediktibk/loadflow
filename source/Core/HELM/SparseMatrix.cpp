@@ -98,8 +98,17 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 template<class Floating, class ComplexFloating>
 SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row) const
 {
+	return getRowIterator(row, 0);
+}
+
+template<class Floating, class ComplexFloating>
+SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row, int startColumn) const
+{
 	assert(isValidRowIndex(row));
-	return SparseMatrixRowIterator<ComplexFloating>(_values, _rowPointers, _columns, row);
+	assert(isValidColumnIndex(startColumn));
+	int startPosition;
+	findPosition(row, startColumn, startPosition);
+	return SparseMatrixRowIterator<ComplexFloating>(_values, _columns, startPosition, _rowPointers[row + 1]);
 }
 
 template<class Floating, class ComplexFloating>
