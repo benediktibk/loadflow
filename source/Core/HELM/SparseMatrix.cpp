@@ -133,7 +133,7 @@ int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int col
 }
 
 template<class Floating, class ComplexFloating>
-void SparseMatrix<Floating, ComplexFloating>::changeRows(int one, int two)
+void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 {
 	assert(isValidRowIndex(one));
 	assert(isValidRowIndex(two));

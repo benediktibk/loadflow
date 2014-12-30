@@ -968,9 +968,9 @@ bool runTestsSparseMatrixChangeRows()
 	matrix.set(1, 3, Complex<long double>(60, 0));
 	matrix.set(3, 0, Complex<long double>(80, 0));
 
-	matrix.changeRows(0, 1);
-	matrix.changeRows(3, 1);
-	matrix.changeRows(2, 3);
+	matrix.swapRows(0, 1);
+	matrix.swapRows(3, 1);
+	matrix.swapRows(2, 3);
 
 	vector< Complex<long double> > values;
 	for (auto row = 0; row < 3; ++row)

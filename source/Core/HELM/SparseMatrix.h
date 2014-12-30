@@ -17,7 +17,7 @@ public:
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
 	int findAbsoluteMaximumOfColumn(int column) const;
-	void changeRows(int one, int two);
+	void swapRows(int one, int two);
 
 	ComplexFloating const& operator()(int row, int column) const;
 
