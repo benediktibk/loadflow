@@ -54,6 +54,7 @@ private:
 	void deleteContinuations();
 	void calculateVoltagesFromCoefficients();
 	void getVoltagesAsVectorComplexFloating(Vector<Floating, ComplexFloating> &result) const;
+	void updateProgress(double relativePowerError);
 
 private:
 	static Floating findMaximumMagnitude(const std::vector<ComplexFloating> &values);

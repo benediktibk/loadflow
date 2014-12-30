@@ -113,7 +113,7 @@ namespace SincalConnector
             }
             catch (Exception exception)
             {
-                Log("was not able to calculate the power net because an exception occured:");
+                Log("was not able to calculate the power net because of an exception:");
                 Log(exception.Message);
             }
         }

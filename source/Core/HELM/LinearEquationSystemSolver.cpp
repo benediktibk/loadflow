@@ -103,7 +103,7 @@ Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Fl
 	{
 		auto value = static_cast<double>(std::abs2(x(i)));
 		if (!isfinite(value))
-			throw new exception("BiCGSTAB did not converge to a proper value");
+			throw overflow_error("BiCGSTAB did not converge to a proper value");
 	}
 
 	return x;

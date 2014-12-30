@@ -95,22 +95,24 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 	
 	if (!calculateFirstCoefficient())
-		throw new exception("could not calculate the first coefficients");
+		throw exception("could not calculate the first coefficients");
 
+	updateProgress(1);
 	calculateSecondCoefficient();
+	updateProgress(1);
+
 	map<double, int> totalErrors;
 	vector< vector< Complex<long double> > > partialResults;
 	partialResults.reserve(_numberOfCoefficients);
 	
 	while (_coefficientStorage->getCoefficientCount() < _numberOfCoefficients)
 	{
-		calculateNextCoefficient();
-
 		try
 		{
+			calculateNextCoefficient();
 			calculateVoltagesFromCoefficients();
 		}
-		catch(overflow_error const &e)
+		catch(overflow_error)
 		{
 			lock_guard<mutex> lock(_progressMutex);
 			_maximumPossibleCoefficientCount = _coefficientStorage->getCoefficientCount();
@@ -120,12 +122,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		double totalError = calculateTotalRelativeError();
 		totalErrors.insert(pair<double, int>(totalError, partialResults.size()));
 		partialResults.push_back(_voltages);
-
-		{
-			lock_guard<mutex> lock(_progressMutex);
-			_progress = static_cast<double>(_coefficientStorage->getCoefficientCount()) / _numberOfCoefficients;
-			_relativePowerError = totalErrors.begin()->first;
-		}
+		updateProgress(totalErrors.begin()->first);
 	}
 
 	if (!totalErrors.empty())
@@ -459,4 +456,12 @@ void Calculator<Floating, ComplexFloating>::getVoltagesAsVectorComplexFloating(V
 		Complex<long double> const &voltage = _voltages[i];
 		result.set(i, ComplexFloating(Floating(real(voltage)), Floating(imag(voltage))));
 	}
+}
+
+template<typename Floating, typename ComplexFloating>
+void Calculator<Floating, ComplexFloating>::updateProgress(double relativePowerError)
+{
+	lock_guard<mutex> lock(_progressMutex);
+	_relativePowerError = relativePowerError;	
+	_progress = static_cast<double>(_coefficientStorage->getCoefficientCount()) / _numberOfCoefficients;
 }

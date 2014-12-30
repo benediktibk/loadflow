@@ -249,7 +249,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0002, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.001, 0.5);
         }
 
         [TestMethod]
@@ -381,7 +381,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.02, 0.2);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.03, 0.5);
         }
 
         [TestMethod]
@@ -393,7 +393,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.001, 0.05);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.03, 0.5);
         }
 
         [TestMethod]
@@ -405,7 +405,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.1);
         }
 
         [TestMethod]
@@ -417,7 +417,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
             var nodeResults = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(nodeResults);
-            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.01);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.002, 0.01);
         }
     }
 }
