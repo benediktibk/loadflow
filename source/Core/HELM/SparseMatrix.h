@@ -16,11 +16,14 @@ public:
 	void multiply(Vector<Floating, ComplexFloating> &destination, Vector<Floating, ComplexFloating> const &source) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row) const;
 	int findAbsoluteMaximumOfColumn(int column) const;
+	void changeRows(int one, int two);
 
 	ComplexFloating const& operator()(int row, int column) const;
 
 private:
 	bool findPosition(int row, int column, int &position) const;
+	bool isValidRowIndex(int row) const;
+	bool isValidColumnIndex(int column) const;
 
 private:
 	const int _rowCount;
@@ -29,5 +32,7 @@ private:
 	std::vector<int> _columns;
 	std::vector<int> _rowPointers;
 	std::vector<ComplexFloating> _values;
+	std::vector<int> _tempInt;
+	std::vector<ComplexFloating> _tempComplexFloating;
 };
 

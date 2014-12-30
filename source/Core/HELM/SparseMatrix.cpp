@@ -98,16 +98,14 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 template<class Floating, class ComplexFloating>
 SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row) const
 {
-	assert(row >= 0);
-	assert(row < getRowCount());
+	assert(isValidRowIndex(row));
 	return SparseMatrixRowIterator<ComplexFloating>(_values, _rowPointers, _columns, row);
 }
 
 template<class Floating, class ComplexFloating>
 int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int column) const
 {
-	assert(column >= 0);
-	assert(column < getColumnCount());
+	assert(isValidColumnIndex(column));
 	auto maximumRow = 0;
 	auto maximumValue = std::abs2(operator()(0, column));
 
@@ -126,13 +124,51 @@ int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int col
 }
 
 template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::changeRows(int one, int two)
+{
+	assert(isValidRowIndex(one));
+	assert(isValidRowIndex(two));
+	assert(one != two);
+
+	if (one > two)
+		std::swap(one, two);
+
+	std::vector<int> positions;
+	positions.push_back(_rowPointers[one]);
+	positions.push_back(_rowPointers[one + 1]);
+	positions.push_back(_rowPointers[two]);
+	positions.push_back(_rowPointers[two + 1]);
+	
+	_tempInt.clear();
+	_tempComplexFloating.clear();
+	_tempInt.reserve(_columns.size());
+	_tempComplexFloating.reserve(_values.size());
+
+	_tempInt.insert(_tempInt.end(), _columns.begin(), _columns.begin() + positions[0]);
+	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin(), _values.begin() + positions[0]);
+	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[2], _columns.begin() + positions[3]);
+	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[2], _values.begin() + positions[3]);
+	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[1], _columns.begin() + positions[2]);
+	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[1], _values.begin() + positions[2]);
+	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[0], _columns.begin() + positions[1]);
+	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[0], _values.begin() + positions[1]);
+	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[3], _columns.end());
+	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[3], _values.end());
+
+	_tempInt.swap(_columns);
+	_tempComplexFloating.swap(_values);
+	
+	auto rwoOneLength = positions[1] - positions[0];
+	auto rwoTwoLength = positions[3] - positions[2];
+	auto lengthDifference = rwoTwoLength - rwoOneLength;
+
+	for (auto i = one + 1; i <= two; ++i)
+		_rowPointers[i] += lengthDifference;
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
-	assert(row < getRowCount());
-	assert(column < getColumnCount());
-	assert(row >= 0);
-	assert(column >= 0);
-
 	int position;
 	if (findPosition(row, column, position))
 		return _values[position];
@@ -143,6 +179,9 @@ ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int r
 template<class Floating, class ComplexFloating>
 bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, int &position) const
 {
+	assert(isValidRowIndex(row));
+	assert(isValidColumnIndex(column));
+
 	auto start = _rowPointers[row];
 	auto end = _rowPointers[row + 1];
 
@@ -173,5 +212,17 @@ bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, 
 
 	position = end;
 	return position < _rowPointers[row + 1] && column == _columns[position];
+}
+
+template<class Floating, class ComplexFloating>
+bool SparseMatrix<Floating, ComplexFloating>::isValidRowIndex(int row) const
+{
+	return row >= 0 && row < getRowCount();
+}
+
+template<class Floating, class ComplexFloating>
+bool SparseMatrix<Floating, ComplexFloating>::isValidColumnIndex(int column) const
+{
+	return column >= 0 && column < getColumnCount();
 }
 

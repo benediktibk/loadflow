@@ -904,6 +904,36 @@ bool runTestsSparseMatrixFindAbsoluteMaximumOfColumn()
 	return maximumRowsShouldBe == maximumRows;
 }
 
+bool runTestsSparseMatrixChangeRows()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(4, 4);
+	matrix.set(0, 1, Complex<long double>(7, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(3, 0, Complex<long double>(80, 0));
+
+	matrix.changeRows(0, 1);
+	matrix.changeRows(3, 1);
+	matrix.changeRows(2, 3);
+
+	vector< Complex<long double> > values;
+	for (auto row = 0; row < 3; ++row)
+		for (auto i = matrix.getRowIterator(row); i.isValid(); i.next())
+			values.push_back(i.getValue());
+	
+	vector< Complex<long double> > valuesShouldBe;
+	valuesShouldBe.push_back(Complex<long double>(5, 0));
+	valuesShouldBe.push_back(Complex<long double>(60, 0));
+	valuesShouldBe.push_back(Complex<long double>(80, 0));
+	valuesShouldBe.push_back(Complex<long double>(7, 0));
+	valuesShouldBe.push_back(Complex<long double>(3, 0));
+	valuesShouldBe.push_back(Complex<long double>(4, 0));
+
+	return valuesShouldBe == values;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -922,6 +952,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixFindAbsoluteMaximumOfColumn())
+		return false;
+
+	if (!runTestsSparseMatrixChangeRows())
 		return false;
 
 	return true;
