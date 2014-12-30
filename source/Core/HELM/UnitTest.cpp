@@ -881,6 +881,29 @@ bool runTestsSparseMatrixRowIteration()
 	return true;
 }
 
+bool runTestsSparseMatrixFindAbsoluteMaximumOfColumn()
+{	
+	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(1, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	vector<int> maximumRows;
+
+	for (auto column = 0; column < 4; ++column)
+		maximumRows.push_back(matrix.findAbsoluteMaximumOfColumn(column));
+
+	vector<int> maximumRowsShouldBe;
+	maximumRowsShouldBe.push_back(2);
+	maximumRowsShouldBe.push_back(0);
+	maximumRowsShouldBe.push_back(0);
+	maximumRowsShouldBe.push_back(1);
+
+	return maximumRowsShouldBe == maximumRows;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -896,6 +919,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixRowIteration())
+		return false;
+
+	if (!runTestsSparseMatrixFindAbsoluteMaximumOfColumn())
 		return false;
 
 	return true;

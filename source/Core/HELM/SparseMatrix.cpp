@@ -104,6 +104,28 @@ SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>
 }
 
 template<class Floating, class ComplexFloating>
+int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int column) const
+{
+	assert(column >= 0);
+	assert(column < getColumnCount());
+	auto maximumRow = 0;
+	auto maximumValue = std::abs2(operator()(0, column));
+
+	for (auto row = 1; row < _rowCount; ++row)
+	{
+		auto value = std::abs2(operator()(row, column));
+		
+		if (value > maximumValue)
+		{
+			maximumRow = row;
+			maximumValue = value;
+		}
+	}
+
+	return maximumRow;
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	assert(row < getRowCount());
