@@ -2,12 +2,13 @@
 
 #include "SparseMatrix.h"
 #include "Vector.h"
+#include "ILinearEquationSystemSolver.h"
 
-template<class ComplexFloating, class Floating>
-class LinearEquationSystemSolver
+template<class Floating, class ComplexFloating>
+class BiCGSTAB : public ILinearEquationSystemSolver<Floating, ComplexFloating>
 {
 public:
-	LinearEquationSystemSolver(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon);
+	BiCGSTAB(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon);
 
 	Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 

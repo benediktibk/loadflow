@@ -2,7 +2,8 @@
 #include "Complex.h"
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
-#include "LinearEquationSystemSolver.h"
+#include "ILinearEquationSystemSolver.h"
+#include "BiCGSTAB.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
@@ -405,7 +406,7 @@ bool runTestsAnalyticContinuation()
 
 bool runTestsLinearEquationSystem()
 {
-	SparseMatrix<long double, Complex<long double> > A(3, 3);
+	SparseMatrix<long double, Complex<long double>> A(3, 3);
 	A.set(0, 0, Complex<long double>(1, 2));
 	A.set(0, 1, Complex<long double>(3, 4));
 	A.set(0, 2, Complex<long double>(5, 6));
@@ -419,9 +420,9 @@ bool runTestsLinearEquationSystem()
 	x.set(2, Complex<long double>(19, 20));
 	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
-	LinearEquationSystemSolver< Complex<long double>, long double > solver(A, 1e-10);
+	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
 
-	auto result = solver.solve(b);
+	auto result = iterativeSolver.solve(b);
 
 	if (result.getCount() != 3)
 		return false;

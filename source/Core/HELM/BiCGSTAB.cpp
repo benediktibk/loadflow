@@ -1,11 +1,11 @@
-#include "LinearEquationSystemSolver.h"
+#include "BiCGSTAB.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
 #include <assert.h>
 
-template class LinearEquationSystemSolver< Complex<long double>, long double >;
-template class LinearEquationSystemSolver< Complex<MultiPrecision>, MultiPrecision >;
+template class BiCGSTAB<long double, Complex<long double>>;
+template class BiCGSTAB<MultiPrecision, Complex<MultiPrecision>>;
 
 template<typename T> bool isfinite(T const &arg)
 {
@@ -14,8 +14,8 @@ template<typename T> bool isfinite(T const &arg)
            arg != -std::numeric_limits<T>::infinity();
 }
 
-template<class ComplexFloating, class Floating>
-LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolver(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon) :
+template<class Floating, class ComplexFloating>
+BiCGSTAB<Floating, ComplexFloating>::BiCGSTAB(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon) :
 	_dimension(systemMatrix.getRowCount()),
 	_systemMatrix(systemMatrix),
 	_preconditioner(_systemMatrix.getRowCount(), _systemMatrix.getColumnCount())
@@ -29,8 +29,8 @@ LinearEquationSystemSolver<ComplexFloating, Floating>::LinearEquationSystemSolve
 	}
 }
 
-template<class ComplexFloating, class Floating>
-Vector<Floating, ComplexFloating> LinearEquationSystemSolver<ComplexFloating, Floating>::solve(const Vector<Floating, ComplexFloating> &b) const
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {	
 	Vector<Floating, ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);

@@ -10,7 +10,7 @@
 #include "CoefficientStorage.h"
 #include "AnalyticContinuation.h"
 #include "SparseMatrix.h"
-#include "LinearEquationSystemSolver.h"
+#include "ILinearEquationSystemSolver.h"
 
 template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
@@ -67,7 +67,7 @@ private:
 	const int _pvBusCount;
 	const double _nominalVoltage;
 	SparseMatrix<Floating, ComplexFloating> _admittances;
-	LinearEquationSystemSolver<ComplexFloating, Floating> *_solver;
+	ILinearEquationSystemSolver<Floating, ComplexFloating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;
 	Vector<Floating, ComplexFloating> _constantCurrents;
 	std::vector<PQBus> _pqBuses;
