@@ -6,12 +6,15 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class CurrentIteration : NodeVoltageCalculator
     {
+        private ISolver<Complex> _factorization;
+
         public CurrentIteration(double targetPrecision, int maximumIterations, bool iterativeSolver)
         {
             MaximumIterations = maximumIterations;
@@ -37,6 +40,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             bool accurateEnough;
             Progress = 0;
             RelativePowerError = 1;
+
+            if (IterativeSolver)
+                _factorization = admittances.CalculateFactorization();
 
             do
             {
@@ -94,10 +100,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         private Vector<Complex> CalculateImprovedVoltagesAndPowers(IReadOnlyAdmittanceMatrix admittances, IList<Complex> constantCurrents, IEnumerable<PvNodeWithIndex> pvBuses, Vector<Complex> rightHandSide, IList<Complex> powers, Vector<Complex> oldVoltages, out bool powerErrorTooBig)
         {
-            var newVoltages = new DenseVector(oldVoltages.Count);
-            oldVoltages.CopyTo(newVoltages);
-            admittances.CalculateVoltages(newVoltages, rightHandSide, new BiCgStab(), new Iterator<Complex>());
+            Vector<Complex> newVoltages;
             powerErrorTooBig = false;
+
+            if (IterativeSolver)
+            {
+                newVoltages = new DenseVector(oldVoltages.Count);
+                oldVoltages.CopyTo(newVoltages);
+                admittances.CalculateVoltages(newVoltages, rightHandSide, new BiCgStab(), new Iterator<Complex>());
+            }
+            else
+                newVoltages = _factorization.Solve(rightHandSide);
 
             foreach (var bus in pvBuses)
             {

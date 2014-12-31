@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
@@ -66,6 +66,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             solver.Solve(_values, b, x, iterator, new DiagonalPreconditioner());
         }
 
+        public LU<Complex> CalculateFactorization()
+        {
+            return _values.LU();
+        }
+
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)
         {
             var currents = CalculateCurrents(voltages) - constantCurrents;
@@ -82,7 +87,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
         {
-            Debug.Assert(sourceNode != targetNode);
             _values[sourceNode, sourceNode] += admittance;
             _values[targetNode, targetNode] += admittance;
             _values[sourceNode, targetNode] -= admittance;

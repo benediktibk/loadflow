@@ -91,10 +91,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private Vector<Complex> CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)
         {
-            var voltages = DenseVector.OfEnumerable(nominalVoltages);
+            Vector<Complex> voltages = DenseVector.OfEnumerable(nominalVoltages);
             var ownCurrents = (knownPowers.PointwiseDivide(voltages)).Conjugate();
             var totalCurrents = ownCurrents.Add(constantCurrents);
-            admittances.CalculateVoltages(voltages, totalCurrents, new BiCgStab(), new Iterator<Complex>());
+
+            if (IterativeSolver)
+                admittances.CalculateVoltages(voltages, totalCurrents, new BiCgStab(), new Iterator<Complex>());
+            else
+            {
+                var factorization = admittances.CalculateFactorization();
+                voltages = factorization.Solve(totalCurrents);
+            }
+
             return voltages;
         }
     }

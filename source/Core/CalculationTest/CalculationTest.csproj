@@ -80,6 +80,11 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\IdGeneratorTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\ImpedanceLoadTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeGraphTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodWithDirectSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethodWithDirectSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionWithDirectSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodLongDoubleWithDirectSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethodWithDirectSolverTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodeVoltageCalculatorTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodWithIterativeSolverTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIterationTest.cs" />

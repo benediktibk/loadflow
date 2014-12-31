@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Solvers;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -21,5 +22,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses);
         IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed();
         void CalculateVoltages(Vector<Complex> x, Vector<Complex> b, IIterativeSolver<Complex> solver, Iterator<Complex> iterator);
+        LU<Complex> CalculateFactorization();
     }
 }

@@ -22,7 +22,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
             var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBusToMatrixIndex, pvBusToMatrixIndex, busToMatrixIndex);
-            var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix, residualImprovementFactor);
+            var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix, residualImprovementFactor, IterativeSolver);
             return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBusToMatrixIndex, pvBusToMatrixIndex, pvBusVoltages, voltageChanges);
         }
 
@@ -45,13 +45,24 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
-        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError, Matrix<double> changeMatrix, double residualImprovementFactor)
+        public static Vector<double> CalculateVoltageChanges(IList<double> powersRealError, IList<double> powersImaginaryError, Matrix<double> changeMatrix, double residualImprovementFactor, bool iterativeSolver)
         {
             var rightSide = CombineParts(powersRealError, powersImaginaryError);
-            var voltageChanges = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(rightSide.Count);
+            Vector<double> voltageChanges = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(rightSide.Count);
             var stopCriterion = CreateStopCriterion(powersRealError, powersImaginaryError, residualImprovementFactor);
-            var solver = new TFQMR();
-            solver.Solve(changeMatrix, rightSide, voltageChanges, new Iterator<double>(stopCriterion), new ILU0Preconditioner());
+
+            if (iterativeSolver)
+            {
+                var solver = new TFQMR();
+                solver.Solve(changeMatrix, rightSide, voltageChanges, new Iterator<double>(stopCriterion),
+                    new ILU0Preconditioner());
+            }
+            else
+            {
+                var factorization = changeMatrix.LU();
+                voltageChanges = factorization.Solve(rightSide);
+            }
+
             return voltageChanges;
         }
 
