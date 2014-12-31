@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
-using MathNet.Numerics.LinearAlgebra.Complex;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using AdmittanceMatrix = Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix;
+using DenseVector = MathNet.Numerics.LinearAlgebra.Complex.DenseVector;
 
 namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
 {
@@ -24,7 +26,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {thirdNode, 2},
                 {fourthNode, 3}
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(4), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(4), nodeIndexes);
 
             matrix.AddVoltageControlledCurrentSource(firstNode, secondNode, thirdNode, fourthNode, 2);
 
@@ -48,7 +50,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {firstNode, 0},
                 {secondNode, 1},
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(2), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(2), nodeIndexes);
 
             matrix.AddConnection(firstNode, secondNode, new Complex(1, 0));
 
@@ -72,7 +74,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {secondNode, 1},
                 {thirdNode, 2},
             };
-            var admittanceMatrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(3), nodeIndexes);
+            var admittanceMatrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(3), nodeIndexes);
             admittanceMatrix.AddGyrator(firstNode, thirdNode, secondNode, thirdNode, 2);
 
             var voltages =
@@ -98,7 +100,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(4), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(4), nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 1);
             matrix.AddConnection(output, ground, 1);
@@ -127,7 +129,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(4), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(4), nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 10, 100);
             matrix.AddConnection(output, ground, 1);
@@ -156,7 +158,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {internalNode, 2},
                 {ground, 3}
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(4), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(4), nodeIndexes);
 
             matrix.AddIdealTransformer(input, ground, output, ground, internalNode, 1, 100);
             matrix.AddConnection(output, ground, 1);
@@ -189,7 +191,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
                 {internalNode, 4},
                 {ground, 5}
             };
-            var matrix = new AdmittanceMatrix(new Calculation.SinglePhase.SingleVoltageLevel.AdmittanceMatrix(6), nodeIndexes);
+            var matrix = new Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix(new AdmittanceMatrix(6), nodeIndexes);
 
             matrix.AddConnection(input, inputTransformer, 0.1);
             matrix.AddIdealTransformer(inputTransformer, ground, outputTransformer, ground, internalNode, 2, 1);
@@ -206,7 +208,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             Assert.AreEqual(0.5, currents[5], 0.00001);
         }
 
-        private static MathNet.Numerics.LinearAlgebra.Double.Vector GetRealValues(IList<Complex> vector)
+        private static Vector GetRealValues(IList<Complex> vector)
         {
             var result = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(vector.Count);
 

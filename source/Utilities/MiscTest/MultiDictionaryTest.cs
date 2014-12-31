@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Misc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Misc;
 
 namespace MiscTest
 {

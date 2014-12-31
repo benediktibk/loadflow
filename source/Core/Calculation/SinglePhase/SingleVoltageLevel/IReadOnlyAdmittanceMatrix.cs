@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Solvers;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.LinearAlgebra.Solvers;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {

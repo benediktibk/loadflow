@@ -1,6 +1,6 @@
 ﻿using System;
-using Misc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Misc;
 
 namespace MiscTest
 {

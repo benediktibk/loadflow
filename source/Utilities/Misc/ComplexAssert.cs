@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Numerics;
 
 namespace Misc
 {

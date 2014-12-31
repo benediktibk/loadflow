@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class Factory

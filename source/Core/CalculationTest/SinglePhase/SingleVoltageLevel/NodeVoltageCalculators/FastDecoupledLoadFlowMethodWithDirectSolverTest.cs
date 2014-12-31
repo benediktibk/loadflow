@@ -1,27 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
-using Calculation.SinglePhase.SingleVoltageLevel;
-using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using MathNet.Numerics.LinearAlgebra.Complex;
+﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Misc;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
     public class FastDecoupledLoadFlowMethodWithDirectSolverTest : NodeVoltageCalculatorTest
     {
-        public override double PrecisionPqOnly
+        public override double PrecisionOnePqBus
         {
             get { return 10; }
         }
 
-        public override double PrecisionPvOnly
+        public override double PrecisionTwoPvBuses
         {
             get { return 0.0001; }
         }
 
-        public override double PrecisionPqAndPv
+        public override double PrecisionOnePqAndOnePv
+        {
+            get { return 10; }
+        }
+
+        public override double PrecisionThreePqBuses
         {
             get { return 10; }
         }

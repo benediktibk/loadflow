@@ -8,7 +8,6 @@ using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
 using MathNet.Numerics.LinearAlgebra.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
-using Moq;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel
 {

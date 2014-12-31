@@ -7,6 +7,7 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
+using IAdmittanceMatrix = Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix;
 using IPowerNetComputable = Calculation.SinglePhase.SingleVoltageLevel.IPowerNetComputable;
 using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
@@ -30,7 +31,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet = new PowerNetComputable(50, _powerNetFactoryMock.Object, _nodeGraphMock.Object);
             _powerNetFactoryMock.Setup(
                 x =>
-                    x.Create(It.IsAny<Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix>(),
+                    x.Create(It.IsAny<IAdmittanceMatrix>(),
                         It.IsAny<double>())).Returns(_singleVoltagePowerNetMock.Object);
             _relativePowerError = 0.1;
         }

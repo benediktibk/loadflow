@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Database;
-using Node = Database.Node;
 
 namespace DatabaseUI
 {
@@ -60,7 +61,7 @@ namespace DatabaseUI
             if (powerNet == null || _model.Connection.NotConnected)
                 return;
 
-            Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix matrix;
+            AdmittanceMatrix matrix;
             IReadOnlyList<string> nodeNames;
             double powerBase;
 
@@ -119,7 +120,7 @@ namespace DatabaseUI
                     return;
                 }
 
-                System.Threading.Thread.Sleep(5000);
+                Thread.Sleep(5000);
                 _model.Connection.Connect();
             }
 

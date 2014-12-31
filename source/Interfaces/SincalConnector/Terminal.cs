@@ -1,5 +1,4 @@
-﻿using System.Data.OleDb;
-using System.IO;
+﻿using System.IO;
 using Misc;
 
 namespace SincalConnector

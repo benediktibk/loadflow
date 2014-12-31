@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Numerics;
-using HolomorphicEmbeddedLoadFlowMethod = Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators.HolomorphicEmbeddedLoadFlowMethod;
-using NodeGraph = Calculation.SinglePhase.MultipleVoltageLevels.NodeGraph;
-using PowerNetFactory = Calculation.SinglePhase.SingleVoltageLevel.PowerNetFactory;
+using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+using Calculation.ThreePhase;
 using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
-using SymmetricPowerNet = Calculation.ThreePhase.SymmetricPowerNet;
 
 namespace CalculationExample
 {

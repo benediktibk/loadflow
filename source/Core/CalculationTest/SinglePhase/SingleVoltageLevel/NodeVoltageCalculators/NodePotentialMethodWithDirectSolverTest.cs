@@ -6,19 +6,24 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     [TestClass]
     public class NodePotentialMethodWithDirectSolverTest : NodeVoltageCalculatorTest
     {
-        public override double PrecisionPqOnly
+        public override double PrecisionOnePqBus
         {
             get { return 0.0002; }
         }
 
-        public override double PrecisionPvOnly
+        public override double PrecisionTwoPvBuses
         {
             get { return 0.0001; }
         }
 
-        public override double PrecisionPqAndPv
+        public override double PrecisionOnePqAndOnePv
         {
             get { return 0.02; }
+        }
+
+        public override double PrecisionThreePqBuses
+        {
+            get { return 0.0002; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()

@@ -1,5 +1,4 @@
-﻿using System;
-using Calculation.SinglePhase.SingleVoltageLevel;
+﻿using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

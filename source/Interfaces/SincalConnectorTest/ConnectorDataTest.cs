@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SincalConnector;
@@ -19,7 +20,7 @@ namespace SincalConnectorTest
             _changedProperties = new List<string>();
         }
 
-        void ConnectorDataPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void ConnectorDataPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             _changedProperties.Add(e.PropertyName);
         }

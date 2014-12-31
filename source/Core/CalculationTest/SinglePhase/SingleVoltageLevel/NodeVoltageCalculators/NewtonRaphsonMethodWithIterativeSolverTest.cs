@@ -5,25 +5,31 @@ using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
+using SparseMatrix = MathNet.Numerics.LinearAlgebra.Double.SparseMatrix;
 
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
     public class NewtonRaphsonMethodWithIterativeSolverTest : NodeVoltageCalculatorTest
     {
-        public override double PrecisionPqOnly
+        public override double PrecisionOnePqBus
         {
             get { return 0.0001; }
         }
 
-        public override double PrecisionPvOnly
+        public override double PrecisionTwoPvBuses
         {
             get { return 0.0001; }
         }
 
-        public override double PrecisionPqAndPv
+        public override double PrecisionOnePqAndOnePv
         {
             get { return 0.001; }
+        }
+
+        public override double PrecisionThreePqBuses
+        {
+            get { return 0.0001; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
@@ -285,7 +291,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var changeMatrix = NewtonRaphsonMethod.CalculateChangeMatrix(admittances, voltages, constantCurrents,
                 pqBuses, pvBuses, buses);
 
-            Assert.IsNotNull(changeMatrix as MathNet.Numerics.LinearAlgebra.Double.SparseMatrix);
+            Assert.IsNotNull(changeMatrix as SparseMatrix);
         }
 
         [TestMethod]

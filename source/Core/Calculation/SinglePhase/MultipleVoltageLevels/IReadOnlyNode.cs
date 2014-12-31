@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Calculation.SinglePhase.SingleVoltageLevel;
+﻿using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {

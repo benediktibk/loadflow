@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Misc;
 
 namespace Database
@@ -146,7 +147,7 @@ namespace Database
             _sqlConnection = null;
         }
 
-        public void Add(Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix matrix,
+        public void Add(IAdmittanceMatrix matrix,
             IReadOnlyList<string> nodeNames, string powerNet, double powerBase)
         {
             var headerCommand = SqlCommandFactory.CreateCommandToAddAdmittanceMatrixHeader(matrix, powerNet, powerBase);

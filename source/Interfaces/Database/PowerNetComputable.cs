@@ -9,6 +9,7 @@ using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
+using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 
 namespace Database
 {
@@ -83,7 +84,7 @@ namespace Database
             _backgroundWorker.RunWorkerAsync();
         }
 
-        public bool CalculateAdmittanceMatrix(out Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
+        public bool CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerBase)
         {
             matrix = null;
             nodeNames = null;

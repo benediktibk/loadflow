@@ -25,9 +25,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private List<int> _indexOfNodesWithUnknownVoltage;
         private IReadOnlyAdmittanceMatrix _admittanceMatrixReduced;
 
-        public abstract double PrecisionPqOnly { get; }
-        public abstract double PrecisionPvOnly { get; }
-        public abstract double PrecisionPqAndPv { get; }
+        public abstract double PrecisionOnePqBus { get; }
+        public abstract double PrecisionTwoPvBuses { get; }
+        public abstract double PrecisionOnePqAndOnePv { get; }
+        public abstract double PrecisionThreePqBuses { get; }
 
         [TestInitialize]
         public void SetUp()
@@ -70,7 +71,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 admittanceMatrix.CalculateRowSums(), 10, initialVoltages, constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(loadVoltage.Magnitude, result[0].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(loadVoltage.Magnitude, result[0].Magnitude, PrecisionOnePqBus);
         }
 
         [TestMethod]
@@ -83,8 +84,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqOnly);
-            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionOnePqBus);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionOnePqBus);
         }
 
         [TestMethod]
@@ -97,8 +98,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPvOnly);
-            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPvOnly);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionTwoPvBuses);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionTwoPvBuses);
         }
 
         [TestMethod]
@@ -111,8 +112,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 _admittanceMatrix.CalculateRowSums(), 10, _initialVoltages, _constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(2, result.Count);
-            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqAndPv);
-            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqAndPv);
+            Assert.AreEqual(_loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionOnePqAndOnePv);
+            Assert.AreEqual(_loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionOnePqAndOnePv);
         }
 
         [TestMethod]
@@ -141,9 +142,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 admittanceMatrix.CalculateRowSums(), 10, initialVoltages, constantCurrents, pqBuses, pvBuses);
 
             Assert.AreEqual(3, result.Count);
-            Assert.AreEqual(loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionPqOnly);
-            Assert.AreEqual(loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionPqOnly);
-            Assert.AreEqual(loadVoltageThree.Magnitude, result[2].Magnitude, PrecisionPqOnly);
+            Assert.AreEqual(loadVoltageOne.Magnitude, result[0].Magnitude, PrecisionThreePqBuses);
+            Assert.AreEqual(loadVoltageTwo.Magnitude, result[1].Magnitude, PrecisionThreePqBuses);
+            Assert.AreEqual(loadVoltageThree.Magnitude, result[2].Magnitude, PrecisionThreePqBuses);
         }
 
         public abstract INodeVoltageCalculator CreateNodeVoltageCalculator();

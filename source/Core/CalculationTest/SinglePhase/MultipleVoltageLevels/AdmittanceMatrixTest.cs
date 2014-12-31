@@ -4,7 +4,6 @@ using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Misc;
 using Moq;
-using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
 using IAdmittanceMatrix = Calculation.SinglePhase.SingleVoltageLevel.IAdmittanceMatrix;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
