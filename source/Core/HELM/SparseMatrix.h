@@ -16,7 +16,7 @@ public:
 	void multiply(Vector<Floating, ComplexFloating> &destination, Vector<Floating, ComplexFloating> const &source) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
-	int findAbsoluteMaximumOfColumn(int column) const;
+	int findAbsoluteMaximumOfColumn(int column, int rowStart) const;
 	void swapRows(int one, int two);
 	void reserve(size_t n);
 

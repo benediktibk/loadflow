@@ -33,7 +33,7 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 
 	for (auto i = 0; i < _dimension - 1; ++i)
 	{
-		auto pivotIndex = _upper.findAbsoluteMaximumOfColumn(i);
+		auto pivotIndex = _upper.findAbsoluteMaximumOfColumn(i, i);
 		auto pivotElement = _upper(pivotIndex, i);
 		_upper.swapRows(i, pivotIndex);
 		_left.swapRows(i, pivotIndex);
