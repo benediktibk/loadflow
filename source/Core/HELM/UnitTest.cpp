@@ -459,7 +459,7 @@ bool runTestsLinearEquationSystemTwo()
 	A.set(1, 2, Complex<long double>(6, 0));
 	A.set(2, 0, Complex<long double>(7, 0));
 	A.set(2, 1, Complex<long double>(8, 0));
-	A.set(2, 2, Complex<long double>(9, 0));
+	A.set(2, 2, Complex<long double>(10, 0));
 	Vector<long double, Complex<long double> > x(3);
 	x.set(0, Complex<long double>(10, 0));
 	x.set(1, Complex<long double>(11, 0));
@@ -495,10 +495,10 @@ bool runTestsLinearEquationSystemTwo()
 
 bool runTestsLinearEquationSystem()
 {
-	if (!runTestsLinearEquationSystemOne())
+	if (!runTestsLinearEquationSystemTwo())
 		return false;
 
-	if (!runTestsLinearEquationSystemTwo())
+	if (!runTestsLinearEquationSystemOne())
 		return false;
 
 	return true;

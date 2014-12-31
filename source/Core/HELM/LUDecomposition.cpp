@@ -33,10 +33,7 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 	auto zero = ComplexFloating(Floating(0));
 
 	for (auto i = 0; i < _dimension; ++i)
-	{
 		_permutation.set(i, i, one);
-		_left.set(i, i, one);
-	}
 
 	for (auto i = 0; i < _dimension - 1; ++i)
 	{
@@ -60,7 +57,10 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 			_upper.addWeightedRowElements(j, factorNegative, pivotRow);
 			_upper.set(j, i, zero);
 		}
-	}
+	}	
+
+	for (auto i = 0; i < _dimension; ++i)
+		_left.set(i, i, one);
 
 	_upper.compress();
 }
