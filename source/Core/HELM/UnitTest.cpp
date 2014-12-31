@@ -1113,6 +1113,44 @@ bool runTestsSparseMatrixCompress()
 	return true;
 }
 
+bool runTestsSparseMatrixAddWeightedRowElements()
+{
+	SparseMatrix<long double, Complex<long double>> matrix(3, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	vector<pair<int, Complex<long double>>> valuesAndColumns;
+	valuesAndColumns.push_back(pair<int, Complex<long double>>(0, Complex<long double>(9, 0)));
+	valuesAndColumns.push_back(pair<int, Complex<long double>>(1, Complex<long double>(10, 0)));
+	valuesAndColumns.push_back(pair<int, Complex<long double>>(3, Complex<long double>(11, 0)));
+
+	matrix.addWeightedRowElements(0, Complex<long double>(2, 0), valuesAndColumns);
+
+	vector<Complex<long double>> values;
+	for (auto row = 0; row < 3; ++row)
+		for (auto i = matrix.getRowIterator(row); i.isValid(); i.next())
+			values.push_back(i.getValue());
+
+	vector<Complex<long double>> valuesShouldBe;
+	valuesShouldBe.push_back(Complex<long double>(18, 0));
+	valuesShouldBe.push_back(Complex<long double>(22, 0));
+	valuesShouldBe.push_back(Complex<long double>(3, 0));
+	valuesShouldBe.push_back(Complex<long double>(26, 0));
+	valuesShouldBe.push_back(Complex<long double>(5, 0));
+	valuesShouldBe.push_back(Complex<long double>(60, 0));
+	valuesShouldBe.push_back(Complex<long double>(80, 0));
+	valuesShouldBe.push_back(Complex<long double>(7, 0));
+
+	if (valuesShouldBe != values)
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -1146,6 +1184,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixCompress())
+		return false;
+
+	if (!runTestsSparseMatrixAddWeightedRowElements())
 		return false;
 
 	return true;

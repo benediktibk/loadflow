@@ -52,4 +52,6 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 			//for (auto k = _upper.getRowIterator()
 		}
 	}
+
+	_upper.compress();
 }

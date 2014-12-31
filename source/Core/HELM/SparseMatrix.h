@@ -22,6 +22,7 @@ public:
 	void reserve(size_t n);
 	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
 	void compress();
+	void addWeightedRowElements(int row, ComplexFloating const &weight, std::vector<std::pair<int, ComplexFloating>> const &columnsAndValues);
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);

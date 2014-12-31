@@ -232,6 +232,42 @@ void SparseMatrix<Floating, ComplexFloating>::compress()
 }
 
 template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, ComplexFloating const &weight, std::vector<std::pair<int, ComplexFloating>> const &columnsAndValues)
+{
+	assert(isValidRowIndex(row));
+	std::vector<ComplexFloating> leftOverValues;
+	std::vector<int> leftOverColumns;
+	leftOverValues.reserve(columnsAndValues.size());
+	leftOverColumns.reserve(columnsAndValues.size());
+	auto position = _rowPointers[row];
+	auto endPosition = _rowPointers[row + 1];
+
+	for (auto i = columnsAndValues.cbegin(); i != columnsAndValues.end() && position < endPosition; ++i)
+	{
+		auto column = i->first;
+
+		while(_columns[position] < column)
+			++position;
+
+		if (_columns[position] == column)
+			_values[position] += weight*i->second;
+		else
+		{
+			leftOverValues.push_back(i->second);
+			leftOverColumns.push_back(column);
+		}
+	}
+
+	int currentValueCount = _values.size();
+	int additionalValueCount = leftOverValues.size();
+	_values.reserve(currentValueCount + additionalValueCount);
+	_columns.reserve(currentValueCount + additionalValueCount);
+
+	for (auto i = 0; i < additionalValueCount; ++i)
+		set(row, leftOverColumns[i], weight*leftOverValues[i]);
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;
