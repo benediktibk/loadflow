@@ -28,8 +28,13 @@ template<class Floating, class ComplexFloating>
 void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix)
 {
 	_upper = systemMatrix;
+	auto one = ComplexFloating(Floating(1));
+
 	for (auto i = 0; i < _dimension; ++i)
-		_permutation.set(i, i, ComplexFloating(Floating(1)));
+	{
+		_permutation.set(i, i, one);
+		_left.set(i, i, one);
+	}
 
 	for (auto i = 0; i < _dimension - 1; ++i)
 	{

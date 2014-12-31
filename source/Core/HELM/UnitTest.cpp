@@ -1054,6 +1054,65 @@ bool runTestsSparseMatrixGetRowValuesAndColumns()
 	return result == resultShouldBe;
 }
 
+bool runTestsSparseMatrixCompress()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	matrix.set(1, 3, Complex<long double>());
+	matrix.set(0, 2, Complex<long double>());
+
+	matrix.compress();
+
+	vector< Complex<long double> > values;
+	vector<int> columns;
+	vector<int> nonZeroCounts;
+	for (auto row = 0; row < 3; ++row)
+	{
+		auto iterator = matrix.getRowIterator(row);
+		nonZeroCounts.push_back(iterator.getNonZeroCount());
+
+		for (auto i = iterator; i.isValid(); i.next())
+		{
+			values.push_back(i.getValue());
+			columns.push_back(i.getColumn());
+		}
+	}
+
+	vector< Complex<long double> > valuesShouldBe;
+	vector<int> columnsShouldBe;
+	vector<int> nonZeroCountsShouldBe;
+	valuesShouldBe.push_back(Complex<long double>(2, 0));
+	valuesShouldBe.push_back(Complex<long double>(4, 0));
+	valuesShouldBe.push_back(Complex<long double>(5, 0));
+	valuesShouldBe.push_back(Complex<long double>(80, 0));
+	valuesShouldBe.push_back(Complex<long double>(7, 0));
+	columnsShouldBe.push_back(1);
+	columnsShouldBe.push_back(3);
+	columnsShouldBe.push_back(0);
+	columnsShouldBe.push_back(0);
+	columnsShouldBe.push_back(2);
+	nonZeroCountsShouldBe.push_back(2);
+	nonZeroCountsShouldBe.push_back(1);
+	nonZeroCountsShouldBe.push_back(2);
+
+	if (columnsShouldBe != columns)
+		return false;
+
+	if (valuesShouldBe != values)
+		return false;
+
+	if (nonZeroCountsShouldBe != nonZeroCounts)
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -1084,6 +1143,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixGetRowValuesAndColumns())
+		return false;
+
+	if (!runTestsSparseMatrixCompress())
 		return false;
 
 	return true;

@@ -149,10 +149,7 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 	positions.push_back(_rowPointers[two]);
 	positions.push_back(_rowPointers[two + 1]);
 	
-	_tempInt.clear();
-	_tempComplexFloating.clear();
-	_tempInt.reserve(_columns.size());
-	_tempComplexFloating.reserve(_values.size());
+	initializeTemporaryStorage();
 
 	_tempInt.insert(_tempInt.end(), _columns.begin(), _columns.begin() + positions[0]);
 	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin(), _values.begin() + positions[0]);
@@ -165,8 +162,7 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[3], _columns.end());
 	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[3], _values.end());
 
-	_tempInt.swap(_columns);
-	_tempComplexFloating.swap(_values);
+	swapWithTemporaryStorage();
 	
 	auto rwoOneLength = positions[1] - positions[0];
 	auto rwoTwoLength = positions[3] - positions[2];
@@ -200,6 +196,39 @@ std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloat
 		result.push_back(std::pair<int, ComplexFloating>(_columns[i], _values[i]));
 
 	return result;
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::compress()
+{
+	initializeTemporaryStorage();
+	auto removedElements = 0;
+
+	for (auto row = 0; row < _rowCount; ++row)
+	{
+		auto start = _rowPointers[row];
+		auto end = _rowPointers[row + 1];
+		auto fixedRowPointer = start - removedElements;
+
+		for (auto i = start; i < end; ++i)
+		{
+			ComplexFloating const &value = _values[i];
+
+			if (value == _zero)
+				++removedElements;
+			else
+			{
+				_tempComplexFloating.push_back(value);
+				_tempInt.push_back(_columns[i]);
+			}
+		}
+
+		_rowPointers[row] = fixedRowPointer;
+	}
+
+	_rowPointers[getRowCount()] -= removedElements;
+
+	swapWithTemporaryStorage();
 }
 
 template<class Floating, class ComplexFloating>
@@ -271,5 +300,21 @@ template<class Floating, class ComplexFloating>
 bool SparseMatrix<Floating, ComplexFloating>::isValidColumnIndex(int column) const
 {
 	return column >= 0 && column < getColumnCount();
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::initializeTemporaryStorage()
+{
+	_tempInt.clear();
+	_tempComplexFloating.clear();
+	_tempInt.reserve(_columns.size());
+	_tempComplexFloating.reserve(_values.size());
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::swapWithTemporaryStorage()
+{
+	_tempInt.swap(_columns);
+	_tempComplexFloating.swap(_values);
 }
 

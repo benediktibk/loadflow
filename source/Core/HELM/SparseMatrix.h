@@ -21,6 +21,7 @@ public:
 	void swapRows(int one, int two);
 	void reserve(size_t n);
 	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
+	void compress();
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
@@ -29,6 +30,8 @@ private:
 	bool findPosition(int row, int column, int &position) const;
 	bool isValidRowIndex(int row) const;
 	bool isValidColumnIndex(int column) const;
+	void initializeTemporaryStorage();
+	void swapWithTemporaryStorage();
 
 private:
 	const int _rowCount;
