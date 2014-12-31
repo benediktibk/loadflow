@@ -40,6 +40,7 @@ namespace SincalConnectorTest
             Assert.IsTrue(_connectorData.Progress >= 0);
             Assert.IsTrue(_connectorData.Progress <= 1);
             Assert.AreEqual(Selection.HolomorphicEmbeddedLoadFlow, _connectorData.CalculatorSelection);
+            Assert.IsTrue(_connectorData.IterativeSolver);
         }
 
         [TestMethod]
@@ -226,6 +227,22 @@ namespace SincalConnectorTest
             _connectorData.RelativePowerError = 0.156465;
 
             Assert.IsTrue(_changedProperties.Contains("RelativePowerError"));
+        }
+
+        [TestMethod]
+        public void IterativeSolver_NewValueSet_CorrectValue()
+        {
+            _connectorData.IterativeSolver = false;
+
+            Assert.IsFalse(_connectorData.IterativeSolver);
+        }
+
+        [TestMethod]
+        public void IterativeSolver_NewValueSet_PropertyIterativeSolverChanged()
+        {
+            _connectorData.IterativeSolver = false;
+
+            Assert.IsTrue(_changedProperties.Contains("IterativeSolver"));
         }
     }
 }

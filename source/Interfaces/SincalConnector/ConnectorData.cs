@@ -14,6 +14,7 @@ namespace SincalConnector
         private Selection _calculatorSelection;
         private double _progress;
         private double _relativePowerError;
+        private bool _iterativeSolver;
 
         public ConnectorData()
         {
@@ -24,6 +25,7 @@ namespace SincalConnector
             CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
             Progress = 0;
             RelativePowerError = 1;
+            IterativeSolver = true;
         }
 
         public int SizeOfDataType
@@ -123,6 +125,18 @@ namespace SincalConnector
 
                 _inputFile = value;
                 OnPropertyChanged("InputFile");
+            }
+        }
+
+        public bool IterativeSolver
+        {
+            get { return _iterativeSolver; }
+            set
+            {
+                if (value == _iterativeSolver) return;
+
+                _iterativeSolver = value;
+                OnPropertyChanged("IterativeSolver");
             }
         }
 
