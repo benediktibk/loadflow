@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class CurrentIterationTest : NodeVoltageCalculatorTest
+    public class CurrentIterationWithDirectSolverTest : NodeVoltageCalculatorTest
     {
 
         public override double PrecisionPqOnly
@@ -24,7 +24,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new CurrentIteration(0.00000001, 1000, true);
+            return new CurrentIteration(0.00000001, 1000, false);
         }
     }
 }

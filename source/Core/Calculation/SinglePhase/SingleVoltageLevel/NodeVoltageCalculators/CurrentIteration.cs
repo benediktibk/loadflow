@@ -41,7 +41,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Progress = 0;
             RelativePowerError = 1;
 
-            if (IterativeSolver)
+            if (!IterativeSolver)
                 _factorization = admittances.CalculateFactorization();
 
             do

@@ -169,7 +169,8 @@ namespace SincalConnector
                 BitPrecision = SizeOfDataType,
                 CoefficientCount = CountOfCoefficients,
                 MaximumIterations = MaximumIterations,
-                TargetPrecision = TargetPrecision
+                TargetPrecision = TargetPrecision,
+                IterativeSolver = IterativeSolver
             };
             return factory.CreateNodeVoltageCalculator(CalculatorSelection);
         }
