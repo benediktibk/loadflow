@@ -138,7 +138,9 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 {
 	assert(isValidRowIndex(one));
 	assert(isValidRowIndex(two));
-	assert(one != two);
+	
+	if (one == two)
+		return;
 
 	if (one > two)
 		std::swap(one, two);

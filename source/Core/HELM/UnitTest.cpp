@@ -4,6 +4,7 @@
 #include "AnalyticContinuation.h"
 #include "ILinearEquationSystemSolver.h"
 #include "BiCGSTAB.h"
+#include "LUDecomposition.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
@@ -421,16 +422,27 @@ bool runTestsLinearEquationSystem()
 	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+	LUDecomposition<long double, Complex<long double>> luSolver(A);
 
-	auto result = iterativeSolver.solve(b);
+	auto iterativeResult = iterativeSolver.solve(b);
+	auto luResult = luSolver.solve(b);
 
-	if (result.getCount() != 3)
+	if (iterativeResult.getCount() != 3)
 		return false;
-	if (!areEqual(x(0), result(0), 0.000001))
+	if (!areEqual(x(0), iterativeResult(0), 0.000001))
 		return false;
-	if (!areEqual(x(1), result(1), 0.000001))
+	if (!areEqual(x(1), iterativeResult(1), 0.000001))
 		return false;
-	if (!areEqual(x(2), result(2), 0.000001))
+	if (!areEqual(x(2), iterativeResult(2), 0.000001))
+		return false;
+
+	if (luResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResult(2), 0.000001))
 		return false;
 
 	return true;

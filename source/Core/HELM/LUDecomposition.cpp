@@ -20,9 +20,10 @@ LUDecomposition<Floating, ComplexFloating>::LUDecomposition(SparseMatrix<Floatin
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {
-	return b;
+	assert(_dimension == b.getCount());
+	auto y = forwardSubstitution(b);
+	return backwardSubstitution(y);
 }
-
 
 template<class Floating, class ComplexFloating>
 void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix)
@@ -62,4 +63,44 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 	}
 
 	_upper.compress();
+}
+
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::forwardSubstitution(const Vector<Floating, ComplexFloating> &b) const
+{
+	Vector<Floating, ComplexFloating> y(_dimension);
+	Vector<Floating, ComplexFloating> bPermutated(_dimension);
+	_permutation.multiply(bPermutated, b);
+	y.set(0, bPermutated(1));
+
+	for (auto i = 1; i < _dimension; ++i)
+	{
+		auto rowSum = ComplexFloating(Floating(0));
+
+		for (auto j = _left.getRowIterator(i); j.isValid(); j.next())
+			rowSum += j.getValue()*y(j.getColumn());
+
+		y.set(i, bPermutated(i) - rowSum);
+	}
+
+	return y;
+}
+
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::backwardSubstitution(const Vector<Floating, ComplexFloating> &y) const
+{
+	Vector<Floating, ComplexFloating> x(_dimension);
+	x.set(_dimension - 1, y(_dimension - 1)/_upper(_dimension - 1, _dimension - 1));
+
+	for (auto i = _dimension - 2; i >= 0; --i)
+	{
+		auto rowSum = ComplexFloating(Floating(0));
+
+		for (auto j = _upper.getRowIterator(i); j.isValid(); j.next())
+			rowSum += j.getValue()*x(j.getColumn());
+
+		x.set(i, (y(i) - rowSum)/_upper(i, i));
+	}
+
+	return x;
 }

@@ -14,6 +14,8 @@ public:
 
 private:
 	void calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
+	Vector<Floating, ComplexFloating> forwardSubstitution(const Vector<Floating, ComplexFloating> &b) const;
+	Vector<Floating, ComplexFloating> backwardSubstitution(const Vector<Floating, ComplexFloating> &y) const;
 
 private:
 	const int _dimension;
