@@ -11,8 +11,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {
-        public NewtonRaphsonMethod(double targetPrecision, int maximumIterations) : base(targetPrecision, maximumIterations)
-        { }
+        public NewtonRaphsonMethod(double targetPrecision, int maximumIterations, bool iterativeSolver)
+            : base(targetPrecision, maximumIterations)
+        {
+            IterativeSolver = iterativeSolver;
+        }
+
+        public bool IterativeSolver { get; private set; }
 
         public override Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {

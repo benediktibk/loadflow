@@ -12,7 +12,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new FastDecoupledLoadFlowMethod(0.0001, 10000);
+            _nodeVoltageCalculator = new FastDecoupledLoadFlowMethod(0.0001, 10000, true);
         }
 
         [TestMethod]

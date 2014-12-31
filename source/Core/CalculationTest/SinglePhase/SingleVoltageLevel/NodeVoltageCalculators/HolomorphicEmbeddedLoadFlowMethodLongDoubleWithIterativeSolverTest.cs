@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class HolomorphicEmbeddedLoadFlowMethodLongDoubleTest : NodeVoltageCalculatorTest
+    public class HolomorphicEmbeddedLoadFlowMethodLongDoubleWithIterativeSolverTest : NodeVoltageCalculatorTest
     {
         public override double PrecisionPqOnly
         {
@@ -23,7 +23,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 50, 64);
+            return new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 50, 64, true);
         }
     }
 }

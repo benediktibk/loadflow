@@ -13,7 +13,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private readonly Mutex _calculatorMutex;
         private int _maximumPossibleCoefficientCount;
 
-        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision)
+        public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision, bool iterativeSolver)
         {
             if (numberOfCoefficients < 1)
                 throw new ArgumentOutOfRangeException("numberOfCoefficients", "must be greater or equal 1");
@@ -24,6 +24,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             NumberOfCoefficients = numberOfCoefficients;
             TargetPrecision = targetPrecision;
             BitPrecision = bitPrecision;
+            IterativeSolver = iterativeSolver;
             _calculatorMutex = new Mutex();
             _maximumPossibleCoefficientCount = -1;
         }
@@ -72,6 +73,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public double TargetPrecision { get; private set; }
         public int NumberOfCoefficients { get; private set; }
         public int BitPrecision { get; private set; }
+        public bool IterativeSolver { get; private set; }
 
         public Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
@@ -101,7 +103,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         private void CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums,
-            double nominalVoltage, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
+            double nominalVoltage, IList<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             var nodeCount = admittances.NodeCount;
             _calculatorMutex.WaitOne();

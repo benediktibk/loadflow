@@ -24,8 +24,8 @@ namespace SincalConnectorIntegrationTest
         [TestInitialize]
         public void SetUp()
         {
-            _calculator = new CurrentIteration(0.0000001, 10000);
-            _calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 50, 64);
+            _calculator = new CurrentIteration(0.0000001, 10000, true);
+            _calculatorHelm = new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 50, 64, true);
             _calculatorMock = new Mock<INodeVoltageCalculator>();
             _calculatorMock.Setup(x => x.CalculateUnknownVoltages(
                 It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(), It.IsAny<double>(),

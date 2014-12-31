@@ -12,7 +12,7 @@ namespace CalculationExample
     {
         static void Main(string[] args)
         {
-            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(1e-5, 50, 64);
+            var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(1e-5, 50, 64, true);
             var nodeGraph = new NodeGraph();
             var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
             var singlePhasePowerNet = new PowerNetComputable(50, singleVoltagePowerNetFactory, nodeGraph);

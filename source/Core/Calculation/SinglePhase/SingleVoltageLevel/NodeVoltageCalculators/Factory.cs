@@ -14,6 +14,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             MaximumIterations = 1000;
             CoefficientCount = 50;
             BitPrecision = 64;
+            IterativeSolver = true;
         }
 
         public double TargetPrecision
@@ -64,24 +65,26 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
+        public bool IterativeSolver { get; set; }
+
         public INodeVoltageCalculator CreateNodeVoltageCalculator(Selection selection)
         {
             switch (selection)
             {
                 case Selection.NodePotential:
-                    return new NodePotentialMethod();
+                    return new NodePotentialMethod(IterativeSolver);
                 case Selection.CurrentIteration:
-                    return new CurrentIteration(TargetPrecision, MaximumIterations);
+                    return new CurrentIteration(TargetPrecision, MaximumIterations, IterativeSolver);
                 case Selection.NewtonRaphson:
-                    return new NewtonRaphsonMethod(TargetPrecision, MaximumIterations);
+                    return new NewtonRaphsonMethod(TargetPrecision, MaximumIterations, IterativeSolver);
                 case Selection.FastDecoupledLoadFlow:
-                    return new FastDecoupledLoadFlowMethod(TargetPrecision, MaximumIterations);
+                    return new FastDecoupledLoadFlowMethod(TargetPrecision, MaximumIterations, IterativeSolver);
                 case Selection.HolomorphicEmbeddedLoadFlow:
-                    return new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision);
+                    return new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision, IterativeSolver);
                 case Selection.HolomorphicEmbeddedLoadFlowWithCurrentIteration:
-                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision), new CurrentIteration(TargetPrecision, MaximumIterations));
+                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision, IterativeSolver), new CurrentIteration(TargetPrecision, MaximumIterations, IterativeSolver));
                 case Selection.HolomorphicEmbeddedLoadFlowWithNewtonRaphson:
-                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision), new NewtonRaphsonMethod(TargetPrecision, MaximumIterations));
+                    return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(TargetPrecision, CoefficientCount, BitPrecision, IterativeSolver), new NewtonRaphsonMethod(TargetPrecision, MaximumIterations, IterativeSolver));
                 default:
                     throw new ArgumentOutOfRangeException();
             }

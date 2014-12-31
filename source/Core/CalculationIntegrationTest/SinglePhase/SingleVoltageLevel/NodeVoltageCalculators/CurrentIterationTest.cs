@@ -12,7 +12,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new CurrentIteration(0.00001, 1000);
+            _nodeVoltageCalculator = new CurrentIteration(0.00001, 1000, true);
         }
 
         [TestMethod]

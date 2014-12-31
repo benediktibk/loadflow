@@ -16,7 +16,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public void SetUp()
         {
             _admittanceMatrix = new AdmittanceMatrix(3);
-            _nodeVoltageCalculator = new NodePotentialMethod();
+            _nodeVoltageCalculator = new NodePotentialMethod(false);
             _factory = new PowerNetFactory(_nodeVoltageCalculator);
         }
 

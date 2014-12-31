@@ -24,7 +24,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new CurrentIteration(0.00000001, 1000);
+            return new CurrentIteration(0.00000001, 1000, true);
         }
     }
 }

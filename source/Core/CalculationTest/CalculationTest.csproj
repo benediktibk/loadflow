@@ -81,12 +81,12 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\ImpedanceLoadTest.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeGraphTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodeVoltageCalculatorTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodePotentialMethodWithIterativeSolverTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\CurrentIterationTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethodTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethodTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodLongDoubleTest.cs" />
-    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NewtonRaphsonMethodWithIterativeSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FastDecoupledLoadFlowMethodWithIterativeSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodLongDoubleWithIterativeSolverTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodMultiPrecisionWithIterativeSolverTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\TwoStepMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FactoryTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SubMatrixTest.cs" />

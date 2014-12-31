@@ -12,10 +12,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class CurrentIteration : NodeVoltageCalculator
     {
-        public CurrentIteration(double targetPrecision, int maximumIterations)
+        public CurrentIteration(double targetPrecision, int maximumIterations, bool iterativeSolver)
         {
             MaximumIterations = maximumIterations;
             TargetPrecision = targetPrecision;
+            IterativeSolver = iterativeSolver;
         }
 
         public override double MaximumRelativePowerError
@@ -25,6 +26,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public int MaximumIterations { get; private set; }
         public double TargetPrecision { get; private set; }
+        public bool IterativeSolver { get; private set; }
 
         public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {

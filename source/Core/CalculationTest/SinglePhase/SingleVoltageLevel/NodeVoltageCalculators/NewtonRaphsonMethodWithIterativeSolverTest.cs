@@ -9,7 +9,7 @@ using Misc;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class NewtonRaphsonMethodTest : NodeVoltageCalculatorTest
+    public class NewtonRaphsonMethodWithIterativeSolverTest : NodeVoltageCalculatorTest
     {
         public override double PrecisionPqOnly
         {
@@ -28,13 +28,13 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new NewtonRaphsonMethod(0.0000001, 1000);
+            return new NewtonRaphsonMethod(0.0000001, 1000, true);
         }
 
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPqNodes_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4)},
@@ -60,7 +60,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPqNodesInverseOrder_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4)},
@@ -86,7 +86,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPvNodes_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4)},
@@ -112,7 +112,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPvNodesInverseOrder_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4)},
@@ -138,7 +138,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPqAndOnePvNode_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
@@ -166,7 +166,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_TwoPqAndOnePvNodeDifferentOrder_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
@@ -291,7 +291,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_ThreePqNodes_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
@@ -319,7 +319,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_ThreePqNodesInverseOrder_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
@@ -347,7 +347,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_ThreePvNodes_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},
@@ -375,7 +375,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         [TestMethod]
         public void CalculateImprovedVoltages_ThreePvNodesInverseOrder_CorrectResults()
         {
-            var calculator = new NewtonRaphsonMethod(0.000001, 1000);
+            var calculator = new NewtonRaphsonMethod(0.000001, 1000, true);
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(new[,]
             {
                 {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)},

@@ -21,15 +21,17 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsTrue(_factory.TargetPrecision < 1);
             Assert.IsTrue(_factory.CoefficientCount > 10);
             Assert.IsTrue(_factory.MaximumIterations > 0);
+            Assert.IsTrue(_factory.IterativeSolver);
         }
 
         [TestMethod]
-        public void CreateNodeVoltageCalculator_NodePotential_NodePotentialMethod()
+        public void CreateNodeVoltageCalculator_NodePotential_NodePotentialMethodWithCorrectValues()
         {
             var calculator = _factory.CreateNodeVoltageCalculator(Selection.NodePotential);
 
             var calculatorCasted = calculator as NodePotentialMethod;
             Assert.IsNotNull(calculatorCasted);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -44,6 +46,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -58,6 +61,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -72,6 +76,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(1234, calculatorCasted.MaximumIterations);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -87,6 +92,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
             Assert.AreEqual(64, calculatorCasted.BitPrecision);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -102,6 +108,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsNotNull(calculatorCasted);
             Assert.AreEqual(0.4567, calculatorCasted.TargetPrecision, 1e-10);
             Assert.AreEqual(200, calculatorCasted.BitPrecision);
+            Assert.IsTrue(calculatorCasted.IterativeSolver);
         }
 
         [TestMethod]
@@ -125,6 +132,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(200, firstMethod.BitPrecision);
             Assert.AreEqual(1234, secondMethod.MaximumIterations);
             Assert.AreEqual(0.4567, secondMethod.TargetPrecision, 1e-10);
+            Assert.IsTrue(firstMethod.IterativeSolver);
+            Assert.IsTrue(secondMethod.IterativeSolver);
         }
 
         [TestMethod]
@@ -148,6 +157,8 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(200, firstMethod.BitPrecision);
             Assert.AreEqual(1234, secondMethod.MaximumIterations);
             Assert.AreEqual(0.4567, secondMethod.TargetPrecision, 1e-10);
+            Assert.IsTrue(firstMethod.IterativeSolver);
+            Assert.IsTrue(secondMethod.IterativeSolver);
         }
     }
 }

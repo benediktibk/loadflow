@@ -9,6 +9,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NodePotentialMethod : NodeVoltageCalculator
     {
+        public NodePotentialMethod(bool iterativeSolver)
+        {
+            IterativeSolver = iterativeSolver;
+        }
+
         public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             Vector<Complex> knownPowers;
@@ -80,6 +85,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             get { return 10; }
         }
+
+        public bool IterativeSolver { get; private set; }
 
         private Vector<Complex> CalculateUnknownVoltagesInternal(IReadOnlyAdmittanceMatrix admittances, IEnumerable<Complex> nominalVoltages,
             Vector<Complex> constantCurrents, Vector<Complex> knownPowers)

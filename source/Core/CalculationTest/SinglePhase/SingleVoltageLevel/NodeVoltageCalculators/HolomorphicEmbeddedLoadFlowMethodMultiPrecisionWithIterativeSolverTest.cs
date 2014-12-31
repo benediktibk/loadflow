@@ -4,11 +4,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     [TestClass]
-    public class NodePotentialMethodTest : NodeVoltageCalculatorTest
+    public class HolomorphicEmbeddedLoadFlowMethodMultiPrecisionWithIterativeSolverTest : NodeVoltageCalculatorTest
     {
         public override double PrecisionPqOnly
         {
-            get { return 0.0002; }
+            get { return 0.0001; }
         }
 
         public override double PrecisionPvOnly
@@ -18,12 +18,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override double PrecisionPqAndPv
         {
-            get { return 0.02; }
+            get { return 0.0001; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new NodePotentialMethod();
+            return new HolomorphicEmbeddedLoadFlowMethod(0.0000001, 70, 100, true);
         }
     }
 }

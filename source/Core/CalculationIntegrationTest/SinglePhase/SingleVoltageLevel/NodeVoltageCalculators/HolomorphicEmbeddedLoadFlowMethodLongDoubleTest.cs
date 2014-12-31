@@ -22,7 +22,7 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         [TestInitialize]
         public void SetUp()
         {
-            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, 64);
+            _nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00001, 50, 64, true);
             _nodeVoltageCalculatorMock = new Mock<INodeVoltageCalculator>();
             _nodeVoltageCalculatorMock.Setup(x =>
                 x.CalculateUnknownVoltages(It.IsAny<IReadOnlyAdmittanceMatrix>(), It.IsAny<IList<Complex>>(),
