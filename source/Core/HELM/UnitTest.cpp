@@ -405,7 +405,7 @@ bool runTestsAnalyticContinuation()
 	return true;
 }
 
-bool runTestsLinearEquationSystem()
+bool runTestsLinearEquationSystemOne()
 {
 	SparseMatrix<long double, Complex<long double>> A(3, 3);
 	A.set(0, 0, Complex<long double>(1, 2));
@@ -443,6 +443,62 @@ bool runTestsLinearEquationSystem()
 	if (!areEqual(x(1), luResult(1), 0.000001))
 		return false;
 	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	return true;
+}
+
+bool runTestsLinearEquationSystemTwo()
+{
+	SparseMatrix<long double, Complex<long double>> A(3, 3);
+	A.set(0, 0, Complex<long double>(1, 0));
+	A.set(0, 1, Complex<long double>(2, 0));
+	A.set(0, 2, Complex<long double>(3, 0));
+	A.set(1, 0, Complex<long double>(4, 0));
+	A.set(1, 1, Complex<long double>(5, 0));
+	A.set(1, 2, Complex<long double>(6, 0));
+	A.set(2, 0, Complex<long double>(7, 0));
+	A.set(2, 1, Complex<long double>(8, 0));
+	A.set(2, 2, Complex<long double>(9, 0));
+	Vector<long double, Complex<long double> > x(3);
+	x.set(0, Complex<long double>(10, 0));
+	x.set(1, Complex<long double>(11, 0));
+	x.set(2, Complex<long double>(12, 0));
+	Vector<long double, Complex<long double> > b(3);
+	A.multiply(b, x);
+	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+	LUDecomposition<long double, Complex<long double>> luSolver(A);
+
+	auto iterativeResult = iterativeSolver.solve(b);
+	auto luResult = luSolver.solve(b);
+
+	if (iterativeResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), iterativeResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), iterativeResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), iterativeResult(2), 0.000001))
+		return false;
+
+	if (luResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	return true;
+}
+
+bool runTestsLinearEquationSystem()
+{
+	if (!runTestsLinearEquationSystemOne())
+		return false;
+
+	if (!runTestsLinearEquationSystemTwo())
 		return false;
 
 	return true;
