@@ -185,6 +185,24 @@ void SparseMatrix<Floating, ComplexFloating>::reserve(size_t n)
 }
 
 template<class Floating, class ComplexFloating>
+std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloating>::getRowValuesAndColumns(int row, int startColumn) const
+{
+	assert(isValidRowIndex(row));
+	assert(isValidColumnIndex(startColumn));
+
+	std::vector<std::pair<int, ComplexFloating>> result;
+	int startPosition;
+	findPosition(row, startColumn, startPosition);
+	auto endPosition = _rowPointers[row + 1];
+	result.reserve(endPosition - startPosition);
+
+	for (auto i = startPosition; i < endPosition; ++i)
+		result.push_back(std::pair<int, ComplexFloating>(_columns[i], _values[i]));
+
+	return result;
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <utility>
 #include "Vector.h"
 #include "SparseMatrixRowIterator.h"
 
@@ -19,6 +20,7 @@ public:
 	int findAbsoluteMaximumOfColumn(int column, int rowStart) const;
 	void swapRows(int one, int two);
 	void reserve(size_t n);
+	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);

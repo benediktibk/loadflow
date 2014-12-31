@@ -1027,6 +1027,33 @@ bool runTestsSparseMatrixAssignment()
 	return true;
 }
 
+bool runTestsSparseMatrixGetRowValuesAndColumns()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(3, 5);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	std::vector<std::pair<int, Complex<long double>>> result;
+
+	for (auto i = 0; i < 3; ++i)
+	{
+		auto partialResult = matrix.getRowValuesAndColumns(i, 2);
+		result.insert(result.end(), partialResult.begin(), partialResult.end());
+	}
+	
+	std::vector<std::pair<int, Complex<long double>>> resultShouldBe;
+	resultShouldBe.push_back(std::pair<int, Complex<long double>>(2, Complex<long double>(3, 0)));
+	resultShouldBe.push_back(std::pair<int, Complex<long double>>(3, Complex<long double>(4, 0)));
+	resultShouldBe.push_back(std::pair<int, Complex<long double>>(3, Complex<long double>(60, 0)));
+	resultShouldBe.push_back(std::pair<int, Complex<long double>>(2, Complex<long double>(7, 0)));
+
+	return result == resultShouldBe;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -1054,6 +1081,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixAssignment())
+		return false;
+
+	if (!runTestsSparseMatrixGetRowValuesAndColumns())
 		return false;
 
 	return true;
