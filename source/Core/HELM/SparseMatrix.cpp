@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <algorithm>
 #include <functional>
+#include <list>
+#include <utility>
 
 template class SparseMatrix<long double, Complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
@@ -134,21 +136,43 @@ template<class Floating, class ComplexFloating>
 int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int column, int rowStart) const
 {
 	assert(isValidColumnIndex(column));
-	assert(isValidRowIndex(rowStart));
-	auto maximumRow = rowStart;
-	auto maximumValue = std::abs2(operator()(rowStart, column));
+	assert(isValidRowIndex(rowStart));	
+	std::list<std::pair<int, Floating>> candidates;
 
-	for (auto row = rowStart + 1; row < _rowCount; ++row)
+	#pragma omp parallel
 	{
-		auto value = std::abs2(operator()(row, column));
-		
-		if (value > maximumValue)
+		auto maximumPartialRow = -1;
+		auto maximumPartialValue = Floating(0);
+
+		#pragma omp for
+		for (auto row = rowStart; row < _rowCount; ++row)
 		{
-			maximumRow = row;
-			maximumValue = value;
+			auto value = std::abs2(operator()(row, column));
+		
+			if (value >= maximumPartialValue)
+			{
+				maximumPartialRow = row;
+				maximumPartialValue = value;
+			}
+		}
+
+		#pragma omp critical
+		{
+			candidates.push_back(std::pair<int, Floating>(maximumPartialRow, maximumPartialValue));
 		}
 	}
 
+	auto maximumRow = candidates.front().first;
+	auto maximumValue = candidates.front().second;
+
+	for (auto i = ++candidates.begin(); i != candidates.end(); ++i)
+		if (i->second > maximumValue)
+		{
+			maximumValue = i->second;
+			maximumRow = i->first;
+		}
+
+	assert(isValidRowIndex(maximumRow));
 	return maximumRow;
 }
 
