@@ -176,6 +176,14 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 }
 
 template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::reserve(size_t n)
+{
+	_columns.reserve(n);
+	_rowPointers.reserve(n);
+	_values.reserve(n);
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;
@@ -183,6 +191,17 @@ ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int r
 		return _values[position];
 
 	return _zero;
+}
+
+template<class Floating, class ComplexFloating>
+SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFloating>::operator=(SparseMatrix<Floating, ComplexFloating> const &rhs)
+{
+	assert(getRowCount() == rhs.getRowCount());
+	assert(getColumnCount() == rhs.getColumnCount());
+	_columns = rhs._columns;
+	_rowPointers = rhs._rowPointers;
+	_values = rhs._values;
+	return *this;
 }
 
 template<class Floating, class ComplexFloating>

@@ -63,6 +63,9 @@
     <ClCompile Include="BiCGSTAB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LUDecomposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalculatorRegister.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ILinearEquationSystemSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LUDecomposition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

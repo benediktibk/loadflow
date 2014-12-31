@@ -989,6 +989,42 @@ bool runTestsSparseMatrixChangeRows()
 	return valuesShouldBe == values;
 }
 
+bool runTestsSparseMatrixAssignment()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
+	SparseMatrix<long double, Complex<long double> > copy(3, 3);
+	matrix.set(0, 0, Complex<long double>(4, 0));
+	matrix.set(2, 2, Complex<long double>(5, 0));
+	matrix.set(2, 1, Complex<long double>(6, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(1, 0, Complex<long double>(8, 0));
+	matrix.set(1, 1, Complex<long double>(9, 0));
+	matrix.set(1, 2, Complex<long double>(10, 0));
+	matrix.set(1, 1, Complex<long double>(11, 0));
+
+	copy = matrix;
+
+	if (copy(0, 0) != Complex<long double>(4, 0))
+		return false;
+
+	if (copy(1, 0) != Complex<long double>(8, 0))
+		return false;
+
+	if (copy(1, 1) != Complex<long double>(11, 0))
+		return false;
+
+	if (copy(1, 2) != Complex<long double>(10, 0))
+		return false;
+
+	if (copy(2, 1) != Complex<long double>(6, 0))
+		return false;
+
+	if (copy(2, 2) != Complex<long double>(7, 0))
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -1013,6 +1049,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixChangeRows())
+		return false;
+
+	if (!runTestsSparseMatrixAssignment())
 		return false;
 
 	return true;

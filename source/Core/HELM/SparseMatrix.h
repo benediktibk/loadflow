@@ -18,8 +18,10 @@ public:
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
 	int findAbsoluteMaximumOfColumn(int column) const;
 	void swapRows(int one, int two);
+	void reserve(size_t n);
 
 	ComplexFloating const& operator()(int row, int column) const;
+	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
 
 private:
 	bool findPosition(int row, int column, int &position) const;

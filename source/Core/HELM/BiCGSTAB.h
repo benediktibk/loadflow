@@ -10,7 +10,7 @@ class BiCGSTAB : public ILinearEquationSystemSolver<Floating, ComplexFloating>
 public:
 	BiCGSTAB(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon);
 
-	Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
+	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 
 private:	
 	const int _dimension;
