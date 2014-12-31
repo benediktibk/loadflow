@@ -6,7 +6,7 @@ class CalculatorLongDouble :
 	public Calculator< long double, Complex<long double> >
 {
 public:
-	CalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
+	CalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool iterativeSolver);
 	
 protected:
 	virtual long double createFloating(double value) const;

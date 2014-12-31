@@ -180,12 +180,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorLongDouble(
                             TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
-                            pqBuses.Count, pvBuses.Count, nominalVoltage);
+                            pqBuses.Count, pvBuses.Count, nominalVoltage, IterativeSolver);
             else
                 calculator =
                         HolomorphicEmbeddedLoadFlowMethodNativeMethods.CreateLoadFlowCalculatorMultiPrecision(
                             TargetPrecision * nominalVoltage, NumberOfCoefficients, nodeCount,
-                            pqBuses.Count, pvBuses.Count, nominalVoltage, BitPrecision);
+                            pqBuses.Count, pvBuses.Count, nominalVoltage, BitPrecision, IterativeSolver);
 
             if (calculator < 0)
                 throw new IndexOutOfRangeException("the handle to the calculator must be not-negative");

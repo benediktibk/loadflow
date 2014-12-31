@@ -16,7 +16,7 @@ template<typename Floating, typename ComplexFloating>
 class Calculator : public ICalculator
 {
 public:
-	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage);
+	Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool iterativeSolver);
 	virtual ~Calculator();
 
 	virtual void setAdmittance(int row, int column, Complex<long double> value);
@@ -66,6 +66,7 @@ private:
 	const int _pqBusCount;
 	const int _pvBusCount;
 	const double _nominalVoltage;
+	const bool _iterativeSolver;
 	SparseMatrix<Floating, ComplexFloating> _admittances;
 	ILinearEquationSystemSolver<Floating, ComplexFloating> *_solver;
 	std::vector<ComplexFloating> _totalAdmittanceRowSums;

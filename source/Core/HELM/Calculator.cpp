@@ -15,13 +15,14 @@ template class Calculator<long double, Complex<long double> >;
 template class Calculator<MultiPrecision, Complex<MultiPrecision> >;
 
 template<typename Floating, typename ComplexFloating>
-Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage) :
+Calculator<Floating, ComplexFloating>::Calculator(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool iterativeSolver) :
 	_targetPrecision(targetPrecision),
 	_numberOfCoefficients(numberOfCoefficients),
 	_nodeCount(nodeCount),
 	_pqBusCount(pqBusCount),
 	_pvBusCount(pvBusCount),
 	_nominalVoltage(nominalVoltage),
+	_iterativeSolver(iterativeSolver),
 	_admittances(nodeCount, nodeCount),
 	_solver(0),
 	_totalAdmittanceRowSums(nodeCount),
@@ -91,8 +92,10 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_solver = new LUDecomposition<Floating, ComplexFloating>(_admittances);
-	//_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3));
+	if (_iterativeSolver)
+		_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3));
+	else
+		_solver = new LUDecomposition<Floating, ComplexFloating>(_admittances);
 
 	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));

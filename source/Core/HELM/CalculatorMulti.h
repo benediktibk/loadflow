@@ -8,7 +8,7 @@ class CalculatorMulti :
 	public Calculator< MultiPrecision, Complex<MultiPrecision> >
 {
 public:
-	CalculatorMulti(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision);
+	CalculatorMulti(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision, bool iterativeSolver);
 	
 protected:
 	virtual MultiPrecision createFloating(double value) const;
