@@ -15,6 +15,8 @@ public:
 	int getColumnCount() const;
 	void set(int row, int column, ComplexFloating const &value);
 	void multiply(Vector<Floating, ComplexFloating> &destination, Vector<Floating, ComplexFloating> const &source) const;
+	ComplexFloating multiplyRowWithStartColumn(int row, Vector<Floating, ComplexFloating> const &vector, int startColumn) const;
+	ComplexFloating multiplyRowWithEndColumn(int row, Vector<Floating, ComplexFloating> const &vector, int endColumn) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
 	int findAbsoluteMaximumOfColumn(int column, int rowStart) const;
@@ -33,6 +35,7 @@ private:
 	bool isValidColumnIndex(int column) const;
 	void initializeTemporaryStorage();
 	void swapWithTemporaryStorage();
+	ComplexFloating multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition) const;
 
 private:
 	const int _rowCount;

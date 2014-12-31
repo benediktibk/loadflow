@@ -96,6 +96,25 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 }
 
 template<class Floating, class ComplexFloating>
+ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithStartColumn(int row, Vector<Floating, ComplexFloating> const &vector, int startColumn) const
+{
+	int startPosition;
+	findPosition(row, startColumn, startPosition);
+	auto endPosition = _rowPointers[row + 1];
+	return multiply(vector, startPosition, endPosition);
+}
+
+template<class Floating, class ComplexFloating>
+ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithEndColumn(int row, Vector<Floating, ComplexFloating> const &vector, int endColumn) const
+{
+	auto startPosition = _rowPointers[row];
+	int endPosition;
+	if (findPosition(row, endColumn, endPosition))
+		++endPosition;
+	return multiply(vector, startPosition, endPosition);
+}
+
+template<class Floating, class ComplexFloating>
 SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row) const
 {
 	return getRowIterator(row, 0);
@@ -356,3 +375,29 @@ void SparseMatrix<Floating, ComplexFloating>::swapWithTemporaryStorage()
 	_tempComplexFloating.swap(_values);
 }
 
+template<class Floating, class ComplexFloating>
+ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition) const
+{	
+	std::vector<Floating> summandsReal;
+	std::vector<Floating> summandsImaginary;
+	auto count = endPosition - startPosition;
+	summandsReal.reserve(count);
+	summandsImaginary.reserve(count);
+
+	for (auto i = startPosition; i < endPosition; ++i)
+	{
+		auto column = _columns[i];
+		auto summand = _values[i]*vector(column);
+		summandsReal.push_back(std::real(summand));
+		summandsImaginary.push_back(std::imag(summand));
+	}
+
+	std::sort(summandsReal.begin(), summandsReal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+	std::sort(summandsImaginary.begin(), summandsImaginary.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+	ComplexFloating result(Floating(0));
+
+	for (auto j = 0; j < count; ++j)
+		result += ComplexFloating(summandsReal[j], summandsImaginary[j]);
+
+	return result;
+}

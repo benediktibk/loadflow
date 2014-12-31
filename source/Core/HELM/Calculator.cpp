@@ -2,6 +2,7 @@
 #include "MultiPrecision.h"
 #include "Complex.h"
 #include "BiCGSTAB.h"
+#include "LUDecomposition.h"
 #include <sstream>
 #include <map>
 #include <cmath>
@@ -90,7 +91,8 @@ void Calculator<Floating, ComplexFloating>::calculate()
 
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
-	_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3));
+	_solver = new LUDecomposition<Floating, ComplexFloating>(_admittances);
+	//_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3));
 
 	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));

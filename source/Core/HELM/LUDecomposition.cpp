@@ -75,16 +75,7 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::fo
 
 	for (auto i = 1; i < _dimension; ++i)
 	{
-		auto rowSum = ComplexFloating(Floating(0));
-
-		for (auto j = _left.getRowIterator(i); j.isValid(); j.next())
-		{
-			auto column = j.getColumn();
-
-			if (column < i)
-				rowSum += j.getValue()*y(column);
-		}
-
+		auto rowSum = _left.multiplyRowWithEndColumn(i, y, i - 1);
 		auto value = bPermutated(i) - rowSum;
 		y.set(i, value);
 	}
@@ -100,11 +91,7 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::ba
 
 	for (auto i = _dimension - 2; i >= 0; --i)
 	{
-		auto rowSum = ComplexFloating(Floating(0));
-
-		for (auto j = _upper.getRowIterator(i, i + 1); j.isValid(); j.next())
-			rowSum += j.getValue()*x(j.getColumn());
-
+		auto rowSum = _upper.multiplyRowWithStartColumn(i, x, i + 1);
 		auto value = (y(i) - rowSum)/_upper(i, i);
 		x.set(i, value);
 	}

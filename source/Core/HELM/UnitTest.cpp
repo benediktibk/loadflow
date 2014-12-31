@@ -1219,6 +1219,39 @@ bool runTestsSparseMatrixAddWeightedRowElements()
 	return true;
 }
 
+bool runTestsSparseMatrixMultiplyWithStartAndEndColumn()
+{
+	SparseMatrix<long double, Complex<long double>> matrix(1, 5);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 3, Complex<long double>(3, 0));
+	matrix.set(0, 4, Complex<long double>(4, 0));
+	Vector<long double, Complex<long double>> vector(5);
+	vector.set(0, Complex<long double>(10, 0));
+	vector.set(1, Complex<long double>(20, 0));
+	vector.set(2, Complex<long double>(30, 0));
+	vector.set(3, Complex<long double>(40, 0));
+	vector.set(4, Complex<long double>(50, 0));
+
+	auto one = matrix.multiplyRowWithStartColumn(0, vector, 1);
+	auto two = matrix.multiplyRowWithStartColumn(0, vector, 2);
+	auto three = matrix.multiplyRowWithEndColumn(0, vector, 3);
+	auto four = matrix.multiplyRowWithEndColumn(0, vector, 4);
+
+	if (one != Complex<long double>(20*2 + 40*3 + 50*4, 0))
+		return false;
+
+	if (two != Complex<long double>(40*3 + 50*4, 0))
+		return false;
+
+	if (three != Complex<long double>(20*2 + 40*3, 0))
+		return false;
+
+	if (four != Complex<long double>(20*2 + 40*3 + 50*4, 0))
+		return false;
+
+	return true;
+}
+
 bool runTestsSparseMatrix()
 {
 	if (!runTestsSparseMatrixConstructor())
@@ -1255,6 +1288,9 @@ bool runTestsSparseMatrix()
 		return false;
 
 	if (!runTestsSparseMatrixAddWeightedRowElements())
+		return false;
+
+	if (!runTestsSparseMatrixMultiplyWithStartAndEndColumn())
 		return false;
 
 	return true;
