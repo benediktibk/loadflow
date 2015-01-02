@@ -232,14 +232,14 @@ std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloat
 	assert(isValidRowIndex(row));
 	assert(isValidColumnIndex(startColumn));
 
-	std::vector<std::pair<int, ComplexFloating>> result;
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
 	auto endPosition = _rowPointers[row + 1];
-	result.reserve(endPosition - startPosition);
+	std::vector<std::pair<int, ComplexFloating>> result(endPosition - startPosition);
 
+	#pragma omp parallel for
 	for (auto i = startPosition; i < endPosition; ++i)
-		result.push_back(std::pair<int, ComplexFloating>(_columns[i], _values[i]));
+		result[i - startPosition] = std::pair<int, ComplexFloating>(_columns[i], _values[i]);
 
 	return result;
 }
