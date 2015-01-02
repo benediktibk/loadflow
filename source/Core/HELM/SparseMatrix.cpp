@@ -403,26 +403,52 @@ void SparseMatrix<Floating, ComplexFloating>::swapWithTemporaryStorage()
 template<class Floating, class ComplexFloating>
 ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition) const
 {	
-	std::vector<Floating> summandsReal;
-	std::vector<Floating> summandsImaginary;
 	auto count = endPosition - startPosition;
-	summandsReal.reserve(count);
-	summandsImaginary.reserve(count);
+	std::vector<Floating> summandsRealTotal;
+	std::vector<Floating> summandsImaginaryTotal;
+	ComplexFloating resultTotal(Floating(0));
+	summandsRealTotal.reserve(count);
+	summandsImaginaryTotal.reserve(count);
 
-	for (auto i = startPosition; i < endPosition; ++i)
+	#pragma omp parallel
 	{
-		auto column = _columns[i];
-		auto summand = _values[i]*vector(column);
-		summandsReal.push_back(std::real(summand));
-		summandsImaginary.push_back(std::imag(summand));
+		std::vector<Floating> summandsReal;
+		std::vector<Floating> summandsImaginary;
+		summandsReal.reserve(count);
+		summandsImaginary.reserve(count);
+
+		#pragma omp for
+		for (auto i = startPosition; i < endPosition; ++i)
+		{
+			auto column = _columns[i];
+			auto summand = _values[i]*vector(column);
+			summandsReal.push_back(std::real(summand));
+			summandsImaginary.push_back(std::imag(summand));
+		}
+
+		#pragma omp critical
+		{
+			summandsRealTotal.insert(summandsRealTotal.begin(), summandsReal.begin(), summandsReal.end());
+			summandsImaginaryTotal.insert(summandsImaginaryTotal.begin(), summandsImaginary.begin(), summandsImaginary.end());
+		}
+
+		#pragma omp single
+		{
+			std::sort(summandsRealTotal.begin(), summandsRealTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+			std::sort(summandsImaginaryTotal.begin(), summandsImaginaryTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+		}
+
+		ComplexFloating result(Floating(0));
+
+		#pragma omp for
+		for (auto j = 0; j < count; ++j)
+			result += ComplexFloating(summandsRealTotal[j], summandsImaginaryTotal[j]);
+
+		#pragma omp critical
+		{
+			resultTotal += result;
+		}
 	}
 
-	std::sort(summandsReal.begin(), summandsReal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
-	std::sort(summandsImaginary.begin(), summandsImaginary.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
-	ComplexFloating result(Floating(0));
-
-	for (auto j = 0; j < count; ++j)
-		result += ComplexFloating(summandsReal[j], summandsImaginary[j]);
-
-	return result;
+	return resultTotal;
 }
