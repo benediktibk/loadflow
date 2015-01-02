@@ -213,6 +213,7 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 	auto rwoTwoLength = positions[3] - positions[2];
 	auto lengthDifference = rwoTwoLength - rwoOneLength;
 
+	#pragma omp parallel for
 	for (auto i = one + 1; i <= two; ++i)
 		_rowPointers[i] += lengthDifference;
 }
