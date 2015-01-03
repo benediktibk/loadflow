@@ -21,7 +21,6 @@ public:
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
 	int findAbsoluteMaximumOfColumn(int column, int rowStart) const;
 	void swapRows(int one, int two);
-	void reserve(size_t n);
 	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
 	void compress();
 	void addWeightedRowElements(int row, ComplexFloating const &weight, std::vector<std::pair<int, ComplexFloating>> const &columnsAndValues);
@@ -33,18 +32,13 @@ private:
 	bool findPosition(int row, int column, int &position) const;
 	bool isValidRowIndex(int row) const;
 	bool isValidColumnIndex(int column) const;
-	void initializeTemporaryStorage();
-	void swapWithTemporaryStorage();
-	ComplexFloating multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition) const;
+	ComplexFloating multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition, int row) const;
 
 private:
 	const int _rowCount;
 	const int _columnCount;
 	const ComplexFloating _zero;
-	std::vector<int> _columns;
-	std::vector<int> _rowPointers;
-	std::vector<ComplexFloating> _values;
-	std::vector<int> _tempInt;
-	std::vector<ComplexFloating> _tempComplexFloating;
+	std::vector<std::vector<int>> _columns;
+	std::vector<std::vector<ComplexFloating>> _values;
 };
 

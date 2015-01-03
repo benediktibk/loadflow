@@ -20,7 +20,8 @@ SparseMatrix<Floating, ComplexFloating>::SparseMatrix(int rows, int columns) :
 	assert(getRowCount() > 0);
 	assert(getColumnCount() > 0);
 
-	_rowPointers.resize(getRowCount() + 1, 0);
+	_columns.resize(getRowCount(), std::vector<int>());
+	_values.resize(getRowCount(), std::vector<ComplexFloating>());
 }
 
 template<class Floating, class ComplexFloating>
@@ -38,20 +39,22 @@ int SparseMatrix<Floating, ComplexFloating>::getColumnCount() const
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::set(int row, int column, ComplexFloating const &value)
 {
+	assert(isValidRowIndex(row));
+	assert(isValidColumnIndex(column));
+
 	int position;
+	std::vector<ComplexFloating> &values = _values[row];
 
 	if (findPosition(row, column, position))
 	{
-		_values[position] = value;
+		values[position] = value;
 		return;
 	}
 
-	_columns.insert(_columns.begin() + position, column);
-	_values.insert(_values.begin() + position, value);
-	
-	#pragma omp parallel for
-	for (auto i = row + 1; i < static_cast<int>(_rowPointers.size()); ++i)
-		_rowPointers[i] += 1;
+	std::vector<int> &columns = _columns[row];
+
+	columns.insert(columns.begin() + position, column);
+	values.insert(values.begin() + position, value);
 }
 
 template<class Floating, class ComplexFloating>
@@ -68,18 +71,18 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 		#pragma omp for
 		for (auto i = 0; i < _rowCount; ++i)
 		{
-			auto rowPointer = _rowPointers[i];
-			auto nextRowPointer = _rowPointers[i + 1];
-			const auto count = nextRowPointer - rowPointer;
+			const std::vector<int> &columns = _columns[i];
+			const std::vector<ComplexFloating> &values = _values[i];
+			const int count = values.size();
 			summandsReal.clear();
 			summandsImaginary.clear();
 			summandsReal.reserve(count);
 			summandsImaginary.reserve(count);
 
-			for (auto j = rowPointer; j < nextRowPointer; ++j)
+			for (auto j = 0; j < count; ++j)
 			{
-				auto column = _columns[j];
-				ComplexFloating const &value = _values[j];
+				auto column = columns[j];
+				ComplexFloating const &value = values[j];
 				auto summand = value*source(column);
 				summandsReal.push_back(std::real(summand));
 				summandsImaginary.push_back(std::imag(summand));
@@ -102,18 +105,18 @@ ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithStartCol
 {
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
-	auto endPosition = _rowPointers[row + 1];
-	return multiply(vector, startPosition, endPosition);
+	auto endPosition = _columns[row].size();
+	return multiply(vector, startPosition, endPosition, row);
 }
 
 template<class Floating, class ComplexFloating>
 ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithEndColumn(int row, Vector<Floating, ComplexFloating> const &vector, int endColumn) const
 {
-	auto startPosition = _rowPointers[row];
+	auto startPosition = 0;
 	int endPosition;
 	if (findPosition(row, endColumn, endPosition))
 		++endPosition;
-	return multiply(vector, startPosition, endPosition);
+	return multiply(vector, startPosition, endPosition, row);
 }
 
 template<class Floating, class ComplexFloating>
@@ -129,7 +132,7 @@ SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>
 	assert(isValidColumnIndex(startColumn));
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
-	return SparseMatrixRowIterator<ComplexFloating>(_values, _columns, startPosition, _rowPointers[row + 1]);
+	return SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size());
 }
 
 template<class Floating, class ComplexFloating>
@@ -188,42 +191,8 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 	if (one > two)
 		std::swap(one, two);
 
-	std::vector<int> positions;
-	positions.push_back(_rowPointers[one]);
-	positions.push_back(_rowPointers[one + 1]);
-	positions.push_back(_rowPointers[two]);
-	positions.push_back(_rowPointers[two + 1]);
-	
-	initializeTemporaryStorage();
-
-	_tempInt.insert(_tempInt.end(), _columns.begin(), _columns.begin() + positions[0]);
-	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin(), _values.begin() + positions[0]);
-	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[2], _columns.begin() + positions[3]);
-	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[2], _values.begin() + positions[3]);
-	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[1], _columns.begin() + positions[2]);
-	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[1], _values.begin() + positions[2]);
-	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[0], _columns.begin() + positions[1]);
-	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[0], _values.begin() + positions[1]);
-	_tempInt.insert(_tempInt.end(), _columns.begin() + positions[3], _columns.end());
-	_tempComplexFloating.insert(_tempComplexFloating.end(), _values.begin() + positions[3], _values.end());
-
-	swapWithTemporaryStorage();
-	
-	auto rwoOneLength = positions[1] - positions[0];
-	auto rwoTwoLength = positions[3] - positions[2];
-	auto lengthDifference = rwoTwoLength - rwoOneLength;
-
-	#pragma omp parallel for
-	for (auto i = one + 1; i <= two; ++i)
-		_rowPointers[i] += lengthDifference;
-}
-
-template<class Floating, class ComplexFloating>
-void SparseMatrix<Floating, ComplexFloating>::reserve(size_t n)
-{
-	_columns.reserve(n);
-	_rowPointers.reserve(n);
-	_values.reserve(n);
+	_values[one].swap(_values[two]);
+	_columns[one].swap(_columns[two]);
 }
 
 template<class Floating, class ComplexFloating>
@@ -234,12 +203,14 @@ std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloat
 
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
-	auto endPosition = _rowPointers[row + 1];
+	const std::vector<int> &columns = _columns[row];
+	const std::vector<ComplexFloating> &values = _values[row];
+	int endPosition = columns.size();
 	std::vector<std::pair<int, ComplexFloating>> result(endPosition - startPosition);
 
 	#pragma omp parallel for
 	for (auto i = startPosition; i < endPosition; ++i)
-		result[i - startPosition] = std::pair<int, ComplexFloating>(_columns[i], _values[i]);
+		result[i - startPosition] = std::pair<int, ComplexFloating>(columns[i], values[i]);
 
 	return result;
 }
@@ -247,34 +218,34 @@ std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloat
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::compress()
 {
-	initializeTemporaryStorage();
-	auto removedElements = 0;
+	//! @TODO parallelize
+	std::vector<int> tempColumns;
+	std::vector<ComplexFloating> tempValues;
 
 	for (auto row = 0; row < _rowCount; ++row)
 	{
-		auto start = _rowPointers[row];
-		auto end = _rowPointers[row + 1];
-		auto fixedRowPointer = start - removedElements;
+		std::vector<int> &columns = _columns[row];
+		std::vector<ComplexFloating> &values = _values[row];
+		const int count = columns.size();
+		tempColumns.clear();
+		tempValues.clear();
+		tempColumns.reserve(count);
+		tempValues.reserve(count);
 
-		for (auto i = start; i < end; ++i)
+		for (auto i = 0; i < count; ++i)
 		{
-			ComplexFloating const &value = _values[i];
+			ComplexFloating const &value = values[i];
 
 			if (value == _zero)
-				++removedElements;
-			else
-			{
-				_tempComplexFloating.push_back(value);
-				_tempInt.push_back(_columns[i]);
-			}
+				continue;
+
+			tempValues.push_back(value);
+			tempColumns.push_back(columns[i]);
 		}
 
-		_rowPointers[row] = fixedRowPointer;
+		tempValues.swap(values);
+		tempColumns.swap(columns);
 	}
-
-	_rowPointers[getRowCount()] -= removedElements;
-
-	swapWithTemporaryStorage();
 }
 
 template<class Floating, class ComplexFloating>
@@ -285,18 +256,21 @@ void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, Co
 	std::vector<int> leftOverColumns;
 	leftOverValues.reserve(columnsAndValues.size());
 	leftOverColumns.reserve(columnsAndValues.size());
-	auto position = _rowPointers[row];
-	auto endPosition = _rowPointers[row + 1];
+	std::vector<int> &columns = _columns[row];
+	std::vector<ComplexFloating> &values = _values[row];
+	auto position = 0;
+	const int count = columns.size();
 
-	for (auto i = columnsAndValues.cbegin(); i != columnsAndValues.end() && position < endPosition; ++i)
+	for (auto i = columnsAndValues.cbegin(); i != columnsAndValues.end(); ++i)
 	{
 		auto column = i->first;
+		assert(isValidColumnIndex(column));
 
-		while(_columns[position] < column)
+		while(position < count && columns[position] < column)
 			++position;
 
-		if (_columns[position] == column)
-			_values[position] += weight*i->second;
+		if (position < count && columns[position] == column)
+			values[position] += weight*i->second;
 		else
 		{
 			leftOverValues.push_back(i->second);
@@ -304,10 +278,10 @@ void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, Co
 		}
 	}
 
-	int currentValueCount = _values.size();
+	int currentValueCount = values.size();
 	int additionalValueCount = leftOverValues.size();
-	_values.reserve(currentValueCount + additionalValueCount);
-	_columns.reserve(currentValueCount + additionalValueCount);
+	values.reserve(currentValueCount + additionalValueCount);
+	columns.reserve(currentValueCount + additionalValueCount);
 
 	for (auto i = 0; i < additionalValueCount; ++i)
 		set(row, leftOverColumns[i], weight*leftOverValues[i]);
@@ -318,7 +292,7 @@ ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int r
 {
 	int position;
 	if (findPosition(row, column, position))
-		return _values[position];
+		return _values[row][position];
 
 	return _zero;
 }
@@ -329,7 +303,6 @@ SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFlo
 	assert(getRowCount() == rhs.getRowCount());
 	assert(getColumnCount() == rhs.getColumnCount());
 	_columns = rhs._columns;
-	_rowPointers = rhs._rowPointers;
 	_values = rhs._values;
 	return *this;
 }
@@ -339,9 +312,10 @@ bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, 
 {
 	assert(isValidRowIndex(row));
 	assert(isValidColumnIndex(column));
-
-	auto start = _rowPointers[row];
-	auto end = _rowPointers[row + 1];
+	const std::vector<int> &columns = _columns[row];
+	const int count = columns.size();
+	auto start = 0;
+	auto end = count;
 
 	if (end == start)
 	{
@@ -355,7 +329,7 @@ bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, 
 	while(rangeBecameSmaller)
 	{
 		auto middle = (start + end)/2;
-		auto middleColumn = _columns[middle];
+		auto middleColumn = columns[middle];
 
 		if (middleColumn < column)
 			start = middle;
@@ -369,7 +343,7 @@ bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, 
 	}
 
 	position = end;
-	return position < _rowPointers[row + 1] && column == _columns[position];
+	return position < count && column == columns[position];
 }
 
 template<class Floating, class ComplexFloating>
@@ -385,23 +359,7 @@ bool SparseMatrix<Floating, ComplexFloating>::isValidColumnIndex(int column) con
 }
 
 template<class Floating, class ComplexFloating>
-void SparseMatrix<Floating, ComplexFloating>::initializeTemporaryStorage()
-{
-	_tempInt.clear();
-	_tempComplexFloating.clear();
-	_tempInt.reserve(_columns.size());
-	_tempComplexFloating.reserve(_values.size());
-}
-
-template<class Floating, class ComplexFloating>
-void SparseMatrix<Floating, ComplexFloating>::swapWithTemporaryStorage()
-{
-	_tempInt.swap(_columns);
-	_tempComplexFloating.swap(_values);
-}
-
-template<class Floating, class ComplexFloating>
-ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition) const
+ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition, int row) const
 {	
 	auto count = endPosition - startPosition;
 	std::vector<Floating> summandsRealTotal;
@@ -409,6 +367,8 @@ ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floatin
 	ComplexFloating resultTotal(Floating(0));
 	summandsRealTotal.reserve(count);
 	summandsImaginaryTotal.reserve(count);
+	const std::vector<int> &columns = _columns[row];
+	const std::vector<ComplexFloating> &values = _values[row];
 
 	#pragma omp parallel
 	{
@@ -420,8 +380,8 @@ ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floatin
 		#pragma omp for
 		for (auto i = startPosition; i < endPosition; ++i)
 		{
-			auto column = _columns[i];
-			auto summand = _values[i]*vector(column);
+			auto column = columns[i];
+			auto summand = values[i]*vector(column);
 			summandsReal.push_back(std::real(summand));
 			summandsImaginary.push_back(std::imag(summand));
 		}

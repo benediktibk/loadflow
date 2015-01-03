@@ -116,7 +116,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		try
 		{
 			calculateNextCoefficient();
-			calculateVoltagesFromCoefficients();
+			//calculateVoltagesFromCoefficients();
 		}
 		catch(overflow_error)
 		{
