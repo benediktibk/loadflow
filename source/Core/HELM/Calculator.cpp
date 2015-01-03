@@ -100,12 +100,19 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));
 	
-	if (!calculateFirstCoefficient())
-		throw exception("could not calculate the first coefficients");
-
-	updateProgress(1);
-	calculateSecondCoefficient();
-	updateProgress(1);
+	try
+	{	
+		calculateFirstCoefficient();
+		updateProgress(1);
+		calculateSecondCoefficient();
+		updateProgress(1);
+	} 
+	catch(exception)
+	{
+		lock_guard<mutex> lock(_progressMutex);
+		_maximumPossibleCoefficientCount = _coefficientStorage->getCoefficientCount();
+		return;
+	}
 
 	map<double, int> totalErrors;
 	vector< vector< Complex<long double> > > partialResults;
@@ -116,9 +123,9 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		try
 		{
 			calculateNextCoefficient();
-			//calculateVoltagesFromCoefficients();
+			calculateVoltagesFromCoefficients();
 		}
-		catch(overflow_error)
+		catch(exception)
 		{
 			lock_guard<mutex> lock(_progressMutex);
 			_maximumPossibleCoefficientCount = _coefficientStorage->getCoefficientCount();
@@ -157,7 +164,7 @@ ComplexFloating Calculator<Floating, ComplexFloating>::createComplexFloating(Com
 }
 
 template<typename Floating, typename ComplexFloating>
-bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
+void Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 {
 	auto coefficients = calculateFirstCoefficientInternal();
 	auto modificationNecessary = isPQCoefficientZero(coefficients);
@@ -165,7 +172,7 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 	if (!modificationNecessary)
 	{		
 		_coefficientStorage->addCoefficients(coefficients);
-		return true;
+		return;
 	}
 	
 	_embeddingModification = ComplexFloating(createFloating(1));
@@ -173,10 +180,9 @@ bool Calculator<Floating, ComplexFloating>::calculateFirstCoefficient()
 	modificationNecessary = isPQCoefficientZero(coefficients);
 
 	if (modificationNecessary)
-		return false;
+		throw exception("one modification was not enough");
 
 	_coefficientStorage->addCoefficients(coefficients);
-	return true;
 }
 
 template<typename Floating, typename ComplexFloating>

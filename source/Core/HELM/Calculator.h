@@ -41,7 +41,7 @@ protected:
 	ComplexFloating createComplexFloating(Complex<long double> const &value) const;
 
 private:
-	bool calculateFirstCoefficient();
+	void calculateFirstCoefficient();
 	Vector<Floating, ComplexFloating> calculateFirstCoefficientInternal();
 	bool isPQCoefficientZero(Vector<Floating, ComplexFloating> const& coefficients) const;
 	void calculateSecondCoefficient();
