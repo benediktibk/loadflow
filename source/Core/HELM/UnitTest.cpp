@@ -29,7 +29,7 @@ bool areEqual(Complex<MultiPrecision> const& one, Complex<MultiPrecision> const&
 			std::abs(one.imag() - two.imag()) < MultiPrecision(delta);
 }
 
-bool runTestsComplexDouble()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexDouble()
 {
 	Complex<double> one(2, 3);
 	Complex<double> two(5, 7);
@@ -64,7 +64,7 @@ bool runTestsComplexDouble()
 	return true;
 }
 
-bool runTestsComplexMultiPrecision()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexMultiPrecision()
 {
 	Complex<MultiPrecision> one(MultiPrecision(2), MultiPrecision(3));
 	Complex<MultiPrecision> two(MultiPrecision(5), MultiPrecision(7));
@@ -101,7 +101,7 @@ bool runTestsComplexMultiPrecision()
 	return true;
 }
 
-bool runTestsMultiPrecision()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsMultiPrecision()
 {
 	MultiPrecision one(-2.3);
 	MultiPrecision two(5);
@@ -144,7 +144,7 @@ bool runTestsMultiPrecision()
 	return true;
 }
 
-bool runTestsCoefficientStoragePQ()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsCoefficientStoragePQ()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, Complex<long double>()));
@@ -196,7 +196,7 @@ bool runTestsCoefficientStoragePQ()
 	return true;
 }
 
-bool runTestsCoefficientStoragePV()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsCoefficientStoragePV()
 {
 	vector<PQBus> pqBuses;
 	vector<PVBus> pvBuses;
@@ -236,7 +236,7 @@ bool runTestsCoefficientStoragePV()
 	return true;
 }
 
-bool runTestsCoefficientStorageMixed()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsCoefficientStorageMixed()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(1, Complex<long double>()));
@@ -294,21 +294,7 @@ bool runTestsCoefficientStorageMixed()
 	return true;
 }
 
-bool runTestsCoefficientStorage()
-{
-	if (!runTestsCoefficientStoragePQ())
-		return false;
-
-	if (!runTestsCoefficientStoragePV())
-		return false;
-
-	if (!runTestsCoefficientStorageMixed())
-		return false;
-
-	return true;
-}
-
-bool runTestsAnalyticContinuationStepByStep()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationStepByStep()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, Complex<long double>()));
@@ -357,7 +343,7 @@ bool runTestsAnalyticContinuationStepByStep()
 	return true;
 }
 
-bool runTestsAnalyticContinuationBunchAtOnce()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationBunchAtOnce()
 {
 	vector<PQBus> pqBuses;
 	pqBuses.push_back(PQBus(0, Complex<long double>()));
@@ -394,18 +380,7 @@ bool runTestsAnalyticContinuationBunchAtOnce()
 	return true;
 }
 
-bool runTestsAnalyticContinuation()
-{
-	if (!runTestsAnalyticContinuationStepByStep())
-		return false;
-
-	if (!runTestsAnalyticContinuationBunchAtOnce())
-		return false;
-
-	return true;
-}
-
-bool runTestsLinearEquationSystemOne()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemOne()
 {
 	SparseMatrix<long double, Complex<long double>> A(3, 3);
 	A.set(0, 0, Complex<long double>(1, 2));
@@ -448,7 +423,7 @@ bool runTestsLinearEquationSystemOne()
 	return true;
 }
 
-bool runTestsLinearEquationSystemTwo()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemTwo()
 {
 	SparseMatrix<long double, Complex<long double>> A(3, 3);
 	A.set(0, 0, Complex<long double>(1, 0));
@@ -493,18 +468,7 @@ bool runTestsLinearEquationSystemTwo()
 	return true;
 }
 
-bool runTestsLinearEquationSystem()
-{
-	if (!runTestsLinearEquationSystemTwo())
-		return false;
-
-	if (!runTestsLinearEquationSystemOne())
-		return false;
-
-	return true;
-}
-
-bool runTestsVectorConstructor()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConstructor()
 {
 	Vector<long double, Complex<long double> > a(3);
 
@@ -523,7 +487,7 @@ bool runTestsVectorConstructor()
 	return true;
 }
 
-bool runTestsVectorCopyConstructor()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorCopyConstructor()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -546,7 +510,7 @@ bool runTestsVectorCopyConstructor()
 	return true;
 }
 
-bool runTestsVectorAssignment()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorAssignment()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -570,7 +534,7 @@ bool runTestsVectorAssignment()
 	return true;
 }
 
-bool runTestsVectorDotProduct()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorDotProduct()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -586,7 +550,7 @@ bool runTestsVectorDotProduct()
 	return result == Complex<long double>(1*4 + 2*5 + 3*6, 0);
 }
 
-bool runTestsVectorSquaredNorm()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorSquaredNorm()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -598,7 +562,7 @@ bool runTestsVectorSquaredNorm()
 	return result == Complex<long double>(1*1 + 2*2 + 3*3, 0);
 }
 
-bool runTestsVectorWeightedSum()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorWeightedSum()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -627,7 +591,7 @@ bool runTestsVectorWeightedSum()
 	return true;
 }
 
-bool runTestsVectorAddWeightedSum()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorAddWeightedSum()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -656,7 +620,7 @@ bool runTestsVectorAddWeightedSum()
 	return true;
 }
 
-bool runTestsVectorPointwiseMultiply()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorPointwiseMultiply()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -685,7 +649,7 @@ bool runTestsVectorPointwiseMultiply()
 	return true;
 }
 
-bool runTestsVectorSubtract()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorSubtract()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 0));
@@ -714,7 +678,7 @@ bool runTestsVectorSubtract()
 	return true;
 }
 
-bool runTestsVectorConjugate()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConjugate()
 {
 	Vector<long double, Complex<long double> > a(3);
 	a.set(0, Complex<long double>(1, 2));
@@ -735,7 +699,7 @@ bool runTestsVectorConjugate()
 	return true;
 }
 
-bool runTestsVectorMultiPrecision()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorMultiPrecision()
 {
 	MultiPrecision::setDefaultPrecision(100);
 	Vector<MultiPrecision, Complex<MultiPrecision> > a(1);
@@ -751,45 +715,7 @@ bool runTestsVectorMultiPrecision()
 	return true;
 }
 
-bool runTestsVector()
-{
-	if (!runTestsVectorConstructor())
-		return false;
-
-	if (!runTestsVectorCopyConstructor())
-		return false;
-
-	if (!runTestsVectorAssignment())
-		return false;
-
-	if (!runTestsVectorDotProduct())
-		return false;
-
-	if (!runTestsVectorSquaredNorm())
-		return false;
-
-	if (!runTestsVectorWeightedSum())
-		return false;
-
-	if (!runTestsVectorAddWeightedSum())
-		return false;
-
-	if (!runTestsVectorPointwiseMultiply())
-		return false;
-
-	if (!runTestsVectorSubtract())
-		return false;
-
-	if (!runTestsVectorConjugate())
-		return false;
-
-	if (!runTestsVectorMultiPrecision())
-		return false;
-
-	return true;
-}
-
-bool runTestsSparseMatrixConstructor()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixConstructor()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(4, 5);
 
@@ -814,7 +740,7 @@ bool runTestsSparseMatrixConstructor()
 	return true;
 }
 
-bool runTestsSparseMatrixGet()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixGet()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
 
@@ -826,7 +752,7 @@ bool runTestsSparseMatrixGet()
 	return true;
 }
 
-bool runTestsSparseMatrixSet()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixSet()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
 
@@ -860,7 +786,7 @@ bool runTestsSparseMatrixSet()
 	return true;
 }
 
-bool runTestsSparseMatrixMultiply()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiply()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -891,7 +817,7 @@ bool runTestsSparseMatrixMultiply()
 	return true;
 }
 
-bool runTestsSparseMatrixRowIteration()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixRowIteration()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -950,7 +876,7 @@ bool runTestsSparseMatrixRowIteration()
 	return true;
 }
 
-bool runTestsSparseMatrixRowIterationWithStartColumn()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixRowIterationWithStartColumn()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(4, 5);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -1004,7 +930,7 @@ bool runTestsSparseMatrixRowIterationWithStartColumn()
 	return true;
 }
 
-bool runTestsSparseMatrixFindAbsoluteMaximumOfColumn()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixFindAbsoluteMaximumOfColumn()
 {	
 	SparseMatrix<long double, Complex<long double> > matrix(4, 4);
 	matrix.set(0, 2, Complex<long double>(2134, 0));
@@ -1029,7 +955,7 @@ bool runTestsSparseMatrixFindAbsoluteMaximumOfColumn()
 	return maximumRowsShouldBe == maximumRows;
 }
 
-bool runTestsSparseMatrixChangeRows()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixChangeRows()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(4, 4);
 	matrix.set(0, 1, Complex<long double>(7, 0));
@@ -1059,7 +985,7 @@ bool runTestsSparseMatrixChangeRows()
 	return valuesShouldBe == values;
 }
 
-bool runTestsSparseMatrixAssignment()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixAssignment()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 3);
 	SparseMatrix<long double, Complex<long double> > copy(3, 3);
@@ -1095,7 +1021,7 @@ bool runTestsSparseMatrixAssignment()
 	return true;
 }
 
-bool runTestsSparseMatrixGetRowValuesAndColumns()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixGetRowValuesAndColumns()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 5);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -1122,7 +1048,7 @@ bool runTestsSparseMatrixGetRowValuesAndColumns()
 	return result == resultShouldBe;
 }
 
-bool runTestsSparseMatrixCompress()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixCompress()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -1181,7 +1107,7 @@ bool runTestsSparseMatrixCompress()
 	return true;
 }
 
-bool runTestsSparseMatrixAddWeightedRowElements()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixAddWeightedRowElements()
 {
 	SparseMatrix<long double, Complex<long double>> matrix(3, 4);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -1219,7 +1145,7 @@ bool runTestsSparseMatrixAddWeightedRowElements()
 	return true;
 }
 
-bool runTestsSparseMatrixMultiplyWithStartAndEndColumn()
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiplyWithStartAndEndColumn()
 {
 	SparseMatrix<long double, Complex<long double>> matrix(1, 5);
 	matrix.set(0, 1, Complex<long double>(2, 0));
@@ -1247,79 +1173,6 @@ bool runTestsSparseMatrixMultiplyWithStartAndEndColumn()
 		return false;
 
 	if (four != Complex<long double>(20*2 + 40*3 + 50*4, 0))
-		return false;
-
-	return true;
-}
-
-bool runTestsSparseMatrix()
-{
-	if (!runTestsSparseMatrixConstructor())
-		return false;
-
-	if (!runTestsSparseMatrixGet())
-		return false;
-	
-	if (!runTestsSparseMatrixSet())
-		return false;
-
-	if (!runTestsSparseMatrixMultiply())
-		return false;
-
-	if (!runTestsSparseMatrixRowIteration())
-		return false;
-
-	if (!runTestsSparseMatrixRowIterationWithStartColumn())
-		return false;
-
-	if (!runTestsSparseMatrixFindAbsoluteMaximumOfColumn())
-		return false;
-
-	if (!runTestsSparseMatrixChangeRows())
-		return false;
-
-	if (!runTestsSparseMatrixAssignment())
-		return false;
-
-	if (!runTestsSparseMatrixGetRowValuesAndColumns())
-		return false;
-
-	if (!runTestsSparseMatrixCompress())
-		return false;
-
-	if (!runTestsSparseMatrixAddWeightedRowElements())
-		return false;
-
-	if (!runTestsSparseMatrixMultiplyWithStartAndEndColumn())
-		return false;
-
-	return true;
-}
-
-bool runTests()
-{
-	if (!runTestsMultiPrecision())
-		return false;
-
-	if (!runTestsComplexDouble())
-		return false;
-
-	if (!runTestsComplexMultiPrecision())
-		return false;
-
-	if (!runTestsVector())
-		return false;
-
-	if (!runTestsSparseMatrix())
-		return false;
-
-	if (!runTestsCoefficientStorage())
-		return false;
-
-	if (!runTestsAnalyticContinuation())
-		return false;
-
-	if (!runTestsLinearEquationSystem())
 		return false;
 
 	return true;

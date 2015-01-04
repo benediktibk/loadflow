@@ -103,12 +103,6 @@ extern "C" __declspec(dllexport) int __cdecl GetMaximumPossibleCoefficientCount(
 	return calculatorRegister.get(calculator).getMaximumPossibleCoefficientCount();
 }
 
-extern "C" __declspec(dllexport) bool __cdecl RunTests()
-{
-	bool result = runTests();
-	return result;
-}
-
 extern "C" { int _afxForceUSRDLL; }
 
 BOOL APIENTRY DllMain(HANDLE hModule, 
