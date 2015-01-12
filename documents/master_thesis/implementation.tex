@@ -50,9 +50,35 @@ To be able to evaluate \emph{HELM} in detail, also for critical nets, which can 
 \subsection{Linear Algebra}
 All the implemented methods have one thing in common: linear algebra. In all these methods it is necessary to solve linear equation systems, although the equation systems differ in their properties. In \emph{HELM} and the \emph{Current Iteration} the system matrix is the admittance matrix, in \emph{Newton-Raphson} and \emph{FDLF} it is a Jacobian matrix. Both types of matrices are typically sparse, therefore the use of sparse linear algebra improves the performance of the algorithms significantly.
 
-To solve these linear equation systems for instance with a LU-factorization is for big power nets unpractical, as only this step might take hours on current hardware. The solution to this is to use iterative solvers like \emph{BiCGSTAB} \cite{bicgstab}.
+To solve these linear equation systems for instance with a LU-factorization is for big power quite slow. The solution to this problem is to use iterative solvers like \emph{BiCGSTAB} \cite{bicgstab}.
 
 The last important detail of the implementation of the calculation methods is the preconditioning. With this step special properties of the system matrix can be used to improve the condition of the equation system, and therefore accelerate the iterative solvers. Fortunately, the admittance matrix, which is the system matrix in the \emph{Current Iteration} and \emph{HELM} is approximately diagonal dominant. This makes the application of a diagonal preconditioner very practical, because such a preconditioning is very efficient to calculate and improves the condition of the equation system significantly in this special case.
+
+\subsubsection{Optimizations}
+The application of the special conditions in \emph{HELM} allows a few optimization, which can not be made in general. At the beginning I used \emph{Eigen} \footnote{http://eigen.tuxfamily.org/} for the linear algebra, but with bigger problems I ran into performance problems with this general purpose library. Consequently, I reimplemented the necessary data structures and algorithms:
+\begin{itemize}
+	\item Dense vector
+	\item Sparse matrix
+	\item Multiplication of a sparse matrix with a dense vector
+	\item Various operations on dense vectors
+	\item \emph{BiCGSTAB}
+	\item LU-factorization
+	\item Forward and back substitution
+\end{itemize}
+
+The specialization on dense vectors is useful in the case of \emph{HELM} as the solutions for the equation system will be typically dense. Therefore, there is no need to apply more complex operations on sparse vectors.
+
+However, the system matrix of the linear equation system is the admittance matrix, which is dense for big problems. In fact, the amount of nonzero values in every row is nearly independent of the size of the total matrix. The reason for this lies within the physical structure of a power net, where every node only as a limited number of neighbours, no matter how big the total graph is. Therefore, the density of the admittance matrix decreases with a growing problem size. For small problems this specialisation is in fact a performance drawback, but for these problems the performance does not matter anyway. As there must not be a zero-row the LIL \cite{sparseMatricesParallel} version is superior over CRS \cite{sparseMatricesJava} or CCS \cite{sparseMatricesJava}.
+
+The multiplication of a sparse matrix with a dense vector can then leverage these two special formats. The key point is to iterate only over the nonzero elements over each row in the matrix and select the according elements of the vector in $\mathcal O(1)$. Additionally, the operation can be parallelized effectively, as all elements in the result vector are independent from each other.
+
+Operations like the dot product or adding two dense vector can be parallelized too. In this case the dense storage of the values is again very convenient, regarding the performance of the operations.
+
+The iterative solver \emph{BiCGSTAB} benefits from the already optimized matrix and vector operations. Additionally, it is possible to avoid a few memory allocations and move operations through implementing all these operations in-place.
+
+The calculation of a LU-factorization and the forward and back subsitution can not benefit from multiple cores well, at least for small datatypes like a double, where the floating point operations are not that expensive. For bigger datatypes with more expensive operations there is also a small speedup possible.
+
+Last but not least I had also to concentrate on numerical stability. For this purpose, I sorted all values in ascending order before I summed them up. This special modification has of course a negative impact on the performance, but improves the convergence behaviour of \emph{HELM}.
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
