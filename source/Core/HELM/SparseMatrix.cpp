@@ -2,11 +2,11 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "SparseMatrixRowIterator.h"
-#include <assert.h>
 #include <algorithm>
 #include <functional>
 #include <list>
 #include <utility>
+#include <exception>
 
 template class SparseMatrix<long double, Complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
@@ -17,8 +17,10 @@ SparseMatrix<Floating, ComplexFloating>::SparseMatrix(int rows, int columns) :
 	_columnCount(columns),
 	_zero(Floating(0), Floating(0))
 {
-	assert(getRowCount() > 0);
-	assert(getColumnCount() > 0);
+	if (getRowCount() <= 0)
+		throw std::range_error("row count must be positive");
+	if (getColumnCount() <= 0)
+		throw std::range_error("column count must be positive");
 
 	_columns.resize(getRowCount(), std::vector<int>());
 	_values.resize(getRowCount(), std::vector<ComplexFloating>());
@@ -39,8 +41,10 @@ int SparseMatrix<Floating, ComplexFloating>::getColumnCount() const
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::set(int row, int column, ComplexFloating const &value)
 {
-	assert(isValidRowIndex(row));
-	assert(isValidColumnIndex(column));
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(column))
+		throw std::range_error("invalid column index");
 
 	int position;
 	std::vector<ComplexFloating> &values = _values[row];
@@ -60,8 +64,8 @@ void SparseMatrix<Floating, ComplexFloating>::set(int row, int column, ComplexFl
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexFloating> &destination, Vector<Floating, ComplexFloating> const &source) const
 {
-	assert(destination.getCount() == getRowCount());
-	assert(source.getCount() == getColumnCount());
+	if (destination.getCount() != getRowCount() || source.getCount() != getColumnCount())
+		throw std::invalid_argument("sizes of vector and matrix do not match");
 
 	#pragma omp parallel
 	{
@@ -100,13 +104,29 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 	}
 }
 
+#include <fstream>
+
+void log(std::string const &message)
+{
+	std::fstream file;
+	file.open("C:\\Users\\Benedikt\\blub.log", std::fstream::out | std::fstream::app);
+	file << message << std::endl;
+	file.flush();
+	file.close();
+}
+
 template<class Floating, class ComplexFloating>
 ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithStartColumn(int row, Vector<Floating, ComplexFloating> const &vector, int startColumn) const
 {
+	log("starting multiplication with start column");
 	int startPosition;
+	log("searching for start column");
 	findPosition(row, startColumn, startPosition);
+	log("found start column");
 	auto endPosition = _columns[row].size();
-	return multiply(vector, startPosition, endPosition, row);
+	auto result = multiply(vector, startPosition, endPosition, row);
+	log("finished multiplication with start column");
+	return result;
 }
 
 template<class Floating, class ComplexFloating>
@@ -128,8 +148,10 @@ SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>
 template<class Floating, class ComplexFloating>
 SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getRowIterator(int row, int startColumn) const
 {
-	assert(isValidRowIndex(row));
-	assert(isValidColumnIndex(startColumn));
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(startColumn))
+		throw std::range_error("invalid column index");
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
 	return SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size());
@@ -138,8 +160,10 @@ SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>
 template<class Floating, class ComplexFloating>
 int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int column, int rowStart) const
 {
-	assert(isValidColumnIndex(column));
-	assert(isValidRowIndex(rowStart));	
+	if (!isValidRowIndex(rowStart))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(column))
+		throw std::range_error("invalid column index");
 	std::list<std::pair<int, Floating>> candidates;
 
 	#pragma omp parallel
@@ -174,16 +198,20 @@ int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int col
 			maximumValue = i->second;
 			maximumRow = i->first;
 		}
+		
+	if (!isValidRowIndex(maximumRow))
+		throw std::range_error("maximum row is invalid row index");
 
-	assert(isValidRowIndex(maximumRow));
 	return maximumRow;
 }
 
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 {
-	assert(isValidRowIndex(one));
-	assert(isValidRowIndex(two));
+	if (!isValidRowIndex(one))
+		throw std::range_error("invalid row index");
+	if (!isValidRowIndex(two))
+		throw std::range_error("invalid row index");
 	
 	if (one == two)
 		return;
@@ -198,8 +226,10 @@ void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 template<class Floating, class ComplexFloating>
 std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloating>::getRowValuesAndColumns(int row, int startColumn) const
 {
-	assert(isValidRowIndex(row));
-	assert(isValidColumnIndex(startColumn));
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(startColumn))
+		throw std::range_error("invalid column index");
 
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
@@ -251,7 +281,9 @@ void SparseMatrix<Floating, ComplexFloating>::compress()
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, ComplexFloating const &weight, std::vector<std::pair<int, ComplexFloating>> const &columnsAndValues)
 {
-	assert(isValidRowIndex(row));
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+
 	std::vector<ComplexFloating> leftOverValues;
 	std::vector<int> leftOverColumns;
 	leftOverValues.reserve(columnsAndValues.size());
@@ -264,7 +296,9 @@ void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, Co
 	for (auto i = columnsAndValues.cbegin(); i != columnsAndValues.end(); ++i)
 	{
 		auto column = i->first;
-		assert(isValidColumnIndex(column));
+
+		if (!isValidColumnIndex(column))
+			throw std::range_error("invalid column index");
 
 		while(position < count && columns[position] < column)
 			++position;
@@ -300,8 +334,8 @@ ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int r
 template<class Floating, class ComplexFloating>
 SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFloating>::operator=(SparseMatrix<Floating, ComplexFloating> const &rhs)
 {
-	assert(getRowCount() == rhs.getRowCount());
-	assert(getColumnCount() == rhs.getColumnCount());
+	if (getRowCount() != rhs.getRowCount() || getColumnCount() != rhs.getColumnCount())
+		throw std::invalid_argument("sizes of matrices do not match");
 	_columns = rhs._columns;
 	_values = rhs._values;
 	return *this;
@@ -310,8 +344,11 @@ SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFlo
 template<class Floating, class ComplexFloating>
 bool SparseMatrix<Floating, ComplexFloating>::findPosition(int row, int column, int &position) const
 {
-	assert(isValidRowIndex(row));
-	assert(isValidColumnIndex(column));
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(column))
+		throw std::range_error("invalid column index");
+
 	const std::vector<int> &columns = _columns[row];
 	const int count = columns.size();
 	auto start = 0;

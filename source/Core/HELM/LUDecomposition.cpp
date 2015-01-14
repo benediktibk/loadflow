@@ -79,7 +79,7 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::fo
 		auto value = bPermutated(i) - rowSum;
 		y.set(i, value);
 	}
-
+	
 	return y;
 }
 
@@ -95,6 +95,6 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::ba
 		auto value = (y(i) - rowSum)/_upper(i, i);
 		x.set(i, value);
 	}
-
+	
 	return x;
 }
