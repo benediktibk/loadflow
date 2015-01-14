@@ -5,7 +5,7 @@ The most interesting questions regarding \emph{HELM} are
 	\item How well does \emph{HELM} work compared to the iterative methods?
 	\item Is \emph{HELM} able to calculate large scale power nets, for which the iterative methods do not converge?
 \end{itemize}
-To answer these question I have run several experiments. The ones related to the first question can be found in \secref{comparison_algorithms}. To answer the second question I added in \secref{large_scale_powernets} the results of running \emph{HELM} on the german power net in a certain configuration, for which the iterative algorithms do not converge.
+To answer these questions I have run several experiments. The ones related to the first question can be found in \secref{comparison_algorithms}. To answer the second question I will describe in \secref{large_scale_powernets} the results of running \emph{HELM} on the german power net in a certain configuration, for which the iterative algorithms do not converge.
 
 \section{Comparison of the Load-flow Algorithms}
 \label{sec:comparison_algorithms}
@@ -34,7 +34,7 @@ To answer these question I have run several experiments. The ones related to the
 
 To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I will not consider the improved convergence behaviour in this section, as I discussed this already in \secref{implementation_helm}. The parameter for the algorithms can be found in \tabref{comparison_parameter}.
 
-To eliminate influences by other processes or the garbage collection on the runtime I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviation \figref{comparison_deviation}.
+To eliminate influences by other processes or the garbage collection on the runtime, I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviations \figref{comparison_deviation}.
 
 \subsection{Runtime}
 
@@ -45,22 +45,22 @@ To eliminate influences by other processes or the garbage collection on the runt
 	\label{fig:comparison_runtime}
 \end{figure}
 
-One key point is the runtime, and this depends heavily on the implementation of not only the algorithms themselves, but also on the used tools like the library for the sparse linear algebra. Therefore, I am not able to make absolute statements here, especially because I even implemented \emph{HELM} in a different language than the other algorithms. 
+One key point is the runtime, and this depends heavily on the implementation of not only the algorithms themselves, but also on the used tools like the library for the sparse linear algebra. Therefore, I am not able to make absolute statements here, especially because I even implemented \emph{HELM} in a different language than the other algorithms and optimized the linear algebra there.
 
 The first important message here is only that \emph{HELM} with 64 Bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as it can be seen in \figref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the Vorstadtnetz, \emph{HELM} is even faster than this iterative approach. 
 
 Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the later one.
 
-The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles and therefore deteroiates the performance of the algorithm significantly. Consquently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
+The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore deterioates the performance of the algorithm significantly. Consquently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
 
 \subsection{Accuracy}
 
-As benchmark for the accuracy I used the relative power error, which is the ratio between power error and total power, both summed up absolutely:
+As a benchmark for the accuracy I used the relative power error, which is the ratio between power error and total power, both summed up absolutely:
 \begin{equation}
 	\epsilon_r = \frac{\sum |P_i - P_{spec,i}| + \sum |Q_i - Q_{spec,i}|}{\sum |P_{spec,i}| + \sum |Q_{spec,i}|}
 \end{equation}
 
-The accuracies of the algorithms \figref{comparison_accuracy} were all sufficient for most applications, although a difference can be seen between the pure iterative approaches and the ones with \emph{HELM}. The later ones are able to deliver more accurate results for these nets.
+The accuracies of the algorithms \figref{comparison_accuracy} were all sufficient for most applications, although a difference can be seen between the pure iterative approaches and the ones with \emph{HELM}. The later ones are able to deliver more accurate results for these nets. Keeping in mind that \emph{HELM} is even as fast as the \emph{Current-Iteration}, at least in my implementation, there is no reason to use the \emph{Current Iteration} instead of \emph{HELM} or \emph{HELM} together with the \emph{Current Iteration}.
 
 \begin{figure}
 	\centering
