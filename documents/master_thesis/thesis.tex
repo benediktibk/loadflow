@@ -26,7 +26,6 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{listings}
 \usepackage{textcomp}
-\usepackage[nottoc,numbib]{tocbibind}
 
 % do not display the chapter-headings
 \titleformat{\chapter}[display]
@@ -120,11 +119,17 @@
 	\end{appendix}
 	
 	\cleardoublepage
+	\phantomsection
+	\addcontentsline{toc}{chapter}{\listfigurename}
 	\listoffigures
 	
 	\cleardoublepage
+	\phantomsection
+	\addcontentsline{toc}{chapter}{\listtablename}
 	\listoftables
 
-	\cleardoublepage	
+	\cleardoublepage
+	\phantomsection
+	\addcontentsline{toc}{chapter}{Bibliography}	
 	\input{bibliography}
 \end{document}
