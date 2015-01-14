@@ -112,4 +112,6 @@ The most important tables in this database are:
 	\item LFNodeResult: contains the node results of the load-flow calculation
 \end{itemize}
 
-For more detailed information about the database I would like to refer to the official documentation, or the implementation of the parser in the subsystem \emph{SincalConnector}.
+Of course, \emph{PSS SINCAL} supports a lot more net elements and ways to describe than the tool developed during this thesis. Therefore, for more complex or exotic selections in the database the tool will fail to parse the power net. Especially unsymmetric power nets and short circuit calculations are not supported by my tool. Consequently, the tool neglects the values related to these calculations.
+
+For more detailed information about the database I would like to refer to the official documentation, or the implementation of the parser in the subsystem \emph{SincalConnector}. This part of the software has also a few unit tests, which may be used as documentation too.
