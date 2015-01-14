@@ -570,9 +570,9 @@ With these derivations I can calculate the derivation of the power functions, wh
 \end{equation}
 
 \subsubsection{Real and Imaginary Part}
-For the representation of the voltages through real and imaginary parts we have one slight problem: PV-busses. For this busses the voltage magnitude is already set, and we only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantages of this are less complex formulas, as we can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has an impact on the performance of the overall algorithm, although we can only use this improvement for PQ-busses.
+For the representation of the voltages through real and imaginary parts, I have one problem: PV-busses. For these busses the voltage magnitude is already set, and I only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantage of this is less complexity in the formulas, as I can avoid the sines and cosines which occured in \eqref{pk_magnitudek}, \eqref{qk_magnitudek}, \eqref{pk_magnitudei}, \eqref{qk_magnitudei}, \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}. For huge problems this change has a significant impact on the performance of the overall algorithm, although I can only use this improvement for PQ-busses.
 
-Through a representation in cartesian coordinates we end up with the voltage vector
+Through a representation in cartesian coordinates I end up with the voltage vector
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -589,14 +589,14 @@ Through a representation in cartesian coordinates we end up with the voltage vec
 \end{equation}
 where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses, and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
 
-For the Jacobian matrix we need now, additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this we will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+For the Jacobian matrix I need now, additionally to \eqref{pk_phasek}, \eqref{qk_phasek}, \eqref{pk_phasei} and \eqref{qk_phasei}, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
 			  & (Y_{kk}^r - j Y_{kk}^i) ( (U_k^r)^2 + (U_k^i)^2 ) - (I_k^r - j I_k^i) (U_k^r + j U_k^i)			
 	\end{split}.
 \end{equation}
-Next we will need the seperation of this into its real and imaginary parts. Therefore, we will expand the summands
+Next, I will need the seperation of this into its real and imaginary parts. Therefore, I expand the summands
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
@@ -673,7 +673,7 @@ The iterative process to improve the voltages is then:
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
 
-The \emph{FDLF} is a modification of the \emph{Newton-Raphson} method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow, and the change in the voltage angles by the real power flow. With this in mind we can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce it to
+The \emph{FDLF} is a modification of the \emph{Newton-Raphson} method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind I can neglect two quarters of the Jacobian matrix in \eqref{power_jacobian_newton_raphson} and reduce it to
 \begin{equation}
 	\mat S' (\vec x^{(k)}) \approx 
 	\begin{bmatrix}
@@ -690,7 +690,7 @@ The \emph{FDLF} is a modification of the \emph{Newton-Raphson} method, which is 
 	\end{bmatrix}.
 \end{equation}
 
-With this simplified system matrix we can separate the equation system \eqref{newton_raphson_equation_system} into
+With this simplified system matrix I can separate the equation system \eqref{newton_raphson_equation_system} into
 \begin{equation}
 	\frac{\partial \vec P}{\partial \vec \delta} \cdot \Delta \vec \delta^{(k)} = \Delta \vec P^{(k)}
 \end{equation}
@@ -699,7 +699,7 @@ and
 	\frac{\partial \vec Q}{\partial \vec{|U|}} \cdot \Delta \vec{|U|}^{(k)} = \Delta \vec Q^{(k)}.
 \end{equation}
 
-The steps for solving the load-flow problem are nearly the same as for the \emph{Newton-Raphson}, the only difference lies within the smaller linear equation system, which has to be solved. This is already the reason why one may choose the \emph{FDLF} instead of \emph{Newton-Raphson}: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour. Consequently, the \emph{FDLF} is less probable to be actually capable of solving a load-flow problem.
+The steps for solving the load-flow problem are nearly the same as for the \emph{Newton-Raphson}, the only difference lies within the smaller linear equation system that has to be solved. This is already the reason why one may choose the \emph{FDLF} instead of \emph{Newton-Raphson}: the calculation is faster. The disadvantage of the simplification is a worse convergence behaviour. Consequently, the \emph{FDLF} is less probable to be actually capable of solving a load-flow problem.
 
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
@@ -713,7 +713,7 @@ The starting point for \emph{HELM} is \eqref{pq_bus}, where the slack busses are
 		\sum_i Y_{ki} U_{i}(s) = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) Y_k.
 		\label{eq:pq_bus_embedded}
 \end{equation}
-In this equation we have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Consequently, the target is to evalute the functions $U_i(s)$ at the point $s = 1$.
+In this equation I have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Consequently, the target is to evalute the functions $U_i(s)$ at the point $s = 1$.
 
 The additional term $(1 - s) Y_{total}$ vanishes at the point $s = 1$ and is only needed to avoid that the first coefficients of a Laurent series become 0. In fact, the value $Y_{total}$ can be chosen arbitrarly. In \citep{helmPatentSept2009} the expression
 \begin{equation}
@@ -721,7 +721,7 @@ The additional term $(1 - s) Y_{total}$ vanishes at the point $s = 1$ and is onl
 \end{equation}
 was suggested, where the sum is calculated over all nodes, including the slack busses. This approach turns out to work well for real world problems, although in certain problems this may still produce coefficients with the value zero. In these cases a random modification to this term can be applied to force the coefficient to a value different from zero.
 
-To get an explicit formula for the functions $U_i(s)$ we replace them with their Laurent series
+To get an explicit formula for the functions $U_i(s)$ I replace them with their Laurent series
 \begin{equation}
 	U_i(s) = \sum_{j = -\infty}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
@@ -729,7 +729,7 @@ As the functions are holomorph, the prinicipal part of the series vanishes, whic
 \begin{equation}
 	U_i(s) = \sum_{j = 0}^\infty c_{i,j} (s - s_0)^j.
 \end{equation}
-To be able to calculate the coefficients we develop these series around the point $s_0 = 0$ and insert
+To be able to calculate the coefficients I develop these series around the point $s_0 = 0$ and insert
 \begin{equation}
 	U_i(s) = \sum_{j = 0}^\infty c_{i,j} s^j.
 	\label{eq:helm_series}
@@ -739,7 +739,7 @@ into \eqref{pq_bus_embedded} to get
 		\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + \frac{s S_k^\star}{\sum_{j = 0}^\infty c_{k,j}^\star s^j} + (1 - s) Y_k.
 		\label{eq:helm_series_pq_bus}
 \end{equation}
-At this point we would actually like to make a coefficient comparison, but on the right hand side we have the inverse of a series. To circumvent this, we need a power series for the inverse of a series. We can get this series
+At this point I would actually like to make a coefficient comparison, but on the right hand side I still have the inverse of a series. To circumvent this, I need a power series for the inverse of a series. I can get this series
 \begin{equation}
 	W_i(s) = \sum_{j = 0}^\infty w_{i,j} s^j,
 \end{equation}
@@ -755,11 +755,11 @@ To do so, the equation is rewritten with the discrete convolution formula to
 \begin{equation}
 	1 = \sum_{j = 0}^\infty \left( \sum_{l = 0}^j w_{i,l} c_{i,j - l}^\star \right) s^j,
 \end{equation}
-where we have to consider separately the power 0 and the rest. For $s^0$ the outcome of the coefficient comparison is
+where I have to consider separately the power 0 and the rest. For $s^0$ the outcome of the coefficient comparison is
 \begin{equation}
 	1 = w_{i,0} c_{i,0}^\star,
 \end{equation}
-from which we can derive the first inverse coefficient to be
+from which I can derive the first inverse coefficient to be
 \begin{equation}
 	w_{i,0} = \frac{1}{c_{i,0}^\star}.
 \end{equation}
@@ -767,7 +767,7 @@ For all other powers of $s$ the coefficient comparison delivers
 \begin{equation}
 	0 = \sum_{l = 0}^j w_{i,l} c_{i,j - l}^\star,
 \end{equation}
-where we can assume to already know the previous inverse coefficients. Hence, we can extract the last summand
+where I can assume to already know the previous inverse coefficients. Hence, I can extract the last summand
 \begin{equation}
 	0 = \sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star + w_{i,j} c_{j,0}^\star
 \end{equation}
@@ -776,16 +776,16 @@ and transform the result into the explicit formula
 	w_{i,j} = - \frac{\sum_{l = 0}^{j - 1} w_{i,l} c_{i,j - l}^\star}{c_{i,0}^\star}.
 \end{equation}
 
-With the power series of the inverse voltage functions we are able to reformulate \eqref{helm_series_pq_bus} into
+With the power series of the inverse voltage functions I am able to reformulate \eqref{helm_series_pq_bus} into
 \begin{equation}
 	\sum_i \left( Y_{ki} \sum_{j = 0}^\infty c_{i,j} s^j \right) = s I_k + s S_k^\star \sum_{j = 0}^\infty w_{i,j} s^j + (1 - s) Y_k.
 \end{equation}
-Here we apply again a coefficient comparison. For the power $s^0$ we get the linear equation system
+Here I apply again a coefficient comparison. For the power $s^0$ I get the linear equation system
 \begin{equation}
 	\sum_i Y_{ki} c_{i,0} = Y_k,
 	\label{eq:helm_first_coefficients}
 \end{equation}
-which we can solve to get the coefficients $c_{i,0}$. The second coefficients $c_{i,1}$ can be calculated with
+which I can solve to get the coefficients $c_{i,0}$. The second coefficients $c_{i,1}$ can be calculated with
 \begin{equation}
 	\sum_i Y_{ki} c_{i,1} = I_k + S_k^\star w_{k,0} - Y_k,
 	\label{eq:helm_second_coefficients}
@@ -798,45 +798,45 @@ as the coefficients $w_{i,j}$ depend only on the previous coefficients $c_{i,j}$
 
 \paragraph{PV-busses}
 
-How PV-busses can be modelled in HELM was first mentioned in \citep{helmPV}. As there the notation and handling of slack busses is different to the formulas in this thesis, I will reformulate them to fit to the other equations here.
+The modelling of PV-busses HELM was first mentioned in \citep{helmPV}. As there the notation and handling of slack busses is different to the formulas in this thesis, I will reformulate them to fit to the other equations here.
 
-Starting with the definition of a PQ-bus \eqref{pq_bus} we transform this equation into the explicit definition of the power
+Starting with the definition of a PQ-bus \eqref{pq_bus} I transform this equation into the explicit definition of the power
 \begin{equation}
 	S_k = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star.
 	\label{eq:bus_power}
 \end{equation}
-For the PV-bus only the real power is defined, therefore we do not have to consider the reactive power and can reduce this equation to
+For the PV-bus only the real power is defined, therefore I do not have to consider the reactive power and can reduce this equation to
 \begin{equation}
 	P_k = \Re{U_k \left( \sum_i Y_{ki}^\star U_i^\star - I_k^\star \right)}.
 	\label{eq:pv_bus_definition}
 \end{equation}
-This way we end up with only one equation for the bus, although we bring into the equation system two unknowns. Consequently, we can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
+This way I end up with only one equation for the bus, although I bring into the equation system two unknowns. Consequently, I can not choose the direct approach \eqref{pv_bus_definition}, but have to use instead
 \begin{equation}
 	2 P_k = S_k + S_k^\star.
 \end{equation}
-If we insert here the definition of the bus power \eqref{bus_power} we get
+If I insert here the definition of the bus power \eqref{bus_power} I get
 \begin{equation}
 	\begin{split}
 		2 P_k 	& = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star + \left( U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star \right)^\star \\
 				& = U_k \left( \sum_i Y_{ki} U_i - I_k \right)^\star + U_k^\star \left( \sum_i Y_{ki} U_i - I_k \right)
 	\end{split}.
 \end{equation}
-Multiplying this with $U_k$ gives us
+Multiplying this with $U_k$ gives
 \begin{equation}
 	\begin{split}
 		2 P_k U_k 	& = U_k^2 \left( \sum_i Y_{ki} U_i - I_k \right)^\star + |U_k|^2 \left( \sum_i Y_{ki} U_i - I_k \right) \\
 					& = U_k^2 \sum_i Y_{ki}^\star U_i^\star - U_k^2 I_k^\star + |U_k|^2 \sum_i Y_{ki} U_i - |U_k|^2 I_k
 	\end{split},
 \end{equation}
-were we have brought into the equation the voltage magnitude 
+were I have brought into the equation the voltage magnitude 
 \begin{equation}
 	|U_k| = \sqrt{U_k U_k^\star},
 \end{equation}
-which is also defined at the PV-bus. Through moving a few summands to the other side of the equation we get
+which is also defined at the PV-bus. Through moving a few summands to the other side of the equation I get
 \begin{equation}
 	|U_k|^2 \sum_i Y_{ki} U_i = 2 P_k U_k - U_k^2 \sum_i Y_{ki}^\star U_i^\star + U_k^2 I_k^\star + |U_k|^2 I_k,
 \end{equation}
-where we can embedded a complex parameter $s$, so that the voltages $U_i$ turn into holomorphic voltage functions $U_i(s)$. This way we end up with
+where I can embedded a complex parameter $s$ so that the voltages $U_i$ turn into holomorphic voltage functions $U_i(s)$. This way I end up with
 \begin{equation}
 	\begin{split}
 		|U_k|^2 \sum_i Y_{ki} U_i(s) = 
@@ -853,7 +853,7 @@ which is after the division by $|U_k|^2$
 	\end{split}
 	\label{eq:pv_bus_helm}
 \end{equation}
-then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact the only difference is the right hand side of the equation, which I want to abbreviate with
+then the line, which has to be inserted into the equation system for a PV-bus. The total system is then containing lines in the form of \eqref{pv_bus_helm} and \eqref{pq_bus_embedded}. In fact, the only difference is the right hand side of the equation, which I want to abbreviate with
 \begin{equation}
 	\begin{split}
 		F_{PV}(s) = 
@@ -870,7 +870,7 @@ Consequently, the counter part for a PQ-bus is
 	\end{split}.
 	\label{eq:rhs_pq}
 \end{equation}
-In the implementation of HELM it is then only necessary to calculate for the next coefficients the elements of the right hand side, depending on the type of the bus with a different formula.
+In the implementation of HELM it is then only necessary to calculate for the next coefficients the elements of the right hand side depending on the type of the bus with a different formula.
 
 The important point for this is that all elements in $F_{PQ}(s)$ and $F_{PV}(s)$ are either constant or depending only on previous coefficients. This is ensured through the embedding, where all summands which are functions in the parameter $s$ are multiplied with $s$, which shifts the coefficients of the series.
 
@@ -888,7 +888,7 @@ The problem here is the first part, which contains the multiplication of three p
 \end{equation}
 The multiplication of three power series can then be build upon this formula.
 
-To simplify \eqref{rhs_pv} we start with the two substitutions
+To simplify \eqref{rhs_pv} I start with the two substitutions
 \begin{equation}
 	V_k(s) = U_k(s)^2 = \sum_j v_{k,j} s^j
 \end{equation}
@@ -900,7 +900,7 @@ The coefficients for $V(s)$ can be calculated with the convolution formula
 \begin{equation}
 	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l},
 \end{equation}
-and for $X(s)$ we can convolute and weigh these coefficients to calculate
+and for $X(s)$ I can convolute and weigh these coefficients to calculate
 \begin{equation}
 	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
 \end{equation}
@@ -914,7 +914,7 @@ With these two substitutions \eqref{rhs_pv} can be simplified to
 	\end{split}.
 \end{equation}
 
-For the coefficient comparison, we need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first power $s^0$ we get the expression
+For the coefficient comparison, I need the coefficients of $F_{PV}(s)$ for the certain powers of $s$. For the first power $s^0$ I get the expression
 \begin{equation}
 	\sum_i Y_{ki} c_{i,0} = I_k + Y_k,
 \end{equation}
