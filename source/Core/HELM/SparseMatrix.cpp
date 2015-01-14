@@ -232,33 +232,36 @@ std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloat
 template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::compress()
 {
-	//! @TODO parallelize
-	std::vector<int> tempColumns;
-	std::vector<ComplexFloating> tempValues;
-
-	for (auto row = 0; row < _rowCount; ++row)
+	#pragma omp parallel
 	{
-		std::vector<int> &columns = _columns[row];
-		std::vector<ComplexFloating> &values = _values[row];
-		const int count = columns.size();
-		tempColumns.clear();
-		tempValues.clear();
-		tempColumns.reserve(count);
-		tempValues.reserve(count);
+		std::vector<int> tempColumns;
+		std::vector<ComplexFloating> tempValues;
 
-		for (auto i = 0; i < count; ++i)
+		#pragma omp for
+		for (auto row = 0; row < _rowCount; ++row)
 		{
-			ComplexFloating const &value = values[i];
+			std::vector<int> &columns = _columns[row];
+			std::vector<ComplexFloating> &values = _values[row];
+			const int count = columns.size();
+			tempColumns.clear();
+			tempValues.clear();
+			tempColumns.reserve(count);
+			tempValues.reserve(count);
 
-			if (value == _zero)
-				continue;
+			for (auto i = 0; i < count; ++i)
+			{
+				ComplexFloating const &value = values[i];
 
-			tempValues.push_back(value);
-			tempColumns.push_back(columns[i]);
+				if (value == _zero)
+					continue;
+
+				tempValues.push_back(value);
+				tempColumns.push_back(columns[i]);
+			}
+
+			tempValues.swap(values);
+			tempColumns.swap(columns);
 		}
-
-		tempValues.swap(values);
-		tempColumns.swap(columns);
 	}
 }
 
