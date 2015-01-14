@@ -104,29 +104,13 @@ void SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floating, ComplexF
 	}
 }
 
-#include <fstream>
-
-void log(std::string const &message)
-{
-	std::fstream file;
-	file.open("C:\\Users\\Benedikt\\blub.log", std::fstream::out | std::fstream::app);
-	file << message << std::endl;
-	file.flush();
-	file.close();
-}
-
 template<class Floating, class ComplexFloating>
 ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiplyRowWithStartColumn(int row, Vector<Floating, ComplexFloating> const &vector, int startColumn) const
 {
-	log("starting multiplication with start column");
 	int startPosition;
-	log("searching for start column");
 	findPosition(row, startColumn, startPosition);
-	log("found start column");
 	auto endPosition = _columns[row].size();
-	auto result = multiply(vector, startPosition, endPosition, row);
-	log("finished multiplication with start column");
-	return result;
+	return multiply(vector, startPosition, endPosition, row);
 }
 
 template<class Floating, class ComplexFloating>
@@ -428,13 +412,13 @@ ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floatin
 			summandsRealTotal.insert(summandsRealTotal.begin(), summandsReal.begin(), summandsReal.end());
 			summandsImaginaryTotal.insert(summandsImaginaryTotal.begin(), summandsImaginary.begin(), summandsImaginary.end());
 		}
+	}
 
-		#pragma omp single
-		{
-			std::sort(summandsRealTotal.begin(), summandsRealTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
-			std::sort(summandsImaginaryTotal.begin(), summandsImaginaryTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
-		}
+	std::sort(summandsRealTotal.begin(), summandsRealTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
+	std::sort(summandsImaginaryTotal.begin(), summandsImaginaryTotal.end(), [](Floating const &a, Floating const &b){ return std::abs(a) < std::abs(b); });
 
+	#pragma omp parallel
+	{
 		ComplexFloating result(Floating(0));
 
 		#pragma omp for

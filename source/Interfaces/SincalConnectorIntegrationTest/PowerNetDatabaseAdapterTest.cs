@@ -763,7 +763,7 @@ namespace SincalConnectorIntegrationTest
             ArePowersEqual(sincalResults, ownResults, 100);
         }
 
-/*        [TestMethod]
+        [TestMethod]
         public void CalculateNodeVoltages_CountryNetVersionOneWithHelmAndMorePreciseDatatype_ResultsAreCorrect()
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
@@ -776,7 +776,7 @@ namespace SincalConnectorIntegrationTest
             var ownResults = powerNet.GetNodeResultsFromDatabase();
             AreVoltagesEqual(sincalResults, ownResults, 1);
             ArePowersEqual(sincalResults, ownResults, 100);
-        }*/
+        }
 
         public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
         {
