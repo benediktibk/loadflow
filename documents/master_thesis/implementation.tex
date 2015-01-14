@@ -1,6 +1,6 @@
 \chapter{Implementation}
 During this thesis I developed an application which is able to apply all the previously mentioned calculation methods for the load-flow calculation. Most of the application is written in \emph{C\#}, only \emph{HELM} is implemented as a \emph{C++}-library. This became necessary because of the superior abilities of templates over generics. I will give a more detailed explanation of these implementation details of the calculation methods in \secref{implementation_calculation_methods}.
-As input formats are two options available: a custom format, stored in a \emph{MS SQL}-Database, and the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secref{link_sincal}. But before I discuss the implementation details I want to give you a short overview of the software architecture in the next section.
+As input formats there are two options available: a custom format, stored in a \emph{MS SQL}-Database, and the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secref{link_sincal}. Ahead of the discussion of these implementation details, I want to give you a short overview of the software architecture in the next section.
 
 \section{Software Architecture}
 
@@ -18,12 +18,15 @@ As input formats are two options available: a custom format, stored in a \emph{M
 	\label{fig:calculation_architecture}
 \end{figure}
 
-The application is splitted into several subprojects, which build upon each other, as it can be seen in \figref{software_architecture}. The most important part is the Calculation, where the calculation methods are implemented. In \figref{calculation_architecture} this subproject is shown in detail; it is made out of hierarchical blocks too. This design has two big advantages: First of all, every single subsystem can be tested seperately, without the necessity to touch the other systems. Secondly, this design is more flexible. For instance, the consideration of unsymmetric situations could be achieved through three instances of a single phase net.
+The application is splitted up into several subprojects which build upon each other, as it can be seen in \figref{software_architecture}. The most important part is the Calculation, where the calculation methods are implemented. In \figref{calculation_architecture} this subproject is shown in detail; it is made out of hierarchical blocks too. This design has two big advantages: First of all, every single subsystem can be tested seperately, without the necessity to touch the other systems. Secondly, this design is more flexible. For instance, the consideration of unsymmetric situations could be achieved through three instances of a single phase net, one for each symmetric component.
 
-In \chapref{calculation_api} I show how the API of the Calculation subsystem can be used. For more complex examples I would like to refer to code of the unit tests.
+In \chapref{calculation_api} I show how the API of the Calculation subsystem can be used. For more complex examples I would like to refer to the code of the unit tests.
 
 \section{Calculation Methods}
 \label{sec:implementation_calculation_methods}
+
+\subsection{Iterative Methods}
+I implemented all the iterative methods, like the \emph{Current Iteration}, \emph{Newton-Raphson} and \emph{FDLF}, in \emph{C\#}. For the linear algebra I used there the library \emph{math.net numerics} \footnote{http://numerics.mathdotnet.com/}, which had all the necessary tools already implemented. Of course, this library is not optimized for this special application. Therefore, it would definitely be possible to speed up the iterative methods, although \emph{math.net numerics} for instance already utilizes multiple cores. As the iterative methods are not the main focus of this work, I focussed on \emph{HELM} and just selected the best fitting methods from the library, instead of reimplementing and optimizing them.
 
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:implementation_helm}
@@ -36,7 +39,7 @@ For the implementation of the calculation methods I want to explain first the de
 	\label{fig:convergence_border_net}
 \end{figure}
 
-To give a more demonstrative explanation I want to show you the results of a comparison of the convergence behaviour of different algorithms. For this purpose I used the net \figref{convergence_border_net}, which is stable for $P \le \SI{0.25}{W}$. In this net I increased the power as long as the algorithm did converge and noted down the value closest to the border of stability. The result of this procedure is \figref{convergence_border}, in which it can be seen that a more accurate floating point enables \emph{HELM} to get closer to the border of stability. The use of \emph{HELM} with only 64 Bit for the initial voltages is already an improvement over the direct application of the \emph{Current Iteration} and \emph{Newton-Raphson}, in terms of convergence behaviour. But in the end, only \emph{HELM} with an arbitrary precise datatype is able to get as close as desired to the border of stability, although this advantage is traded in for a lot worse performance.
+To give a more demonstrative explanation, I want to show you the results of a comparison of the convergence behaviour of the different algorithms. For this purpose I used the net \figref{convergence_border_net}, which is stable for $P \le \SI{0.25}{W}$. In this net I increased the power as long as the algorithm did converge and noted down the value closest to the border of stability. The result of this procedure is \figref{convergence_border}, in which it can be seen that a more accurate floating point datatype enables \emph{HELM} to get closer to the border of stability. The use of \emph{HELM} with only 64 Bit for the initial voltages is already an improvement over the direct application of the \emph{Current Iteration} and \emph{Newton-Raphson} in terms of convergence behaviour. But in the end, only \emph{HELM} with an arbitrary precise datatype is able to get as close as desired to the border of stability, although this advantage is traded in for a lot worse performance.
 
 \begin{figure}
 	\centering
@@ -45,17 +48,17 @@ To give a more demonstrative explanation I want to show you the results of a com
 	\label{fig:convergence_border}
 \end{figure}
 
-To be able to evaluate \emph{HELM} in detail, also for critical nets, which can not be calculated with the iterative methods, I decided to implement \emph{HELM} with the possibility of a configurable precise datatype. As the generics in \emph{C\#} did not gave me the ability to use a library of precise datatypes together with a package for linear algebra, I decided to switch for this part of the application to \emph{C++}. In this language I had templates available, which allowed the combination of \emph{MPIR} \footnote{http://mpir.org/}, a library for multi precision integers and rationals, with \emph{Eigen} \footnote{http://eigen.tuxfamily.org/}, a library for sparse linear algebra. Through this I was able to reduce the necessity of reimplementing one of these essential and complex moduls.
+To be able to evaluate \emph{HELM} in detail, also for critical nets, which can not be calculated with the iterative methods, I decided to implement \emph{HELM} with the possibility of a configurable precise datatype. As the generics in \emph{C\#} did not gave me the ability to use a library of precise datatypes together with a package for linear algebra, I decided to switch for this part of the application to \emph{C++}. In this language I had templates available, which allowed the combination of \emph{MPIR} \footnote{http://mpir.org/}, a library for multi precision integers and rationals, with a library for sparse linear algebra, like \emph{Eigen} \footnote{http://eigen.tuxfamily.org/}.
 
 \subsection{Linear Algebra}
 All the implemented methods have one thing in common: linear algebra. In all these methods it is necessary to solve linear equation systems, although the equation systems differ in their properties. In \emph{HELM} and the \emph{Current Iteration} the system matrix is the admittance matrix, in \emph{Newton-Raphson} and \emph{FDLF} it is a Jacobian matrix. Both types of matrices are typically sparse, therefore the use of sparse linear algebra improves the performance of the algorithms significantly.
 
-To solve these linear equation systems for instance with a LU-factorization is for big power quite slow. The solution to this problem is to use iterative solvers like \emph{BiCGSTAB} \cite{bicgstab}.
+To solve these linear equation systems with a LU-factorization is for big power net quite slow. The solution to this problem is to use iterative solvers like \emph{BiCGSTAB} \cite{bicgstab}.
 
-The last important detail of the implementation of the calculation methods is the preconditioning. With this step special properties of the system matrix can be used to improve the condition of the equation system, and therefore accelerate the iterative solvers. Fortunately, the admittance matrix, which is the system matrix in the \emph{Current Iteration} and \emph{HELM} is approximately diagonal dominant. This makes the application of a diagonal preconditioner very practical, because such a preconditioning is very efficient to calculate and improves the condition of the equation system significantly in this special case.
+The last important detail of the implementation of the calculation methods is the preconditioning. With this step special properties of the system matrix can be leveraged to improve the condition of the equation system and therefore accelerate the iterative solvers. Fortunately, the admittance matrix, which is the system matrix in the \emph{Current Iteration} and \emph{HELM}, is approximately diagonal dominant. This makes the application of a diagonal preconditioner very practical, because such a preconditioning is very efficient to calculate and improves the condition of the equation system significantly in this special case.
 
 \subsubsection{Optimizations}
-The application of the special conditions in \emph{HELM} allows a few optimization, which can not be made in general. At the beginning I used \emph{Eigen} \footnote{http://eigen.tuxfamily.org/} for the linear algebra, but with bigger problems I ran into performance problems with this general purpose library. Consequently, I reimplemented the necessary data structures and algorithms:
+The application of the special conditions in \emph{HELM} allows a few optimizations, which can not be made in general. At the beginning I used \emph{Eigen} for the linear algebra, but with bigger power nets I ran into performance problems with this general purpose library. Consequently, I reimplemented the necessary data structures and algorithms:
 \begin{itemize}
 	\item Dense vector
 	\item Sparse matrix
@@ -68,11 +71,13 @@ The application of the special conditions in \emph{HELM} allows a few optimizati
 
 The specialization on dense vectors is useful in the case of \emph{HELM} as the solutions for the equation system will be typically dense. Therefore, there is no need to apply more complex operations on sparse vectors.
 
-However, the system matrix of the linear equation system is the admittance matrix, which is dense for big problems. In fact, the amount of nonzero values in every row is nearly independent of the size of the total matrix. The reason for this lies within the physical structure of a power net, where every node only as a limited number of neighbours, no matter how big the total graph is. Therefore, the density of the admittance matrix decreases with a growing problem size. For small problems this specialisation is in fact a performance drawback, but for these problems the performance does not matter anyway. As there must not be a zero-row the LIL \cite{sparseMatricesParallel} version is superior over CRS \cite{sparseMatricesJava} or CCS \cite{sparseMatricesJava}.
+However, the system matrix of the linear equation system is the admittance matrix, which is sparse for big problems. In fact, the amount of nonzero values in every row is nearly independent of the size of the total matrix. The reason for this lies within the physical structure of a power net, where every node only as a limited number of neighbours, no matter how big the total graph is. Therefore, the density of the admittance matrix decreases with a growing problem size. For small problems this specialization is in fact a performance drawback, but for these problems the performance does not matter anyway.
 
-The multiplication of a sparse matrix with a dense vector can then leverage these two special formats. The key point is to iterate only over the nonzero elements over each row in the matrix and select the according elements of the vector in $\mathcal O(1)$. Additionally, the operation can be parallelized effectively, as all elements in the result vector are independent from each other.
+As there must not be a zero-row, a version of a sparse matrix with one array for each row is superior over CRS \cite{sparseMatricesJava} or CCS \cite{sparseMatricesJava}. Through this decision regarding the internal representation of the sparse matrix, it is especially during the calculation of the LU-decomposition possible to avoid a lot of memory reallocations, which become the most expensive operations if the sparse matrix is represented internally as CRS or CCS. The decision to store the matrices row- and not column-oriented is related to the matrix multiplication and the forward and back substitution, which benefit in terms of runtime from this format.
 
-Operations like the dot product or adding two dense vector can be parallelized too. In this case the dense storage of the values is again very convenient, regarding the performance of the operations.
+The multiplication of a sparse matrix with a dense vector can then leverage the special sparse matrix format and the dense vectors. The key point is to iterate only over the nonzero elements over each row in the matrix and select the according elements of the vector in $\mathcal O(1)$. Additionally, the operation can be parallelized effectively, as all elements in the result vector are independent from each other.
+
+Operations on the dense vectors, like the dot product or adding two vector, can be parallelized too. In this case the dense storage of the values is again very convenient, regarding the performance of the operations.
 
 The iterative solver \emph{BiCGSTAB} benefits from the already optimized matrix and vector operations. Additionally, it is possible to avoid a few memory allocations and move operations through implementing all these operations in-place.
 

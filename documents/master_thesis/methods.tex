@@ -905,7 +905,7 @@ and for $X(s)$ I can convolute and weigh these coefficients to calculate
 	x_{k,j} = \sum_{i \ne k} Y_{ki}^\star \sum_{l = 0}^j v_{i,l} c_{i,j - l}.
 \end{equation}
 
-With these two substitutions \eqref{rhs_pv} can be simplified to
+With these two substitutions, \eqref{rhs_pv} can be simplified to
 \begin{equation}
 	\begin{split}
 		F_{PV}(s) = 
@@ -927,9 +927,11 @@ and for all other coefficients
 	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
+At this point now, all necessary formulas are available to be able to calculate the coefficients up to a certain index. The next step is then the analytic continuation, which evaluates the voltage functions at a certain point.
+
 \subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
 
-Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of \emph{Viskovatov} was suggested, but I achieved better results with \emph{Wynn's epsilon algorithm} \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation, which is applied to the $m$ partial sums of the series. Therefore, we have to calculate the partial sums of the voltage functions
+Unfortunately, the convergence radius of the previously calculated Laurent series is way too small to be able to evalute it at $s = 1$. Accordingly, a method for an analytic continuation has to be applied. In \citep{helmPatentSept2009} the method of \emph{Viskovatov} was suggested, but I achieved better results with \emph{Wynn's epsilon algorithm} \citep{epsilonWynn}. This method is basically a nonlinear sequence transformation, which is applied to the $m$ partial sums of the series. Therefore, I have to calculate the partial sums of the voltage functions
 \begin{equation}
 	U_i[n] = \sum_{k = 0}^n c_{i,k}.
 \end{equation}
@@ -960,9 +962,9 @@ are calculated according to
 	\label{eq:epsilon_wynn}
 \end{equation}
 
-The most accurate value for the total sum can then be found in the end of the last even column of \eqref{epsilon_wynn_tableau}, as the odd columns diverge and the even columns converge. This divergence is actually a big problem in \emph{HELM}, because the diverging columns explode so fast that even a 64 Bit floating point datatype (\emph{double}) is not big enough for more than 50 coefficients.
+The most accurate value for the total sum can then be found in the end of the last even column of \eqref{epsilon_wynn_tableau}, as the odd columns diverge and the even columns converge. This divergence is actually a big problem in \emph{HELM}, because the diverging columns explode so fast that even the mantissa of a 64 Bit floating point datatype (\emph{double}) is not big enough for more than 50 coefficients. If more coefficients are necessary for an accurate result the floating point datatype has be exchanged, which is an expensive modification in terms of runtime.
 
-For the practical application a nice feature of this algorithm is that additional coefficients only cause the tableau to grow downwards. Consequently, it is no real additional effort to calculate partial results, which can be used for instance in a termination criteria.
+For the practical application a nice feature of this algorithm is that additional coefficients only cause the tableau to grow downwards. Consequently, it is no real additional effort to calculate partial results, which can be used for instance in a termination criteria. Keeping the direction of growth in mind it is possible to optimize the calculation even further. In fact, only the last two values of each column have to be stored, all previous results can be discared, as they are not reused. This optimization reduces the memory footprint of the total algorithm and can even avoid reallocations, if the total necessary coefficient count is not known at the beginning.
 
 \subsubsection{Summary}
 In summary, the steps of \emph{HELM} are:
@@ -1009,7 +1011,7 @@ in all further iterations
 \end{equation}
 can be used. The coefficients $v_{k,j}$ are calculated with
 \begin{equation}
-	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l}
+	v_{k,j} = \sum_{l = 0}^j c_{k,l} c_{k,j - l},
 \end{equation}
 and the values for $x_{k,j}$ are determined through
 \begin{equation}
