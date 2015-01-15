@@ -172,7 +172,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodeGraph.Add(node);
         }
 
-        public void AddTransmissionLine(long sourceNodeId, long targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
+        public void AddTransmissionLine(int sourceNodeId, int targetNodeId, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntConductancePerUnitLength, double shuntCapacityPerUnitLength, double length, bool transmissionEquationModel)
         {
             var sourceNode = GetNodeByIdInternal(sourceNodeId);
             var targetNode = GetNodeByIdInternal(targetNodeId);
@@ -183,7 +183,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             targetNode.Connect(line);
         }
 
-        public void AddGenerator(long nodeId, double voltageMagnitude, double realPower)
+        public void AddGenerator(int nodeId, double voltageMagnitude, double realPower)
         {
             var node = GetNodeByIdInternal(nodeId);
             var generator = new Generator(node, voltageMagnitude, realPower);
@@ -192,7 +192,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(generator);
         }
 
-        public void AddFeedIn(long nodeId, Complex voltage, Complex internalImpedance)
+        public void AddFeedIn(int nodeId, Complex voltage, Complex internalImpedance)
         {
             if (_feedIns.Count > 0)
                 throw new NotSupportedException("only one slack bus is supported");
@@ -204,7 +204,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(feedIn);
         }
 
-        public void AddTwoWindingTransformer(long upperSideNodeId, long lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
+        public void AddTwoWindingTransformer(int upperSideNodeId, int lowerSideNodeId, double nominalPower, double relativeShortCircuitVoltage, double copperLosses, double ironLosses, double relativeNoLoadCurrent, double ratio, Angle nominalPhaseShift, string name)
         {
             var upperSideNode = GetNodeByIdInternal(upperSideNodeId);
             var lowerSideNode = GetNodeByIdInternal(lowerSideNodeId);
@@ -215,10 +215,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             lowerSideNode.Connect(transformer);
         }
 
-        public void AddThreeWindingTransformer(long nodeOneId, long nodeTwoId, long nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne,
-            double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree, double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo, 
-            double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses, double relativeNoLoadCurrent, Angle nominalPhaseShiftOne, 
-            Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name)
+        public void AddThreeWindingTransformer(int nodeOneId, int nodeTwoId, int nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne, double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree, double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses, double relativeNoLoadCurrent, Angle nominalPhaseShiftOne, Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name)
         {
             var nodeOne = GetNodeByIdInternal(nodeOneId);
             var nodeTwo = GetNodeByIdInternal(nodeTwoId);
@@ -235,7 +232,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             nodeThree.Connect(transformer);
         }
 
-        public void AddLoad(long nodeId, Complex power)
+        public void AddLoad(int nodeId, Complex power)
         {
             var node = GetNodeByIdInternal(nodeId);
             var load = new Load(power, node);
@@ -244,7 +241,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             node.Connect(load);
         }
 
-        public void AddImpedanceLoad(long nodeId, Complex impedance)
+        public void AddImpedanceLoad(int nodeId, Complex impedance)
         {
             var node = GetNodeByIdInternal(nodeId);
             var impedanceLoad = new ImpedanceLoad(node, impedance);

@@ -158,7 +158,7 @@ namespace CalculationTest.ThreePhase
         public void CalculateNodeVoltages_MockPowerNet_NodeResultsAreUnscaled()
         {
             _singlePhasePowerNetMock.Setup(x => x.CalculateNodeResults(out _relativePowerError))
-                .Returns(new Dictionary<long, NodeResult> {{3, new NodeResult(new Complex(1, 2), new Complex(3, 4))}});
+                .Returns(new Dictionary<int, NodeResult> {{3, new NodeResult(new Complex(1, 2), new Complex(3, 4))}});
 
             var result = _powerNet.CalculateNodeVoltages(out _relativePowerError);
 

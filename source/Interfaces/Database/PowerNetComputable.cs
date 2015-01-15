@@ -19,7 +19,7 @@ namespace Database
         private Mutex _isCalculationRunningMutex;
         private BackgroundWorker _backgroundWorker;
         private SymmetricPowerNet _symmetricPowerNet;
-        private IReadOnlyDictionary<long, NodeResult> _nodeResults;
+        private IReadOnlyDictionary<int, NodeResult> _nodeResults;
         private Factory _calculatorFactory;
 
         public PowerNetComputable()

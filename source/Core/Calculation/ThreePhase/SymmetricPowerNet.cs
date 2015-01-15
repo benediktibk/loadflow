@@ -51,13 +51,7 @@ namespace Calculation.ThreePhase
                 relativeShortCircuitVoltage, copperLosses/3, ironLosses/3, relativeNoLoadCurrent, ratio, nominalPhaseShift, name);
         }
 
-        public void AddThreeWindingTransformer(long nodeOneId, long nodeTwoId, long nodeThreeId, double nominalPowerOneToTwo,
-            double nominalPowerTwoToThree, double nominalPowerThreeToOne,
-            double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree,
-            double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo,
-            double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses,
-            double relativeNoLoadCurrent, Angle nominalPhaseShiftOne,
-            Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name)
+        public void AddThreeWindingTransformer(int nodeOneId, int nodeTwoId, int nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne, double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree, double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses, double relativeNoLoadCurrent, Angle nominalPhaseShiftOne, Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name)
         {
             _singlePhasePowerNet.AddThreeWindingTransformer(nodeOneId, nodeTwoId, nodeThreeId, nominalPowerOneToTwo/3, nominalPowerTwoToThree/3,
                 nominalPowerThreeToOne/3, relativeShortCircuitVoltageOneToTwo, relativeShortCircuitVoltageTwoToThree,
@@ -76,10 +70,10 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
-        public IReadOnlyDictionary<long, NodeResult> CalculateNodeVoltages(out double relativePowerError)
+        public IReadOnlyDictionary<int, NodeResult> CalculateNodeVoltages(out double relativePowerError)
         {
             var nodeResults = _singlePhasePowerNet.CalculateNodeResults(out relativePowerError);
-            var nodeResultsUnscaled = new Dictionary<long, NodeResult>();
+            var nodeResultsUnscaled = new Dictionary<int, NodeResult>();
 
             if (nodeResults == null)
                 return null;
