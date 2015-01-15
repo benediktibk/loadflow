@@ -5,7 +5,9 @@ namespace ConvergenceExperiment
 {
     class Program
     {
-        static void Main(string[] args)
+        private const string _powerNet = "data/vorstadt_files/database.mdb";
+
+        private static void Main(string[] args)
         {
             const double targetPrecision = 1e-10;
             const int maximumIterations = 1000;
@@ -24,6 +26,11 @@ namespace ConvergenceExperiment
                 {"HELM, 200 Bit, BiCGSTAB", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, true)},
                 {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)}
             };
+        }
+
+        private static double FindUnstableLoad(INodeVoltageCalculator calculator)
+        {
+            return 0;
         }
     }
 }

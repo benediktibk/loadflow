@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
@@ -13,7 +11,7 @@ namespace SincalConnector
     {
         public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, double powerFactor, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
-            var symmetricPowerNet = CreateSymmetricPowerNet(calculator, powerFactor);
+            var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
 
             if (symmetricPowerNet.NodeGraph.FloatingNodesExist)
             {
@@ -29,10 +27,9 @@ namespace SincalConnector
             return symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
         }
 
-        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator, double powerFactor)
+        private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
         {
-            var singlePhasePowerNet = new Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable(Frequency, new PowerNetFactory(nodeVoltageCalculator), new NodeGraph());
-            var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
+            var symmetricPowerNet = SymmetricPowerNet.Create(nodeVoltageCalculator, Frequency);
 
             foreach (var node in Nodes)
                 node.AddTo(symmetricPowerNet);

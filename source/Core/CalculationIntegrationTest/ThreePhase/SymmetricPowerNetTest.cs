@@ -28,9 +28,9 @@ namespace CalculationIntegrationTest.ThreePhase
             _newtonRaphsonCalculator = new NewtonRaphsonMethod(0.0000001, 1000, true);
             _helmCalculator = new HolomorphicEmbeddedLoadFlowMethod(0.00000001, 80, 200, true);
             _currentIterationCalculator = new CurrentIteration(0.0000001, 1000, true);
-            _powerNetWithNewtonRaphson = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_newtonRaphsonCalculator), new NodeGraph()));
-            _powerNetWithHelm = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_helmCalculator), new NodeGraph()));
-            _powerNetWithCurrentIteration = new SymmetricPowerNet(new PowerNetComputable(50, new PowerNetFactory(_currentIterationCalculator), new NodeGraph()));
+            _powerNetWithNewtonRaphson = SymmetricPowerNet.Create(_newtonRaphsonCalculator, 50);
+            _powerNetWithHelm = SymmetricPowerNet.Create(_helmCalculator, 50);
+            _powerNetWithCurrentIteration = SymmetricPowerNet.Create(_currentIterationCalculator, 50);
         }
 
         [TestMethod]

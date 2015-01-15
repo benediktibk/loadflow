@@ -152,9 +152,7 @@ namespace Database
         {
             Log("creating symmetric power net");
 
-            var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
-            var singlePhasePowerNet = new Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable(Frequency, singleVoltagePowerNetFactory, new NodeGraph());
-            _symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
+            _symmetricPowerNet = SymmetricPowerNet.Create(nodeVoltageCalculator, Frequency);
 
             try
             {

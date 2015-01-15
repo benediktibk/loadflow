@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
+using Calculation.SinglePhase.SingleVoltageLevel;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Misc;
+using AdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.AdmittanceMatrix;
+using IPowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.IPowerNetComputable;
+using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace Calculation.ThreePhase
 {
@@ -96,6 +101,15 @@ namespace Calculation.ThreePhase
         public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode()
         {
             return _singlePhasePowerNet.NominalPhaseShiftPerNode;
+        }
+
+        public static SymmetricPowerNet Create(INodeVoltageCalculator nodeVoltageCalculator, double frequency)
+        {
+            var nodeGraph = new NodeGraph();
+            var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
+            var singlePhasePowerNet = new PowerNetComputable(frequency, singleVoltagePowerNetFactory, nodeGraph);
+            var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
+            return symmetricPowerNet;
         }
     }
 }

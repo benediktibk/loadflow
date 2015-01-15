@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Numerics;
-using Calculation.SinglePhase.MultipleVoltageLevels;
-using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
-using PowerNetComputable = Calculation.SinglePhase.MultipleVoltageLevels.PowerNetComputable;
 
 namespace CalculationExample
 {
@@ -13,10 +10,7 @@ namespace CalculationExample
         static void Main(string[] args)
         {
             var nodeVoltageCalculator = new HolomorphicEmbeddedLoadFlowMethod(1e-5, 50, 64, true);
-            var nodeGraph = new NodeGraph();
-            var singleVoltagePowerNetFactory = new PowerNetFactory(nodeVoltageCalculator);
-            var singlePhasePowerNet = new PowerNetComputable(50, singleVoltagePowerNetFactory, nodeGraph);
-            var symmetricPowerNet = new SymmetricPowerNet(singlePhasePowerNet);
+            var symmetricPowerNet = SymmetricPowerNet.Create(nodeVoltageCalculator, 50);
 
             symmetricPowerNet.AddNode(1, 1000, "source");
             symmetricPowerNet.AddNode(2, 1000, "load");
