@@ -222,6 +222,9 @@
     <None Include="testdata\vorstadt_konvergenzgrenze.sin" />
     <None Include="testdata\vorstadt_konvergenzgrenze_files\database.001.dia" />
     <None Include="testdata\vorstadt_konvergenzgrenze_files\database.ini" />
+    <None Include="testdata\vorstadt_konvergenzgrenze_version2.sin" />
+    <None Include="testdata\vorstadt_konvergenzgrenze_version2_files\database.001.dia" />
+    <None Include="testdata\vorstadt_konvergenzgrenze_version2_files\database.ini" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\calculation_feedin1_files\database.mdb">
@@ -366,6 +369,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\vorstadt_konvergenzgrenze_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\vorstadt_konvergenzgrenze_version2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

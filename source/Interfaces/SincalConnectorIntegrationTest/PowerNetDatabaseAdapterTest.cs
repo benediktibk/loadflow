@@ -793,6 +793,21 @@ namespace SincalConnectorIntegrationTest
             ArePowersEqual(sincalResults, ownResults, 1e5);
         }
 
+        [TestMethod]
+        public void CalculateNodeVoltages_SuburbanNetAtConvergenceBorderVersionTwo_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/vorstadt_konvergenzgrenze_version2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+            var calculator = new CurrentIteration(0.0000001, 100, true);
+
+            var success = powerNet.CalculateNodeVoltages(calculator, 1, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 1);
+            ArePowersEqual(sincalResults, ownResults, 1e2);
+        }
+
         public static void AreEqual(NodeResultTableEntry one, NodeResultTableEntry two, double deltaPower, double deltaVoltageMagnitude, double deltaVoltagePhase, double deltaVoltagePercentage)
         {
             Assert.AreEqual(one.VoltageMagnitude, two.VoltageMagnitude, deltaVoltageMagnitude);
