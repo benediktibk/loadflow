@@ -22,7 +22,7 @@ namespace CalculationExample
             var nodeResults = symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
 
             if (nodeResults == null)
-                Console.WriteLine("was not able to caculate the power net");
+                Console.WriteLine("was not able to calcuate the power net");
             else
                 foreach (var nodeResult in nodeResults)
                     Console.WriteLine("node with ID " + nodeResult.Key + " has the voltage " + nodeResult.Value.Voltage + " V");
