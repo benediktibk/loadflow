@@ -79,7 +79,9 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\SincalConnectorIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\SincalConnectorIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Utilities\ConvergenceExperiment\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\ConvergenceExperiment\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,7 +114,9 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Interfaces\SincalConnectorIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Interfaces\SincalConnectorIntegrationTest\bin\$(Configuration)\
 xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\
-xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\</Command>
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\CalculationExample\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)$(ConfigurationName)\HELM.dll $(SolutionDir)Utilities\ConvergenceExperiment\bin\$(Configuration)\
+xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(SolutionDir)Utilities\ConvergenceExperiment\bin\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

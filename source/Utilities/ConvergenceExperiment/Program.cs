@@ -18,18 +18,20 @@ namespace ConvergenceExperiment
             const int maximumIterations = 100;
             var calculators = new Dictionary<string, INodeVoltageCalculator>
             {
-                //{"Newton-Raphson, iterative", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
-                //{"Newton-Raphson, LU", new NewtonRaphsonMethod(targetPrecision, maximumIterations, false)},
-                {"Current Iteration, iterative", new CurrentIteration(targetPrecision, maximumIterations, true)},
-                {"Current Iteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)},
+                {"Newton-Raphson, iterative", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
+                {"Newton-Raphson, LU", new NewtonRaphsonMethod(targetPrecision, maximumIterations, false)},
                 {"FDLF, iterative", new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations, true)},
                 {"FDLF, LU", new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations, false)},
                 {"HELM, 64 Bit, iterative", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
                 {"HELM, 64 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false)},
+                {"HELM mit Current Iteration, 64 Bit, iterative", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
+                {"HELM mit Current Iteration, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
                 {"HELM, 100 Bit, iterative", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, true)},
                 {"HELM, 100 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, false)},
                 {"HELM, 200 Bit, iterative", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, true)},
-                {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)}
+                {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)},
+                {"Current Iteration, iterative", new CurrentIteration(targetPrecision, maximumIterations, true)},
+                {"Current Iteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)}
             };
             var file = new StreamWriter("results.csv", false);
             file.WriteLine("Verfahren;Konvergenzgrenze [W]");
@@ -52,7 +54,7 @@ namespace ConvergenceExperiment
 
         private static double FindUnstableLoad(INodeVoltageCalculator calculator)
         {
-            var result = 1.0e7;
+            var result = 1.0e4;
 
             while (true)
             {

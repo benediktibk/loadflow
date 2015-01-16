@@ -62,7 +62,7 @@
       <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
       <Name>Calculation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
+    <ProjectReference Include="..\..\Interfaces\SincalConnector\SincalConnector.csproj">
       <Project>{9F597517-A825-4611-9234-F64B207499D1}</Project>
       <Name>SincalConnector</Name>
     </ProjectReference>

@@ -54,7 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance_HELM.psess = Performance_HELM.psess
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvergenceExperiment", "Interfaces\ConvergenceExperiment\ConvergenceExperiment.csproj", "{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvergenceExperiment", "Utilities\ConvergenceExperiment\ConvergenceExperiment.csproj", "{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
