@@ -49,7 +49,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public double Progress
         {
-            get { return (FirstMethod.Progress + SecondMethod.Progress)/2; }
+            get
+            {
+                _secondMethodRunningMutex.WaitOne();
+                var result = _secondMethodRunning ? SecondMethod.Progress/2 + 0.5 : FirstMethod.Progress/2;
+                _secondMethodRunningMutex.ReleaseMutex();
+                return result;
+            }
         }
 
         public double RelativePowerError

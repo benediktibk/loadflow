@@ -22,9 +22,8 @@ namespace ConvergenceExperiment
                 {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
                 {"HELM, 64 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false)},
                 {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
-                {"HELM mit Stromiterationn, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
-                {"HELM mit Newton Raphson, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new NewtonRaphsonMethod(targetPrecision, maximumIterations, true))},
-                {"HELM mit Newton Raphson, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new NewtonRaphsonMethod(targetPrecision, maximumIterations, false))},
+                {"HELM mit Stromiteration, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
+                {"HELM mit Newton-Raphson, 64 Bit, LU+iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new NewtonRaphsonMethod(targetPrecision, maximumIterations, true))},
                 {"HELM, 100 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, true)},
                 {"HELM, 100 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, false)},
                 {"HELM, 200 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, true)},
@@ -75,7 +74,7 @@ namespace ConvergenceExperiment
             INodeVoltageCalculator calculator)
         {
             const double relativePrecision = 1e-4;
-            while ((upperLimit - lowerLimit)/upperLimit > relativePrecision)
+            while ((upperLimit - lowerLimit)/upperLimit > relativePrecision && (upperLimit - lowerLimit) > 1)
             {
                 var middle = (upperLimit + lowerLimit) / 2;
                 Console.WriteLine("testing " + middle);
@@ -110,11 +109,13 @@ namespace ConvergenceExperiment
                 {
                     var progress = calculator.Progress;
 
-                    if (progress > previousProgress)
+                    if (progress > previousProgress && progress < 1)
+                    {
                         Console.WriteLine(progress*100 + "% done");
-
-                    Thread.Sleep(1000);
-                    previousProgress = progress;
+                        previousProgress = progress;
+                    }
+                    else
+                        Thread.Sleep(100);
                 }
 
                 Console.WriteLine(100 + "% done");
