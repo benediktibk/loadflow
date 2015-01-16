@@ -21,6 +21,13 @@ namespace SincalConnector
             LoadValue = new Complex(p, q)*(-1);
         }
 
+        public Load(int nodeId, Complex loadValue)
+        {
+            Id = -1;
+            NodeId = nodeId;
+            LoadValue = loadValue;
+        }
+
         public int Id { get; private set; }
 
         public int NodeId { get; private set; }

@@ -102,7 +102,7 @@ namespace SincalConnector
                 Log("calculating the power net");
                 double relativePowerError;
                 stopWatch.Start();
-                var success = _powerNet.CalculateNodeVoltages(_calculator, 1, out relativePowerError);
+                var success = _powerNet.CalculateNodeVoltages(_calculator, out relativePowerError);
                 stopWatch.Stop();
                 Log("finished calculation of power net after " + stopWatch.Elapsed.TotalSeconds + "s" +
                     (success ? " with a relative power mismatch of " + relativePowerError : ", but was not able to calculate the power net"));

@@ -301,7 +301,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -315,7 +315,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -329,7 +329,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline3_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -343,7 +343,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -357,7 +357,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -371,7 +371,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_slackgenerator1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -385,7 +385,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_impedanceload1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -399,7 +399,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_impedanceload2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -413,7 +413,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -427,7 +427,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -441,7 +441,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -455,7 +455,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer3_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -469,7 +469,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -483,7 +483,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -497,7 +497,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_freileitung1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -511,7 +511,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_freileitung2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -525,7 +525,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -539,7 +539,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -553,7 +553,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/vorstadtnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -567,7 +567,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/vorstadtnetz_kabel2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -581,7 +581,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultTableEntriesFromDatabase();
@@ -594,7 +594,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultTableEntriesFromDatabase();
@@ -607,7 +607,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -621,7 +621,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -635,7 +635,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer3_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -649,7 +649,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -663,7 +663,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -677,7 +677,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer6_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -691,7 +691,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_threewindingtransformer7_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -705,7 +705,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -718,7 +718,7 @@ namespace SincalConnectorIntegrationTest
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/uebertragungsnetz_deutschland_files/database.mdb");
 
-            powerNet.CalculateNodeVoltages(_calculatorMock.Object, 1, out _relativePowerError);
+            powerNet.CalculateNodeVoltages(_calculatorMock.Object, out _relativePowerError);
         }
 
         [TestMethod]
@@ -727,7 +727,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -741,7 +741,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel2_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -755,7 +755,7 @@ namespace SincalConnectorIntegrationTest
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
-            var success = powerNet.CalculateNodeVoltages(_calculatorHelm, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(_calculatorHelm, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -770,7 +770,7 @@ namespace SincalConnectorIntegrationTest
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
             var calculator = new HolomorphicEmbeddedLoadFlowMethod(1e-10, 70, 100, false);
 
-            var success = powerNet.CalculateNodeVoltages(calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -785,7 +785,7 @@ namespace SincalConnectorIntegrationTest
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
             var calculator = new CurrentIteration(0.0000001, 100, true);
 
-            var success = powerNet.CalculateNodeVoltages(calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();
@@ -800,7 +800,7 @@ namespace SincalConnectorIntegrationTest
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
             var calculator = new CurrentIteration(0.0000001, 100, true);
 
-            var success = powerNet.CalculateNodeVoltages(calculator, 1, out _relativePowerError);
+            var success = powerNet.CalculateNodeVoltages(calculator, out _relativePowerError);
 
             Assert.IsTrue(success);
             var ownResults = powerNet.GetNodeResultsFromDatabase();

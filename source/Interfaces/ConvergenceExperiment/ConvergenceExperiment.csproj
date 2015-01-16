@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +61,10 @@
     <ProjectReference Include="..\..\Core\Calculation\Calculation.csproj">
       <Project>{d019f54a-fb70-4bbc-ab53-102c78e54880}</Project>
       <Name>Calculation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SincalConnector\SincalConnector.csproj">
+      <Project>{9F597517-A825-4611-9234-F64B207499D1}</Project>
+      <Name>SincalConnector</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

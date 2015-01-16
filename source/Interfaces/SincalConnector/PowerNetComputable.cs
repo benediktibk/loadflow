@@ -9,7 +9,7 @@ namespace SincalConnector
 {
     public class PowerNetComputable : PowerNet
     {
-        public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, double powerFactor, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
+        public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
 

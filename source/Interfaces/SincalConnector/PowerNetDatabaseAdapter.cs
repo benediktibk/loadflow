@@ -54,13 +54,18 @@ namespace SincalConnector
             get { return _powerNet; }
         }
 
+        public void AddLoad(int nodeId, Complex load)
+        {
+            _powerNet.Add(new Load(nodeId, load));
+        }
+
         public string ConnectionString { get; private set; }
 
-        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator, double powerFactor, out double relativePowerError)
+        public bool CalculateNodeVoltages(INodeVoltageCalculator calculator, out double relativePowerError)
         {
             Angle slackPhaseShift;
             IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds;
-            var nodeResults = _powerNet.CalculateNodeVoltages(calculator, powerFactor, out slackPhaseShift, out nominalPhaseShiftByIds, out relativePowerError);
+            var nodeResults = _powerNet.CalculateNodeVoltages(calculator, out slackPhaseShift, out nominalPhaseShiftByIds, out relativePowerError);
 
             if (nodeResults == null)
                 return false;
