@@ -27,7 +27,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IList<double> powersRealDifference;
             IList<double> powersImaginaryDifference;
             CalculatePowerDifferences(admittances, constantCurrents, pqBuses, pvBuses, currentVoltages, out powersRealDifference, out powersImaginaryDifference);
-            double maximumPowerDifference;
             var pvBusVoltages = new List<double>(pvBuses.Count);
             var pvBusIds = new List<int>(pvBuses.Count);
             var pqBusIds = new List<int>(pqBuses.Count);
@@ -50,7 +49,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var powersRealDifferenceAbsolute = powersRealDifference.Select(Math.Abs);
                 var powersImaginaryDifferenceAbsolute = powersImaginaryDifference.Select(Math.Abs);
                 var powersDifferenceAbsolute = powersRealDifferenceAbsolute.Concat(powersImaginaryDifferenceAbsolute);
-                maximumPowerDifference = powersDifferenceAbsolute.Max();
+                var maximumPowerDifference = powersDifferenceAbsolute.Max();
                 var relativePowerError = maximumPowerDifference/powerDifferenceBase;
                 Progress = (double) iterations/MaximumIterations;
                 RelativePowerError = relativePowerError;
