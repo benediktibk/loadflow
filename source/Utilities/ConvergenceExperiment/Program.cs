@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using SincalConnector;
 
@@ -54,7 +56,7 @@ namespace ConvergenceExperiment
 
         private static double FindUnstableLoad(INodeVoltageCalculator calculator)
         {
-            var result = 1.0e4;
+            var result = 1.0e6;
 
             while (true)
             {
@@ -87,6 +89,8 @@ namespace ConvergenceExperiment
             return lowerLimit;
         }
 
+        private delegate bool CalculateNodeVoltagesAsync(INodeVoltageCalculator calculator, out double relativePowerError);
+
         private static bool CheckConvergence(INodeVoltageCalculator calculator, double additionalLoad)
         {
             var powerNet = new PowerNetDatabaseAdapter(_powerNet);
@@ -96,8 +100,23 @@ namespace ConvergenceExperiment
             try
             {
                 double relativePowerError;
-                convergence = powerNet.CalculateNodeVoltages(calculator, out relativePowerError);
+                var asyncCaller =
+                    new CalculateNodeVoltagesAsync(powerNet.CalculateNodeVoltages);
+                var result = asyncCaller.BeginInvoke(calculator, out relativePowerError, null, null);
+                var previousProgress = 0.0;
 
+                while (!result.IsCompleted)
+                {
+                    var progress = calculator.Progress;
+
+                    if (progress > previousProgress)
+                        Console.WriteLine(progress*100 + "% done");
+
+                    Thread.Sleep(1000);
+                    previousProgress = progress;
+                }
+
+                convergence = asyncCaller.EndInvoke(out relativePowerError, result);
             }
             catch (Exception)
             {
