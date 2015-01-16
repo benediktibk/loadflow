@@ -11,7 +11,8 @@ LUDecomposition<Floating, ComplexFloating>::LUDecomposition(SparseMatrix<Floatin
 	_dimension(systemMatrix.getRowCount()),
 	_left(_dimension, _dimension),
 	_upper(_dimension, _dimension),
-	_permutation(_dimension, _dimension)
+	_permutation(_dimension, _dimension),
+	_preconditioner(_dimension)
 {
 	assert(systemMatrix.getRowCount() == systemMatrix.getColumnCount());
 	calculateDecomposition(systemMatrix);
@@ -28,7 +29,9 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::so
 template<class Floating, class ComplexFloating>
 void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix)
 {
+	_preconditioner = systemMatrix.getInverseMainDiagonal();
 	_upper = systemMatrix;
+	_upper.multiplyWithDiagonalMatrix(_preconditioner);
 	auto one = ComplexFloating(Floating(1));
 	auto zero = ComplexFloating(Floating(0));
 
@@ -66,11 +69,13 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 }
 
 template<class Floating, class ComplexFloating>
-Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::forwardSubstitution(const Vector<Floating, ComplexFloating> &b) const
+Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::forwardSubstitution(Vector<Floating, ComplexFloating> const &b) const
 {
 	Vector<Floating, ComplexFloating> y(_dimension);
+	Vector<Floating, ComplexFloating> bPreconditioned(_dimension);
 	Vector<Floating, ComplexFloating> bPermutated(_dimension);
-	_permutation.multiply(bPermutated, b);
+	bPreconditioned.pointwiseMultiply(b, _preconditioner);
+	_permutation.multiply(bPermutated, bPreconditioned);
 	y.set(0, bPermutated(0));
 
 	for (auto i = 1; i < _dimension; ++i)
@@ -84,7 +89,7 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::fo
 }
 
 template<class Floating, class ComplexFloating>
-Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::backwardSubstitution(const Vector<Floating, ComplexFloating> &y) const
+Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::backwardSubstitution(Vector<Floating, ComplexFloating> const &y) const
 {
 	Vector<Floating, ComplexFloating> x(_dimension);
 	x.set(_dimension - 1, y(_dimension - 1)/_upper(_dimension - 1, _dimension - 1));

@@ -309,6 +309,32 @@ void SparseMatrix<Floating, ComplexFloating>::addWeightedRowElements(int row, Co
 }
 
 template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> SparseMatrix<Floating, ComplexFloating>::getInverseMainDiagonal() const
+{
+	auto minimumDimension = std::min(getRowCount(), getColumnCount());
+	Vector<Floating, ComplexFloating> result(minimumDimension);
+
+	#pragma omp parallel for
+	for (auto i = 0; i < minimumDimension; ++i)
+		result.set(i, ComplexFloating(Floating(1))/(*this)(i, i));
+
+	return result;
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::multiplyWithDiagonalMatrix(Vector<Floating, ComplexFloating> const &diagonalValues)
+{
+	#pragma omp parallel for
+	for (auto row = 0; row < _rowCount; ++row)
+	{
+		auto diagonalValue = diagonalValues(row);
+		std::vector<ComplexFloating> &values = _values[row];
+		for (size_t i = 0; i < values.size(); ++i)
+			values[i] *= diagonalValue;
+	}
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;

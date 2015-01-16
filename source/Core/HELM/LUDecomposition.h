@@ -14,13 +14,14 @@ public:
 
 private:
 	void calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
-	Vector<Floating, ComplexFloating> forwardSubstitution(const Vector<Floating, ComplexFloating> &b) const;
-	Vector<Floating, ComplexFloating> backwardSubstitution(const Vector<Floating, ComplexFloating> &y) const;
+	Vector<Floating, ComplexFloating> forwardSubstitution(Vector<Floating, ComplexFloating> const &b) const;
+	Vector<Floating, ComplexFloating> backwardSubstitution(Vector<Floating, ComplexFloating> const &y) const;
 
 private:
 	const int _dimension;
 	SparseMatrix<Floating, ComplexFloating> _left;
 	SparseMatrix<Floating, ComplexFloating> _upper;
 	SparseMatrix<Floating, ComplexFloating> _permutation;
+	Vector<Floating, ComplexFloating> _preconditioner;
 };
 

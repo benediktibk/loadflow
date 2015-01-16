@@ -24,6 +24,8 @@ public:
 	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
 	void compress();
 	void addWeightedRowElements(int row, ComplexFloating const &weight, std::vector<std::pair<int, ComplexFloating>> const &columnsAndValues);
+	Vector<Floating, ComplexFloating> getInverseMainDiagonal() const;
+	void multiplyWithDiagonalMatrix(Vector<Floating, ComplexFloating> const &diagonalValues);
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
