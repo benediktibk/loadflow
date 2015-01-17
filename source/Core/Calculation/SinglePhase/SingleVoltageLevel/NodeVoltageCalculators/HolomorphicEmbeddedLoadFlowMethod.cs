@@ -70,6 +70,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
+        public void ResetProgress()
+        { }
+
         public double TargetPrecision { get; private set; }
         public int NumberOfCoefficients { get; private set; }
         public int BitPrecision { get; private set; }

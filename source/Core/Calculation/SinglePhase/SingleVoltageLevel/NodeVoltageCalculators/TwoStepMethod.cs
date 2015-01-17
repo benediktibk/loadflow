@@ -73,5 +73,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             get { return ""; }
         }
+
+        public void ResetProgress()
+        {
+            FirstMethod.ResetProgress();
+            SecondMethod.ResetProgress();
+        }
     }
 }

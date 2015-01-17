@@ -13,5 +13,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         double Progress { get; }
         double RelativePowerError { get; }
         string StatusMessage { get; }
+        void ResetProgress();
     }
 }

@@ -22,6 +22,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
+            ResetProgress();
             Vector<Complex> currentVoltages = DenseVector.OfVector(initialVoltages);
             var iterations = 0;
             IList<double> powersRealDifference;
@@ -38,8 +39,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pqBusToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds);
             var pvBusToMatrixIndex = CreateMappingBusToMatrixIndex(pvBusIds);
             var busToMatrixIndex = CreateMappingBusToMatrixIndex(pqBusIds.Concat(pvBusIds).ToList());
-            Progress = 0;
-            RelativePowerError = 1;
 
             do
             {

@@ -33,13 +33,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
+            ResetProgress();
             Vector<Complex> voltages = DenseVector.OfVector(initialVoltages);
             var powers = CollectPowers(pqBuses, pvBuses);
             var totalAbsolutePowerSum = powers.Sum(x => Math.Abs(x.Real) + Math.Abs(x.Imaginary));
             var iterations = 0;
             bool accurateEnough;
-            Progress = 0;
-            RelativePowerError = 1;
 
             if (!IterativeSolver)
                 _factorization = admittances.CalculateFactorization();

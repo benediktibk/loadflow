@@ -18,8 +18,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             Vector<Complex> knownPowers;
             Vector<Complex> knownVoltages;
-            Progress = 0;
-            RelativePowerError = 1;
+            ResetProgress();
 
             if (pvBuses.Count == 0)
             {

@@ -16,13 +16,13 @@ namespace ConvergenceExperiment
             const int maximumIterations = 100;
             var calculators = new Dictionary<string, INodeVoltageCalculator>
             {
-                {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
+/*                {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
                 {"HELM, 64 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false)},
                 {"HELM mit Stromiteration, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
                 {"HELM, 100 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, false)},
                 {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)},
                 {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)},
-                {"Stromiteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)},
+                {"Stromiteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)},*/
                 {"Newton-Raphson, iterativ", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
                 {"Newton-Raphson, LU", new NewtonRaphsonMethod(targetPrecision, maximumIterations, false)},
                 {"FDLF, iterativ", new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations, true)},
@@ -97,6 +97,7 @@ namespace ConvergenceExperiment
             powerNet.AddLoad(1207, new Complex(additionalLoad, 0));
             powerNet.AddLoad(1215, new Complex(additionalLoad, 0));
             bool convergence;
+            calculator.ResetProgress();
 
             try
             {
