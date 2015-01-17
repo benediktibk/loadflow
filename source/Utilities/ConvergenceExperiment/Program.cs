@@ -49,7 +49,7 @@ namespace ConvergenceExperiment
 
         private static double FindUnstableLoad(INodeVoltageCalculator calculator)
         {
-            var result = 1.0e7;
+            var result = 1.0e5;
 
             while (true)
             {
@@ -67,7 +67,7 @@ namespace ConvergenceExperiment
             INodeVoltageCalculator calculator)
         {
             const double relativePrecision = 1e-4;
-            while ((upperLimit - lowerLimit)/upperLimit > relativePrecision && (upperLimit - lowerLimit) > 1)
+            while ((upperLimit - lowerLimit)/upperLimit > relativePrecision && (upperLimit - lowerLimit) > 10)
             {
                 var middle = (upperLimit + lowerLimit) / 2;
                 Console.WriteLine("testing " + middle);
@@ -88,6 +88,14 @@ namespace ConvergenceExperiment
         {
             var powerNet = new PowerNetDatabaseAdapter("data/vorstadt_files/database.mdb");
             powerNet.AddLoad(1280, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1111, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1110, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(740, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1016, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1044, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1046, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1207, new Complex(additionalLoad, 0));
+            powerNet.AddLoad(1215, new Complex(additionalLoad, 0));
             bool convergence;
 
             try
