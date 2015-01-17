@@ -284,13 +284,22 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 (-1) * admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Cos(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
         }
 
-        private static ResidualStopCriterion<double> CreateStopCriterion(IEnumerable<double> powersRealError, ICollection<double> powersImaginaryError,
+        private static IIterationStopCriterion<double> CreateStopCriterion(ICollection<double> powersRealError, ICollection<double> powersImaginaryError,
             double residualImprovementFactor)
         {
             var realPowerMaximumError = powersRealError.Select(Math.Abs).Max();
             var imaginaryPowerMaximumError = powersImaginaryError.Count > 0 ? powersImaginaryError.Select(Math.Abs).Max() : 0;
             var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
-            var stopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
+            var residualStopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
+            var iterationStopCriterion =
+                new IterationCountStopCriterion<double>(powersRealError.Count + powersImaginaryError.Count);
+            var stopCriterion =
+                new DelegateStopCriterion<double>(
+                    (i, vector, arg3, arg4) =>
+                        residualStopCriterion.DetermineStatus(i, vector, arg3, arg4) == IterationStatus.Continue &&
+                        iterationStopCriterion.DetermineStatus(i, vector, arg3, arg4) == IterationStatus.Continue
+                            ? IterationStatus.Continue
+                            : IterationStatus.StoppedWithoutConvergence);
             return stopCriterion;
         }
     }
