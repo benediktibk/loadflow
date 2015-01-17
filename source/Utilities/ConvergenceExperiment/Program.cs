@@ -10,9 +10,6 @@ namespace ConvergenceExperiment
 {
     class Program
     {
-        private const string _powerNet = "data/vorstadt_files/database.mdb";
-        private const int _nodeId = 1280;
-
         private static void Main(string[] args)
         {
             const double targetPrecision = 1e-10;
@@ -21,12 +18,8 @@ namespace ConvergenceExperiment
             {
                 {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
                 {"HELM, 64 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false)},
-                {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
                 {"HELM mit Stromiteration, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
-                {"HELM mit Newton-Raphson, 64 Bit, LU+iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new NewtonRaphsonMethod(targetPrecision, maximumIterations, true))},
-                {"HELM, 100 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, true)},
                 {"HELM, 100 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, false)},
-                {"HELM, 200 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, true)},
                 {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)},
                 {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)},
                 {"Stromiteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)},
@@ -93,8 +86,8 @@ namespace ConvergenceExperiment
 
         private static bool CheckConvergence(INodeVoltageCalculator calculator, double additionalLoad)
         {
-            var powerNet = new PowerNetDatabaseAdapter(_powerNet);
-            powerNet.AddLoad(_nodeId, new Complex(additionalLoad, 0));
+            var powerNet = new PowerNetDatabaseAdapter("data/vorstadt_files/database.mdb");
+            powerNet.AddLoad(1280, new Complex(additionalLoad, 0));
             bool convergence;
 
             try
