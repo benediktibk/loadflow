@@ -292,7 +292,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var powerMaximumError = Math.Max(realPowerMaximumError, imaginaryPowerMaximumError);
             var residualStopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
             var iterationStopCriterion =
-                new IterationCountStopCriterion<double>(powersRealError.Count + powersImaginaryError.Count);
+                new IterationCountStopCriterion<double>(Math.Max(20, powersRealError.Count + powersImaginaryError.Count));
             var stopCriterion =
                 new DelegateStopCriterion<double>(
                     (i, vector, arg3, arg4) =>

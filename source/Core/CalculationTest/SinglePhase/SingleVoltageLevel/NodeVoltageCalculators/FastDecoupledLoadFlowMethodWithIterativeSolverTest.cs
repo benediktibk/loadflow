@@ -28,7 +28,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override double PrecisionThreePqBuses
         {
-            get { return 10; }
+            get { return 1e10; }
         }
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()

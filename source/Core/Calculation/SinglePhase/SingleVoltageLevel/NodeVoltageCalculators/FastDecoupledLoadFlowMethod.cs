@@ -66,17 +66,27 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
-        private Vector<double> SolveLinearEquationSystem(Matrix<double> changeMatrixRealPowerByAngle, DenseVector powersRealErrorVector, double residualImprovementFactor, double powerMaximumError)
+        private Vector<double> SolveLinearEquationSystem(Matrix<double> changeMatrix, Vector<double> errorVector, double residualImprovementFactor, double powerMaximumError)
         {
-            var iterator = new Iterator<double>(new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor));
-            Vector<double> angleChange = new DenseVector(changeMatrixRealPowerByAngle.RowCount);
+            var residualStopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
+            var iterationStopCriterion =
+                new IterationCountStopCriterion<double>(Math.Max(changeMatrix.ColumnCount, 20));
+            var stopCriterion =
+                new DelegateStopCriterion<double>(
+                    (i, vector, arg3, arg4) =>
+                        residualStopCriterion.DetermineStatus(i, vector, arg3, arg4) == IterationStatus.Continue &&
+                        iterationStopCriterion.DetermineStatus(i, vector, arg3, arg4) == IterationStatus.Continue
+                            ? IterationStatus.Continue
+                            : IterationStatus.StoppedWithoutConvergence);
+            var iterator = new Iterator<double>(stopCriterion);
+            Vector<double> angleChange = new DenseVector(changeMatrix.RowCount);
 
             if (IterativeSolver)
-                _solver.Solve(changeMatrixRealPowerByAngle, powersRealErrorVector, angleChange, iterator, _preconditioner);
+                _solver.Solve(changeMatrix, errorVector, angleChange, iterator, _preconditioner);
             else
             {
-                var factorization = changeMatrixRealPowerByAngle.LU();
-                angleChange = factorization.Solve(powersRealErrorVector);
+                var factorization = changeMatrix.LU();
+                angleChange = factorization.Solve(errorVector);
             }
 
             return angleChange;
