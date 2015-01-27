@@ -40,6 +40,8 @@ namespace ConvergenceExperiment
                 {"HELM mit Stromiteration, 64 Bit, LU", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, false), new CurrentIteration(targetPrecision, maximumIterations, false))},
                 {"HELM, 100 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, false)},
                 {"HELM, 200 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 100, 200, false)},
+                {"HELM, 1000 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 200, 1000, false)},
+                {"HELM, 10000 Bit, LU", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 300, 10000, false)},
                 {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)},
                 {"Stromiteration, LU", new CurrentIteration(targetPrecision, maximumIterations, false)},
                 {"Newton-Raphson, iterativ", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
@@ -99,7 +101,7 @@ namespace ConvergenceExperiment
 
         private static double FindUnstableLoad(INodeVoltageCalculator calculator)
         {
-            var result = 1.0e5;
+            var result = 1e7;
 
             while (true)
             {
@@ -136,7 +138,7 @@ namespace ConvergenceExperiment
         private static double FindConvergenceBorderInRange(double lowerLimit, double upperLimit,
             INodeVoltageCalculator calculator)
         {
-            const double relativePrecision = 1e-4;
+            const double relativePrecision = 1e-7;
             while ((upperLimit - lowerLimit)/upperLimit > relativePrecision && (upperLimit - lowerLimit) > 10)
             {
                 var middle = (upperLimit + lowerLimit) / 2;
