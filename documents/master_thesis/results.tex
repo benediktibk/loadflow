@@ -12,17 +12,39 @@ To answer these questions I have run several experiments. The ones related to th
 
 \begin{table}
 	\small
-	\begin{tabularx}{\textwidth}{|X|p{1.5cm}|p{1.6cm}|p{1.5cm}|p{1.9cm}|}
+	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
 		\hline
-		method & target precision & maximum iterations & datatype size & maximum coefficients \\ \hline
-		Current Iteration & 1e-5 & 100 & & \\ \hline
-		Newton-Raphson & 1e-5 & 100 & & \\ \hline
-		HELM 64 Bit & 1e-5 & & 64 & 50 \\ \hline
-		HELM 200 Bit & 1e-5 & & 200 & 100 \\ \hline
-		HELM 64 Bit with Current Iteration & 1e-5 & 100 & 64 & 50 \\ \hline
+		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
+		Current Iteration & 1e-5 & 100 & & & iterative \\ \hline
+		Newton-Raphson & 1e-5 & 100 & & & iterative \\ \hline
+		HELM 64 Bit & 1e-5 & & 64 & 50 & iterative \\ \hline
+		HELM 200 Bit & 1e-5 & & 200 & 100 & iterative \\ \hline
+		HELM 64 Bit with Current \mbox{Iteration} & 1e-5 & 100 & 64 & 50 & iterative \\ \hline
 	\end{tabularx}
-	\caption{Algorithm parameter for the comparison}
+	\caption{Algorithm parameters for the runtime and accuracy comparison}
 	\label{tab:comparison_parameter}
+\end{table}
+
+\begin{table}
+	\small
+	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
+		\hline
+		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
+		HELM, 64 Bit, iterative & 1e-10 & & 64 & 50 & iterative \\ \hline
+		HELM, 64 Bit, LU & 1e-10 & & 64 & 50 & LU \\ \hline
+		HELM with \mbox{Current Iteration}, 64 Bit, LU & 1e-10 & 100 & 64 & 50 & LU \\ \hline
+		HELM, 100 Bit, LU & 1e-10 & & 100 & 70 & LU \\ \hline
+		HELM, 200 Bit, LU & 1e-10 & & 200 & 100 & LU \\ \hline
+		HELM, 1000 Bit, LU & 1e-10 & & 1000 & 200 & LU \\ \hline
+		HELM, 10000 Bit, LU & 1e-10 & & 10000 & 300 & LU \\ \hline
+		Current Iteration, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		Current Iteration, LU & 1e-10 & 100 & & & LU \\ \hline
+		Newton-Raphson, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		Newton-Raphson, LU & 1e-10 & 100 & & & LU \\ \hline
+		Newton-Raphson, SINCAL & 1e-10 & 100 & & & \\ \hline
+	\end{tabularx}
+	\caption{Algorithm parameters for the convergence comparison}
+	\label{tab:comparison2_parameter}
 \end{table}
 
 \begin{figure}
@@ -32,7 +54,7 @@ To answer these questions I have run several experiments. The ones related to th
 	\label{fig:comparison_deviation}
 \end{figure}
 
-To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I will not consider the improved convergence behaviour in this section, as I discussed this already in \secref{implementation_helm}. The parameter for the algorithms can be found in \tabref{comparison_parameter}.
+To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secref{implementation_helm}, but I will show additional results regarding this aspect in this chapter. The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabref{comparison_parameter}, the settings for the convergence border tests are in \tabref{comparison2_parameter}.
 
 To eliminate influences by other processes or the garbage collection on the runtime, I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviations \figref{comparison_deviation}.
 
@@ -51,11 +73,11 @@ The first important message here is only that \emph{HELM} with 64 Bit is conside
 
 Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the later one.
 
-The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore deterioates the performance of the algorithm significantly. Consquently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
+The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore deterioates the performance of the algorithm significantly. Consequently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
 
 \subsection{Accuracy}
 
-As a benchmark for the accuracy I used the relative power error, which is the ratio between power error and total power, both summed up absolutely:
+As a metric for the accuracy I used the relative power error, which is the ratio between power error and total power, both summed up absolutely:
 \begin{equation}
 	\epsilon_r = \frac{\sum |P_i - P_{spec,i}| + \sum |Q_i - Q_{spec,i}|}{\sum |P_{spec,i}| + \sum |Q_{spec,i}|}
 \end{equation}
@@ -67,6 +89,35 @@ The accuracies of the algorithms \figref{comparison_accuracy} were all sufficien
 	\includegraphics[scale=0.7]{figures/comparison_accuracy}
 	\caption[Comparison, accuracy]{Relative power error of the algorithms}
 	\label{fig:comparison_accuracy}
+\end{figure}
+
+\subsection{Convergence}
+
+To test and compare the convergence behaviour of the different algorithms I used one of the example nets from the institute, the so-called \emph{Vorstadtnetz}. In this net I then increased the load at the most outer ends of the radial net up to that point, where the algorithm did not converge anymore. To find this convergence border more efficiently, I applied the bisection method.
+
+The first and most obvious conclusion, which can be drawn from \figref{comparison_convergence_border_1}, is that the iterative solver for the internal linear equation systems deteriorates the convergence behaviour of \emph{HELM} significantly. Additionally, at least for this special case, the implementation of \emph{Newton-Raphson} in \emph{SINCAL} has a worse convergence behaviour with these settings, compared to my implementation. But I want to make clear that this depends heavily on the settings of the algorithm, and I could only guess how the certain parameters are actually implemented in \emph{SINCAL}. Therefore, it is not really possible to draw a useful conclusion from this experiment.
+
+If we zoom into this chart we get at the first step \figref{comparison_convergence_border_2}, which reveals that \emph{HELM} in its pure form outperforms the other methods, considering the convergence behaviour. After another zoom step one can see in \figref{comparison_convergence_border_3} that a more accurate datatype improves the convergence behaviour of \emph{HELM}, although only a few thousand watts. Additionally, such extrordinary settings effect the runtime of the algorithm significantly, as it then takes a few hours to calculate such a net, compared to only a few seconds with 64 Bit.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/convergence_border_vorstadtnetz_1}
+	\caption[Comparison, convergence]{Convergence border of the algorithms}
+	\label{fig:comparison_convergence_border_1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/convergence_border_vorstadtnetz_2}
+	\caption[Comparison, convergence]{Convergence border of the algorithms}
+	\label{fig:comparison_convergence_border_2}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/convergence_border_vorstadtnetz_3}
+	\caption[Comparison, convergence]{Convergence border of the algorithms}
+	\label{fig:comparison_convergence_border_3}
 \end{figure}
 
 \section{Calculation of Large-Scale Powernets}
