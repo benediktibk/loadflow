@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Shapes;
 using Calculation.ThreePhase;
 using Misc;
 
@@ -13,8 +14,18 @@ namespace SincalConnector
             Id = record.Parse<int>("Element_ID");
             var lineType = record.Parse<int>("Flag_LineTyp");
 
-            if (lineType != 1 && lineType != 2)
-                throw new NotSupportedException("the selected transmission line type is not supported");
+            switch (lineType)
+            {
+                case 1:
+                case 2:
+                    Length = record.Parse<double>("l") * 1000;
+                    break;
+                case 3:
+                    Length = 0;
+                    break;
+                default:
+                    throw new NotSupportedException("the selected transmission line type is not supported");
+            }
 
             var nodes = nodeIdsByElementIds.Get(Id);
 
@@ -30,7 +41,6 @@ namespace SincalConnector
             if (Math.Abs(nodeOneNominalVoltage - nodeTwoNominalVoltage) > 0.000001)
                 throw new InvalidDataException("the nominal voltages at a transmission line do not match");
 
-            Length = record.Parse<double>("l")*1000;
             SeriesResistancePerUnitLength = record.Parse<double>("r") / 1000;
             SeriesInductancePerUnitLength = record.Parse<double>("x") / (2 * Math.PI * frequency * 1000);
             var shuntLosses = record.Parse<double>("va");

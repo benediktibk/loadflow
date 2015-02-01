@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -12,14 +12,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly IExternalReadOnlyNode _targetNode;
         private Complex _lengthImpedance;
         private Complex _shuntAdmittance;
-        private bool _hasShuntAdmittance;
 
         public TransmissionLine(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
             if (seriesResistancePerUnitLength <= 0 && seriesInductancePerUnitLength <= 0)
                 throw new ArgumentOutOfRangeException();
 
-            if (length <= 0)
+            if (length < 0)
                 throw new ArgumentOutOfRangeException("length", "must be positive");
 
             if (frequency <= 0)
@@ -28,7 +27,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _sourceNode = sourceNode;
             _targetNode = targetNode;
 
-            if (shuntCapacityPerUnitLength == 0 && shuntConductancePerUnitLength == 0)
+            if ((shuntCapacityPerUnitLength == 0 && shuntConductancePerUnitLength == 0) || length == 0)
                 CalculateElectricCharacteristicsWithSimplifiedDirectModel(seriesResistancePerUnitLength,
                     seriesInductancePerUnitLength, length, frequency);
             else if (transmissionEquationModel)
@@ -66,10 +65,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return Math.Abs((TargetNominalVoltage - SourceNominalVoltage)/TargetNominalVoltage) < 0.0000001; }
         }
 
-        public bool NeedsGroundNode
-        {
-            get { return _hasShuntAdmittance; }
-        }
+        public bool NeedsGroundNode { get; private set; }
 
         public INode CreateSingleVoltageNode(double scaleBasePower)
         {
@@ -90,7 +86,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
-            Debug.Assert(!NeedsGroundNode || groundNode != null);
+            if (LengthImpedance.MagnitudeSquared() == 0)
+                return;
+
+            if (NeedsGroundNode && groundNode == null)
+                throw new ArgumentNullException("groundNode");
 
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
             var lengthAdmittanceScaled = scaler.ScaleAdmittance(1.0/LengthImpedance);
@@ -112,13 +112,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private void CalculateElectricCharacteristicsWithSimplifiedDirectModel(double lengthResistance,
             double lengthInductance, double length, double frequency)
         {
-            _hasShuntAdmittance = false;
+            NeedsGroundNode = false;
             _lengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
         }
 
         private void CalculateElectricCharacteristicsWithTransmissionEquationModel(double lengthResistance, double lengthInductance, double shuntCapacity, double shuntConductance, double length, double frequency)
         {
-            _hasShuntAdmittance = true;
+            NeedsGroundNode = true;
             var directLengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
             var directShuntAdmittance = CalculateDirectShuntAdmittance(shuntCapacity, shuntConductance, length, frequency);
             var waveImpedance = Complex.Sqrt(directLengthImpedance / directShuntAdmittance);
@@ -130,7 +130,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private void CalculateElectricCharacteristicsWithSimplifiedPiModel(double lengthResistance,
             double lengthInductance, double shuntCapacity, double shuntConductance, double length, double frequency)
         {
-            _hasShuntAdmittance = true;
+            NeedsGroundNode = true;
             _lengthImpedance = CalculateDirectLengthImpedance(lengthResistance, lengthInductance, length, frequency);
             _shuntAdmittance = CalculateDirectShuntAdmittance(shuntCapacity, shuntConductance, length, frequency)/2;
         }
