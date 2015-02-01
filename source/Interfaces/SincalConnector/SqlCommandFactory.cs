@@ -20,7 +20,7 @@ namespace SincalConnector
 
         public OleDbCommand CreateCommandToFetchAllTerminals()
         {
-            return new OleDbCommand("SELECT Terminal_ID, Element_ID, Node_ID, Flag_Switch, Flag_Terminal FROM Terminal;", _connection);
+            return new OleDbCommand("SELECT Terminal_ID, Element_ID, Node_ID, Flag_Switch, Flag_Terminal, Flag_State FROM Terminal;", _connection);
         }
 
         public OleDbCommand CreateCommandToFetchAllThreeWindingTransformers()

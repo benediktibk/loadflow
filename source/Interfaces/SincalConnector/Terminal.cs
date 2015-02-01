@@ -9,11 +9,12 @@ namespace SincalConnector
         {
             var connectionType = record.Parse<int>("Flag_Terminal");
             var physicalSwitch = record.Parse<int>("Flag_Switch");
+            var switchState = record.Parse<int>("Flag_State");
 
             if (connectionType != 7)
                 throw new InvalidDataException(("only three phase nets are supported"));
 
-            if (physicalSwitch != 0)
+            if (physicalSwitch != 0 && switchState != 1)
                 throw new InvalidDataException("physical switches are not supported");
 
             Id = record.Parse<int>("Terminal_ID");
