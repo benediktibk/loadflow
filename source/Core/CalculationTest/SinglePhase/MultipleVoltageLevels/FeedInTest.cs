@@ -151,5 +151,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.IsNotNull(resultAsSlackNode);
             ComplexAssert.AreEqual(2, 1.5, resultAsSlackNode.Voltage, 0.000001);
         }
+
+        [TestMethod]
+        public void GetDirectConnectedNodes_Empty_EmptyList()
+        {
+            var result = _feedIn.GetDirectConnectedNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }

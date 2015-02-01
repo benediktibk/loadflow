@@ -274,6 +274,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
         }
 
+        public IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
+        {
+            var pairs = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+
+            foreach (var element in _elements)
+                pairs.AddRange(element.GetDirectConnectedNodes());
+
+            return pairs.ToDictionary(pair => pair.Item1, pair => pair.Item2);
+        }
+
         public double DeterminePowerScaling()
         {
             var maximumPower = MaximumPower;

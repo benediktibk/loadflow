@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -54,14 +55,24 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             nodeNames = nodes.Select(node => node.Name).ToList();
         }
 
-        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyList<IReadOnlyNode> nodes)
+        private Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyList<IReadOnlyNode> nodes)
         {
-            var nodeIndexes = new Dictionary<IReadOnlyNode, int>();
+            var directConnectedNodes = FindDirectConnectedNodes();
+            var mainNodes = nodes.Where(x => !directConnectedNodes.ContainsKey(x)).ToList();
+            var replacableNodes = nodes.Where(directConnectedNodes.ContainsKey);
+            
+            var nodeIndices = new Dictionary<IReadOnlyNode, int>();
 
-            for (var i = 0; i < nodes.Count; ++i)
-                nodeIndexes.Add(nodes[i], i);
+            for (var i = 0; i < mainNodes.Count; ++i)
+            {
+                var node = mainNodes[i];
+                nodeIndices.Add(node, i);
+            }
 
-            return nodeIndexes;
+            foreach (var replacableNode in replacableNodes)
+                nodeIndices.Add(replacableNode, nodeIndices[directConnectedNodes[replacableNode]]);
+
+            return nodeIndices;
         }
 
         private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower)

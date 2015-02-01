@@ -67,6 +67,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool NeedsGroundNode { get; private set; }
 
+        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        {
+            var result = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+
+            if (LengthImpedance.MagnitudeSquared() <= 0)
+                result.Add(new Tuple<IReadOnlyNode, IReadOnlyNode>(_sourceNode, _targetNode));
+
+            return result;
+        }
+
         public INode CreateSingleVoltageNode(double scaleBasePower)
         {
             return new PqNode(new Complex());

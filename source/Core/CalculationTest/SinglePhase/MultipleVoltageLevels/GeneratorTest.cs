@@ -97,5 +97,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(5.0 / 103, resultAsPvNode.VoltageMagnitude, 0.00000001);
             Assert.AreEqual(7.0 / 5, resultAsPvNode.RealPower, 0.00000001);
         }
+
+        [TestMethod]
+        public void GetDirectConnectedNodes_Empty_EmptyList()
+        {
+            var result = _generator.GetDirectConnectedNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }

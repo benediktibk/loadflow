@@ -98,5 +98,13 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.IsNotNull(resultAsPqNode);
             ComplexAssert.AreEqual(4.0/5, 1.0/5, resultAsPqNode.Power, 0.000001);
         }
+
+        [TestMethod]
+        public void GetDirectConnectedNodes_Empty_EmptyList()
+        {
+            var result = _load.GetDirectConnectedNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }

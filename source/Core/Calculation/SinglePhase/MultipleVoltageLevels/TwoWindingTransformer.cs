@@ -130,6 +130,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _nominalPower; }
         }
 
+        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        {
+            return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+        }
+
         public INode CreateSingleVoltageNode(double scaleBasePower)
         {
             return new PqNode(new Complex());

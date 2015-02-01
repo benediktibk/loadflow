@@ -93,6 +93,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentException("none of the nodes have been visited yet");
         }
 
+        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        {
+            return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+        }
+
         public INode CreateSingleVoltageNode(double scaleBasePower)
         {
             return new PqNode(new Complex());

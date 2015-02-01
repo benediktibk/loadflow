@@ -170,5 +170,23 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.IsNotNull(resultAsPqNode);
             ComplexAssert.AreEqual(0, 0, resultAsPqNode.Power, 0.000001);
         }
+
+        [TestMethod]
+        public void GetDirectConnectedNodes_NonZeroLength_EmptyList()
+        {
+            var result = _transmissionLineWithLengthAndShuntValues.GetDirectConnectedNodes();
+
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod]
+        public void GetDirectConnectedNodes_ZeroLength_OneElement()
+        {
+            var line = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 1, 2, 3, 4, 0, 2, true);
+
+            var result = line.GetDirectConnectedNodes();
+
+            Assert.AreEqual(1, result.Count);
+        }
     }
 }

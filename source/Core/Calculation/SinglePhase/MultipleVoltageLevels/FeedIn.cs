@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
@@ -52,6 +53,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public IExternalReadOnlyNode Node
         {
             get { return _node; }
+        }
+
+        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        {
+            return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower)
