@@ -116,6 +116,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void FillInAdmittances_ZeroLength_NoCallToAddConnection()
+        {
+            var groundNode = new ExternalNode(-1, 0, "");
+            var admittances = new Mock<IAdmittanceMatrix>();
+            var transmissionLine = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 50, 40, 0, 0, 0, 10, true);
+
+            transmissionLine.FillInAdmittances(admittances.Object, 10, groundNode, 1);
+
+            admittances.Verify(
+                x => x.AddConnection(It.IsAny<IReadOnlyNode>(), It.IsAny<IReadOnlyNode>(), It.IsAny<Complex>()),
+                Times.Never);
+        }
+
+        [TestMethod]
         public void NominalVoltagesMatch_ValidLine_True()
         {
             Assert.IsTrue(_transmissionLineWithOnlyLengthValues.NominalVoltagesMatch);
