@@ -70,7 +70,7 @@ namespace SincalConnector
 
         public OleDbCommand CreateCommandToFetchAllLoads()
         {
-            return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q FROM Load WHERE (Flag_LoadType = 2 OR Flag_LoadType = 4) AND Flag_Load = 1;", _connection);
+            return new OleDbCommand("SELECT Element_ID,Flag_Lf,P,Q,Eap,Erp FROM Load WHERE (Flag_LoadType = 2 OR Flag_LoadType = 4) AND Flag_Load = 1;", _connection);
         }
 
         public OleDbCommand CreateCommandToFetchAllImpedanceLoads()

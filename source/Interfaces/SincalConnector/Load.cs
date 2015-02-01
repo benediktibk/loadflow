@@ -10,15 +10,26 @@ namespace SincalConnector
         public Load(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
+            NodeId = nodeIdsByElementIds.GetOnly(Id);
             var modelType = record.Parse<int>("Flag_Lf");
 
-            if (modelType != 1 && modelType != 2)
-                throw new NotSupportedException("not supported load model");
-
-            NodeId = nodeIdsByElementIds.GetOnly(Id);
-            var p = record.Parse<double>("P") * 1e6;
-            var q = record.Parse<double>("Q") * 1e6;
-            LoadValue = new Complex(p, q)*(-1);
+            switch (modelType)
+            {
+                case 1:
+                case 2:
+                    var p = record.Parse<double>("P") * 1e6;
+                    var q = record.Parse<double>("Q") * 1e6;
+                    LoadValue = new Complex(p, q) * (-1);
+                    break;
+                case 9:
+                    var wp = record.Parse<double>("Eap") * 1e3;
+                    var wq = record.Parse<double>("Erp") * 1e3;
+                    const int hoursPerYear = 365*24;
+                    LoadValue = new Complex(wp, wq)/hoursPerYear*(-1);
+                    break;
+                default:
+                    throw new NotSupportedException("not supported load model");
+            }
         }
 
         public Load(int nodeId, Complex loadValue)
