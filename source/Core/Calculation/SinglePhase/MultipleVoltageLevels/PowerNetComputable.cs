@@ -24,11 +24,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             var powerScaling = DeterminePowerScaling();
             var nodes = GetAllCalculationNodes();
-            int nodeCount;
-            Dictionary<IReadOnlyNode, int> nodeIndices;
-            IReadOnlyList<IReadOnlyNode> mainNodes;
-            DetermineNodeIndices(nodes, out nodeCount, out nodeIndices, out mainNodes);
-            var admittances = CalculateAdmittanceMatrix(nodeIndices, powerScaling, nodeCount);
+            var directConnectedNodes = FindDirectConnectedNodes();
+            var mainNodes = SelectMainNodes(nodes, directConnectedNodes);
+            var replacableNodes = SelectReplacableNodes(nodes, directConnectedNodes);
+            var nodeIndices = DetermineNodeIndices(directConnectedNodes, mainNodes, replacableNodes);
+            var admittances = CalculateAdmittanceMatrix(nodeIndices, powerScaling, mainNodes.Count);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(mainNodes, admittances, powerScaling);
             var nodeResults = singleVoltagePowerNet.CalculateNodeResults(out relativePowerError);
 
@@ -53,22 +53,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             powerScaling = DeterminePowerScaling();
             var nodes = GetAllCalculationNodes();
-            int nodeCount;
-            Dictionary<IReadOnlyNode, int> nodeIndices;
-            IReadOnlyList<IReadOnlyNode> mainNodes;
-            DetermineNodeIndices(nodes, out nodeCount, out nodeIndices, out mainNodes);
-            matrix = CalculateAdmittanceMatrix(nodeIndices, powerScaling, nodeCount);
+            var directConnectedNodes = FindDirectConnectedNodes();
+            var mainNodes = SelectMainNodes(nodes, directConnectedNodes);
+            var replacableNodes = SelectReplacableNodes(nodes, directConnectedNodes);
+            var nodeIndices = DetermineNodeIndices(directConnectedNodes, mainNodes, replacableNodes);
+            matrix = CalculateAdmittanceMatrix(nodeIndices, powerScaling, mainNodes.Count);
             nodeNames = nodes.Select(node => node.Name).ToList();
         }
 
-        private void DetermineNodeIndices(IReadOnlyList<IReadOnlyNode> nodes, out int count, out Dictionary<IReadOnlyNode, int> indices, out IReadOnlyList<IReadOnlyNode> mainNodes)
+        private Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes, IReadOnlyList<IReadOnlyNode> mainNodes, IEnumerable<IReadOnlyNode> replacableNodes)
         {
-            var directConnectedNodes = FindDirectConnectedNodes();
-            mainNodes = nodes.Where(x => !directConnectedNodes.ContainsKey(x)).ToList();
-            var replacableNodes = nodes.Where(directConnectedNodes.ContainsKey);
-            count = mainNodes.Count;
-
-            indices = new Dictionary<IReadOnlyNode, int>();
+            var indices = new Dictionary<IReadOnlyNode, int>();
 
             for (var i = 0; i < mainNodes.Count; ++i)
             {
@@ -78,6 +73,18 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             foreach (var replacableNode in replacableNodes)
                 indices.Add(replacableNode, indices[directConnectedNodes[replacableNode]]);
+
+            return indices;
+        }
+
+        private static IEnumerable<IReadOnlyNode> SelectReplacableNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
+        {
+            return nodes.Where(directConnectedNodes.ContainsKey);
+        }
+
+        private static IReadOnlyList<IReadOnlyNode> SelectMainNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
+        {
+            return nodes.Where(x => !directConnectedNodes.ContainsKey(x)).ToList();
         }
 
         private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower)
