@@ -25,9 +25,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public IList<NodeResult> CalculateNodeResults(out double relativePowerError)
         {
-            if (Nodes.Count != Admittances.NodeCount)
-                throw new InvalidDataException("the node count does not match the size of the admittance matrix");
-
             List<NodeWithIndex> indexOfSlackBuses;
             List<NodeWithIndex> indexOfPqBuses;
             List<NodeWithIndex> indexOfPvBuses;
