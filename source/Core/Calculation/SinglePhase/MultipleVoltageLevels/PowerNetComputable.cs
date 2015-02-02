@@ -92,7 +92,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1);
 
             foreach (var node in nodes)
-                singleVoltagePowerNet.AddNode(node.CreateSingleVoltageNode(scaleBasePower, new HashSet<IExternalReadOnlyNode>()));
+                singleVoltagePowerNet.AddNode(node.CreateSingleVoltageNode(scaleBasePower, new HashSet<IExternalReadOnlyNode>(), true));
 
             return singleVoltagePowerNet;
         }

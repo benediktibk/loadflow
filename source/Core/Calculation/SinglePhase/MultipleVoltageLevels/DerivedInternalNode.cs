@@ -23,6 +23,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public string Name { get; private set; }
 
-        public abstract INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited);
+        public abstract INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections);
     }
 }

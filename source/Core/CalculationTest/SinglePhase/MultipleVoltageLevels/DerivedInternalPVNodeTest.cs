@@ -19,7 +19,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = new ExternalNode(0, 3, "");
             var node = CreateNode(sourceNode, 1);
 
-            var result = node.CreateSingleVoltageNode(2, new HashSet<IExternalReadOnlyNode>());
+            var result = node.CreateSingleVoltageNode(2, new HashSet<IExternalReadOnlyNode>(), true);
 
             var resultAsPvNode = result as PvNode;
             Assert.IsNotNull(resultAsPvNode);

@@ -13,7 +13,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _voltage = voltage;
         }
 
-        public override INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
+        public override INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new SlackNode(scaler.ScaleVoltage(_voltage));

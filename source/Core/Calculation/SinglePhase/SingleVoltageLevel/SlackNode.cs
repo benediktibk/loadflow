@@ -60,5 +60,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             
             throw new NotSupportedException("node type is not supported");
         }
+
     }
 }

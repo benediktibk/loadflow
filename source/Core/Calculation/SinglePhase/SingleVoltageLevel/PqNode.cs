@@ -63,5 +63,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             return new PqNode(Power + pqNode.Power);
         }
+
+
     }
 }

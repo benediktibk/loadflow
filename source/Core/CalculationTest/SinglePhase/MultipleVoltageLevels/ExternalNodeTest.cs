@@ -163,16 +163,16 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeThree = new Mock<INode>();
             var mergeResultOne = new Mock<INode>();
             var mergeResultTwo = new Mock<INode>();
-            elementOne.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(nodeOne.Object);
-            elementTwo.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(nodeTwo.Object);
-            elementThree.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(nodeThree.Object);
+            elementOne.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>(), true)).Returns(nodeOne.Object);
+            elementTwo.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>(), true)).Returns(nodeTwo.Object);
+            elementThree.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<ISet<IExternalReadOnlyNode>>(), true)).Returns(nodeThree.Object);
             nodeOne.Setup(x => x.Merge(nodeTwo.Object)).Returns(mergeResultOne.Object);
             mergeResultOne.Setup(x => x.Merge(nodeThree.Object)).Returns(mergeResultTwo.Object);
             _node.Connect(elementOne.Object);
             _node.Connect(elementTwo.Object);
             _node.Connect(elementThree.Object);
 
-            var result = _node.CreateSingleVoltageNode(4, new HashSet<IExternalReadOnlyNode>());
+            var result = _node.CreateSingleVoltageNode(4, new HashSet<IExternalReadOnlyNode>(), true);
 
             nodeOne.Verify(x => x.Merge(nodeTwo.Object), Times.Once);
             mergeResultOne.Verify(x => x.Merge(nodeThree.Object), Times.Once);
@@ -183,7 +183,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateSingleVoltageNode_NoElementsConnected_ThrowsException()
         {
-            _node.CreateSingleVoltageNode(4, new HashSet<IExternalReadOnlyNode>());
+            _node.CreateSingleVoltageNode(4, new HashSet<IExternalReadOnlyNode>(), true);
         }
     }
 }

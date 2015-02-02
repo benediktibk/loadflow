@@ -135,7 +135,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var node = new ExternalNode(1, 0, "");
             var feedIn = new FeedIn(node, new Complex(), new Complex(3, 4), _idGenerator);
 
-            var result = feedIn.CreateSingleVoltageNode(5, null);
+            var result = feedIn.CreateSingleVoltageNode(5, null, true);
 
             var resultAsSlackNode = result as SlackNode;
             Assert.IsNotNull(resultAsSlackNode);
@@ -145,7 +145,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidPowerBase_SlackNodeWithScaledVoltage()
         {
-            var result = _feedIn.CreateSingleVoltageNode(5, null);
+            var result = _feedIn.CreateSingleVoltageNode(5, null, true);
 
             var resultAsSlackNode = result as SlackNode;
             Assert.IsNotNull(resultAsSlackNode);

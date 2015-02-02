@@ -33,7 +33,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _connectedElements; }
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
+        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)
         {
             if (visited.Contains(this))
                 throw new InvalidOperationException("already visited");
@@ -42,7 +42,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new InvalidOperationException("node is not connected");
 
             var visitedCopy = new HashSet<IExternalReadOnlyNode>(visited) {this};
-            var singleVoltageNodes = _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower, visitedCopy));
+            var singleVoltageNodes = _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower, visitedCopy, includeDirectConnections));
             var result = singleVoltageNodes.First();
             return singleVoltageNodes.Skip(1).Aggregate(result, (current, node) => current.Merge(node));
         }

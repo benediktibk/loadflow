@@ -164,7 +164,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
         {
-            var result = _transmissionLineWithLengthAndShuntValues.CreateSingleVoltageNode(5, null);
+            var result = _transmissionLineWithLengthAndShuntValues.CreateSingleVoltageNode(5, null, true);
 
             var resultAsPqNode = result as PqNode;
             Assert.IsNotNull(resultAsPqNode);
@@ -178,10 +178,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var target = new Mock<IExternalReadOnlyNode>();
             var pqNode = new PqNode(new Complex(1234, 534));
             var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
-            target.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(pqNode);
+            target.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>(), true)).Returns(pqNode);
             var visited = new HashSet<IExternalReadOnlyNode> {source.Object};
 
-            var result = line.CreateSingleVoltageNode(123, visited);
+            var result = line.CreateSingleVoltageNode(123, visited, true);
 
             var resultPqNode = result as PqNode;
             Assert.IsNotNull(resultPqNode);
@@ -195,10 +195,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var target = new Mock<IExternalReadOnlyNode>();
             var pqNode = new PqNode(new Complex(1234, 534));
             var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
-            source.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(pqNode);
+            source.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>(), true)).Returns(pqNode);
             var visited = new HashSet<IExternalReadOnlyNode> { target.Object };
 
-            var result = line.CreateSingleVoltageNode(123, visited);
+            var result = line.CreateSingleVoltageNode(123, visited, true);
 
             var resultPqNode = result as PqNode;
             Assert.IsNotNull(resultPqNode);

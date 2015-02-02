@@ -77,7 +77,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return result;
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
+        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)
         {
             INode result = new PqNode(new Complex());
 
@@ -85,10 +85,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 return result;
 
             if (!visited.Contains(_sourceNode))
-                result = result.Merge(_sourceNode.CreateSingleVoltageNode(scaleBasePower, visited));
+                result = result.Merge(_sourceNode.CreateSingleVoltageNode(scaleBasePower, visited, includeDirectConnections));
 
             if (!visited.Contains(_targetNode))
-                result = result.Merge(_targetNode.CreateSingleVoltageNode(scaleBasePower, visited));
+                result = result.Merge(_targetNode.CreateSingleVoltageNode(scaleBasePower, visited, includeDirectConnections));
 
             return result;
         }
