@@ -206,6 +206,20 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void CreateSingleVoltageNode_NotIncludeDirectConnections_NoCallsToCreateSingleVoltageNode()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
+
+            var result = line.CreateSingleVoltageNode(123, new HashSet<IExternalReadOnlyNode>(), false);
+
+            var resultPqNode = result as PqNode;
+            Assert.IsNotNull(resultPqNode);
+            ComplexAssert.AreEqual(0, 0, resultPqNode.Power, 1e-10);
+        }
+
+        [TestMethod]
         public void GetDirectConnectedNodes_NonZeroLength_EmptyList()
         {
             var result = _transmissionLineWithLengthAndShuntValues.GetDirectConnectedNodes();

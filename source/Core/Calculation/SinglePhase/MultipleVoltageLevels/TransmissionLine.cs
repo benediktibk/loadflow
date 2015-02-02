@@ -81,7 +81,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             INode result = new PqNode(new Complex());
 
-            if (!IsDirectConnection) 
+            if (!IsDirectConnection || !includeDirectConnections) 
                 return result;
 
             if (!visited.Contains(_sourceNode))
