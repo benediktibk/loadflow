@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +21,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourceNode = new ExternalNode(0, 3, "");
             var node = CreateNode(sourceNode, 1);
 
-            var result = node.CreateSingleVoltageNode(2);
+            var result = node.CreateSingleVoltageNode(2, new HashSet<IExternalReadOnlyNode>());
 
             var resultAsSlackNode = result as SlackNode;
             Assert.IsNotNull(resultAsSlackNode);

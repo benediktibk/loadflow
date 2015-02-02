@@ -1,4 +1,5 @@
-﻿using Calculation.SinglePhase.SingleVoltageLevel;
+﻿using System.Collections.Generic;
+using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -6,7 +7,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         double NominalVoltage { get; }
         int Id { get; }
-        INode CreateSingleVoltageNode(double scaleBasePower);
+        INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited);
         string Name { get; }
     }
 }

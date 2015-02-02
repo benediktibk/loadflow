@@ -11,7 +11,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);
         IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes();
-        INode CreateSingleVoltageNode(double scaleBasePower, IExternalReadOnlyNode source);
+        INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited);
         IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow);
     }

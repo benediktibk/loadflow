@@ -98,7 +98,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower, IExternalReadOnlyNode source)
+        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
         {
             return new PqNode(new Complex());
         }

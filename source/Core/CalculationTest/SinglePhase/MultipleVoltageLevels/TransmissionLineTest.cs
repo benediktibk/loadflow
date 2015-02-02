@@ -178,11 +178,14 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var target = new Mock<IExternalReadOnlyNode>();
             var pqNode = new PqNode(new Complex(1234, 534));
             var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
-            target.Setup(x => x.CreateSingleVoltageNode(123)).Returns(pqNode);
+            target.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(pqNode);
+            var visited = new HashSet<IExternalReadOnlyNode> {source.Object};
 
-            var result = line.CreateSingleVoltageNode(123, source.Object);
+            var result = line.CreateSingleVoltageNode(123, visited);
 
-            Assert.AreEqual(pqNode, result as PqNode);
+            var resultPqNode = result as PqNode;
+            Assert.IsNotNull(resultPqNode);
+            ComplexAssert.AreEqual(1234, 534, resultPqNode.Power, 1e-10);
         }
 
         [TestMethod]
@@ -192,11 +195,14 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var target = new Mock<IExternalReadOnlyNode>();
             var pqNode = new PqNode(new Complex(1234, 534));
             var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
-            source.Setup(x => x.CreateSingleVoltageNode(123)).Returns(pqNode);
+            source.Setup(x => x.CreateSingleVoltageNode(123, It.IsAny<ISet<IExternalReadOnlyNode>>())).Returns(pqNode);
+            var visited = new HashSet<IExternalReadOnlyNode> { target.Object };
 
-            var result = line.CreateSingleVoltageNode(123, target.Object);
+            var result = line.CreateSingleVoltageNode(123, visited);
 
-            Assert.AreEqual(pqNode, result as PqNode);
+            var resultPqNode = result as PqNode;
+            Assert.IsNotNull(resultPqNode);
+            ComplexAssert.AreEqual(1234, 534, resultPqNode.Power, 1e-10);
         }
 
         [TestMethod]

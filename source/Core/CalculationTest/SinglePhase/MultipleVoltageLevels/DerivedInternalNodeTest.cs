@@ -1,4 +1,5 @@
-﻿using Calculation.SinglePhase.MultipleVoltageLevels;
+﻿using System.Collections.Generic;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CalculationTest.SinglePhase.MultipleVoltageLevels
@@ -30,7 +31,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidScaleBaseForPower_ResultIsNotNull()
         {
-            var result = _node.CreateSingleVoltageNode(2);
+            var result = _node.CreateSingleVoltageNode(2, new HashSet<IExternalReadOnlyNode>());
 
             Assert.IsNotNull(result);
         }

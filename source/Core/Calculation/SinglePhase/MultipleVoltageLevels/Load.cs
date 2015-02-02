@@ -41,7 +41,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();   
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower, IExternalReadOnlyNode source)
+        public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
         {
             var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             return new PqNode(scaler.ScalePower(Value));
