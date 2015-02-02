@@ -15,7 +15,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public TransmissionLine(IExternalReadOnlyNode sourceNode, IExternalReadOnlyNode targetNode, double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
-            if (seriesResistancePerUnitLength <= 0 && seriesInductancePerUnitLength <= 0)
+            if (seriesResistancePerUnitLength < 0)
+                throw new ArgumentOutOfRangeException();
+
+            if (seriesInductancePerUnitLength < 0)
+                throw new ArgumentOutOfRangeException();
+
+            if (shuntCapacityPerUnitLength < 0)
+                throw new ArgumentOutOfRangeException();
+
+            if (shuntConductancePerUnitLength < 0)
                 throw new ArgumentOutOfRangeException();
 
             if (length < 0)
@@ -27,10 +36,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _sourceNode = sourceNode;
             _targetNode = targetNode;
 
-            if ((shuntCapacityPerUnitLength == 0 && shuntConductancePerUnitLength == 0) || length == 0)
+            if ((shuntCapacityPerUnitLength <= 0 && shuntConductancePerUnitLength <= 0) || length == 0)
                 CalculateElectricCharacteristicsWithSimplifiedDirectModel(seriesResistancePerUnitLength,
                     seriesInductancePerUnitLength, length, frequency);
-            else if (transmissionEquationModel)
+            else if (transmissionEquationModel && (seriesResistancePerUnitLength > 0 || seriesInductancePerUnitLength > 0))
                 CalculateElectricCharacteristicsWithTransmissionEquationModel(seriesResistancePerUnitLength, 
                     seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength, 
                     length, frequency);
@@ -107,15 +116,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
-            if (IsDirectConnection)
-                return;
-
             if (NeedsGroundNode && groundNode == null)
                 throw new ArgumentNullException("groundNode");
 
             var scaler = new DimensionScaler(TargetNominalVoltage, scaleBasisPower);
-            var lengthAdmittanceScaled = scaler.ScaleAdmittance(1.0/LengthImpedance);
-            admittances.AddConnection(_sourceNode, _targetNode, lengthAdmittanceScaled);
+
+            if (!IsDirectConnection)
+            {
+                var lengthAdmittanceScaled = scaler.ScaleAdmittance(1.0/LengthImpedance);
+                admittances.AddConnection(_sourceNode, _targetNode, lengthAdmittanceScaled);
+            }
 
             if (!NeedsGroundNode)
                 return;
@@ -127,7 +137,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private bool IsDirectConnection
         {
-            get { return LengthImpedance.MagnitudeSquared() == 0; }
+            get { return LengthImpedance.MagnitudeSquared() <= 0; }
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()

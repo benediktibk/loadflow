@@ -93,6 +93,24 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_DirectConnectionFromFeedInToLoadAndShuntValues_VoltagesAreCorrect()
+        {
+            _powerNet.AddNode(0, 1000, "");
+            _powerNet.AddNode(1, 1000, "");
+            _powerNet.AddFeedIn(0, new Complex(1000, 0), new Complex());
+            _powerNet.AddTransmissionLine(0, 1, 0, 0, 1e-3, 0, 1, true);
+            _powerNet.AddLoad(1, new Complex(-200, -400));
+
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
+            ComplexAssert.AreEqual(1000, 0, nodeResults[1].Voltage, 0.01);
+            ComplexAssert.AreEqual(1200, 400, nodeResults[0].Power, 0.01);
+            ComplexAssert.AreEqual(-200, -400, nodeResults[1].Power, 0.01);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_SimpleConnectionFromFeedInToLoadWithNoPowerScaling_VoltagesAreCorrect()
         {
             _powerNet.AddNode(0, 1000, "");
