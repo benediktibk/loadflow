@@ -23,7 +23,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new InvalidDataException("the nominal voltages must match on connected nodes");
 
             var powerScaling = DeterminePowerScaling();
-            var nodes = new List<IReadOnlyNode>(GetAllCalculationNodes());
+            var nodes = GetAllCalculationNodes();
             var nodeIndexes = DetermineNodeIndices(nodes);
             var admittances = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerScaling);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(nodes, admittances, powerScaling);
@@ -49,7 +49,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerScaling)
         {
             powerScaling = DeterminePowerScaling();
-            var nodes = new List<IReadOnlyNode>(GetAllCalculationNodes());
+            var nodes = GetAllCalculationNodes();
             var nodeIndexes = DetermineNodeIndices(nodes);
             matrix = CalculateAdmittanceMatrix(nodes, nodeIndexes, powerScaling);
             nodeNames = nodes.Select(node => node.Name).ToList();
