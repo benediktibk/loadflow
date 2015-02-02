@@ -79,16 +79,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited)
         {
-            var result = new PqNode(new Complex());
+            INode result = new PqNode(new Complex());
 
             if (!IsDirectConnection) 
                 return result;
 
             if (!visited.Contains(_sourceNode))
-                result.Merge(_sourceNode.CreateSingleVoltageNode(scaleBasePower, visited));
+                result = result.Merge(_sourceNode.CreateSingleVoltageNode(scaleBasePower, visited));
 
             if (!visited.Contains(_targetNode))
-                result.Merge(_targetNode.CreateSingleVoltageNode(scaleBasePower, visited));
+                result = result.Merge(_targetNode.CreateSingleVoltageNode(scaleBasePower, visited));
 
             return result;
         }

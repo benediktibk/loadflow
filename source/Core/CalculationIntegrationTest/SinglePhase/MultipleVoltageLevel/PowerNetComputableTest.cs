@@ -87,7 +87,7 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
 
             Assert.IsNotNull(nodeResults);
             ComplexAssert.AreEqual(1000, 0, nodeResults[0].Voltage, 0.01);
-            ComplexAssert.AreEqual(1000, 20, nodeResults[1].Voltage, 0.01);
+            ComplexAssert.AreEqual(1000, 0, nodeResults[1].Voltage, 0.01);
             ComplexAssert.AreEqual(2693.9, 4118.5, nodeResults[0].Power, 0.01);
             ComplexAssert.AreEqual(-2693.9, -4118.5, nodeResults[1].Power, 0.01);
         }
