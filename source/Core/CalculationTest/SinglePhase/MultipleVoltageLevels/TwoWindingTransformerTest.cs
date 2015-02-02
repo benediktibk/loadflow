@@ -181,7 +181,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
         {
-            var result = _transformerWithNominalRatio.CreateSingleVoltageNode(5);
+            var result = _transformerWithNominalRatio.CreateSingleVoltageNode(5, null);
 
             var resultAsPqNode = result as PqNode;
             Assert.IsNotNull(resultAsPqNode);

@@ -90,7 +90,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidPowerBase_PvNodeWithScaledValues()
         {
-            var result = _generator.CreateSingleVoltageNode(5);
+            var result = _generator.CreateSingleVoltageNode(5, null);
 
             var resultAsPvNode = result as PvNode;
             Assert.IsNotNull(resultAsPvNode);

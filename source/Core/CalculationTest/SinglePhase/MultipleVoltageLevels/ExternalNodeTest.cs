@@ -163,9 +163,9 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var nodeThree = new Mock<INode>();
             var mergeResultOne = new Mock<INode>();
             var mergeResultTwo = new Mock<INode>();
-            elementOne.Setup(x => x.CreateSingleVoltageNode(4)).Returns(nodeOne.Object);
-            elementTwo.Setup(x => x.CreateSingleVoltageNode(4)).Returns(nodeTwo.Object);
-            elementThree.Setup(x => x.CreateSingleVoltageNode(4)).Returns(nodeThree.Object);
+            elementOne.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<IExternalReadOnlyNode>())).Returns(nodeOne.Object);
+            elementTwo.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<IExternalReadOnlyNode>())).Returns(nodeTwo.Object);
+            elementThree.Setup(x => x.CreateSingleVoltageNode(4, It.IsAny<IExternalReadOnlyNode>())).Returns(nodeThree.Object);
             nodeOne.Setup(x => x.Merge(nodeTwo.Object)).Returns(mergeResultOne.Object);
             mergeResultOne.Setup(x => x.Merge(nodeThree.Object)).Returns(mergeResultTwo.Object);
             _node.Connect(elementOne.Object);

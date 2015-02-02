@@ -164,11 +164,39 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void CreateSingleVoltageNode_ValidPowerBase_PqNodeWithNoPower()
         {
-            var result = _transmissionLineWithLengthAndShuntValues.CreateSingleVoltageNode(5);
+            var result = _transmissionLineWithLengthAndShuntValues.CreateSingleVoltageNode(5, null);
 
             var resultAsPqNode = result as PqNode;
             Assert.IsNotNull(resultAsPqNode);
             ComplexAssert.AreEqual(0, 0, resultAsPqNode.Power, 0.000001);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_SourceNode_TargetNodeHasCallToCreateSingleVoltageNode()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var pqNode = new PqNode(new Complex(1234, 534));
+            var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
+            target.Setup(x => x.CreateSingleVoltageNode(123)).Returns(pqNode);
+
+            var result = line.CreateSingleVoltageNode(123, source.Object);
+
+            Assert.AreEqual(pqNode, result as PqNode);
+        }
+
+        [TestMethod]
+        public void CreateSingleVoltageNode_TargetNode_SourceNodeHasCallToCreateSingleVoltageNode()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var pqNode = new PqNode(new Complex(1234, 534));
+            var line = new TransmissionLine(source.Object, target.Object, 1, 2, 3, 4, 0, 2, true);
+            source.Setup(x => x.CreateSingleVoltageNode(123)).Returns(pqNode);
+
+            var result = line.CreateSingleVoltageNode(123, target.Object);
+
+            Assert.AreEqual(pqNode, result as PqNode);
         }
 
         [TestMethod]

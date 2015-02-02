@@ -77,9 +77,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return result;
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower)
+        public INode CreateSingleVoltageNode(double scaleBasePower, IExternalReadOnlyNode source)
         {
-            return new PqNode(new Complex());
+            if (!IsDirectConnection)
+                return new PqNode(new Complex());
+
+            return source == _sourceNode ? _targetNode.CreateSingleVoltageNode(scaleBasePower) : _sourceNode.CreateSingleVoltageNode(scaleBasePower);
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
@@ -96,7 +99,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
-            if (LengthImpedance.MagnitudeSquared() == 0)
+            if (IsDirectConnection)
                 return;
 
             if (NeedsGroundNode && groundNode == null)
@@ -112,6 +115,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var shuntAdmittanceScaled = scaler.ScaleAdmittance(ShuntAdmittance);
             admittances.AddConnection(_sourceNode, groundNode, shuntAdmittanceScaled);
             admittances.AddConnection(_targetNode, groundNode, shuntAdmittanceScaled);
+        }
+
+        private bool IsDirectConnection
+        {
+            get { return LengthImpedance.MagnitudeSquared() == 0; }
         }
 
         public IList<IReadOnlyNode> GetInternalNodes()

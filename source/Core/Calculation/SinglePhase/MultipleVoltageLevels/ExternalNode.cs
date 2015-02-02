@@ -38,7 +38,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (_connectedElements.Count == 0)
                 throw new InvalidOperationException("node is not connected");
 
-            var singleVoltageNodes = _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower));
+            var singleVoltageNodes = _connectedElements.Select(x => x.CreateSingleVoltageNode(scaleBasePower, this));
             var result = singleVoltageNodes.First();
             return singleVoltageNodes.Skip(1).Aggregate(result, (current, node) => current.Merge(node));
         }

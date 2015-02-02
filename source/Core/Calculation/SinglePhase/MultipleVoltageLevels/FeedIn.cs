@@ -60,7 +60,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
         }
 
-        public INode CreateSingleVoltageNode(double scaleBasePower)
+        public INode CreateSingleVoltageNode(double scaleBasePower, IExternalReadOnlyNode source)
         {
             if (NominalVoltage == 0)
                 return new SlackNode(new Complex(0, 0));
