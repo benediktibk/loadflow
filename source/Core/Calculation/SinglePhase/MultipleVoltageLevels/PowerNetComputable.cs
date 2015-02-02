@@ -31,60 +31,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var admittances = CalculateAdmittanceMatrix(nodeIndices, powerScaling, mainNodes.Count);
             var singleVoltagePowerNet = CreateSingleVoltagePowerNet(mainNodes, admittances, powerScaling);
             var nodeResults = singleVoltagePowerNet.CalculateNodeResults(out relativePowerError);
-
-            if (nodeResults == null)
-                return null;
-
-            var nodeResultsWithId = new Dictionary<int, NodeResult>();
-            var directConnectionsReverse = directConnectedNodes.ToDictionary(connection => connection.Value, connection => connection.Key);
-            var replacableNodesSet = new HashSet<IReadOnlyNode>();
-
-            foreach (var replacableNode in replacableNodes)
-                replacableNodesSet.Add(replacableNode);
-
-
-            var externalMainNodes = ExternalNodes.Where(x => !replacableNodesSet.Contains(x));
-            foreach (var node in externalMainNodes)
-            {
-                var nodeIndex = nodeIndices[node];
-                var nodeResult = nodeResults[nodeIndex];
-                var id = node.Id;
-                var nodeResultUnscaled = nodeResult.Unscale(node.NominalVoltage, powerScaling);
-                IReadOnlyNode replacableNode;
-
-                if (!directConnectionsReverse.TryGetValue(node, out replacableNode))
-                    nodeResultsWithId.Add(id, nodeResultUnscaled);
-                else
-                {
-                    var firstSingleVoltageNode = node.CreateSingleVoltageNode(1,
-                        new HashSet<IExternalReadOnlyNode>(), false);
-                    var secondSingleVoltageNode = replacableNode.CreateSingleVoltageNode(1,
-                        new HashSet<IExternalReadOnlyNode>(), false);
-
-                    var firstAsPq = firstSingleVoltageNode as PqNode;
-                    var secondAsPq = secondSingleVoltageNode as PqNode;
-                    var firstAsSlack = firstSingleVoltageNode as SlackNode;
-                    var secondAsSlack = secondSingleVoltageNode as SlackNode;
-                    var secondId = replacableNode.Id;
-
-                    if ((firstAsPq != null || firstAsSlack != null) && secondAsPq != null)
-                    {
-                        nodeResultsWithId.Add(secondId, new NodeResult(nodeResultUnscaled.Voltage, secondAsPq.Power));
-                        nodeResultsWithId.Add(id, new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - secondAsPq.Power));
-                    }
-                    else if (firstAsPq != null && secondAsSlack != null)
-                    {
-                        nodeResultsWithId.Add(id, new NodeResult(nodeResultUnscaled.Voltage, firstAsPq.Power));
-                        nodeResultsWithId.Add(secondId,
-                            new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - firstAsPq.Power));
-                    }
-                    else
-                        throw new NotSupportedException(
-                            "the direct connections of these two node types is not yet supported");
-                }
-            }
-
-            return nodeResultsWithId;
+            return nodeResults == null ? null : CreateNodeResultsWithId(directConnectedNodes, replacableNodes, nodeIndices, nodeResults, powerScaling, ExternalNodes);
         }
 
         public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerScaling)
@@ -99,7 +46,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             nodeNames = nodes.Select(node => node.Name).ToList();
         }
 
-        private Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes, IReadOnlyList<IReadOnlyNode> mainNodes, IEnumerable<IReadOnlyNode> replacableNodes)
+        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes, IReadOnlyList<IReadOnlyNode> mainNodes, IEnumerable<IReadOnlyNode> replacableNodes)
         {
             var indices = new Dictionary<IReadOnlyNode, int>();
 
@@ -123,6 +70,65 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private static IReadOnlyList<IReadOnlyNode> SelectMainNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
         {
             return nodes.Where(x => !directConnectedNodes.ContainsKey(x)).ToList();
+        }
+        private static Dictionary<int, NodeResult> CreateNodeResultsWithId(IEnumerable<KeyValuePair<IReadOnlyNode, IReadOnlyNode>> directConnectedNodes, IEnumerable<IReadOnlyNode> replacableNodes,
+            IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, IList<NodeResult> nodeResults, double powerScaling, IEnumerable<IExternalReadOnlyNode> externalNodes)
+        {
+            var nodeResultsWithId = new Dictionary<int, NodeResult>();
+            var directConnectionsReverse = directConnectedNodes.ToDictionary(connection => connection.Value,
+                connection => connection.Key);
+            var replacableNodesSet = new HashSet<IReadOnlyNode>();
+
+            foreach (var replacableNode in replacableNodes)
+                replacableNodesSet.Add(replacableNode);
+
+            var externalMainNodes = externalNodes.Where(x => !replacableNodesSet.Contains(x));
+            foreach (var node in externalMainNodes)
+            {
+                var nodeIndex = nodeIndices[node];
+                var nodeResult = nodeResults[nodeIndex];
+                var id = node.Id;
+                var nodeResultUnscaled = nodeResult.Unscale(node.NominalVoltage, powerScaling);
+                IReadOnlyNode replacableNode;
+
+                if (!directConnectionsReverse.TryGetValue(node, out replacableNode))
+                    nodeResultsWithId.Add(id, nodeResultUnscaled);
+                else
+                    AddNodeResultsWithIdForDirectConnection(node, replacableNode, nodeResultsWithId, nodeResultUnscaled, id);
+            }
+
+            return nodeResultsWithId;
+        }
+
+        private static void AddNodeResultsWithIdForDirectConnection(IReadOnlyNode node, IReadOnlyNode replacableNode,
+            IDictionary<int, NodeResult> nodeResultsWithId, NodeResult nodeResultUnscaled, int id)
+        {
+            var firstSingleVoltageNode = node.CreateSingleVoltageNode(1,
+                new HashSet<IExternalReadOnlyNode>(), false);
+            var secondSingleVoltageNode = replacableNode.CreateSingleVoltageNode(1,
+                new HashSet<IExternalReadOnlyNode>(), false);
+
+            var firstAsPq = firstSingleVoltageNode as PqNode;
+            var secondAsPq = secondSingleVoltageNode as PqNode;
+            var firstAsSlack = firstSingleVoltageNode as SlackNode;
+            var secondAsSlack = secondSingleVoltageNode as SlackNode;
+            var secondId = replacableNode.Id;
+
+            if ((firstAsPq != null || firstAsSlack != null) && secondAsPq != null)
+            {
+                nodeResultsWithId.Add(secondId, new NodeResult(nodeResultUnscaled.Voltage, secondAsPq.Power));
+                nodeResultsWithId.Add(id,
+                    new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - secondAsPq.Power));
+            }
+            else if (firstAsPq != null && secondAsSlack != null)
+            {
+                nodeResultsWithId.Add(id, new NodeResult(nodeResultUnscaled.Voltage, firstAsPq.Power));
+                nodeResultsWithId.Add(secondId,
+                    new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - firstAsPq.Power));
+            }
+            else
+                throw new NotSupportedException(
+                    "the direct connections of these two node types is not yet supported");
         }
 
         private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower)
