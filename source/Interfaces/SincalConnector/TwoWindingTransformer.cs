@@ -31,8 +31,10 @@ namespace SincalConnector
             var phaseShiftFactor = MapConnectionSymbolToPhaseShiftFactor(connectionSymbol);
             PhaseShift = Angle.FromDegree(phaseShiftFactor*30);
 
-            if (connectedNodes.Count != 2)
-                throw new InvalidDataException("a transformer must be connected to two nodes");
+            NotConnected = connectedNodes.Count != 2;
+
+            if (NotConnected)
+                return;
 
             var firstNodeVoltage = nodes[connectedNodes[0]].NominalVoltage;
             var secondNodeVoltage = nodes[connectedNodes[1]].NominalVoltage;
@@ -73,8 +75,13 @@ namespace SincalConnector
 
         public double Ratio { get; private set; }
 
+        public bool NotConnected { get; private set; }
+
         public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
+            if (NotConnected)
+                return;
+
             powerNet.AddTwoWindingTransformer(UpperSideNodeId, LowerSideNodeId, NominalPower, RelativeShortCircuitVoltage,
                 CopperLosses, IronLosses, RelativeNoLoadCurrent, Ratio, PhaseShift, "");
         }
