@@ -32,8 +32,10 @@ namespace SincalConnector
             if (nodes.Count > 2)
                 throw new InvalidDataException("a transmission line can have only two connected nodes");
 
-            if (nodes.Count < 1)
-                throw new InvalidDataException("a transmission line must have at least one connection");
+            NotConnected = nodes.Count < 1;
+
+            if (NotConnected)
+                return;
 
             NodeOneId = nodes[0];
             var nodeOneNominalVoltage = nodesByIds[NodeOneId].NominalVoltage;
@@ -79,6 +81,8 @@ namespace SincalConnector
 
         public bool FullyConnected { get; private set; }
 
+        public bool NotConnected { get; private set; }
+
         public double SeriesResistancePerUnitLength { get; private set; }
 
         public double SeriesInductancePerUnitLength { get; private set; }
@@ -93,6 +97,9 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
+            if (NotConnected)
+                return;
+
             if (FullyConnected)
                 powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
                     SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
