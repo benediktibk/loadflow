@@ -52,7 +52,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public bool IsDirectConnection
         {
-            get { return LengthImpedance.MagnitudeSquared() <= 0; }
+            get { return _data.IsDirectConnection; }
         }
 
         public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()

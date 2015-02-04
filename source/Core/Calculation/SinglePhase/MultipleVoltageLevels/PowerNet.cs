@@ -107,6 +107,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
+        public double Frequency
+        {
+            get { return _frequency; }
+        }
+
         public bool NominalVoltagesDoNotMatch
         {
             get { return _elements.Exists(element => !element.NominalVoltagesMatch); }

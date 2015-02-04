@@ -30,6 +30,11 @@ namespace Calculation.ThreePhase
             get { return _singlePhasePowerNet.NodeGraph; }
         }
 
+        public double Frequency
+        {
+            get { return _singlePhasePowerNet.Frequency; }
+        }
+
         public void AddNode(int id, double nominalVoltage, string name)
         {
             _singlePhasePowerNet.AddNode(id, nominalVoltage/Math.Sqrt(3), name);

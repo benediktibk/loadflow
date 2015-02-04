@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Numerics;
+using MathNet.Numerics;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
-    class TransmissionLineData
+    public class TransmissionLineData
     {
-        private readonly double _seriesResistancePerUnitLength;
-        private readonly double _seriesInductancePerUnitLength;
-        private readonly double _shuntCapacityPerUnitLength;
-        private readonly double _shuntConductancePerUnitLength;
-        private readonly double _length;
-        private readonly double _frequency;
-        private readonly bool _transmissionEquationModel;
-
         public TransmissionLineData(double seriesResistancePerUnitLength, double seriesInductancePerUnitLength, double shuntCapacityPerUnitLength, double shuntConductancePerUnitLength, double length, double frequency, bool transmissionEquationModel)
         {
             if (seriesResistancePerUnitLength < 0)
@@ -33,14 +26,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (frequency <= 0)
                 throw new ArgumentOutOfRangeException("frequency", "must be positive");
 
-            _seriesResistancePerUnitLength = seriesResistancePerUnitLength;
-            _seriesInductancePerUnitLength = seriesInductancePerUnitLength;
-            _shuntCapacityPerUnitLength = shuntCapacityPerUnitLength;
-            _shuntConductancePerUnitLength = shuntConductancePerUnitLength;
-            _length = length;
-            _frequency = frequency;
-            _transmissionEquationModel = transmissionEquationModel;
-
             if ((shuntCapacityPerUnitLength <= 0 && shuntConductancePerUnitLength <= 0) || length <= 0)
                 CalculateElectricCharacteristicsWithSimplifiedDirectModel(seriesResistancePerUnitLength,
                     seriesInductancePerUnitLength, length, frequency);
@@ -52,6 +37,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 CalculateElectricCharacteristicsWithSimplifiedPiModel(seriesResistancePerUnitLength,
                     seriesInductancePerUnitLength, shuntCapacityPerUnitLength, shuntConductancePerUnitLength,
                     length, frequency);
+
+            IsDirectConnection = LengthImpedance.MagnitudeSquared() <= 0;
         }
 
         public Complex LengthImpedance { get; private set; }
@@ -59,6 +46,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public Complex ShuntAdmittance { get; private set; }
 
         public bool NeedsGroundNode { get; private set; }
+
+        public bool IsDirectConnection { get; private set; }
 
         private void CalculateElectricCharacteristicsWithSimplifiedDirectModel(double lengthResistance, double lengthInductance, double length, double frequency)
         {

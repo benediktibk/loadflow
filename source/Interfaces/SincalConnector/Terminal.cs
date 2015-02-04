@@ -14,9 +14,7 @@ namespace SincalConnector
             if (connectionType != 7)
                 throw new InvalidDataException(("only three phase nets are supported"));
 
-            if (physicalSwitch != 0 && switchState != 1)
-                throw new InvalidDataException("physical switches are not supported");
-
+            Closed = physicalSwitch == 0 || switchState == 1;
             Id = record.Parse<int>("Terminal_ID");
             ElementId = record.Parse<int>("Element_ID");
             NodeId = record.Parse<int>("Node_ID");
@@ -27,5 +25,7 @@ namespace SincalConnector
         public int ElementId { get; private set; }
 
         public int NodeId { get; private set; }
+
+        public bool Closed { get; private set; }
     }
 }

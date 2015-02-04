@@ -115,7 +115,7 @@ namespace SincalConnector
             get
             {
                 var nodeIdsByElementIds = new MultiDictionary<int, int>();
-                foreach (var terminal in _terminals)
+                foreach (var terminal in _terminals.Where(x => x.Closed))
                     nodeIdsByElementIds.Add(terminal.ElementId, terminal.NodeId);
                 return nodeIdsByElementIds;
             }

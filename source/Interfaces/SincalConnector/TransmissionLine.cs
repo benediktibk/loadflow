@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Shapes;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.ThreePhase;
 using Misc;
 
@@ -29,17 +29,26 @@ namespace SincalConnector
 
             var nodes = nodeIdsByElementIds.Get(Id);
 
-            if (nodes.Count != 2)
-                throw new InvalidDataException("a transmission line must have exactly two connected nodes");
+            if (nodes.Count > 2)
+                throw new InvalidDataException("a transmission line can have only two connected nodes");
+
+            if (nodes.Count < 1)
+                throw new InvalidDataException("a transmission line must have at least one connection");
 
             NodeOneId = nodes[0];
-            NodeTwoId = nodes[1];
-
             var nodeOneNominalVoltage = nodesByIds[NodeOneId].NominalVoltage;
-            var nodeTwoNominalVoltage = nodesByIds[NodeTwoId].NominalVoltage;
 
-            if (Math.Abs(nodeOneNominalVoltage - nodeTwoNominalVoltage) > 0.000001)
-                throw new InvalidDataException("the nominal voltages at a transmission line do not match");
+            FullyConnected = nodes.Count == 2;
+
+            if (FullyConnected)
+            {
+                NodeTwoId = nodes[1];
+
+                var nodeTwoNominalVoltage = nodesByIds[NodeTwoId].NominalVoltage;
+
+                if (Math.Abs(nodeOneNominalVoltage - nodeTwoNominalVoltage) > 0.000001)
+                    throw new InvalidDataException("the nominal voltages at a transmission line do not match");
+            }
 
             SeriesResistancePerUnitLength = record.Parse<double>("r") / 1000;
             SeriesInductancePerUnitLength = record.Parse<double>("x") / (2 * Math.PI * frequency * 1000);
@@ -68,6 +77,8 @@ namespace SincalConnector
 
         public int NodeTwoId { get; private set; }
 
+        public bool FullyConnected { get; private set; }
+
         public double SeriesResistancePerUnitLength { get; private set; }
 
         public double SeriesInductancePerUnitLength { get; private set; }
@@ -82,9 +93,22 @@ namespace SincalConnector
 
         public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
-            powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
-                SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
-                TransmissionEquationModel);
+            if (FullyConnected)
+                powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
+                    SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
+                    TransmissionEquationModel);
+            else
+            {
+                var data = new TransmissionLineData(SeriesResistancePerUnitLength, SeriesInductancePerUnitLength,
+                    ShuntCapacityPerUnitLength, ShuntConductancePerUnitLength, Length, powerNet.Frequency,
+                    TransmissionEquationModel);
+
+                if (!data.NeedsGroundNode) 
+                    return;
+
+                powerNet.AddImpedanceLoad(NodeOneId, 1 / data.ShuntAdmittance);
+                powerNet.AddImpedanceLoad(NodeOneId, data.LengthImpedance + 1 / data.ShuntAdmittance);
+            }
         }
     }
 }
