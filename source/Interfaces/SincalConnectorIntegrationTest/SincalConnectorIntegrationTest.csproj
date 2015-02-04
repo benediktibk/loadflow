@@ -138,6 +138,12 @@
     <None Include="testdata\calculation_transformer6_files\database.001.dia" />
     <None Include="testdata\calculation_transformer6_files\database.ini" />
     <None Include="testdata\calculation_transmissionline1.sin" />
+    <None Include="testdata\calculation_transmissionline10.sin" />
+    <None Include="testdata\calculation_transmissionline10_files\database.001.dia" />
+    <None Include="testdata\calculation_transmissionline10_files\database.ini" />
+    <None Include="testdata\calculation_transmissionline11.sin" />
+    <None Include="testdata\calculation_transmissionline11_files\database.001.dia" />
+    <None Include="testdata\calculation_transmissionline11_files\database.ini" />
     <None Include="testdata\calculation_transmissionline1_files\database.001.dia" />
     <None Include="testdata\calculation_transmissionline1_files\database.ini" />
     <None Include="testdata\calculation_transmissionline2.sin" />
@@ -296,6 +302,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transformer6_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_transmissionline10_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_transmissionline11_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_transmissionline1_files\database.mdb">
