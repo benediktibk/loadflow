@@ -69,8 +69,17 @@ namespace SincalConnector
 
             var parallelSystems = record.Parse<double>("ParSys");
 
-            if (parallelSystems != 1)
-                throw new NotSupportedException("parallel transmission lines are not supported");
+            if ((int)(parallelSystems) != parallelSystems)
+                throw new NotSupportedException("only integer values for parallel systems are allowed");
+
+            if (parallelSystems <= 0)
+                throw new InvalidDataException("the count of parallel systems must be positive");
+
+            ParallelSystems = (int)parallelSystems;
+
+            if (ParallelSystems > 1 && TransmissionEquationModel)
+                throw new NotSupportedException(
+                    "the combination of the transmission equation model with parallel sytems is not supported");
         }
 
         public int Id { get; private set; }
@@ -95,11 +104,19 @@ namespace SincalConnector
 
         public bool TransmissionEquationModel { get; private set; }
 
+        public int ParallelSystems { get; private set; }
+
         public void AddTo(SymmetricPowerNet powerNet, double powerFactor)
         {
             if (NotConnected)
                 return;
 
+            for (var i = 0; i < ParallelSystems; ++i)
+                AddToOnce(powerNet);
+        }
+
+        private void AddToOnce(SymmetricPowerNet powerNet)
+        {
             if (FullyConnected)
                 powerNet.AddTransmissionLine(NodeOneId, NodeTwoId, SeriesResistancePerUnitLength,
                     SeriesInductancePerUnitLength, ShuntConductancePerUnitLength, ShuntCapacityPerUnitLength, Length,
@@ -110,11 +127,11 @@ namespace SincalConnector
                     ShuntCapacityPerUnitLength, ShuntConductancePerUnitLength, Length, powerNet.Frequency,
                     TransmissionEquationModel);
 
-                if (!data.NeedsGroundNode) 
+                if (!data.NeedsGroundNode)
                     return;
 
-                powerNet.AddImpedanceLoad(NodeOneId, 1 / data.ShuntAdmittance);
-                powerNet.AddImpedanceLoad(NodeOneId, data.LengthImpedance + 1 / data.ShuntAdmittance);
+                powerNet.AddImpedanceLoad(NodeOneId, 1/data.ShuntAdmittance);
+                powerNet.AddImpedanceLoad(NodeOneId, data.LengthImpedance + 1/data.ShuntAdmittance);
             }
         }
     }
