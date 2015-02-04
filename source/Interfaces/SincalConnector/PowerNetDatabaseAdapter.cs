@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using MathNet.Numerics;
 using Misc;
@@ -40,8 +41,18 @@ namespace SincalConnector
                 FetchSlackGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(commandFactory, nodesByIds, nodeIdsByElementIds);
 
-                if (ContainsNotSupportedElement(commandFactory))
-                    throw new NotSupportedException("the net contains a not supported element");
+                var notSupportedElementIds = FindNotSupportedElement(commandFactory);
+
+                if (notSupportedElementIds.Count > 0)
+                {
+                    var message = new StringBuilder("the net contains not supported elements: ");
+
+                    for (var i = 0; i < notSupportedElementIds.Count - 1; ++i)
+                        message.Append(notSupportedElementIds[i] + ", ");
+
+                    message.Append(notSupportedElementIds.Last());
+                    throw new NotSupportedException(message.ToString());
+                }
 
                 databaseConnection.Close();
             }
@@ -257,20 +268,18 @@ namespace SincalConnector
             _powerNet.Frequency = frequencies.First();
         }
 
-        private bool ContainsNotSupportedElement(SqlCommandFactory commandFactory)
+        private List<int> FindNotSupportedElement(SqlCommandFactory commandFactory)
         {
             var command = commandFactory.CreateCommandToFetchAllElementIdsSorted();
-            var allSupportedElements = _powerNet.AllSupportedElementIdsSorted;
+            var supportedElementList = _powerNet.AllSupportedElementIdsSorted;
+            var supportedElementSet = new HashSet<int>(supportedElementList);
             var allElements = new List<int>();
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     allElements.Add(reader.Parse<int>("Element_ID"));
 
-            if (allSupportedElements.Count != allElements.Count)
-                return true;
-
-            return allElements.Where((t, i) => t != allSupportedElements[i]).Any();
+            return allElements.Where(x => !supportedElementSet.Contains(x)).ToList();
         }
     }
 }
