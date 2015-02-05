@@ -88,11 +88,6 @@ namespace SincalConnector
             return new OleDbCommand("SELECT Element_ID,Flag_Typ,Flag_Lf,delta,u,Ug,xi FROM Infeeder;", _connection);
         }
 
-        public OleDbCommand CreateCommandToFetchAllCurrentSources()
-        {
-            return new OleDbCommand("SELECT Element_ID,Flag_Machine,Un,P,Q,Sn,R_X,xi,fP FROM SynchronousMachine WHERE Flag_Lf = 2;", _connection);
-        }
-
         public OleDbCommand CreateCommandToAddResult(NodeResult nodeResult, double nominalVoltage, Angle phaseShift, Angle slackPhaseShift)
         {
             var voltagePhase = new Angle(nodeResult.Voltage.Phase);

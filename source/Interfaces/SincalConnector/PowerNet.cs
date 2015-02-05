@@ -18,7 +18,6 @@ namespace SincalConnector
         private readonly IList<ImpedanceLoad> _impedanceLoads;
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly IList<SlackGenerator> _slackGenerators;
-        private readonly IList<CurrentSource> _currentSources;
 
         public PowerNet()
         {
@@ -34,7 +33,6 @@ namespace SincalConnector
             _slackGenerators = new List<SlackGenerator>();
             _impedanceLoads = new List<ImpedanceLoad>();
             _threeWindingTransformers = new List<ThreeWindingTransformer>();
-            _currentSources = new List<CurrentSource>();
         }
 
         public double Frequency { get; set; }
@@ -84,19 +82,9 @@ namespace SincalConnector
             get { return (IReadOnlyList<ImpedanceLoad>) _impedanceLoads; }
         }
 
-        public IReadOnlyList<CurrentSource> CurrentSources
-        {
-            get { return (IReadOnlyList<CurrentSource>)_currentSources; }
-        }
-
         public bool ContainsTransformers
         {
             get { return _twoWindingTransformers.Count + _threeWindingTransformers.Count > 0; }
-        }
-
-        public bool ContaintsCurrentSources
-        {
-            get { return _currentSources.Count > 0; }
         }
 
         public int CountOfElementsWithSlackBus
@@ -195,12 +183,6 @@ namespace SincalConnector
         {
             _netElements.Add(element);
             _slackGenerators.Add(element);
-        }
-
-        public void Add(CurrentSource element)
-        {
-            _netElements.Add(element);
-            _currentSources.Add(element);
         }
     }
 }
