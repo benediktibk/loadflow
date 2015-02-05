@@ -115,6 +115,15 @@ namespace CalculationTest.ThreePhase
         }
 
         [TestMethod]
+        public void AddCurrentSource_ValidData_MockPowerNetGotCallToAddCorrectCurrentSource()
+        {
+            _powerNet.AddCurrentSource(4, new Complex(3, 9), new Complex(10, 20));
+
+            _singlePhasePowerNetMock.Verify(x => x.AddCurrentSource(4, new Complex(1, 3), new Complex(10, 20)),
+                Times.Once);
+        }
+
+        [TestMethod]
         public void CalculateAdmittanceMatrix_MockPowerNet_MockGotCallToCalculateAdmittanceMatrix()
         {
             AdmittanceMatrix matrix;

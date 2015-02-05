@@ -80,6 +80,11 @@ namespace Calculation.ThreePhase
             _singlePhasePowerNet.AddImpedanceLoad(nodeId, impedance);
         }
 
+        public void AddCurrentSource(int nodeId, Complex current, Complex internalImpedance)
+        {
+            _singlePhasePowerNet.AddCurrentSource(nodeId, current/3, internalImpedance);
+        }
+
         public IReadOnlyDictionary<int, NodeResult> CalculateNodeVoltages(out double relativePowerError)
         {
             var nodeResults = _singlePhasePowerNet.CalculateNodeResults(out relativePowerError);
