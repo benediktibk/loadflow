@@ -141,7 +141,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var admittanceMatrixReduced = new Mock<IReadOnlyAdmittanceMatrix>();
             Vector<Complex> totalAdmittanceRowSums = new SparseVector(3);
-            Vector<Complex> constantCurrents = new SparseVector(3);
+            Vector<Complex> constantCurrents = new SparseVector(2);
             _admittanceMatrixMock.Setup(
                 x =>
                     x.CreateReducedAdmittanceMatrix(It.IsAny<IReadOnlyList<int>>(), It.IsAny<IReadOnlyList<int>>(),
@@ -182,7 +182,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var admittanceMatrixReduced = new Mock<IReadOnlyAdmittanceMatrix>();
             Vector<Complex> totalAdmittanceRowSums = new SparseVector(3);
-            Vector<Complex> constantCurrents = new SparseVector(3);
+            Vector<Complex> constantCurrents = new SparseVector(2);
             _admittanceMatrixMock.Setup(
                 x =>
                     x.CreateReducedAdmittanceMatrix(It.IsAny<IReadOnlyList<int>>(), It.IsAny<IReadOnlyList<int>>(),
@@ -211,7 +211,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             var admittanceMatrixReduced = new Mock<IReadOnlyAdmittanceMatrix>();
             Vector<Complex> totalAdmittanceRowSums = new SparseVector(3);
-            Vector<Complex> constantCurrents = new SparseVector(3);
+            Vector<Complex> constantCurrents = new SparseVector(1);
             _admittanceMatrixMock.Setup(
                 x =>
                     x.CreateReducedAdmittanceMatrix(It.IsAny<IReadOnlyList<int>>(), It.IsAny<IReadOnlyList<int>>(),
