@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -51,14 +52,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return new List<IReadOnlyNode>();
         }
 
-        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode,
-            double expectedLoadFlow)
+        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
-            var scaler = new DimensionScaler(NominalVoltage, scaleBasisPower);
+            var scaler = new DimensionScaler(NominalVoltage, scaleBasePower);
             var impedanceScaled = scaler.ScaleImpedance(_impedance);
             var admittanceScaled = 1.0/impedanceScaled;
             admittances.AddConnection(_node, groundNode, admittanceScaled);
         }
+
+        public void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
+        { }
 
         public bool NominalVoltagesMatch
         {

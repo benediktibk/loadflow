@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics.LinearAlgebra;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -156,9 +157,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 throw new ArgumentException("neither the upper side nor the lower side node have been visited yet");
         }
 
-        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow)
+        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode, double expectedLoadFlow)
         {
-            var scalerUpperSide = new DimensionScaler(UpperSideNominalVoltage, scaleBasisPower);
+            var scalerUpperSide = new DimensionScaler(UpperSideNominalVoltage, scaleBasePower);
 
             if (HasNotNominalRatio)
             {
@@ -182,6 +183,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 admittances.AddConnection(_upperSideNode, _lowerSideNode, lengthAdmittanceScaled);
             }
         }
+
+        public void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
+        { }
 
         public IList<IReadOnlyNode> GetInternalNodes()
         {

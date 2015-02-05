@@ -5,7 +5,9 @@ using System.Numerics;
 using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Misc;
 using Moq;
 using IAdmittanceMatrix = Calculation.SinglePhase.MultipleVoltageLevels.IAdmittanceMatrix;
 
@@ -119,6 +121,22 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var internalNode = _currentSource.GetInternalNodes().First();
 
             _admittanceMatrix.Verify(x => x.AddConnection(internalNode, _node.Object, It.Is<Complex>(y => (y - admittance/scaleBase).MagnitudeSquared() < 10e-10)));
+        }
+
+        [TestMethod]
+        public void FillInConstantCurrents_PrefilledVector_CorrectChange()
+        {
+            var constantCurrents = new DenseVector(new[] {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)});
+            var internalNode = _currentSource.GetInternalNodes().First();
+            var nodeIndices = new Dictionary<IReadOnlyNode, int> {{internalNode, 1}};
+
+            _currentSource.FillInConstantCurrents(constantCurrents, nodeIndices, 10);
+
+            const double scaleBase = 10.0/6;
+            var currentScaled = _current/scaleBase;
+            ComplexAssert.AreEqual(1, 2, constantCurrents[0], 1e-10);
+            ComplexAssert.AreEqual(new Complex(3, 4) + currentScaled, constantCurrents[1], 1e-10);
+            ComplexAssert.AreEqual(5, 6, constantCurrents[2], 1e-10);
         }
     }
 }

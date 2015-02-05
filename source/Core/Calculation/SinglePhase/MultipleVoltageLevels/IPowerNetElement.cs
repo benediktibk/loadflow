@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -13,6 +15,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes();
         INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections);
         IList<IReadOnlyNode> GetInternalNodes();
-        void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasisPower, IReadOnlyNode groundNode, double expectedLoadFlow);
+        void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode, double expectedLoadFlow);
+        void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower);
     }
 }
