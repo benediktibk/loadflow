@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -17,6 +16,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly List<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly List<Generator> _generators;
         private readonly List<FeedIn> _feedIns;
+        private readonly List<CurrentSource> _currentSources; 
         private readonly List<IPowerNetElement> _elements;
         private readonly List<ExternalNode> _nodes;
         private readonly Dictionary<long, ExternalNode> _nodesById;
@@ -29,6 +29,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             _frequency = frequency;
             _loads = new List<Load>();
+            _currentSources = new List<CurrentSource>();
             _impedanceLoads = new List<ImpedanceLoad>();
             _transmissionLines = new List<TransmissionLine>();
             _twoWindingTransformers = new List<TwoWindingTransformer>();
@@ -89,6 +90,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public int GeneratorCount
         {
             get { return _generators.Count; }
+        }
+
+        public int CurrentSourceCount
+        {
+            get { return _currentSources.Count; }
         }
 
         public IReadOnlyNode GroundNode
@@ -254,6 +260,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _impedanceLoads.Add(impedanceLoad);
             _elements.Add(impedanceLoad);
             node.Connect(impedanceLoad);
+        }
+
+        public void AddCurrentSource(int nodeId, Complex current, Complex internalImpedance)
+        {
+            var node = GetNodeByIdInternal(nodeId);
+            var currentSource = new CurrentSource(node, current, internalImpedance, _idGeneratorNodes);
+            _currentSources.Add(currentSource);
+            _elements.Add(currentSource);
+            node.Connect(currentSource);
         }
 
         public IReadOnlyList<IReadOnlyNode> GetAllCalculationNodes()

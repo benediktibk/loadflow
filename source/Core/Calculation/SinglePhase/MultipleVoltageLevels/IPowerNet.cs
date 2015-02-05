@@ -18,5 +18,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         void AddThreeWindingTransformer(int nodeOneId, int nodeTwoId, int nodeThreeId, double nominalPowerOneToTwo, double nominalPowerTwoToThree, double nominalPowerThreeToOne, double relativeShortCircuitVoltageOneToTwo, double relativeShortCircuitVoltageTwoToThree, double relativeShortCircuitVoltageThreeToOne, double copperLossesOneToTwo, double copperLossesTwoToThree, double copperLossesThreeToOne, double ironLosses, double relativeNoLoadCurrent, Angle nominalPhaseShiftOne, Angle nominalPhaseShiftTwo, Angle nominalPhaseShiftThree, string name);
         void AddLoad(int nodeId, Complex power);
         void AddImpedanceLoad(int nodeId, Complex impedance);
+        void AddCurrentSource(int nodeId, Complex current, Complex internalImpedance);
     }
 }

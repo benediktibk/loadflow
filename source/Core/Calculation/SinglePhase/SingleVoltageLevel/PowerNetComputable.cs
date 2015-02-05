@@ -47,7 +47,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
             var allPowers = DeterminePowers(allVoltages, indexOfPqBuses, indexOfPvBuses);
             allVoltages = DetermineFixedVoltages(allVoltages, indexOfPvBuses, indexOfSlackBuses);
-            relativePowerError = CalculateRelativePowerError(allPowers, allVoltages);
+            relativePowerError = CalculateRelativePowerError(allPowers, allVoltages, indexOfNodesWithUnknownVoltage);
             var voltageCollapse = relativePowerError > _nodeVoltageCalculator.MaximumRelativePowerError || Double.IsNaN(relativePowerError) ||
                                   Double.IsInfinity(relativePowerError);
             var nodeResults = CombineVoltagesAndPowersToNodeResults(allPowers, allVoltages);
@@ -172,14 +172,29 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return allPowers;
         }
 
-        private double CalculateRelativePowerError(Vector<Complex> allPowers, Vector<Complex> allVoltages)
+        private double CalculateRelativePowerError(Vector<Complex> allPowers, Vector<Complex> allVoltages, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
         {
             var inputPowerSum = allPowers.Sum();
             var absolutePowerSum = allPowers.Sum(power => Math.Abs(power.Real) + Math.Abs(power.Imaginary));
             var lossPowerSum = Admittances.CalculatePowerLoss(allVoltages);
-            var absolutPowerError = (lossPowerSum - inputPowerSum).Magnitude;
+            var currentSourcePowerSum = CalculatePowerInputOfCurrentSources(allVoltages, indexOfNodesWithUnknownVoltage);
+            var absolutPowerError = (lossPowerSum - inputPowerSum - currentSourcePowerSum).Magnitude;
             var relativePowerError = absolutePowerSum > 1e-10 ? absolutPowerError/absolutePowerSum : absolutPowerError;
             return relativePowerError;
+        }
+
+        private Complex CalculatePowerInputOfCurrentSources(IList<Complex> allVoltages, IReadOnlyList<int> indexOfNodesWithUnknownVoltage)
+        {
+            var result = new Complex();
+
+            for (var i = 0; i < indexOfNodesWithUnknownVoltage.Count; ++i)
+            {
+                var voltage = allVoltages[indexOfNodesWithUnknownVoltage[i]];
+                var current = ConstantCurrents[i];
+                result += voltage*current;
+            }
+
+            return result;
         }
 
         private Vector<Complex> CalculateUnknownVoltages(IReadOnlyCollection<NodeWithIndex> slackNodes, IReadOnlyCollection<NodeWithIndex> pqNodes, IReadOnlyCollection<NodeWithIndex> pvNodes, IReadOnlyList<int> indexOfNodesWithUnknownVoltage, int countOfUnknownVoltages)

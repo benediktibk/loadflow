@@ -245,5 +245,51 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             ComplexAssert.AreEqual(2300, 0, nodeResults[0].Power, 0.00001);
             ComplexAssert.AreEqual(0, 0, nodeResults[1].Power, 0.00001);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneCurrentSourceAndOneTransmissionLine_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 100, "");
+            _powerNet.AddNode(1, 100, "");
+            _powerNet.AddFeedIn(0, new Complex(100, 0), new Complex());
+            _powerNet.AddCurrentSource(1, new Complex(10, 0), new Complex(2, 0));
+            _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 1, false);
+
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(100, 0, nodeResults[0].Voltage, 0.00001);
+            ComplexAssert.AreEqual(110, 0, nodeResults[1].Voltage, 0.00001);
+            ComplexAssert.AreEqual(-1000, 0, nodeResults[0].Power, 0.00001);
+            ComplexAssert.AreEqual(0, 0, nodeResults[1].Power, 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneCurrentSource_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 100, "");
+            _powerNet.AddFeedIn(0, new Complex(100, 0), new Complex());
+            _powerNet.AddCurrentSource(0, new Complex(10, 0), new Complex(2, 0));
+
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(100, 0, nodeResults[0].Voltage, 0.00001);
+            ComplexAssert.AreEqual(-1000, 0, nodeResults[0].Power, 0.00001);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_OneCurrentSourceSimplified_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1, 0), new Complex());
+            _powerNet.AddCurrentSource(0, new Complex(0.1, 0), new Complex(2, 0));
+
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.00001);
+            ComplexAssert.AreEqual(-0.1, 0, nodeResults[0].Power, 0.00001);
+        }
     }
 }

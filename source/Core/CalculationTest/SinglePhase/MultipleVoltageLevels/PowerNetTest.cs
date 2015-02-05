@@ -165,6 +165,18 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
+        public void AddCurrentSource_ValidNode_NodeHasOneConnectedElement()
+        {
+            _powerNet.AddNode(0, 123, "");
+            var node = _powerNet.GetNodeById(0);
+
+            _powerNet.AddCurrentSource(0, new Complex(12, 23), new Complex(45, 63));
+
+            Assert.AreEqual(1, node.ConnectedElements.Count);
+            Assert.AreEqual(1, _powerNet.CurrentSourceCount);
+        }
+
+        [TestMethod]
         public void CheckIfNominalVoltagesDoNotMatch_TwoNodesWithDifferentNominalVoltagesConnectedThroughLine_True()
         {
             _powerNet.AddNode(0, 123, "");
