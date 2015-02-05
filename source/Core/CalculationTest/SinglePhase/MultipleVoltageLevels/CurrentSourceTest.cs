@@ -126,7 +126,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         [TestMethod]
         public void FillInConstantCurrents_PrefilledVector_CorrectChange()
         {
-            var constantCurrents = new DenseVector(new[] {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)});
+            var constantCurrents = new[] {new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)};
             var internalNode = _currentSource.GetInternalNodes().First();
             var nodeIndices = new Dictionary<IReadOnlyNode, int> {{internalNode, 1}};
 

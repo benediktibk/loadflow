@@ -1,4 +1,6 @@
-﻿using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -11,9 +13,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }
 
-        public IPowerNetComputable Create(IAdmittanceMatrix admittances, double nominalVoltage)
+        public IPowerNetComputable Create(IAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<Complex> constantCurrents)
         {
-            return new PowerNetComputable(_nodeVoltageCalculator, admittances, nominalVoltage);
+            return new PowerNetComputable(_nodeVoltageCalculator, admittances, nominalVoltage, constantCurrents);
         }
     }
 }

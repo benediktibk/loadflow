@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -29,7 +31,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var replacableNodes = SelectReplacableNodes(nodes, directConnectedNodes);
             var nodeIndices = DetermineNodeIndices(directConnectedNodes, mainNodes, replacableNodes);
             var admittances = CalculateAdmittanceMatrix(nodeIndices, powerScaling, mainNodes.Count);
-            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(mainNodes, admittances, powerScaling);
+            var constantCurrents = CalculateConstantCurrents(mainNodes, powerScaling, nodeIndices);
+            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(mainNodes, admittances, powerScaling, constantCurrents);
             var nodeResults = singleVoltagePowerNet.CalculateNodeResults(out relativePowerError);
             return nodeResults == null ? null : CreateNodeResultsWithId(directConnectedNodes, replacableNodes, nodeIndices, nodeResults, powerScaling, ExternalNodes);
         }
@@ -131,9 +134,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     "the direct connections of these two node types is not yet supported");
         }
 
-        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower)
+        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyList<Complex> constantCurrents)
         {
-            var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1);
+            var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1, constantCurrents);
 
             foreach (var node in nodes)
                 singleVoltagePowerNet.AddNode(node.CreateSingleVoltageNode(scaleBasePower, new HashSet<IExternalReadOnlyNode>(), true));
@@ -146,6 +149,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var admittances = new AdmittanceMatrix(new SingleVoltageLevel.AdmittanceMatrix(nodeCount), nodeIndices);
             FillInAdmittances(admittances, scaleBasePower);
             return admittances;
+        }
+
+        private IReadOnlyList<Complex> CalculateConstantCurrents(IReadOnlyCollection<IReadOnlyNode> mainNodes, double powerScaling, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices)
+        {
+            var constantCurrents = new Complex[mainNodes.Count];
+            FillInConstantCurrents(constantCurrents, powerScaling, nodeIndices);
+            return constantCurrents;
         }
     }
 }

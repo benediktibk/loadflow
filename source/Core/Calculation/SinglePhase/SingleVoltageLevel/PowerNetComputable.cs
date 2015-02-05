@@ -12,7 +12,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         private readonly INodeVoltageCalculator _nodeVoltageCalculator;
 
-        public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, IAdmittanceMatrix admittances, double nominalVoltage) : base(admittances, nominalVoltage)
+        public PowerNetComputable(INodeVoltageCalculator nodeVoltageCalculator, IAdmittanceMatrix admittances, double nominalVoltage, IReadOnlyList<Complex> constantCurrents)
+            : base(admittances, nominalVoltage, constantCurrents)
         {
             _nodeVoltageCalculator = nodeVoltageCalculator;
         }
@@ -186,20 +187,36 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             var knownVoltages = ExtractKnownVoltages(slackNodes);
             var pqNodeWithIndices = ExtractPqNodesWithIndices(pqNodes);
             var pvNodeWithIndices = ExtractPvNodesWithIndices(pvNodes, pqNodeWithIndices.Count);
-            Vector<Complex> constantCurrentRightHandSide;
+            Vector<Complex> constantCurrentsBySlackNodes;
             var indexOfNodesWithKnownVoltage = slackNodes.Select(x => x.Index).ToList();
             var admittancesToUnknownVoltages = Admittances.CreateReducedAdmittanceMatrix(indexOfNodesWithUnknownVoltage,
-                indexOfNodesWithKnownVoltage, knownVoltages, out constantCurrentRightHandSide);
+                indexOfNodesWithKnownVoltage, knownVoltages, out constantCurrentsBySlackNodes);
+            var constantCurrents = ExtractConstantCurrents(indexOfNodesWithUnknownVoltage);
+            var constantCurrentsTotal = constantCurrents + constantCurrentsBySlackNodes;
             var totalAdmittanceRowSums = Admittances.CalculateRowSums();
             var initialVoltages = CalculateNominalVoltages(countOfUnknownVoltages,
                 indexOfNodesWithUnknownVoltage);
 
             var unknownVoltages = _nodeVoltageCalculator.CalculateUnknownVoltages(admittancesToUnknownVoltages,
                 totalAdmittanceRowSums, NominalVoltage,
-                initialVoltages, constantCurrentRightHandSide, pqNodeWithIndices, pvNodeWithIndices);
+                initialVoltages, constantCurrentsTotal, pqNodeWithIndices, pvNodeWithIndices);
 
             var result = CombineKnownAndUnknownVoltages(indexOfNodesWithKnownVoltage, knownVoltages,
                 indexOfNodesWithUnknownVoltage, unknownVoltages);
+            return result;
+        }
+
+        private Vector<Complex> ExtractConstantCurrents(IReadOnlyList<int> nodeIndices)
+        {
+            var result = new SparseVector(nodeIndices.Count);
+            var i = 0;
+
+            foreach (var nodeIndex in nodeIndices)
+            {
+                result[i] = ConstantCurrents[nodeIndex];
+                i++;
+            }
+
             return result;
         }
     }

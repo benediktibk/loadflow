@@ -123,7 +123,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(_nodeThree, _internalNode, lengthAdmittanceThreeScaled);
         }
 
-        public void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
+        public void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
         { }
 
         public bool NominalVoltagesMatch

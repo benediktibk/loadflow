@@ -90,7 +90,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(_internalNode, _node, admittanceScaled);
         }
 
-        public void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
+        public void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
         { }
 
         public IList<IReadOnlyNode> GetInternalNodes()

@@ -32,7 +32,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNetFactoryMock.Setup(
                 x =>
                     x.Create(It.IsAny<IAdmittanceMatrix>(),
-                        It.IsAny<double>())).Returns(_singleVoltagePowerNetMock.Object);
+                        It.IsAny<double>(), It.IsAny<IReadOnlyList<Complex>>())).Returns(_singleVoltagePowerNetMock.Object);
             _relativePowerError = 0.1;
         }
 

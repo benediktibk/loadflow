@@ -69,7 +69,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             admittances.AddConnection(_internalNode, _node, scaler.ScaleAdmittance(1/_internalImpedance));
         }
 
-        public void FillInConstantCurrents(Vector<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
+        public void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
         {
             var index = nodeIndices[_internalNode];
             var scaler = new DimensionScaler(_node.NominalVoltage, scaleBasePower);

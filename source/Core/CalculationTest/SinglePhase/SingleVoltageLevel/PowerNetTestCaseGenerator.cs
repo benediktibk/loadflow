@@ -19,7 +19,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var admittances = new AdmittanceMatrix(DenseMatrix.OfArray(
                 new[,] {   {new Complex(2, -1),    new Complex(-2, 1)},
                             {new Complex(-2, 1), new Complex(2, -1)}}));
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, admittances, 1);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, admittances, 1, new Complex[admittances.NodeCount]);
             powerNet.AddNode(new PqNode(new Complex(0.5, -1)));
             return new PowerNetTestCase(powerNet, new DenseVector(2), new DenseVector(2));
         }
@@ -27,7 +27,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestWithNoSlackBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, 1);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, 1, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -36,7 +36,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemAndVoltagesAndPowersGivenVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -48,7 +48,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionOne(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -60,7 +60,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemAndOnlyOneVoltageGivenVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -72,7 +72,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemWithGroundNodeVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -84,7 +84,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemWithGroundNodeVersionThree(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -96,7 +96,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemAndOnlyVoltagesGiven(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -108,7 +108,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemAndVoltagesAndPowersGiven(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -120,7 +120,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFiveNodeProblemWithGroundNode(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateFiveNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -133,7 +133,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -146,7 +146,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateFiveNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new PvNode(_powers.At(2).Real, _voltages.At(2).Magnitude));
@@ -159,7 +159,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateFiveNodeProblem(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             powerNet.AddNode(new PvNode(_powers.At(2).Real, _voltages.At(2).Magnitude));
@@ -171,7 +171,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeSystemWithImaginaryConnectionsAndOnePVBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblemWithImaginaryConnections(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -181,7 +181,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemAndTwoVoltagesGivenVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -191,7 +191,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemAndTwoVoltagesGiven(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblemWithGroundNode(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -202,7 +202,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new SlackNode(_voltages.At(2)));
@@ -213,7 +213,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -224,7 +224,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         {
             CreateThreeNodeProblemWithMostlyImaginaryConnections(out _admittances, out _voltages, out _powers,
                 out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PvNode(_powers.At(2).Real, _voltages.At(2).Magnitude));
@@ -234,7 +234,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemWithOnePVAndOnePQBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -244,7 +244,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPQBusses(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -254,7 +254,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemWithAsymmetricAdmittancesAndTwoPVBusses(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateAsymmetricThreeNodeProblem(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PvNode(_powers.At(2).Real, _voltages.At(2).Magnitude));
@@ -264,7 +264,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemWithDecoupledPQAndPVBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblemWithTwoDecoupledNodes(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -274,7 +274,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestThreeNodeProblemWithRealValuesAndOnePQAndPVBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateThreeNodeProblemWithRealValues(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             powerNet.AddNode(new PqNode(_powers.At(2)));
@@ -284,7 +284,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestCollapsingSystem(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -293,7 +293,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestNearlyCollapsingSystem(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateNearlyCollapsingOneSideSuppliedConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -302,7 +302,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFromOneSideSuppliedConnectionWithBigResistance(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.1, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -311,7 +311,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFromOneSideSuppliedConnectionWithSmallResistance(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -320,7 +320,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFromOneSideSuppliedConnectionAndOnlyVoltagesKnown(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -329,7 +329,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestFromOneSideSuppliedAndInverseInformationGiven(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new PqNode(_powers.At(0)));
             powerNet.AddNode(new SlackNode(_voltages.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -338,7 +338,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestTwoNodeProblemWithOnePVBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedConnection(0.001, out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -347,7 +347,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestTwoNodesWithImaginaryConnection(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -356,7 +356,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestTwoNodesWithImaginaryConnectionWithPVBus(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedImaginaryConnection(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -365,7 +365,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestTwoNodesWithImaginaryConnectionWithPVBusVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
             return new PowerNetTestCase(powerNet, _voltages, _powers);
@@ -374,7 +374,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         public static PowerNetTestCase CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(INodeVoltageCalculator nodeVoltageCalculator)
         {
             CreateOneSideSuppliedImaginaryConnectionVersionTwo(out _admittances, out _voltages, out _powers, out _nominalVoltage);
-            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage);
+            var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PqNode(_powers.At(1)));
             return new PowerNetTestCase(powerNet, _voltages, _powers);

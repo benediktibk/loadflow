@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -277,6 +278,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var expectedLoadFlow = AverageLoadFlow;
             foreach (var element in _elements)
                 element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
+        }
+
+        public void FillInConstantCurrents(IList<Complex> currents, double scaleBasePower, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices)
+        {
+            foreach (var element in _elements)
+                element.FillInConstantCurrents(currents, nodeIndices, scaleBasePower);
         }
 
         public IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()

@@ -30,7 +30,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             _admittanceMatrixMock.Setup(x => x.CalculateCurrents(It.IsAny<Vector<Complex>>()))
                 .Returns<Vector<Complex>>(voltages => 2*voltages);
             _nodeVoltageCalculatorMock = new Mock<INodeVoltageCalculator>();
-            _powerNet = new PowerNetComputable(_nodeVoltageCalculatorMock.Object, _admittanceMatrixMock.Object, 5);
+            _powerNet = new PowerNetComputable(_nodeVoltageCalculatorMock.Object, _admittanceMatrixMock.Object, 5, new Complex[3]);
         }
 
         [TestMethod]

@@ -207,7 +207,7 @@ namespace ConvergenceExperiment
         {
             var admittances = new AdmittanceMatrix(2);
             admittances.AddConnection(0, 1, new Complex(1, 1));
-            var powerNet = new PowerNetComputable(calculator, admittances, 1);
+            var powerNet = new PowerNetComputable(calculator, admittances, 1, new Complex[admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(new Complex(1, 0)));
             powerNet.AddNode(new PqNode(new Complex((-1)*load, (-1)*load/2)));
             bool convergence;
