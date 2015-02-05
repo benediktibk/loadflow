@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CalculationThread.cs" />
+    <Compile Include="CurrentSource.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="ImpedanceLoad.cs" />
     <Compile Include="INetElement.cs" />

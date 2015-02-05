@@ -40,6 +40,7 @@ namespace SincalConnector
                 FetchGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchSlackGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchCurrentSources(commandFactory, nodesByIds, nodeIdsByElementIds);
 
                 var notSupportedElementIds = FindNotSupportedElement(commandFactory);
 
@@ -251,6 +252,16 @@ namespace SincalConnector
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _powerNet.Add(new SlackGenerator(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+
+        private void FetchCurrentSources(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var command = commandFactory.CreateCommandToFetchAllCurrentSources();
+
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                while (reader.Next())
+                    _powerNet.Add(new CurrentSource(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void DetermineFrequency(SqlCommandFactory commandFactory)
