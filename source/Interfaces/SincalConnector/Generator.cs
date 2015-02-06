@@ -13,17 +13,12 @@ namespace SincalConnector
             Id = record.Parse<int>("Element_ID");
             NodeId = nodeIdsByElementIds.GetOnly(Id);
             var machineType = record.Parse<int>("Flag_Machine");
-            var nominalVoltage = record.Parse<double>("Un") * 1000;
             var loadFlowType = record.Parse<int>("Flag_Lf");
             var relativeSynchronousReactance = record.Parse<double>("xi")/100;
             var powerFactor = record.Parse<double>("fP");
 
             if (machineType != 1)
                 throw new NotSupportedException("the selected machine type for a generator is not supported");
-
-            if (Math.Abs(nominalVoltage - nodes[NodeId].NominalVoltage) > 0.000001)
-                throw new InvalidDataException(
-                    "the nominal voltage of a generator does not match the nominal voltage of the connected node");
 
             if (relativeSynchronousReactance != 0)
                 throw new NotSupportedException("internal reactances for a generator are not supported");
@@ -34,7 +29,7 @@ namespace SincalConnector
             switch (loadFlowType)
             {
                 case 6: case 11:
-                    VoltageMagnitude = nominalVoltage * record.Parse<double>("u") / 100;
+                    VoltageMagnitude = nodes[NodeId].NominalVoltage * record.Parse<double>("u") / 100;
                     break;
                 case 7: case 12:
                     VoltageMagnitude = record.Parse<double>("Ug") * 1000;
