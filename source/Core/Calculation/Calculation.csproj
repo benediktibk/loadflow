@@ -69,6 +69,7 @@
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNode.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\IReadOnlyNodeGraph.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\NodeGraph.cs" />
+    <Compile Include="SinglePhase\MultipleVoltageLevels\PartialPowerNet.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\ThreeWindingTransformer.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\TransmissionLine.cs" />
     <Compile Include="SinglePhase\MultipleVoltageLevels\Load.cs" />
