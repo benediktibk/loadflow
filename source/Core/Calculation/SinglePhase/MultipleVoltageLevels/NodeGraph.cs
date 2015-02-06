@@ -58,6 +58,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             }
         }
 
+        public int NodeCount
+        {
+            get { return _nodes.Count; }
+        }
+
         public void Add(IExternalReadOnlyNode node)
         {
             _nodes.Add(node);

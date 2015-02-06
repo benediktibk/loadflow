@@ -8,5 +8,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         IList<ISet<IExternalReadOnlyNode>> SegmentsOnSameVoltageLevel { get; }
         bool FloatingNodesExist { get; }
         IList<IExternalReadOnlyNode> FloatingNodes { get; } 
+        int NodeCount { get; }
     }
 }
