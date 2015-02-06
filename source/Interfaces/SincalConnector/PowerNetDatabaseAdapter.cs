@@ -44,7 +44,10 @@ namespace SincalConnector
 
                 if (notSupportedElementIds.Count > 0)
                 {
-                    var message = new StringBuilder("the net contains not supported elements: ");
+                    var message = new StringBuilder();
+                    message.Append("the net contains ");
+                    message.Append(notSupportedElementIds.Count);
+                    message.Append(" not supported element(s): ");
 
                     for (var i = 0; i < notSupportedElementIds.Count - 1; ++i)
                         message.Append(notSupportedElementIds[i] + ", ");
