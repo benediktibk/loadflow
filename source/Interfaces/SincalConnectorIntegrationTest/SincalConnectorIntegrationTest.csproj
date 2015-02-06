@@ -83,6 +83,9 @@
     <None Include="testdata\calculation_feedin1.sin" />
     <None Include="testdata\calculation_feedin1_files\database.001.dia" />
     <None Include="testdata\calculation_feedin1_files\database.ini" />
+    <None Include="testdata\calculation_feedin2.sin" />
+    <None Include="testdata\calculation_feedin2_files\database.001.dia" />
+    <None Include="testdata\calculation_feedin2_files\database.ini" />
     <None Include="testdata\calculation_generator1.sin" />
     <None Include="testdata\calculation_generator1_files\database.001.dia" />
     <None Include="testdata\calculation_generator1_files\database.ini" />
@@ -263,6 +266,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="testdata\calculation_feedin1_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_feedin2_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_generator1_files\database.mdb">
