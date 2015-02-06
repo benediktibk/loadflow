@@ -123,17 +123,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void AddFeedIn_TwiceCalled_ThrowsException()
-        {
-            _powerNet.AddNode(0, 123, "");
-            _powerNet.AddNode(1, 123, "");
-
-            _powerNet.AddFeedIn(0, new Complex(123, 3), new Complex());
-            _powerNet.AddFeedIn(1, new Complex(123, 3), new Complex());
-        }
-
-        [TestMethod]
         public void AddGenerator_ValidNode_NodeHasOneConnectedElement()
         {
             _powerNet.AddNode(0, 123, "");
