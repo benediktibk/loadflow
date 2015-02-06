@@ -39,6 +39,7 @@ namespace SincalConnector
                 FetchGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchSlackGenerators(commandFactory, nodesByIds, nodeIdsByElementIds);
                 FetchImpedanceLoads(commandFactory, nodesByIds, nodeIdsByElementIds);
+                FetchShuntReactors(commandFactory, nodesByIds, nodeIdsByElementIds);
 
                 var notSupportedElementIds = FindNotSupportedElement(commandFactory);
 
@@ -226,6 +227,15 @@ namespace SincalConnector
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
                     _powerNet.Add(new ImpedanceLoad(reader, nodesByIds, nodeIdsByElementIds));
+        }
+
+        private void FetchShuntReactors(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        {
+            var command = commandFactory.CreateCommandToFetchAllShuntReactors();
+
+            using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
+                while (reader.Next())
+                    _powerNet.Add(new ShuntReactor(reader, nodesByIds, nodeIdsByElementIds));
         }
 
         private void FetchFeedIns(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)

@@ -18,6 +18,7 @@ namespace SincalConnector
         private readonly IList<ImpedanceLoad> _impedanceLoads;
         private readonly IList<ThreeWindingTransformer> _threeWindingTransformers;
         private readonly IList<SlackGenerator> _slackGenerators;
+        private readonly IList<ShuntReactor> _shuntReactors; 
 
         public PowerNet()
         {
@@ -33,6 +34,7 @@ namespace SincalConnector
             _slackGenerators = new List<SlackGenerator>();
             _impedanceLoads = new List<ImpedanceLoad>();
             _threeWindingTransformers = new List<ThreeWindingTransformer>();
+            _shuntReactors = new List<ShuntReactor>();
         }
 
         public double Frequency { get; set; }
@@ -80,6 +82,11 @@ namespace SincalConnector
         public IReadOnlyList<ImpedanceLoad> ImpedanceLoads
         {
             get { return (IReadOnlyList<ImpedanceLoad>) _impedanceLoads; }
+        }
+
+        public IReadOnlyList<ShuntReactor> ShuntReactors
+        {
+            get { return (IReadOnlyList<ShuntReactor>)_shuntReactors; }
         }
 
         public bool ContainsTransformers
@@ -183,6 +190,12 @@ namespace SincalConnector
         {
             _netElements.Add(element);
             _slackGenerators.Add(element);
+        }
+
+        public void Add(ShuntReactor element)
+        {
+            _netElements.Add(element);
+            _shuntReactors.Add(element);
         }
     }
 }

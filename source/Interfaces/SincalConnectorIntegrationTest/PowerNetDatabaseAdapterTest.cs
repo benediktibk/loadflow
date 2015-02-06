@@ -782,6 +782,48 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_NetWithShuntReactanceVersionTwo_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_shuntreactance2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithShuntReactanceVersionThree_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_shuntreactance3_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithShuntReactanceVersionFour_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_shuntreactance4_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_RuralNetWithCableVersionOne_ResultsAreCorrect()
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/landnetz_kabel1_files/database.mdb");

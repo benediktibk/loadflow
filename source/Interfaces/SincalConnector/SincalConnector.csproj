@@ -73,6 +73,7 @@
     <Compile Include="NodeResultTableEntry.cs" />
     <Compile Include="PowerNetComputable.cs" />
     <Compile Include="PowerNet.cs" />
+    <Compile Include="ShuntReactor.cs" />
     <Compile Include="SlackGenerator.cs" />
     <Compile Include="SqlCommandFactory.cs" />
     <Compile Include="ThreeWindingTransformer.cs" />
