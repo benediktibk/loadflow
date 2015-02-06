@@ -644,6 +644,19 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_NetWithTwoFeedInsInDifferentNets_AllTableEntriesAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_feedin3_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultTableEntriesFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultTableEntriesFromDatabase();
+            AreEqual(sincalResults, ownResults, 1e-6, 1e-5, 1e-3, 1e-2);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_NetWithTransmissionLineVersionSix_AllTableEntriesAreCorrect()
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transmissionline6_files/database.mdb");

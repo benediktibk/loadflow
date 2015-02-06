@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
