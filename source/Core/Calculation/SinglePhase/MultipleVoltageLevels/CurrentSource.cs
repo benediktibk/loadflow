@@ -80,5 +80,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var currentScaled = scaler.ScaleCurrent(_current);
             constantCurrents[index] += currentScaled;
         }
+
+        public bool IsConnectedTo(ISet<IExternalReadOnlyNode> nodes)
+        {
+            return nodes.Contains(_node);
+        }
     }
 }

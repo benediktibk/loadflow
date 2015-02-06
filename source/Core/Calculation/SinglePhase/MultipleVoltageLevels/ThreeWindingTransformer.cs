@@ -133,6 +133,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
         { }
 
+        public bool IsConnectedTo(ISet<IExternalReadOnlyNode> nodes)
+        {
+            return nodes.Contains(_nodeOne) || nodes.Contains(_nodeTwo) || nodes.Contains(_nodeThree);
+        }
+
         public bool NominalVoltagesMatch
         {
             get { return true; }

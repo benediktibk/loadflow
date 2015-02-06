@@ -75,6 +75,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower)
         { }
 
+        public bool IsConnectedTo(ISet<IExternalReadOnlyNode> nodes)
+        {
+            return nodes.Contains(_node);
+        }
+
         public IList<IReadOnlyNode> GetInternalNodes()
         {
             return new List<IReadOnlyNode>();

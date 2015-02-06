@@ -17,5 +17,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode, double expectedLoadFlow);
         void FillInConstantCurrents(IList<Complex> constantCurrents, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower);
+        bool IsConnectedTo(ISet<IExternalReadOnlyNode> nodes);
     }
 }
