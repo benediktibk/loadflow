@@ -10,14 +10,50 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         private readonly IReadOnlyList<IExternalReadOnlyNode> _nodes;
         private readonly IReadOnlyList<IPowerNetElement> _elements;
+        private readonly ExternalNode _groundNode;
+        private readonly FeedIn _groundFeedIn;
+        private readonly double _averageLoadFlow;
+        private readonly IPowerNetFactory _singleVoltagePowerNetFactory;
 
-        public PartialPowerNet(IReadOnlyList<IExternalReadOnlyNode> nodes, IReadOnlyList<IPowerNetElement> elements)
+        public PartialPowerNet(IReadOnlyList<IExternalReadOnlyNode> nodes, IReadOnlyList<IPowerNetElement> elements, IdGenerator idGenerator, double averagleLoadFlow, IPowerNetFactory singleVoltagePowerNetFactory)
         {
             _nodes = nodes;
             _elements = elements;
+            _groundNode = new ExternalNode(idGenerator.Generate(), 0, "ground");
+            _groundFeedIn = new FeedIn(_groundNode, new Complex(), new Complex(), idGenerator);
+            _groundNode.Connect(_groundFeedIn);
+            _averageLoadFlow = averagleLoadFlow;
+            _singleVoltagePowerNetFactory = singleVoltagePowerNetFactory;
         }
 
-        public static Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes, IReadOnlyList<IReadOnlyNode> mainNodes, IEnumerable<IReadOnlyNode> replacableNodes)
+        public IReadOnlyDictionary<int, NodeResult> CalculateNodeResults(out double relativePowerError)
+        {
+            var powerScaling = DeterminePowerScaling();
+            var nodes = GetAllCalculationNodes();
+            var directConnectedNodes = FindDirectConnectedNodes();
+            var mainNodes = SelectMainNodes(nodes, directConnectedNodes);
+            var replacableNodes = SelectReplacableNodes(nodes, directConnectedNodes);
+            var nodeIndices = DetermineNodeIndices(directConnectedNodes, mainNodes, replacableNodes);
+            var admittances = CalculateAdmittanceMatrixInternal(nodeIndices, powerScaling, mainNodes.Count);
+            var constantCurrents = CalculateConstantCurrents(mainNodes, powerScaling, nodeIndices);
+            var singleVoltagePowerNet = CreateSingleVoltagePowerNet(mainNodes, admittances, powerScaling, constantCurrents);
+            var nodeResults = singleVoltagePowerNet.CalculateNodeResults(out relativePowerError);
+            return nodeResults == null ? null : CreateNodeResultsWithId(directConnectedNodes, replacableNodes, nodeIndices, nodeResults, powerScaling, _nodes);
+        }
+
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerScaling)
+        {
+            powerScaling = DeterminePowerScaling();
+            var nodes = GetAllCalculationNodes();
+            var directConnectedNodes = FindDirectConnectedNodes();
+            var mainNodes = SelectMainNodes(nodes, directConnectedNodes);
+            var replacableNodes = SelectReplacableNodes(nodes, directConnectedNodes);
+            var nodeIndices = DetermineNodeIndices(directConnectedNodes, mainNodes, replacableNodes);
+            matrix = CalculateAdmittanceMatrixInternal(nodeIndices, powerScaling, mainNodes.Count);
+            nodeNames = nodes.Select(node => node.Name).ToList();
+        }
+
+        private static Dictionary<IReadOnlyNode, int> DetermineNodeIndices(IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes, IReadOnlyList<IReadOnlyNode> mainNodes, IEnumerable<IReadOnlyNode> replacableNodes)
         {
             var indices = new Dictionary<IReadOnlyNode, int>();
 
@@ -33,17 +69,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return indices;
         }
 
-        public static IReadOnlyList<IReadOnlyNode> SelectReplacableNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
+        private static IReadOnlyList<IReadOnlyNode> SelectReplacableNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
         {
             return nodes.Where(directConnectedNodes.ContainsKey).ToList();
         }
 
-        public static IReadOnlyList<IReadOnlyNode> SelectMainNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
+        private static IReadOnlyList<IReadOnlyNode> SelectMainNodes(IEnumerable<IReadOnlyNode> nodes, IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> directConnectedNodes)
         {
             return nodes.Where(x => !directConnectedNodes.ContainsKey(x)).ToList();
         }
 
-        public static Dictionary<int, NodeResult> CreateNodeResultsWithId(IEnumerable<KeyValuePair<IReadOnlyNode, IReadOnlyNode>> directConnectedNodes, IEnumerable<IReadOnlyNode> replacableNodes,
+        private static Dictionary<int, NodeResult> CreateNodeResultsWithId(IEnumerable<KeyValuePair<IReadOnlyNode, IReadOnlyNode>> directConnectedNodes, IEnumerable<IReadOnlyNode> replacableNodes,
             IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, IList<NodeResult> nodeResults, double powerScaling, IEnumerable<IExternalReadOnlyNode> externalNodes)
         {
             var nodeResultsWithId = new Dictionary<int, NodeResult>();
@@ -72,7 +108,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return nodeResultsWithId;
         }
 
-        public static void AddNodeResultsWithIdForDirectConnection(IReadOnlyNode node, IReadOnlyNode replacableNode,
+        private static void AddNodeResultsWithIdForDirectConnection(IReadOnlyNode node, IReadOnlyNode replacableNode,
             IDictionary<int, NodeResult> nodeResultsWithId, NodeResult nodeResultUnscaled, int id)
         {
             var firstSingleVoltageNode = node.CreateSingleVoltageNode(1,
@@ -103,14 +139,74 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     "the direct connections of these two node types is not yet supported");
         }
 
-        public static SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyList<Complex> constantCurrents, IPowerNetFactory singleVoltagePowerNetFactory)
+        private IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
         {
-            var singleVoltagePowerNet = singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1, constantCurrents);
+            var pairs = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+
+            foreach (var element in _elements)
+                pairs.AddRange(element.GetDirectConnectedNodes());
+
+            return pairs.ToDictionary(pair => pair.Item1, pair => pair.Item2);
+        }
+
+        private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyList<Complex> constantCurrents)
+        {
+            var singleVoltagePowerNet = _singleVoltagePowerNetFactory.Create(admittances.SingleVoltageAdmittanceMatrix, 1, constantCurrents);
 
             foreach (var node in nodes)
                 singleVoltagePowerNet.AddNode(node.CreateSingleVoltageNode(scaleBasePower, new HashSet<IExternalReadOnlyNode>(), true));
 
             return singleVoltagePowerNet;
+        }
+
+        private double DeterminePowerScaling()
+        {
+            var maximumPower = _elements.Max(x => x.MaximumPower);
+            var powerScaling = maximumPower > 0 ? maximumPower : 1;
+            return powerScaling;
+        }
+
+        private IReadOnlyList<IReadOnlyNode> GetAllCalculationNodes()
+        {
+            var allNodes = new List<IReadOnlyNode>();
+
+            foreach (var element in _elements)
+                allNodes.AddRange(element.GetInternalNodes());
+            allNodes.AddRange(_nodes);
+
+            if (!_elements.Any(x => x.NeedsGroundNode))
+                return allNodes;
+
+            allNodes.AddRange(_groundFeedIn.GetInternalNodes());
+            allNodes.Add(_groundNode);
+
+            return allNodes;
+        }
+
+        private AdmittanceMatrix CalculateAdmittanceMatrixInternal(IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, double scaleBasePower, int nodeCount)
+        {
+            var admittances = new AdmittanceMatrix(new SingleVoltageLevel.AdmittanceMatrix(nodeCount), nodeIndices);
+            FillInAdmittances(admittances, scaleBasePower);
+            return admittances;
+        }
+
+        private IReadOnlyList<Complex> CalculateConstantCurrents(IReadOnlyCollection<IReadOnlyNode> mainNodes, double powerScaling, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices)
+        {
+            var constantCurrents = new Complex[mainNodes.Count];
+            FillInConstantCurrents(constantCurrents, powerScaling, nodeIndices);
+            return constantCurrents;
+        }
+
+        private void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower)
+        {
+            foreach (var element in _elements)
+                element.FillInAdmittances(admittances, scaleBasePower, _groundNode, _averageLoadFlow);
+        }
+
+        private void FillInConstantCurrents(IList<Complex> currents, double scaleBasePower, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices)
+        {
+            foreach (var element in _elements)
+                element.FillInConstantCurrents(currents, nodeIndices, scaleBasePower);
         }
     }
 }

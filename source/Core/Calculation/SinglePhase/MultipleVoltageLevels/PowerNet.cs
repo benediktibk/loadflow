@@ -20,8 +20,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly List<IPowerNetElement> _elements;
         private readonly List<ExternalNode> _nodes;
         private readonly Dictionary<long, ExternalNode> _nodesById;
-        private readonly ExternalNode _groundNode;
-        private readonly FeedIn _groundFeedIn;
         private readonly IdGenerator _idGeneratorNodes;
         private readonly INodeGraph _nodeGraph;
 
@@ -40,11 +38,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _nodes = new List<ExternalNode>();
             _nodesById = new Dictionary<long, ExternalNode>();
             _idGeneratorNodes = new IdGenerator();
-            _groundNode = new ExternalNode(_idGeneratorNodes.Generate(), 0, "ground");
-            _groundFeedIn = new FeedIn(_groundNode, new Complex(), new Complex(), _idGeneratorNodes);
-            _groundNode.Connect(_groundFeedIn);
-            _nodesById.Add(_groundNode.Id, _groundNode);
             _nodeGraph = nodeGraph;
+        }
+
+        public IdGenerator IdGeneratorNodes
+        {
+            get { return _idGeneratorNodes; }
         }
 
         public IReadOnlyNodeGraph NodeGraph
@@ -55,6 +54,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public IReadOnlyList<IExternalReadOnlyNode> ExternalNodes
         {
             get { return _nodes.Cast<IExternalReadOnlyNode>().ToList(); }
+        }
+
+        public IReadOnlyList<IPowerNetElement> Elements
+        {
+             get { return _elements; }
         }
 
         public int LoadCount
@@ -97,11 +101,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _currentSources.Count; }
         }
 
-        public IReadOnlyNode GroundNode
-        {
-            get { return _groundNode; }
-        }
-
         public Angle SlackPhaseShift
         {
             get
@@ -124,11 +123,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _elements.Exists(element => !element.NominalVoltagesMatch); }
         }
 
-        public bool GroundNodeNecessary
-        {
-            get { return _elements.Exists(x => x.NeedsGroundNode); }
-        }
-
         public double AverageLoadFlow
         {
             get
@@ -142,19 +136,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                     return 0;
 
                 return absoluteSum / count;
-            }
-        }
-
-        public double MaximumPower
-        {
-            get
-            {
-                var generatorMaximum = _generators.Count > 0 ? _generators.Max(generator => Math.Abs(generator.RealPower)) : 0;
-                var loadMaximum = _loads.Count > 0 ? _loads.Max(load => Math.Abs(load.Value.Real)) : 0;
-                var transformerMaximum = _twoWindingTransformers.Count > 0
-                    ? _twoWindingTransformers.Max(transformer => transformer.NominalPower)
-                    : 0;
-                return Math.Max(Math.Max(generatorMaximum, loadMaximum), transformerMaximum);
             }
         }
 
@@ -266,53 +247,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _currentSources.Add(currentSource);
             _elements.Add(currentSource);
             node.Connect(currentSource);
-        }
-
-        public IReadOnlyList<IReadOnlyNode> GetAllCalculationNodes()
-        {
-            var allNodes = new List<IReadOnlyNode>();
-
-            foreach (var element in _elements)
-                allNodes.AddRange(element.GetInternalNodes());
-            allNodes.AddRange(_nodes);
-
-            if (!GroundNodeNecessary) 
-                return allNodes;
-
-            allNodes.AddRange(_groundFeedIn.GetInternalNodes());
-            allNodes.Add(_groundNode);
-
-            return allNodes;
-        }
-
-        public void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower)
-        {
-            var expectedLoadFlow = AverageLoadFlow;
-            foreach (var element in _elements)
-                element.FillInAdmittances(admittances, scaleBasePower, _groundNode, expectedLoadFlow);
-        }
-
-        public void FillInConstantCurrents(IList<Complex> currents, double scaleBasePower, IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices)
-        {
-            foreach (var element in _elements)
-                element.FillInConstantCurrents(currents, nodeIndices, scaleBasePower);
-        }
-
-        public IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
-        {
-            var pairs = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
-
-            foreach (var element in _elements)
-                pairs.AddRange(element.GetDirectConnectedNodes());
-
-            return pairs.ToDictionary(pair => pair.Item1, pair => pair.Item2);
-        }
-
-        public double DeterminePowerScaling()
-        {
-            var maximumPower = MaximumPower;
-            var powerScaling = maximumPower > 0 ? maximumPower : 1;
-            return powerScaling;
         }
 
         private ExternalNode GetNodeByIdInternal(long name)

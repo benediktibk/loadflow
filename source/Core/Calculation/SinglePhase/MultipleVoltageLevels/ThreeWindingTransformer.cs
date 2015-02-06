@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -20,6 +19,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         private readonly Angle _nominalPhaseShiftTwo;
         private readonly Angle _nominalPhaseShiftThree;
         private readonly DerivedInternalPQNode _internalNode;
+        private readonly double _maximumNominalPower;
 
         public ThreeWindingTransformer(
             IExternalReadOnlyNode nodeOne, IExternalReadOnlyNode nodeTwo, IExternalReadOnlyNode nodeThree,
@@ -43,6 +43,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 relativeShortCircuitVoltageThreeToOne, copperLossesOneToTwo, copperLossesTwoToThree,
                 copperLossesThreeToOne, ironLosses, relativeNoLoadCurrent, out _shuntAdmittance,
                 out _lengthAdmittanceOne, out _lengthAdmittanceTwo, out _lengthAdmittanceThree);
+            _maximumNominalPower = Math.Max(Math.Max(nominalPowerOneToTwo, nominalPowerThreeToOne),
+                nominalPowerTwoToThree);
         }
 
         public IExternalReadOnlyNode NodeOne
@@ -73,6 +75,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public Angle NominalPhaseShiftThree
         {
             get { return _nominalPhaseShiftThree; }
+        }
+
+        public double MaximumPower
+        {
+            get { return _maximumNominalPower; }
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

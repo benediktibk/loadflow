@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -25,6 +24,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public Complex Impedance
         {
             get { return _impedance; }
+        }
+
+        public double MaximumPower
+        {
+            get { return _node.NominalVoltage*_node.NominalVoltage/_impedance.Magnitude; }
         }
 
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)

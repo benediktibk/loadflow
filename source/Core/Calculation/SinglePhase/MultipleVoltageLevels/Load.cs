@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -35,6 +34,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public bool NeedsGroundNode
         {
             get { return false; }
+        }
+
+        public double MaximumPower
+        {
+            get { return _load.Magnitude; }
         }
 
         public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()

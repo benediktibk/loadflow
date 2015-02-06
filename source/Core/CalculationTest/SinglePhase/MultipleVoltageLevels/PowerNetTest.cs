@@ -186,55 +186,10 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void CheckIfGroundNodeIsNecessary_NoElementNeedsGroundNode_False()
-        {
-            _powerNet.AddNode(0, 120, "");
-            _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(234, 3), new Complex());
-            _powerNet.AddTransmissionLine(0, 1, 3, 5, 0, 0, 1, true);
-            _powerNet.AddLoad(1, new Complex(4, 5));
-
-            Assert.IsFalse(_powerNet.GroundNodeNecessary);
-        }
-
-        [TestMethod]
-        public void CheckIfGroundNodeIsNecessary_OneElementNeedsGroundNode_True()
-        {
-            _powerNet.AddNode(0, 120, "");
-            _powerNet.AddNode(1, 120, "");
-            _powerNet.AddFeedIn(0, new Complex(), new Complex(23, 3));
-            _powerNet.AddTransmissionLine(0, 1, 3, 5, 5, 0, 1, true);
-            _powerNet.AddLoad(1, new Complex(4, 5));
-
-            Assert.IsTrue(_powerNet.GroundNodeNecessary);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddNode_NegativeId_ThrowsException()
         {
             _powerNet.AddNode(-1, 230, "");
-        }
-
-        [TestMethod]
-        public void GetAllNecessaryNodes_OneTransmissionLineWithShuntValues_ResultContainsGroundNode()
-        {
-            _powerNet.AddNode(0, 3, "");
-            _powerNet.AddNode(1, 3, "");
-            _powerNet.AddTransmissionLine(0, 1, 1, 2, 3, 4, 5, true);
-
-            var result = _powerNet.GetAllCalculationNodes();
-
-            Assert.AreEqual(3, result.Count);
-            Assert.IsTrue(result.Contains(_powerNet.GetNodeById(0)));
-            Assert.IsTrue(result.Contains(_powerNet.GetNodeById(1)));
-            Assert.IsTrue(result.Contains(_powerNet.GroundNode));
-        }
-
-        [TestMethod]
-        public void GroundNode_NothingAdded_NotNull()
-        {
-            Assert.IsNotNull(_powerNet.GroundNode);
         }
 
         [TestMethod]

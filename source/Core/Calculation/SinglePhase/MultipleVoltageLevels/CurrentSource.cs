@@ -37,6 +37,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return false; }
         }
 
+        public double MaximumPower
+        {
+            get { return _node.NominalVoltage*_current.Magnitude; }
+        }
+
         public void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
             _node.AddConnectedNodes(visitedNodes);

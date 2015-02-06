@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
-using MathNet.Numerics.LinearAlgebra;
 using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -104,6 +103,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         public bool NeedsGroundNode
         {
             get { return true; }
+        }
+
+        public double MaximumPower
+        {
+            get { return _nominalPower; }
         }
 
         public bool HasNotNominalRatio

@@ -76,11 +76,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             Assert.AreEqual(2, nodeResults.Count);
             var sourceNodeResult = nodeResults[0];
             var loadNodeResult = nodeResults[1];
-            var powerScaling = _powerNet.DeterminePowerScaling();
             ComplexAssert.AreEqual(sourceVoltageInternal * 7, sourceNodeResult.Voltage, 0.00001);
             ComplexAssert.AreEqual(loadVoltageInternal * 7, loadNodeResult.Voltage, 0.00001);
-            ComplexAssert.AreEqual(sourcePowerInternal * powerScaling, sourceNodeResult.Power, 0.00001);
-            ComplexAssert.AreEqual(loadPowerInternal * powerScaling, loadNodeResult.Power, 0.00001);
         }
 
         [TestMethod]
