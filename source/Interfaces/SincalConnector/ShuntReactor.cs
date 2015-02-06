@@ -10,8 +10,7 @@ namespace SincalConnector
 {
     public class ShuntReactor : INetElement
     {
-        public ShuntReactor(ISafeDatabaseRecord record, IReadOnlyDictionary<int, IReadOnlyNode> nodes,
-            IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
+        public ShuntReactor(ISafeDatabaseRecord record, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
         {
             Id = record.Parse<int>("Element_ID");
             NodeId = nodeIdsByElementIds.GetOnly(Id);
@@ -19,11 +18,6 @@ namespace SincalConnector
             var ironLosses = record.Parse<double>("Vfe") * 1e3;
             var copperLosses = record.Parse<double>("Vcu") * 1e3;
             var nominalPower = record.Parse<double>("Sn")*1e6;
-            var nodeNominalVoltage = nodes[NodeId].NominalVoltage;
-
-            if (Math.Abs(nominalVoltage - nodeNominalVoltage) > 1e-5)
-                throw new InvalidDataException("the nominal voltages do not match");
-
             Impedance = nominalVoltage*nominalVoltage/new Complex(ironLosses + copperLosses, (-1)*nominalPower);
         }
 

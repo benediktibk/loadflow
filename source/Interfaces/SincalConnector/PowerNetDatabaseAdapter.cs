@@ -217,7 +217,7 @@ namespace SincalConnector
 
             using (var reader = new SafeDatabaseReader(command.ExecuteReader()))
                 while (reader.Next())
-                    _powerNet.Add(new ShuntReactor(reader, nodesByIds, nodeIdsByElementIds));
+                    _powerNet.Add(new ShuntReactor(reader, nodeIdsByElementIds));
         }
 
         private void FetchFeedIns(SqlCommandFactory commandFactory, IReadOnlyDictionary<int, IReadOnlyNode> nodesByIds, IReadOnlyMultiDictionary<int, int> nodeIdsByElementIds)
