@@ -104,19 +104,6 @@ namespace SincalConnector
             get { return _netElements.Select(element => element.Id).OrderBy(id => id).ToList(); }
         }
 
-        public MultiDictionary<int, ImpedanceLoad> ImpedanceLoadsByNodeId
-        {
-            get
-            {
-                var result = new MultiDictionary<int, ImpedanceLoad>();
-
-                foreach (var impedanceLoad in _impedanceLoads)
-                    result.Add(impedanceLoad.NodeId, impedanceLoad);
-
-                return result;
-            }
-        }
-
         public MultiDictionary<int, int> NodeIdsByElementIds
         {
             get
