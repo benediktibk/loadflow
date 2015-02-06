@@ -162,8 +162,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         {
             get
             {
-                if (_feedIns.Count != 1)
-                    throw new InvalidOperationException("there must exist exactly one feed in");
+                if (_feedIns.Count == 0)
+                    throw new InvalidOperationException("there must exist at least one feed in");
 
                 var feedIn = _feedIns.First();
                 return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedIn, _twoWindingTransformers, _threeWindingTransformers);
@@ -206,9 +206,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public void AddFeedIn(int nodeId, Complex voltage, Complex internalImpedance)
         {
-            if (_feedIns.Count > 0)
-                throw new NotSupportedException("only one slack bus is supported");
-
             var node = GetNodeByIdInternal(nodeId);
             var feedIn = new FeedIn(node, voltage, internalImpedance, _idGeneratorNodes);
             _feedIns.Add(feedIn);

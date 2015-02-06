@@ -22,7 +22,7 @@ namespace SincalConnector
             }
 
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
-            slackPhaseShift = ContainsTransformers ? symmetricPowerNet.SlackPhaseShift : new Angle();
+            slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             return symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
         }

@@ -58,9 +58,6 @@ namespace SincalConnector
 
                 databaseConnection.Close();
             }
-
-            if (_powerNet.CountOfElementsWithSlackBus != 1)
-                throw new NotSupportedException("only one feedin and/or slack generator is supported");
         }
 
         public IReadOnlyPowerNetData Data
