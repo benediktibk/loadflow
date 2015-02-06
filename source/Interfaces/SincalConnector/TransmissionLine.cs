@@ -134,5 +134,8 @@ namespace SincalConnector
                 powerNet.AddImpedanceLoad(NodeOneId, data.LengthImpedance + 1/data.ShuntAdmittance);
             }
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

@@ -110,5 +110,8 @@ namespace SincalConnector
 
             throw new ArgumentOutOfRangeException("connectionSymbol");
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

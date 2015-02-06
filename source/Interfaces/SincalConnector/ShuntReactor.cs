@@ -36,5 +36,8 @@ namespace SincalConnector
         {
             powerNet.AddImpedanceLoad(NodeId, Impedance);
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

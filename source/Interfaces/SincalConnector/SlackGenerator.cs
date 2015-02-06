@@ -55,5 +55,8 @@ namespace SincalConnector
         {
             powerNet.AddFeedIn(NodeId, Voltage, new Complex());
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

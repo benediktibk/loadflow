@@ -133,6 +133,12 @@ namespace SincalConnector
             get { return _nodes.ToDictionary<Node, int, IReadOnlyNode>(node => node.Id, node => node); }
         }
 
+        public void FixNodeResults(IDictionary<int, NodeResult> nodeResults)
+        {
+            foreach (var element in _netElements)
+                element.FixNodeResult(nodeResults);
+        }
+
         public void Add(Terminal terminal)
         {
             _terminals.Add(terminal);

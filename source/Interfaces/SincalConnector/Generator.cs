@@ -53,5 +53,8 @@ namespace SincalConnector
         {
             powerNet.AddGenerator(NodeId, VoltageMagnitude, RealPower*powerFactor);
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
-using MathNet.Numerics;
 using Misc;
 
 namespace SincalConnector
@@ -85,25 +84,8 @@ namespace SincalConnector
             if (nodeResults == null)
                 return false;
 
-            var impedanceLoadsByNodeId = _powerNet.ImpedanceLoadsByNodeId;
-            var nodeResultsModified = new Dictionary<int, NodeResult>();
-
-            foreach (var node in _powerNet.Nodes)
-            {
-                var impedanceLoads = impedanceLoadsByNodeId.Get(node.Id);
-                var loadByImpedances = new Complex();
-                var nodeResult = nodeResults[node.Id];
-
-                foreach (var impedanceLoad in impedanceLoads)
-                {
-                    var impedance = impedanceLoad.Impedance;
-                    var loadByImpedance = nodeResult.Voltage * (nodeResult.Voltage / impedance).Conjugate();
-                    loadByImpedances = loadByImpedances + loadByImpedance;
-                }
-
-                var nodeResultModified = new NodeResult(node.Id, nodeResult.Voltage, nodeResult.Power - loadByImpedances);
-                nodeResultsModified.Add(node.Id, nodeResultModified);
-            }
+            var nodeResultsCasted = nodeResults.ToDictionary(nodeResult => nodeResult.Key, nodeResult => new NodeResult(nodeResult.Key, nodeResult.Value.Voltage, nodeResult.Value.Power));
+            _powerNet.FixNodeResults(nodeResultsCasted);
 
             using (var connection = new OleDbConnection(ConnectionString))
             {
@@ -111,7 +93,7 @@ namespace SincalConnector
                 var commandFactory = new SqlCommandFactory(connection);
                 var deleteCommand = commandFactory.CreateCommandToDeleteAllNodeResults();
                 var insertCommands = new List<OleDbCommand> { Capacity = Data.Nodes.Count };
-                insertCommands.AddRange(Data.Nodes.Select(node => commandFactory.CreateCommandToAddResult(nodeResultsModified[node.Id], node.NominalVoltage, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
+                insertCommands.AddRange(Data.Nodes.Select(node => commandFactory.CreateCommandToAddResult(nodeResultsCasted[node.Id], node.NominalVoltage, nominalPhaseShiftByIds[node.Id], slackPhaseShift)));
 
                 deleteCommand.ExecuteNonQuery();
 

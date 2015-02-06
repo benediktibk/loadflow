@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.ThreePhase;
 using Misc;
@@ -49,5 +50,8 @@ namespace SincalConnector
         {
             powerNet.AddLoad(NodeId, LoadValue*powerFactor);
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }

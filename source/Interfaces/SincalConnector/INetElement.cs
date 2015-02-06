@@ -1,4 +1,5 @@
-﻿using Calculation.ThreePhase;
+﻿using System.Collections.Generic;
+using Calculation.ThreePhase;
 
 namespace SincalConnector
 {
@@ -6,5 +7,6 @@ namespace SincalConnector
     {
         int Id { get; }
         void AddTo(SymmetricPowerNet powerNet, double powerFactor);
+        void FixNodeResult(IDictionary<int, NodeResult> nodeResults);
     }
 }

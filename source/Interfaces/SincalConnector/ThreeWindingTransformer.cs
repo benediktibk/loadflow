@@ -145,5 +145,8 @@ namespace SincalConnector
                 CopperLossesTwoToThree, CopperLossesThreeToOne, IronLosses, RelativeNoLoadCurrent, PhaseShiftOne,
                 PhaseShiftTwo, PhaseShiftThree, "");
         }
+
+        public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
+        { }
     }
 }
