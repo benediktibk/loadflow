@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using Calculation.ThreePhase;
+using MathNet.Numerics;
 using Misc;
 
 namespace SincalConnector
@@ -38,6 +39,11 @@ namespace SincalConnector
         }
 
         public void FixNodeResult(IDictionary<int, NodeResult> nodeResults)
-        { }
+        {
+            var nodeResult = nodeResults[NodeId];
+            var loadByImpedance = nodeResult.Voltage * (nodeResult.Voltage / Impedance).Conjugate();
+            var nodeResultModified = new NodeResult(NodeId, nodeResult.Voltage, nodeResult.Power - loadByImpedance);
+            nodeResults[NodeId] = nodeResultModified;
+        }
     }
 }
