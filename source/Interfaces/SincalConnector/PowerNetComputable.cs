@@ -12,15 +12,6 @@ namespace SincalConnector
         public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
             var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
-
-            if (symmetricPowerNet.NodeGraph.FloatingNodesExist)
-            {
-                var floatingNodes = symmetricPowerNet.NodeGraph.FloatingNodes;
-                var floatingNodeNames = floatingNodes.Select(x => x.Name);
-                var nodeNamesCombined = floatingNodeNames.Aggregate((current, next) => current + ", " + next);
-                throw new InvalidDataException("there are " + symmetricPowerNet.NodeGraph.NodeCount + " connected and "+ floatingNodes.Count + " floating nodes: " + nodeNamesCombined);
-            }
-
             var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
