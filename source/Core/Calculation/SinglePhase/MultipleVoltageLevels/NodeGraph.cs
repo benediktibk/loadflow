@@ -83,11 +83,16 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(SegmentsOnSameVoltageLevel, twoWindingTransformers, threeWindingTransformers);
                 var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
                 var phaseShiftBySegment = GetNominalPhaseShiftBySegment(segment, phaseShiftBySegmentToAllSegments);
-                var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment);
+                var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment, segment);
 
                 foreach (var pair in partialResult)
                     result.Add(pair.Key, pair.Value);
             }
+
+            var nodesWithoutFeedIn = _nodes.Where(x => !segments.Any(y => y.Contains(x)));
+
+            foreach (var node in nodesWithoutFeedIn)
+                result.Add(node, new Angle());
 
             return result;
         }
@@ -222,11 +227,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             return phaseShiftsPerTransformer;
         }
 
-        private IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CreateDictionaryPhaseShiftByNode(IList<ISet<IExternalReadOnlyNode>> segments, IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> phaseShiftBySegment)
+        private IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CreateDictionaryPhaseShiftByNode(IList<ISet<IExternalReadOnlyNode>> segments, IReadOnlyDictionary<ISet<IExternalReadOnlyNode>, Angle> phaseShiftBySegment, IEnumerable<IExternalReadOnlyNode> nodes)
         {
             var result = new Dictionary<IExternalReadOnlyNode, Angle>();
 
-            foreach (var node in _nodes)
+            foreach (var node in nodes)
             {
                 var segment = FindSegmentWhichContains(segments, node);
                 result.Add(node, phaseShiftBySegment[segment]);
