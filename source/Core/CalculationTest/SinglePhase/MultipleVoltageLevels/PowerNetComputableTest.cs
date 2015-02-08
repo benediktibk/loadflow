@@ -46,6 +46,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddGenerator(1, 1.02, -0.4);
             _powerNet.AddTransmissionLine(0, 1, 0, 0.00006366197723675813, 0, 0, 1, true);
             var relativePowerError = 0.1;
+            _nodeGraphMock.Setup(x => x.Segments)
+                .Returns(new ISet<IExternalReadOnlyNode>[] { new HashSet<IExternalReadOnlyNode>{ _powerNet.GetNodeById(0), _powerNet.GetNodeById(1) } });
             _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults(out relativePowerError)).Returns((IList<NodeResult>) null);
 
             var nodeResults = _powerNet.CalculateNodeResults(out relativePowerError);
@@ -65,6 +67,8 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var sourcePowerInternal = new Complex(4, 5);
             var loadVoltageInternal = new Complex(6, 7);
             var loadPowerInternal = new Complex(8, 9);
+            _nodeGraphMock.Setup(x => x.Segments)
+                .Returns(new ISet<IExternalReadOnlyNode>[] { new HashSet<IExternalReadOnlyNode> { _powerNet.GetNodeById(0), _powerNet.GetNodeById(1) } });
             _singleVoltagePowerNetMock.Setup(c => c.CalculateNodeResults(out _relativePowerError)).Returns(new List<NodeResult>
             {
                 new NodeResult(sourceVoltageInternal, sourcePowerInternal), new NodeResult(loadVoltageInternal, loadPowerInternal)
@@ -78,15 +82,6 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             var loadNodeResult = nodeResults[1];
             ComplexAssert.AreEqual(sourceVoltageInternal * 7, sourceNodeResult.Voltage, 0.00001);
             ComplexAssert.AreEqual(loadVoltageInternal * 7, loadNodeResult.Voltage, 0.00001);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
-        public void CalculateNodeResults_FloatingNode_ThrowsException()
-        {
-            _nodeGraphMock.Setup(x => x.FloatingNodesExist).Returns(true);
-
-            _powerNet.CalculateNodeResults(out _relativePowerError);
         }
 
         [TestMethod]
