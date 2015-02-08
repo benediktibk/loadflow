@@ -39,7 +39,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPvBuses.Select(x => x.Index));
 
             if (countOfKnownVoltages == 0)
-                throw new ArgumentException("there must be at least one slack bus");
+            {
+                relativePowerError = 0;
+                return CreateEmptyNodeResults(countOfUnknownVoltages);
+            }
 
             var allVoltages = countOfUnknownVoltages == 0 ?
                 ExtractKnownVoltages(indexOfSlackBuses) :
@@ -70,6 +73,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
                 voltagesArray[indexOfNodesWithUnknownVoltage[i]] = unknownVoltages.At(i);
 
             return new DenseVector(voltagesArray);
+        }
+
+        private static IList<NodeResult> CreateEmptyNodeResults(int countOfUnknownVoltages)
+        {
+            var result = new List<NodeResult>(countOfUnknownVoltages);
+
+            for (var i = 0; i < countOfUnknownVoltages; ++i)
+                result.Add(new NodeResult(new Complex(), new Complex()));
+
+            return result;
         }
 
         private static IList<NodeResult> CombineVoltagesAndPowersToNodeResults(IList<Complex> allPowers, IList<Complex> allVoltages)

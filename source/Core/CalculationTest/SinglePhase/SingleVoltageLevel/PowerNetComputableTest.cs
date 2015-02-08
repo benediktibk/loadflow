@@ -42,11 +42,9 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             var results = powerNetTestCase.CalculateNodeResults();
 
             Assert.IsNotNull(results);
-            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual(1, results.Count);
             ComplexAssert.AreEqual(0, 0, results[0].Voltage, 1e-10);
-            ComplexAssert.AreEqual(0, 0, results[1].Voltage, 1e-10);
             ComplexAssert.AreEqual(0, 0, results[0].Power, 1e-10);
-            ComplexAssert.AreEqual(0, 0, results[1].Power, 1e-10);
         }
 
         [TestMethod]
