@@ -69,14 +69,27 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             CachedResultsValid = false;
         }
 
-        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode(FeedIn feedIn, IEnumerable<TwoWindingTransformer> twoWindingTransformers, IEnumerable<ThreeWindingTransformer> threeWindingTransformers)
+        public IReadOnlyDictionary<IExternalReadOnlyNode, Angle> CalculateNominalPhaseShiftPerNode(IEnumerable<IExternalReadOnlyNode> feedInNodes, IReadOnlyList<TwoWindingTransformer> twoWindingTransformers, IReadOnlyList<ThreeWindingTransformer> threeWindingTransformers)
         {
-            var feedInNode = feedIn.Node;
-            var segmentWithFeedIn = FindSegmentWhichContains(SegmentsOnSameVoltageLevel, feedInNode);
-            var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(SegmentsOnSameVoltageLevel, twoWindingTransformers, threeWindingTransformers);
-            var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
-            var phaseShiftBySegment = GetNominalPhaseShiftBySegment(segmentWithFeedIn, phaseShiftBySegmentToAllSegments);
-            return CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment);
+            var segments = new HashSet<ISet<IExternalReadOnlyNode>>();
+
+            foreach (var node in feedInNodes)
+                segments.Add(FindSegmentWhichContains(SegmentsOnSameVoltageLevel, node));
+
+            var result = new Dictionary<IExternalReadOnlyNode, Angle>();
+
+            foreach (var segment in segments)
+            {
+                var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(SegmentsOnSameVoltageLevel, twoWindingTransformers, threeWindingTransformers);
+                var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
+                var phaseShiftBySegment = GetNominalPhaseShiftBySegment(segment, phaseShiftBySegmentToAllSegments);
+                var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment);
+
+                foreach (var pair in partialResult)
+                    result.Add(pair.Key, pair.Value);
+            }
+
+            return result;
         }
 
         private static ISet<IExternalReadOnlyNode> FindSegmentWhichContains(IList<ISet<IExternalReadOnlyNode>> segments, IExternalReadOnlyNode node)

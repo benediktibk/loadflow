@@ -146,8 +146,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 if (_feedIns.Count == 0)
                     throw new InvalidOperationException("there must exist at least one feed in");
 
-                var feedIn = _feedIns.First();
-                return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedIn, _twoWindingTransformers, _threeWindingTransformers);
+                var feedInNodes = _feedIns.Select(x => x.Node);
+                return _nodeGraph.CalculateNominalPhaseShiftPerNode(feedInNodes, _twoWindingTransformers, _threeWindingTransformers);
             }
         }
 
