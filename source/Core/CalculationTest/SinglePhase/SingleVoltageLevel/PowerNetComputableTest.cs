@@ -34,13 +34,19 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ExceptionThrown()
+        public void CalculateNodeVoltagesAndPowers_UnderdeterminedProblem_ZeroVoltages()
         {
             var nodeVoltageCalculator = new Mock<INodeVoltageCalculator>();
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestWithUnderdeterminedProblem(nodeVoltageCalculator.Object);
 
-            powerNetTestCase.CalculateNodeResults();
+            var results = powerNetTestCase.CalculateNodeResults();
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(2, results.Count);
+            ComplexAssert.AreEqual(0, 0, results[0].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0, 0, results[1].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0, 0, results[0].Power, 1e-10);
+            ComplexAssert.AreEqual(0, 0, results[1].Power, 1e-10);
         }
 
         [TestMethod]
