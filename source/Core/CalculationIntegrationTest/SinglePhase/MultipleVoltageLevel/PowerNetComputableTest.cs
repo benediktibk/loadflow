@@ -291,5 +291,35 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 0.00001);
             ComplexAssert.AreEqual(-0.1, 0, nodeResults[0].Power, 0.00001);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_ThreeDirectConnectedNodes_VoltagesAndPowersAreCorrect()
+        {
+            _powerNet.AddNode(0, 1, "");
+            _powerNet.AddNode(1, 1, "");
+            _powerNet.AddNode(2, 1, "");
+            _powerNet.AddNode(3, 1, "");
+            _powerNet.AddNode(4, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(1, 0), new Complex());
+            _powerNet.AddTransmissionLine(0, 1, 1, 0, 0, 0, 0.5, false);
+            _powerNet.AddTransmissionLine(1, 2, 1, 0, 0, 0, 0, false);
+            _powerNet.AddTransmissionLine(2, 3, 1, 0, 0, 0, 0, false);
+            _powerNet.AddTransmissionLine(3, 4, 1, 0, 0, 0, 0.5, false);
+            _powerNet.AddLoad(4, new Complex(-0.09, 0));
+
+            var nodeResults = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(nodeResults);
+            ComplexAssert.AreEqual(1, 0, nodeResults[0].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0.95, 0, nodeResults[1].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0.95, 0, nodeResults[2].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0.95, 0, nodeResults[3].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0.9, 0, nodeResults[4].Voltage, 1e-10);
+            ComplexAssert.AreEqual(0.1, 0, nodeResults[0].Power, 1e-10);
+            ComplexAssert.AreEqual(0, 0, nodeResults[1].Power, 1e-10);
+            ComplexAssert.AreEqual(0, 0, nodeResults[2].Power, 1e-10);
+            ComplexAssert.AreEqual(0, 0, nodeResults[3].Power, 1e-10);
+            ComplexAssert.AreEqual(-0.09, 0, nodeResults[4].Power, 1e-10);
+        }
     }
 }
