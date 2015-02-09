@@ -58,17 +58,6 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void CalculateNodeResults_NoSlackBus_ThrowsException()
-        {
-            _powerNet.AddNode(new PqNode(new Complex(1, 2)));
-            _powerNet.AddNode(new PqNode(new Complex(5, 6)));
-            _powerNet.AddNode(new PvNode(3, 4));
-
-            _powerNet.CalculateNodeResults(out _relativePowerError);
-        }
-
-        [TestMethod]
         public void CalculateNodeResults_AllVoltagesKnown_CorrectVoltages()
         {
             _nodeVoltageCalculatorMock.Setup(x => x.MaximumRelativePowerError).Returns(100);
