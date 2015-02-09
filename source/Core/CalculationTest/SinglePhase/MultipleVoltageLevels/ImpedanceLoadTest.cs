@@ -103,11 +103,15 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_Empty_EmptyList()
+        public void AddDirectConnectedNodes_Empty_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
         {
-            var result = _impedanceLoad.GetDirectConnectedNodes();
+            var node = new Mock<IExternalReadOnlyNode>();
+            var impedanceLoad = new ImpedanceLoad(node.Object, new Complex(123, 3));
+            var nodes = new HashSet<IExternalReadOnlyNode>();
 
-            Assert.AreEqual(0, result.Count);
+            impedanceLoad.AddDirectConnectedNodes(nodes);
+
+            node.Verify(x => x.AddDirectConnectedNodes(nodes), Times.Once);
         }
     }
 }

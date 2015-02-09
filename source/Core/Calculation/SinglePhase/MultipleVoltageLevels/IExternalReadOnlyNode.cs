@@ -7,5 +7,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         IReadOnlyCollection<IPowerNetElement> ConnectedElements { get; }
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);
+        void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
     }
 }

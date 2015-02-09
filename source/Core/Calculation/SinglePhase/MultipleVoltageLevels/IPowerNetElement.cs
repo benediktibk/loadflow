@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
@@ -12,7 +11,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
         double MaximumPower { get; }
         void AddConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         void AddConnectedNodesOnSameVoltageLevel(ISet<IExternalReadOnlyNode> visitedNodes);
-        IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes();
+        void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes);
         INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections);
         IList<IReadOnlyNode> GetInternalNodes();
         void FillInAdmittances(IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyNode groundNode, double expectedLoadFlow);

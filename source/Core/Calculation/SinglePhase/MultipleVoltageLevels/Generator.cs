@@ -48,9 +48,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _realPower; }
         }
 
-        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        public void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
-            return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+            _node.AddDirectConnectedNodes(visitedNodes);
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)

@@ -135,9 +135,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _nominalPower; }
         }
 
-        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        public void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
-            return new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+            if (visitedNodes.Contains(_upperSideNode))
+                _upperSideNode.AddDirectConnectedNodes(visitedNodes);
+            else if (visitedNodes.Contains(_lowerSideNode))
+                _lowerSideNode.AddDirectConnectedNodes(visitedNodes);
+            else
+                throw new ArgumentException("neither the upper side nor the lower side node have been visited yet");
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)

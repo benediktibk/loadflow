@@ -66,5 +66,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             foreach (var element in _connectedElements)
                 element.AddConnectedNodesOnSameVoltageLevel(visitedNodes);
         }
+
+        public void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
+        {
+            if (visitedNodes.Contains(this))
+                return;
+
+            visitedNodes.Add(this);
+            foreach (var element in _connectedElements)
+                element.AddDirectConnectedNodes(visitedNodes);
+        }
     }
 }

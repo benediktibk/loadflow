@@ -189,11 +189,31 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_Empty_EmptyList()
+        public void AddDirectConnectedNodes_UpperSideNode_UpperSideNodeOneGotCallToAddDirectConnectedNodes()
         {
-            var result = _transformerWithNominalRatio.GetDirectConnectedNodes();
+            var upperSideNode = new Mock<IExternalReadOnlyNode>();
+            var lowerSideNode = new Mock<IExternalReadOnlyNode>();
+            var transformer = new TwoWindingTransformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
+            var nodes = new HashSet<IExternalReadOnlyNode>() { upperSideNode.Object };
 
-            Assert.AreEqual(0, result.Count);
+            transformer.AddDirectConnectedNodes(nodes);
+
+            upperSideNode.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            lowerSideNode.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void AddDirectConnectedNodes_LowerSideNode_LowerSideNodeOneGotCallToAddDirectConnectedNodes()
+        {
+            var upperSideNode = new Mock<IExternalReadOnlyNode>();
+            var lowerSideNode = new Mock<IExternalReadOnlyNode>();
+            var transformer = new TwoWindingTransformer(upperSideNode.Object, lowerSideNode.Object, 50, 0.2, 4, 5, 0.1, 2, new Angle(), "", _idGenerator);
+            var nodes = new HashSet<IExternalReadOnlyNode>() { lowerSideNode.Object };
+
+            transformer.AddDirectConnectedNodes(nodes);
+
+            upperSideNode.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+            lowerSideNode.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
     }
 }

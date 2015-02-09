@@ -99,11 +99,15 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_Empty_EmptyList()
+        public void AddDirectConnectedNodes_Empty_NodeGotCallToAddConnectedNodesOnSameVoltageLevel()
         {
-            var result = _generator.GetDirectConnectedNodes();
+            var visitedNodes = new HashSet<IExternalReadOnlyNode>();
+            var node = new Mock<IExternalReadOnlyNode>();
+            var generator = new Generator(node.Object, 67, 3);
 
-            Assert.AreEqual(0, result.Count);
+            generator.AddDirectConnectedNodes(visitedNodes);
+
+            node.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Once);
         }
     }
 }

@@ -60,14 +60,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             get { return _data.IsDirectConnection; }
         }
 
-        public IList<Tuple<IReadOnlyNode, IReadOnlyNode>> GetDirectConnectedNodes()
+        public void AddDirectConnectedNodes(ISet<IExternalReadOnlyNode> visitedNodes)
         {
-            var result = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
-
-            if (LengthImpedance.MagnitudeSquared() <= 0)
-                result.Add(new Tuple<IReadOnlyNode, IReadOnlyNode>(_sourceNode, _targetNode));
-
-            return result;
+            if (visitedNodes.Contains(_sourceNode) || IsDirectConnection)
+                _sourceNode.AddDirectConnectedNodes(visitedNodes);
+            if (visitedNodes.Contains(_targetNode) || IsDirectConnection)
+                _targetNode.AddDirectConnectedNodes(visitedNodes);
         }
 
         public INode CreateSingleVoltageNode(double scaleBasePower, ISet<IExternalReadOnlyNode> visited, bool includeDirectConnections)

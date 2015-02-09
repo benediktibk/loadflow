@@ -220,21 +220,59 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_NonZeroLength_EmptyList()
+        public void AddDirectConnectedNodes_SourceNodeAndNotADirectConnection_SourceGotCallToAddDirectConnectedNodes()
         {
-            var result = _transmissionLineWithLengthAndShuntValues.GetDirectConnectedNodes();
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 5, 4, 3, 2, 1, 10, true);
+            var nodes = new HashSet<IExternalReadOnlyNode> {source.Object};
 
-            Assert.AreEqual(0, result.Count);
+            line.AddDirectConnectedNodes(nodes);
+
+            source.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            target.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_ZeroLength_OneElement()
+        public void AddDirectConnectedNodes_TargetNodeAndNotADirectConnection_TargetGotCallToAddDirectConnectedNodes()
         {
-            var line = new TransmissionLine(_sourceNodeValid, _targetNodeValid, 1, 2, 3, 4, 0, 2, true);
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 5, 4, 3, 2, 1, 10, true);
+            var nodes = new HashSet<IExternalReadOnlyNode> { target.Object };
 
-            var result = line.GetDirectConnectedNodes();
+            line.AddDirectConnectedNodes(nodes);
 
-            Assert.AreEqual(1, result.Count);
+            source.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Never);
+            target.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddDirectConnectedNodes_SourceNodeAndDirectConnection_SourceAndTargetGotCallToAddDirectConnectedNodes()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 5, 4, 3, 2, 0, 5, true);
+            var nodes = new HashSet<IExternalReadOnlyNode> { source.Object };
+
+            line.AddDirectConnectedNodes(nodes);
+
+            source.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            target.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddDirectConnectedNodes_TargetNodeAndDirectConnection_SourceAndTargetGotCallToAddDirectConnectedNodes()
+        {
+            var source = new Mock<IExternalReadOnlyNode>();
+            var target = new Mock<IExternalReadOnlyNode>();
+            var line = new TransmissionLine(source.Object, target.Object, 5, 4, 3, 2, 0, 5, true);
+            var nodes = new HashSet<IExternalReadOnlyNode> { target.Object };
+
+            line.AddDirectConnectedNodes(nodes);
+
+            source.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
+            target.Verify(x => x.AddDirectConnectedNodes(It.IsAny<HashSet<IExternalReadOnlyNode>>()), Times.Once);
         }
     }
 }

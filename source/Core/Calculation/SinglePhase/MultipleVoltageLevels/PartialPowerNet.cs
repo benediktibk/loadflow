@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Policy;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -141,12 +142,36 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         private IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
         {
-            var pairs = new List<Tuple<IReadOnlyNode, IReadOnlyNode>>();
+            var allDirectConnectedNodes = new HashSet<IExternalReadOnlyNode>();
+            var directConnectedNodes = new List<ISet<IExternalReadOnlyNode>>();
+            var result = new Dictionary<IReadOnlyNode, IReadOnlyNode>();
 
-            foreach (var element in _elements)
-                pairs.AddRange(element.GetDirectConnectedNodes());
+            foreach (var node in _nodes)
+            {
+                if (allDirectConnectedNodes.Contains(node))
+                    continue;
 
-            return pairs.ToDictionary(pair => pair.Item1, pair => pair.Item2);
+                var segment = new HashSet<IExternalReadOnlyNode>();
+                node.AddDirectConnectedNodes(segment);
+
+                if (segment.Count == 1)
+                    continue;
+
+                directConnectedNodes.Add(segment);
+
+                foreach (var segmentNode in segment)
+                    allDirectConnectedNodes.Add(segmentNode);
+            }
+
+            foreach (var segment in directConnectedNodes)
+            {
+                var mainElement = segment.First();
+
+                foreach (var node in segment.Where(x => x != mainElement))
+                    result.Add(node, mainElement);
+            }
+
+            return result;
         }
 
         private SingleVoltageLevel.IPowerNetComputable CreateSingleVoltagePowerNet(IEnumerable<IReadOnlyNode> nodes, IAdmittanceMatrix admittances, double scaleBasePower, IReadOnlyList<Complex> constantCurrents)

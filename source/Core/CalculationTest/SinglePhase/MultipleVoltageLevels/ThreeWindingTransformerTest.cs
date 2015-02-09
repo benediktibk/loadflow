@@ -118,11 +118,39 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
         }
 
         [TestMethod]
-        public void GetDirectConnectedNodes_Empty_EmptyList()
+        public void AddDirectConnectedNodes_NodeOne_NodeOneGotCallToAddConnectedNodesOnSameVoltageLevel()
         {
-            var result = _transformer.GetDirectConnectedNodes();
+            var visitedNodes = new HashSet<IExternalReadOnlyNode> {_nodeOne.Object};
 
-            Assert.AreEqual(0, result.Count);
+            _transformer.AddDirectConnectedNodes(visitedNodes);
+
+            _nodeOne.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Once);
+            _nodeTwo.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+            _nodeThree.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+        }
+
+        [TestMethod]
+        public void AddDirectConnectedNodes_NodeTwo_NodeTwoGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var visitedNodes = new HashSet<IExternalReadOnlyNode> {_nodeTwo.Object};
+
+            _transformer.AddDirectConnectedNodes(visitedNodes);
+
+            _nodeOne.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+            _nodeTwo.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Once);
+            _nodeThree.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+        }
+
+        [TestMethod]
+        public void AddDirectConnectedNodes_NodeThree_NodeThreeGotCallToAddConnectedNodesOnSameVoltageLevel()
+        {
+            var visitedNodes = new HashSet<IExternalReadOnlyNode> { _nodeThree.Object };
+
+            _transformer.AddDirectConnectedNodes(visitedNodes);
+
+            _nodeOne.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+            _nodeTwo.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Never);
+            _nodeThree.Verify(x => x.AddDirectConnectedNodes(visitedNodes), Times.Once);
         }
     }
 }
