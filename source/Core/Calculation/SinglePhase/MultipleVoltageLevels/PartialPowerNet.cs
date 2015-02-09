@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Security.Policy;
 using Calculation.SinglePhase.SingleVoltageLevel;
+using Misc;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
 {
@@ -84,9 +84,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             IReadOnlyDictionary<IReadOnlyNode, int> nodeIndices, IList<NodeResult> nodeResults, double powerScaling, IEnumerable<IExternalReadOnlyNode> externalNodes)
         {
             var nodeResultsWithId = new Dictionary<int, NodeResult>();
-            var directConnectionsReverse = directConnectedNodes.ToDictionary(connection => connection.Value,
-                connection => connection.Key);
             var replacableNodesSet = new HashSet<IReadOnlyNode>();
+            var directConnectionsReverse = new MultiDictionary<IReadOnlyNode, IReadOnlyNode>();
+
+            foreach (var directConnectedNode in directConnectedNodes)
+                directConnectionsReverse.Add(directConnectedNode.Value, directConnectedNode.Key);
 
             foreach (var replacableNode in replacableNodes)
                 replacableNodesSet.Add(replacableNode);
@@ -98,46 +100,63 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var nodeResult = nodeResults[nodeIndex];
                 var id = node.Id;
                 var nodeResultUnscaled = nodeResult.Unscale(node.NominalVoltage, powerScaling);
-                IReadOnlyNode replacableNode;
+                var replacedNodes = directConnectionsReverse.Get(node);
 
-                if (!directConnectionsReverse.TryGetValue(node, out replacableNode))
+                if (replacedNodes.Count == 0)
                     nodeResultsWithId.Add(id, nodeResultUnscaled);
                 else
-                    AddNodeResultsWithIdForDirectConnection(node, replacableNode, nodeResultsWithId, nodeResultUnscaled, id);
+                    AddNodeResultWithIdForDirectConnectedNodes(nodeResultsWithId, node, replacedNodes, id, nodeResultUnscaled);
             }
 
             return nodeResultsWithId;
         }
 
-        private static void AddNodeResultsWithIdForDirectConnection(IReadOnlyNode node, IReadOnlyNode replacableNode,
-            IDictionary<int, NodeResult> nodeResultsWithId, NodeResult nodeResultUnscaled, int id)
+        private static void AddNodeResultWithIdForDirectConnectedNodes(IDictionary<int, NodeResult> nodeResultsWithId, IReadOnlyNode node, IReadOnlyList<IReadOnlyNode> replacedNodes, int id, NodeResult nodeResult)
         {
-            var firstSingleVoltageNode = node.CreateSingleVoltageNode(1,
-                new HashSet<IExternalReadOnlyNode>(), false);
-            var secondSingleVoltageNode = replacableNode.CreateSingleVoltageNode(1,
-                new HashSet<IExternalReadOnlyNode>(), false);
+            var allNodes = new List<IReadOnlyNode> {node};
+            allNodes.AddRange(replacedNodes);
+            var singleVoltageNodes = new List<Tuple<INode, int>>(allNodes.Count);
+            singleVoltageNodes.AddRange(
+                replacedNodes.Select(
+                    x => new Tuple<INode, int>(x.CreateSingleVoltageNode(1, new HashSet<IExternalReadOnlyNode>(), false), x.Id)));
+            singleVoltageNodes.Add(
+                new Tuple<INode, int>(node.CreateSingleVoltageNode(1, new HashSet<IExternalReadOnlyNode>(), false), id));
 
-            var firstAsPq = firstSingleVoltageNode as PqNode;
-            var secondAsPq = secondSingleVoltageNode as PqNode;
-            var firstAsSlack = firstSingleVoltageNode as SlackNode;
-            var secondAsSlack = secondSingleVoltageNode as SlackNode;
-            var secondId = replacableNode.Id;
+            var slackNodes =
+                singleVoltageNodes.Select(x => new Tuple<SlackNode, int>(x.Item1 as SlackNode, x.Item2))
+                    .Where(x => x.Item1 != null)
+                    .ToList();
+            var pqNodes =
+                singleVoltageNodes.Select(x => new Tuple<PqNode, int>(x.Item1 as PqNode, x.Item2))
+                    .Where(x => x.Item1 != null)
+                    .ToList();
 
-            if ((firstAsPq != null || firstAsSlack != null) && secondAsPq != null)
-            {
-                nodeResultsWithId.Add(secondId, new NodeResult(nodeResultUnscaled.Voltage, secondAsPq.Power));
-                nodeResultsWithId.Add(id,
-                    new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - secondAsPq.Power));
-            }
-            else if (firstAsPq != null && secondAsSlack != null)
-            {
-                nodeResultsWithId.Add(id, new NodeResult(nodeResultUnscaled.Voltage, firstAsPq.Power));
-                nodeResultsWithId.Add(secondId,
-                    new NodeResult(nodeResultUnscaled.Voltage, nodeResultUnscaled.Power - firstAsPq.Power));
-            }
+            if (slackNodes.Count() + pqNodes.Count() != singleVoltageNodes.Count)
+                throw new NotSupportedException("can not separate the PV- from the other nodes");
+
+            if (slackNodes.Count() > 1)
+                throw new NotSupportedException("can not separate multiple slack nodes");
+
+            var voltage = nodeResult.Voltage;
+            var power = nodeResult.Power;
+            int leftOverId;
+
+            if (slackNodes.Count() == 1)
+                leftOverId = slackNodes.First().Item2;
             else
-                throw new NotSupportedException(
-                    "the direct connections of these two node types is not yet supported");
+            {
+                leftOverId = pqNodes.Last().Item2;
+                pqNodes.RemoveAt(pqNodes.Count - 1);
+            }
+
+            foreach (var pqNode in pqNodes)
+            {
+                var ownPower = pqNode.Item1.Power;
+                power = power - ownPower;
+                nodeResultsWithId.Add(pqNode.Item2, new NodeResult(voltage, ownPower));
+            }
+
+            nodeResultsWithId.Add(leftOverId, new NodeResult(voltage, power));
         }
 
         private IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
