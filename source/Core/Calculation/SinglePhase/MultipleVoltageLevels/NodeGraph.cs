@@ -77,19 +77,20 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 segments.Add(FindSegmentWhichContains(SegmentsOnSameVoltageLevel, node));
 
             var result = new Dictionary<IExternalReadOnlyNode, Angle>();
+            var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(SegmentsOnSameVoltageLevel, twoWindingTransformers, threeWindingTransformers);
+            var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
 
             foreach (var segment in segments)
             {
-                var phaseShiftsPerTransformer = CreatePhaseShiftsPerTransformer(SegmentsOnSameVoltageLevel, twoWindingTransformers, threeWindingTransformers);
-                var phaseShiftBySegmentToAllSegments = CreatePhaseShiftBySegmentToAllSegments(phaseShiftsPerTransformer);
+                var completeSegment = FindSegmentWhichContains(Segments, segment.First());
                 var phaseShiftBySegment = GetNominalPhaseShiftBySegment(segment, phaseShiftBySegmentToAllSegments);
-                var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment, segment);
+                var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment, completeSegment);
 
                 foreach (var pair in partialResult)
                     result.Add(pair.Key, pair.Value);
             }
 
-            var nodesWithoutFeedIn = _nodes.Where(x => !segments.Any(y => y.Contains(x)));
+            var nodesWithoutFeedIn = _nodes.Where(x => !result.ContainsKey(x));
 
             foreach (var node in nodesWithoutFeedIn)
                 result.Add(node, new Angle());
