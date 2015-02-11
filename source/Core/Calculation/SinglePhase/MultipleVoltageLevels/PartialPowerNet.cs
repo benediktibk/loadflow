@@ -130,9 +130,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 singleVoltageNodes.Select(x => new Tuple<PqNode, int>(x.Item1 as PqNode, x.Item2))
                     .Where(x => x.Item1 != null)
                     .ToList();
+            var pvNodes =
+                singleVoltageNodes.Select(x => new Tuple<PvNode, int>(x.Item1 as PvNode, x.Item2))
+                    .Where(x => x.Item1 != null)
+                    .ToList();
 
-            if (slackNodes.Count() + pqNodes.Count() != singleVoltageNodes.Count)
-                throw new NotSupportedException("can not separate the PV- from the other nodes");
+            if (slackNodes.Any() && pvNodes.Any())
+                throw new NotSupportedException("can not separate pv and slack nodes");
 
             var voltage = nodeResult.Voltage;
             var power = nodeResult.Power;
@@ -140,9 +144,14 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             if (slackNodes.Any())
                 leftOverIds = slackNodes.Select(x => x.Item2).ToList();
+            else if (pvNodes.Any())
+            {
+                leftOverIds = new List<int> { pvNodes.Last().Item2 };
+                pvNodes.RemoveAt(pvNodes.Count - 1);
+            }
             else
             {
-                leftOverIds = new List<int> {pqNodes.Last().Item2};
+                leftOverIds = new List<int> { pqNodes.Last().Item2 };
                 pqNodes.RemoveAt(pqNodes.Count - 1);
             }
 
@@ -151,6 +160,13 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var ownPower = pqNode.Item1.Power;
                 power = power - ownPower;
                 nodeResultsWithId.Add(pqNode.Item2, new NodeResult(voltage, ownPower));
+            }
+
+            foreach (var pvNode in pvNodes)
+            {
+                var ownPower = new Complex(pvNode.Item1.RealPower, 0);
+                power = power - ownPower;
+                nodeResultsWithId.Add(pvNode.Item2, new NodeResult(voltage, ownPower));
             }
 
             foreach (var leftOverId in leftOverIds)
