@@ -138,7 +138,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             var power = nodeResult.Power;
             IReadOnlyList<int> leftOverIds;
 
-            if (slackNodes.Count() > 1)
+            if (slackNodes.Any())
                 leftOverIds = slackNodes.Select(x => x.Item2).ToList();
             else
             {
