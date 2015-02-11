@@ -59,9 +59,19 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Merge_SlackNode_ThrowsException()
+        public void Merge_SlackNodeWithDifferentVoltage_ThrowsException()
         {
-            _node.Merge(new SlackNode(new Complex(3, 4)));
+            _node.Merge(new SlackNode(new Complex(3, 4.1)));
+        }
+
+        [TestMethod]
+        public void Merge_SlackNodeWithSameVoltage_SlackNode()
+        {
+            var result = _node.Merge(new SlackNode(new Complex(3, 4)));
+
+            var resultSlackNode = result as SlackNode;
+            Assert.IsNotNull(resultSlackNode);
+            ComplexAssert.AreEqual(3, 4, resultSlackNode.Voltage, 1e-10);
         }
 
         [TestMethod]

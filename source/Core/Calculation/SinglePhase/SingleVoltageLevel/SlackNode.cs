@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
@@ -51,8 +52,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public INode Merge(INode node)
         {
-            if (node is SlackNode)
-                throw new InvalidOperationException("can not merge two slack nodes");
+            var slackNode = node as SlackNode;
+
+            if (slackNode != null)
+            {
+                if ((slackNode.Voltage - Voltage).Magnitude > 1e-5)
+                    throw new InvalidOperationException("can not merge two slack nodes with different voltages");
+
+                return new SlackNode(Voltage);
+            }
+
             if (node is PvNode)
                 throw new InvalidOperationException("can not merge a slack node and a PV node");
             if (node is PqNode)
