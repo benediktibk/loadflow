@@ -55,16 +55,22 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public INode Merge(INode node)
         {
             if (node is SlackNode)
-                throw new InvalidOperationException("can not merge two slack nodes");
-            if (node is PvNode)
                 throw new InvalidOperationException("can not merge a slack node and a PV node");
 
+            var pvNode = node as PvNode;
+            if (pvNode != null)
+            {
+                if (Math.Abs(pvNode.VoltageMagnitude - VoltageMagnitude) > 1e-5)
+                    throw new InvalidOperationException("can not merge two pv nodes with different voltage magnitudes");
+
+                return new PvNode(RealPower + pvNode.RealPower, VoltageMagnitude);
+            }
+
             var pqNode = node as PqNode;
+            if (pqNode != null)
+                return new PvNode(RealPower + pqNode.Power.Real, VoltageMagnitude);
 
-            if (pqNode == null)
-                throw new NotSupportedException("node type is not supported");
-
-            return new PvNode(RealPower + pqNode.Power.Real, VoltageMagnitude);
+            throw new NotSupportedException("node type is not supported");
         }
     }
 }

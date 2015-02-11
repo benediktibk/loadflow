@@ -77,9 +77,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Merge_PvNode_ThrowsException()
+        public void Merge_PvNodeWithDifferentVoltageMagnitude_ThrowsException()
         {
-            _node.Merge(new PvNode(3, 4));
+            _node.Merge(new PvNode(3, 4.1));
+        }
+
+        [TestMethod]
+        public void Merge_PvNodeWithSameVoltageMagnitude_PvNode()
+        {
+            var result = _node.Merge(new PvNode(2, 4));
+
+            var pvNode = result as PvNode;
+            Assert.IsNotNull(pvNode);
+            Assert.AreEqual(4, pvNode.VoltageMagnitude, 1e-10);
+            Assert.AreEqual(5, pvNode.RealPower, 1e-10);
         }
 
         [TestMethod]
