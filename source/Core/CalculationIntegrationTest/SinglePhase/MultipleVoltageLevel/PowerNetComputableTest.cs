@@ -466,5 +466,21 @@ namespace CalculationIntegrationTest.SinglePhase.MultipleVoltageLevel
             ComplexAssert.AreEqual(0.02, 0, nodeResults[2].Power, 1e-5);
             ComplexAssert.AreEqual(-0.19, 0, nodeResults[3].Power, 1e-5);
         }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_TwoFeedInsAtDifferentVoltageLevelSegments_ThrowsNoException()
+        {
+            _powerNet.AddNode(0, 2, "");
+            _powerNet.AddNode(1, 1, "");
+            _powerNet.AddNode(2, 1, "");
+            _powerNet.AddFeedIn(0, new Complex(2, 0), new Complex());
+            _powerNet.AddFeedIn(1, new Complex(1, 0), new Complex());
+            _powerNet.AddFeedIn(2, new Complex(1, 0), new Complex());
+            _powerNet.AddTwoWindingTransformer(0, 1, 1, 0.01, 0.005, 0.005, 0.01, 2, new Angle(2), "");
+
+            var result = _powerNet.CalculateNodeResults(out _relativePowerError);
+
+            Assert.IsNotNull(result);
+        }
     }
 }
