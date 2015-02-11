@@ -134,18 +134,15 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             if (slackNodes.Count() + pqNodes.Count() != singleVoltageNodes.Count)
                 throw new NotSupportedException("can not separate the PV- from the other nodes");
 
-            if (slackNodes.Count() > 1)
-                throw new NotSupportedException("can not separate multiple slack nodes");
-
             var voltage = nodeResult.Voltage;
             var power = nodeResult.Power;
-            int leftOverId;
+            IReadOnlyList<int> leftOverIds;
 
-            if (slackNodes.Count() == 1)
-                leftOverId = slackNodes.First().Item2;
+            if (slackNodes.Count() > 1)
+                leftOverIds = slackNodes.Select(x => x.Item2).ToList();
             else
             {
-                leftOverId = pqNodes.Last().Item2;
+                leftOverIds = new List<int> {pqNodes.Last().Item2};
                 pqNodes.RemoveAt(pqNodes.Count - 1);
             }
 
@@ -156,7 +153,8 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 nodeResultsWithId.Add(pqNode.Item2, new NodeResult(voltage, ownPower));
             }
 
-            nodeResultsWithId.Add(leftOverId, new NodeResult(voltage, power));
+            foreach (var leftOverId in leftOverIds)
+                nodeResultsWithId.Add(leftOverId, new NodeResult(voltage, power/leftOverIds.Count));
         }
 
         private IReadOnlyDictionary<IReadOnlyNode, IReadOnlyNode> FindDirectConnectedNodes()
