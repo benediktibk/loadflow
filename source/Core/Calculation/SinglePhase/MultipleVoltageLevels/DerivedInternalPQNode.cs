@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
@@ -10,6 +11,9 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public DerivedInternalPQNode(IExternalReadOnlyNode sourceNode, int id, Complex power, string name) : base(sourceNode, id, name)
         {
+            if (Double.IsNaN(power.Magnitude))
+                throw new ArgumentOutOfRangeException("power");
+
             _power = power;
         }
 

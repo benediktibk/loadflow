@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Calculation.SinglePhase.SingleVoltageLevel;
 
 namespace Calculation.SinglePhase.MultipleVoltageLevels
@@ -10,6 +11,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public DerivedInternalPVNode(IExternalReadOnlyNode sourceNode, int id, double voltageMagnitude, double realPower, string name) : base(sourceNode, id, name)
         {
+            if (Double.IsNaN(voltageMagnitude))
+                throw new ArgumentOutOfRangeException("voltageMagnitude");
+
+            if (Double.IsNaN(realPower))
+                throw new ArgumentOutOfRangeException("realPower");
+
             _voltageMagnitude = voltageMagnitude;
             _realPower = realPower;
         }

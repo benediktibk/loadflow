@@ -9,6 +9,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         public PvNode(double realPower, double voltageMagnitude)
         {
+            if (Double.IsNaN(voltageMagnitude))
+                throw new ArgumentOutOfRangeException("voltageMagnitude");
+
+            if (Double.IsNaN(realPower))
+                throw new ArgumentOutOfRangeException("realPower");
+
             RealPower = realPower;
             VoltageMagnitude = voltageMagnitude;
         }

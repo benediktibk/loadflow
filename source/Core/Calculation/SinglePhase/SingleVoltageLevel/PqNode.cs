@@ -9,6 +9,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         public PqNode(Complex power)
         {
+            if (Double.IsNaN(power.Magnitude))
+                throw new ArgumentOutOfRangeException("power");
+
             Power = power;
         }
 

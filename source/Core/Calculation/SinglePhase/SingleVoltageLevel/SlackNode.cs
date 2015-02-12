@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
@@ -10,6 +9,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
     {
         public SlackNode(Complex voltage)
         {
+            if (Double.IsNaN(voltage.Magnitude))
+                throw new ArgumentOutOfRangeException("voltage");
+
             Voltage = voltage;
         }
 
