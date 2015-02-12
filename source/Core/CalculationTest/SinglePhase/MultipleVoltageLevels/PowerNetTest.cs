@@ -104,7 +104,7 @@ namespace CalculationTest.SinglePhase.MultipleVoltageLevels
             _powerNet.AddNode(0, 123, "");
             var node = _powerNet.GetNodeById(0);
 
-            _powerNet.AddImpedanceLoad(0, new Complex());
+            _powerNet.AddImpedanceLoad(0, new Complex(12, 34));
 
             Assert.AreEqual(1, node.ConnectedElements.Count);
             Assert.AreEqual(1, _powerNet.ImpedanceLoadCount);
