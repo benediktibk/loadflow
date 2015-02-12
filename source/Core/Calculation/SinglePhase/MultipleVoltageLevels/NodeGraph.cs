@@ -87,7 +87,17 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 var partialResult = CreateDictionaryPhaseShiftByNode(SegmentsOnSameVoltageLevel, phaseShiftBySegment, completeSegment);
 
                 foreach (var pair in partialResult)
-                    result.Add(pair.Key, pair.Value);
+                {
+                    Angle angle;
+
+                    if (!result.TryGetValue(pair.Key, out angle))
+                        result.Add(pair.Key, pair.Value);
+                    else
+                    {
+                        if (!Angle.Equal(angle, pair.Value, 1e-5))
+                            throw new Exception("nominal phase shifts do not match");
+                    }
+                }
             }
 
             var nodesWithoutFeedIn = _nodes.Where(x => !result.ContainsKey(x));
