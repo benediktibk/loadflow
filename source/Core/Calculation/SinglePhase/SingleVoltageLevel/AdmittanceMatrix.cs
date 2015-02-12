@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
+using MathNet.Numerics.Integration;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
@@ -87,6 +88,9 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void AddConnection(int sourceNode, int targetNode, Complex admittance)
         {
+            if (IsInvalid(admittance))
+                throw new ArgumentOutOfRangeException("admittance");
+
             _values[sourceNode, sourceNode] += admittance;
             _values[targetNode, targetNode] += admittance;
             _values[sourceNode, targetNode] -= admittance;
@@ -95,11 +99,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void AddUnsymmetricAdmittance(int i, int j, Complex admittance)
         {
+            if (IsInvalid(admittance))
+                throw new ArgumentOutOfRangeException("admittance");
+
             _values[i, j] += admittance;
         }
 
         public void AddVoltageControlledCurrentSource(int inputSourceNode, int inputTargetNode, int outputSourceNode, int outputTargetNode, Complex g)
         {
+            if (IsInvalid(g))
+                throw new ArgumentOutOfRangeException("g");
+
             _values[outputSourceNode, inputSourceNode] += g;
             _values[outputTargetNode, inputTargetNode] += g;
             _values[outputSourceNode, inputTargetNode] -= g;
@@ -188,6 +198,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             }
 
             return unknownRows;
+        }
+
+        private static bool IsInvalid(Complex value)
+        {
+            var magnitude = value.Magnitude;
+            return Double.IsNaN(magnitude) || Double.IsInfinity(magnitude);
         }
 
         private Matrix<Complex> Extract(IReadOnlyDictionary<int, int> rows, IReadOnlyDictionary<int, int> columns)
