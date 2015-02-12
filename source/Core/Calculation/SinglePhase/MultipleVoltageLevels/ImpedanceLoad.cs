@@ -12,6 +12,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public ImpedanceLoad(IExternalReadOnlyNode node, Complex impedance)
         {
+            var magnitude = impedance.Magnitude;
+
+            if (magnitude <= 0 || Double.IsNaN(magnitude))
+                throw new ArgumentOutOfRangeException("impedance");
+
             _node = node;
             _impedance = impedance;
         }
