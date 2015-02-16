@@ -10,11 +10,13 @@ namespace SincalConnector
     {
         private SymmetricPowerNet _symmetricPowerNet;
         private readonly object _symmetricPowerNetMutex;
+        private readonly double _powerFactor;
 
-        public PowerNetComputable()
+        public PowerNetComputable(double powerFactor)
         {
             _symmetricPowerNet = null;
             _symmetricPowerNetMutex = new object();
+            _powerFactor = powerFactor;
         }
 
         public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
@@ -38,7 +40,7 @@ namespace SincalConnector
                 node.AddTo(symmetricPowerNet);
 
             foreach (var element in NetElements)
-                element.AddTo(symmetricPowerNet, 1);
+                element.AddTo(symmetricPowerNet, _powerFactor);
 
             return symmetricPowerNet;
         }
