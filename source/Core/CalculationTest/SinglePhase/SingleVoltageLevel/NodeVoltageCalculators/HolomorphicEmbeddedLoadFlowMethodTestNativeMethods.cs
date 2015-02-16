@@ -46,6 +46,10 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool RunTestsLinearEquationSystemThree();
+
+        [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool RunTestsVectorConstructor();
 
         [DllImport("HELM.dll", CallingConvention = CallingConvention.Cdecl)]

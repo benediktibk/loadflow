@@ -2,6 +2,7 @@
 #include "MultiPrecision.h"
 #include "Complex.h"
 #include "BiCGSTAB.h"
+#include "SOR.h"
 #include "LUDecomposition.h"
 #include <sstream>
 #include <map>

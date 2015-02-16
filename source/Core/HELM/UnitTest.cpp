@@ -5,6 +5,7 @@
 #include "ILinearEquationSystemSolver.h"
 #include "BiCGSTAB.h"
 #include "LUDecomposition.h"
+#include "SOR.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
@@ -463,6 +464,84 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemTwo()
 	if (!areEqual(x(1), luResult(1), 0.000001))
 		return false;
 	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	return true;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree()
+{
+	SparseMatrix<long double, Complex<long double>> A(3, 3);
+	A.set(0, 0, Complex<long double>(4, 0));
+	A.set(0, 1, Complex<long double>(-1, 0));
+	A.set(0, 2, Complex<long double>(-1, 0));
+	A.set(1, 0, Complex<long double>(-2, 0));
+	A.set(1, 1, Complex<long double>(6, 0));
+	A.set(1, 2, Complex<long double>(1, 0));
+	A.set(2, 0, Complex<long double>(-1, 0));
+	A.set(2, 1, Complex<long double>(1, 0));
+	A.set(2, 2, Complex<long double>(7, 0));
+	Vector<long double, Complex<long double> > x(3);
+	x.set(0, Complex<long double>(1, 0));
+	x.set(1, Complex<long double>(2, 0));
+	x.set(2, Complex<long double>(-1, 0));
+	Vector<long double, Complex<long double> > b(3);
+	A.multiply(b, x);
+	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+	LUDecomposition<long double, Complex<long double>> luSolver(A);
+	SOR<long double, Complex<long double>> sorSolver(A, 1e-10, 1);
+	SOR<long double, Complex<long double>> sorSolverOver(A, 1e-10, 1.2);
+	SOR<long double, Complex<long double>> sorSolverUnder(A, 1e-10, 0.8);
+
+	auto iterativeResult = iterativeSolver.solve(b);
+	auto luResult = luSolver.solve(b);
+	auto sorResult = sorSolver.solve(b);
+	auto sorResultOver = sorSolverOver.solve(b);
+	auto sorResultUnder = sorSolverUnder.solve(b);
+
+	if (iterativeResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), iterativeResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), iterativeResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), iterativeResult(2), 0.000001))
+		return false;
+
+	if (luResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	if (sorResult.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), sorResult(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), sorResult(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), sorResult(2), 0.000001))
+		return false;
+
+	if (sorResultOver.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), sorResultOver(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), sorResultOver(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), sorResultOver(2), 0.000001))
+		return false;
+
+	if (sorResultUnder.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), sorResultUnder(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), sorResultUnder(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), sorResultUnder(2), 0.000001))
 		return false;
 
 	return true;
