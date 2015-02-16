@@ -90,6 +90,10 @@ void Calculator<Floating, ComplexFloating>::calculate()
 		_maximumPossibleCoefficientCount = -1;
 	}
 
+	for (auto i = 0; i < _admittances.getColumnCount(); ++i)
+		if (std::abs(_admittances(i, i)) == Floating(0))
+			throw invalid_argument("zero values in the main diagonal of the admittance matrix are not supported");
+
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
 	if (_iterativeSolver)
