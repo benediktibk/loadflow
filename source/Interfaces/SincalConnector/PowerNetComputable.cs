@@ -9,7 +9,7 @@ namespace SincalConnector
     public class PowerNetComputable : PowerNet
     {
         private SymmetricPowerNet _symmetricPowerNet;
-        private object _symmetricPowerNetMutex;
+        private readonly object _symmetricPowerNetMutex;
 
         public PowerNetComputable()
         {
@@ -27,14 +27,7 @@ namespace SincalConnector
             var nominalPhaseShifts = _symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
             slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? _symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            var result = _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
-
-            lock (_symmetricPowerNetMutex)
-            {
-                _symmetricPowerNet = null;
-            }
-
-            return result;
+            return _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
         }
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
