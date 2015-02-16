@@ -464,9 +464,22 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltages_NetWithGeneratorVersionTwo_ResultsAreCorrect()
+        public void CalculateNodeVoltages_NetWithGeneratorVersionThree_ResultsAreCorrect()
         {
-            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator2_files/database.mdb");
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator3_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.2);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithGeneratorVersionFour_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator4_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
@@ -478,9 +491,9 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
-        public void CalculateNodeVoltages_NetWithGeneratorVersionThree_ResultsAreCorrect()
+        public void CalculateNodeVoltages_NetWithGeneratorVersionFive_ResultsAreCorrect()
         {
-            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator3_files/database.mdb");
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator5_files/database.mdb");
             var sincalResults = powerNet.GetNodeResultsFromDatabase();
 
             var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
@@ -489,6 +502,19 @@ namespace SincalConnectorIntegrationTest
             var ownResults = powerNet.GetNodeResultsFromDatabase();
             AreVoltagesEqual(sincalResults, ownResults, 0.0001);
             ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithGeneratorVersionSix_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator6_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
         }
 
         [TestMethod]

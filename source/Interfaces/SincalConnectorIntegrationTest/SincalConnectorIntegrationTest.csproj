@@ -98,6 +98,15 @@
     <None Include="testdata\calculation_generator3.sin" />
     <None Include="testdata\calculation_generator3_files\database.001.dia" />
     <None Include="testdata\calculation_generator3_files\database.ini" />
+    <None Include="testdata\calculation_generator4.sin" />
+    <None Include="testdata\calculation_generator4_files\database.001.dia" />
+    <None Include="testdata\calculation_generator4_files\database.ini" />
+    <None Include="testdata\calculation_generator5.sin" />
+    <None Include="testdata\calculation_generator5_files\database.001.dia" />
+    <None Include="testdata\calculation_generator5_files\database.ini" />
+    <None Include="testdata\calculation_generator6.sin" />
+    <None Include="testdata\calculation_generator6_files\database.001.dia" />
+    <None Include="testdata\calculation_generator6_files\database.ini" />
     <None Include="testdata\calculation_impedanceload1.sin" />
     <None Include="testdata\calculation_impedanceload1_files\database.001.dia" />
     <None Include="testdata\calculation_impedanceload1_files\database.ini" />
@@ -290,6 +299,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_generator3_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_generator4_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_generator5_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_generator6_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_impedanceload1_files\database.mdb">
