@@ -98,7 +98,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	freeMemory();
 	_coefficientStorage = new CoefficientStorage<ComplexFloating, Floating>(_numberOfCoefficients, _nodeCount, _pqBuses, _pvBuses, _admittances);
 	if (_iterativeSolver)
-		_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3));
+		_solver = new SOR<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-3), Floating(1), 1000);
 	else
 		_solver = new LUDecomposition<Floating, ComplexFloating>(_admittances);
 

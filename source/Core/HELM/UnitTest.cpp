@@ -489,9 +489,9 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
 	LUDecomposition<long double, Complex<long double>> luSolver(A);
-	SOR<long double, Complex<long double>> sorSolver(A, 1e-10, 1);
-	SOR<long double, Complex<long double>> sorSolverOver(A, 1e-10, 1.2);
-	SOR<long double, Complex<long double>> sorSolverUnder(A, 1e-10, 0.8);
+	SOR<long double, Complex<long double>> sorSolver(A, 1e-10, 1, 100);
+	SOR<long double, Complex<long double>> sorSolverOver(A, 1e-10, 1.2, 100);
+	SOR<long double, Complex<long double>> sorSolverUnder(A, 1e-10, 0.8, 100);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);

@@ -8,14 +8,16 @@ template class SOR<long double, Complex<long double>>;
 template class SOR<MultiPrecision, Complex<MultiPrecision>>;
 
 template<class Floating, class ComplexFloating>
-SOR<Floating, ComplexFloating>::SOR(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon, Floating omega) : 
+SOR<Floating, ComplexFloating>::SOR(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon, Floating omega, int maximumIterations) : 
 	_epsilon(epsilon),
 	_dimension(systemMatrix.getColumnCount()),
 	_omega(omega),
+	_maximumIterations(maximumIterations),
 	_systemMatrix(systemMatrix)
 {
 	assert(systemMatrix.getColumnCount() == systemMatrix.getRowCount());
 	assert(omega > Floating(0) && omega < Floating(2));
+	assert(maximumIterations > 0);
 }
 
 template<class Floating, class ComplexFloating>
@@ -25,6 +27,7 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 	auto residual = Vector<Floating, ComplexFloating>(_dimension);
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto bCurrent = Vector<Floating, ComplexFloating>(_dimension);
+	auto i = 0;
 
 	do
 	{
@@ -49,7 +52,8 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 
 		_systemMatrix.multiply(bCurrent, x);
 		residual.subtract(bCurrent, b);
-	} while(std::abs(residual.squaredNorm()) > epsilonSquared);
+		++i;
+	} while(std::abs(residual.squaredNorm()) > epsilonSquared && i < _maximumIterations);
 
 	return x;
 }
