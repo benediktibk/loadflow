@@ -34,6 +34,12 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
         public IReadOnlyDictionary<int, NodeResult> CalculateNodeResults(out double relativePowerError)
         {
+            if (_elements.Count == 0)
+            {
+                relativePowerError = 0;
+                return _nodes.ToDictionary(node => node.Id, node => new NodeResult(new Complex(), new Complex()));
+            }
+
             var powerScaling = DeterminePowerScaling();
             var nodes = GetAllCalculationNodes();
             var directConnectedNodes = FindDirectConnectedNodes();
