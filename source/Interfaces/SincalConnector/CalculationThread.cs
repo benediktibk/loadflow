@@ -31,6 +31,11 @@ namespace SincalConnector
             get { return _calculator == null ? 0 : _calculator.Progress; }
         }
 
+        public double TotalProgress
+        {
+            get { return _calculator == null ? 0 : _powerNet.TotalProgress; }
+        }
+
         public double RelativePowerError
         {
             get { return _calculator == null ? 1 : _calculator.RelativePowerError; }

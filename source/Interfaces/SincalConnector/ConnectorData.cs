@@ -13,6 +13,7 @@ namespace SincalConnector
         private int _maximumIterations;
         private Selection _calculatorSelection;
         private double _progress;
+        private double _totalProgress;
         private double _relativePowerError;
         private bool _iterativeSolver;
 
@@ -24,6 +25,7 @@ namespace SincalConnector
             TargetPrecision = 1e-5;
             CalculatorSelection = Selection.HolomorphicEmbeddedLoadFlow;
             Progress = 0;
+            TotalProgress = 0;
             RelativePowerError = 1;
             IterativeSolver = true;
         }
@@ -104,6 +106,18 @@ namespace SincalConnector
             }
         }
 
+        public double TotalProgress
+        {
+            get { return _totalProgress; }
+            set
+            {
+                if (value == _totalProgress) return;
+
+                _totalProgress = value;
+                OnPropertyChanged("TotalProgress");
+            }
+        }
+
         public double RelativePowerError
         {
             get { return _relativePowerError; }
@@ -156,7 +170,7 @@ namespace SincalConnector
         {
             get { return SizeOfDataType > 0 && CountOfCoefficients > 2 && MaximumIterations > 0 && TargetPrecision > 0 && TargetPrecision < 1; }
         }
-        
+
         public void Log(string message)
         {
             LoggingOutput += message + "\n";

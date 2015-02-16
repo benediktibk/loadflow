@@ -6,5 +6,6 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
     {
         IReadOnlyDictionary<int, NodeResult> CalculateNodeResults(out double relativePowerError);
         void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames, out double powerScaling);
+        double TotalProgress { get; }
     }
 }

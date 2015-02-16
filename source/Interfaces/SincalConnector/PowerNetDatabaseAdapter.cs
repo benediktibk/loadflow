@@ -72,6 +72,11 @@ namespace SincalConnector
 
         public string ConnectionString { get; private set; }
 
+        public double TotalProgress
+        {
+            get { return _powerNet.TotalProgress; }
+        }
+
         public bool CalculateNodeVoltages(INodeVoltageCalculator calculator, out double relativePowerError)
         {
             Angle slackPhaseShift;

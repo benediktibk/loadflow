@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
@@ -9,13 +8,33 @@ namespace SincalConnector
 {
     public class PowerNetComputable : PowerNet
     {
+        private SymmetricPowerNet _symmetricPowerNet;
+        private object _symmetricPowerNetMutex;
+
+        public PowerNetComputable()
+        {
+            _symmetricPowerNet = null;
+            _symmetricPowerNetMutex = new object();
+        }
+
         public IReadOnlyDictionary<int, Calculation.NodeResult> CalculateNodeVoltages(INodeVoltageCalculator calculator, out Angle slackPhaseShift, out IReadOnlyDictionary<int, Angle> nominalPhaseShiftByIds, out double relativePowerError)
         {
-            var symmetricPowerNet = CreateSymmetricPowerNet(calculator);
-            var nominalPhaseShifts = symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
-            slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? symmetricPowerNet.SlackPhaseShift : new Angle();
+            lock (_symmetricPowerNetMutex)
+            {
+                _symmetricPowerNet = CreateSymmetricPowerNet(calculator);
+            }
+
+            var nominalPhaseShifts = _symmetricPowerNet.CalculateNominalPhaseShiftPerNode();
+            slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? _symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
-            return symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
+            var result = _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
+
+            lock (_symmetricPowerNetMutex)
+            {
+                _symmetricPowerNet = null;
+            }
+
+            return result;
         }
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
@@ -29,6 +48,17 @@ namespace SincalConnector
                 element.AddTo(symmetricPowerNet, 1);
 
             return symmetricPowerNet;
+        }
+
+        public double TotalProgress
+        {
+            get
+            {
+                lock (_symmetricPowerNetMutex)
+                {
+                    return _symmetricPowerNet == null ? 0 : _symmetricPowerNet.TotalProgress;
+                }
+            }
         }
     }
 }

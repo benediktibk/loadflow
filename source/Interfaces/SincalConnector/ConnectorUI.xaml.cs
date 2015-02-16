@@ -33,6 +33,7 @@ namespace SincalConnector
         private void RefreshProgress(object sender, EventArgs eventArgs)
         {
             _connectorData.Progress = _calculationThread.Progress;
+            _connectorData.TotalProgress = _calculationThread.TotalProgress;
             _connectorData.RelativePowerError = _calculationThread.RelativePowerError;
             _progressTimer.Start();
         }
