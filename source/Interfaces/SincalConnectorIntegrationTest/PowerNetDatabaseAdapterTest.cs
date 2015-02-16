@@ -464,6 +464,34 @@ namespace SincalConnectorIntegrationTest
         }
 
         [TestMethod]
+        public void CalculateNodeVoltages_NetWithGeneratorVersionTwo_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator2_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
+        public void CalculateNodeVoltages_NetWithGeneratorVersionThree_ResultsAreCorrect()
+        {
+            var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_generator3_files/database.mdb");
+            var sincalResults = powerNet.GetNodeResultsFromDatabase();
+
+            var success = powerNet.CalculateNodeVoltages(_calculator, out _relativePowerError);
+
+            Assert.IsTrue(success);
+            var ownResults = powerNet.GetNodeResultsFromDatabase();
+            AreVoltagesEqual(sincalResults, ownResults, 0.0001);
+            ArePowersEqual(sincalResults, ownResults, 0.1);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltages_NetWithTransformerVersionOne_ResultsAreCorrect()
         {
             var powerNet = new PowerNetDatabaseAdapter("testdata/calculation_transformer1_files/database.mdb");

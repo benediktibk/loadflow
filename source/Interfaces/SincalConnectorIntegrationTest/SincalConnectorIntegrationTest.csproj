@@ -95,6 +95,9 @@
     <None Include="testdata\calculation_generator2.sin" />
     <None Include="testdata\calculation_generator2_files\database.001.dia" />
     <None Include="testdata\calculation_generator2_files\database.ini" />
+    <None Include="testdata\calculation_generator3.sin" />
+    <None Include="testdata\calculation_generator3_files\database.001.dia" />
+    <None Include="testdata\calculation_generator3_files\database.ini" />
     <None Include="testdata\calculation_impedanceload1.sin" />
     <None Include="testdata\calculation_impedanceload1_files\database.001.dia" />
     <None Include="testdata\calculation_impedanceload1_files\database.ini" />
@@ -284,6 +287,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_generator2_files\database.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\calculation_generator3_files\database.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="testdata\calculation_impedanceload1_files\database.mdb">
