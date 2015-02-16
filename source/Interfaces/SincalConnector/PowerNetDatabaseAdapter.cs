@@ -16,7 +16,7 @@ namespace SincalConnector
         public PowerNetDatabaseAdapter(string database) : this(database, 1)
         { }
 
-        private PowerNetDatabaseAdapter(string database, double powerFactor)
+        public PowerNetDatabaseAdapter(string database, double powerFactor)
         {
             _powerNet = new PowerNetComputable(powerFactor);
             ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + database;

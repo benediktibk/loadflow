@@ -75,7 +75,7 @@ namespace SincalConnector
             try
             {
                 Log("parsing the power net");
-                _powerNet = new PowerNetDatabaseAdapter(_connectorData.InputFile);
+                _powerNet = new PowerNetDatabaseAdapter(_connectorData.InputFile, 1);
             }
             catch (Exception exception)
             {
