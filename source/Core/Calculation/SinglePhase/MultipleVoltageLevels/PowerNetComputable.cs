@@ -25,7 +25,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 NodeGraph.Segments.Select(
                     x =>
                         new PartialPowerNet(x.ToList(), FindElementsOfSegment(x), IdGeneratorNodes, AverageLoadFlow,
-                            _singleVoltagePowerNetFactory));
+                            _singleVoltagePowerNetFactory)).OrderBy(x => x.NodeCount);
 
             foreach (var partialPowerNet in partialPowerNets)
             {

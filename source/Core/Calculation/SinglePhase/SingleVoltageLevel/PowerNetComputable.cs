@@ -31,17 +31,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             SeperateNodesByTypes(out indexOfSlackBuses,
                 out indexOfPqBuses, out indexOfPvBuses);
 
-            var countOfKnownVoltages = indexOfSlackBuses.Count;
             var countOfUnknownVoltages = indexOfPqBuses.Count + indexOfPvBuses.Count;
-
             var indexOfNodesWithUnknownVoltage = new List<int>(countOfUnknownVoltages);
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPqBuses.Select(x => x.Index));
             indexOfNodesWithUnknownVoltage.AddRange(indexOfPvBuses.Select(x => x.Index));
 
-            if (countOfKnownVoltages == 0)
+            if (!ExistsNonZeroSlackVoltage)
             {
                 relativePowerError = 0;
-                return CreateEmptyNodeResults(countOfUnknownVoltages);
+                return CreateEmptyNodeResults(countOfUnknownVoltages + indexOfSlackBuses.Count);
             }
 
             var allVoltages = countOfUnknownVoltages == 0 ?

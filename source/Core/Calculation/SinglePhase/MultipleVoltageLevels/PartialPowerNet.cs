@@ -27,6 +27,11 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
             _singleVoltagePowerNetFactory = singleVoltagePowerNetFactory;
         }
 
+        public int NodeCount
+        {
+            get { return _nodes.Count; }
+        }
+
         public IReadOnlyDictionary<int, NodeResult> CalculateNodeResults(out double relativePowerError)
         {
             var powerScaling = DeterminePowerScaling();

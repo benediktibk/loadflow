@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using MathNet.Numerics;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel
 {
@@ -48,6 +50,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public IReadOnlyList<Complex> ConstantCurrents
         {
             get { return _constantCurrents; }
+        }
+
+        public bool ExistsNonZeroSlackVoltage
+        {
+            get { return _nodes.OfType<SlackNode>().Any(x => x.Voltage.MagnitudeSquared() > 0); }
         }
     }
 }
