@@ -65,12 +65,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public Matrix<double> ToMatrix()
         {
             var count = CalculateElementCount();
-            var values = new List<Tuple<int, int, double>>(count);
+            var valueList = new List<Tuple<int, int, double>>(count);
 
             for (var row = 0; row < _dimension; row++)
-                values.AddRange(_columns.Select((t, i) => new Tuple<int, int, double>(row, _columns[row][i], _values[row][i])));
+            {
+                var columns = _columns[row];
+                var values = _values[row];
+                valueList.AddRange(columns.Select((t, i) => new Tuple<int, int, double>(row, t, values[i])));
+            }
 
-            return SparseMatrix.OfIndexed(_dimension, _dimension, values);
+            return SparseMatrix.OfIndexed(_dimension, _dimension, valueList);
         }
 
         private int CalculateElementCount()

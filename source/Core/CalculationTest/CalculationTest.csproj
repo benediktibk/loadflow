@@ -97,6 +97,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\TwoStepMethodTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FactoryTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SubMatrixTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SparseMatrixStorageTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputableTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeAssert.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
