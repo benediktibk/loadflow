@@ -28,29 +28,38 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
         }
 
-        public void Add(int row, int column, double value)
+        public int Dimension
         {
-            if (row >= _dimension || row < 0)
-                throw new ArgumentOutOfRangeException("row");
-
-            if (column >= _dimension || column < 0)
-                throw new ArgumentOutOfRangeException("column");
-
-            var index = _columns[row].BinarySearch(column);
-
-            if (index >= 0)
-                _values[row][index] += value;
-            else
-            {
-                index = ~index;
-                _columns[row].Insert(index, column);
-                _values[row].Insert(index, value);
-            }
+            get { return _dimension; }
         }
 
-        public void Subtract(int row, int column, double value)
+        public double this[int row, int column]
         {
-            Add(row, column, (-1)*value);
+            get
+            {
+                CheckRange(row, column);
+                var columns = _columns[row];
+                var values = _values[row];
+                var index = columns.BinarySearch(column);
+                return index < 0 ? 0 : values[index];
+            }
+
+            set
+            {
+                CheckRange(row, column);
+                var columns = _columns[row];
+                var values = _values[row];
+                var index = columns.BinarySearch(column);
+
+                if (index >= 0)
+                    values[index] = value;
+                else
+                {
+                    index = ~index;
+                    columns.Insert(index, column);
+                    values.Insert(index, value);
+                }
+            }
         }
 
         public void Reset()
@@ -75,6 +84,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             }
 
             return SparseMatrix.OfIndexed(_dimension, _dimension, valueList);
+        }
+
+        private void CheckRange(int row, int column)
+        {
+            if (row >= _dimension || row < 0)
+                throw new ArgumentOutOfRangeException("row");
+
+            if (column >= _dimension || column < 0)
+                throw new ArgumentOutOfRangeException("column");
         }
 
         private int CalculateElementCount()
