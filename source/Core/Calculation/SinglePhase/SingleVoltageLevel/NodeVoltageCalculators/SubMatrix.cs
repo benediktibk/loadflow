@@ -1,17 +1,16 @@
 ﻿using System;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class SubMatrix
     {
-        private readonly Matrix<double> _matrix;
+        private readonly SparseMatrixStorage _matrix;
         private readonly int _rowOffset;
         private readonly int _columnOffset;
         private readonly int _rows;
         private readonly int _columns;
 
-        public SubMatrix(Matrix<double> matrix, int rowOffset, int columnOffset, int rows, int columns)
+        public SubMatrix(SparseMatrixStorage matrix, int rowOffset, int columnOffset, int rows, int columns)
         {
             if (matrix == null)
                 throw new ArgumentNullException("matrix");
@@ -28,10 +27,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             if (columns < 0)
                 throw new ArgumentOutOfRangeException("columns", "must be positive");
 
-            if (rowOffset + rows > matrix.RowCount)
+            if (rowOffset + rows > matrix.Dimension)
                 throw new ArgumentOutOfRangeException("rows", "too many rows selected");
 
-            if (columnOffset + columns > matrix.ColumnCount)
+            if (columnOffset + columns > matrix.Dimension)
                 throw new ArgumentOutOfRangeException("columns", "too many columns selected");
 
             _matrix = matrix;

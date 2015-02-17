@@ -9,6 +9,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     public class SubMatrixTest
     {
         private DenseMatrix _matrix;
+        private SparseMatrixStorage _matrixStorage;
         private SubMatrix _subMatrix;
 
         [TestInitialize]
@@ -16,11 +17,16 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             _matrix = DenseMatrix.OfArray(new double[,]
             {
-                {1, 2, 3, 4}, 
-                {5, 6, 7, 8}, 
-                {9, 10, 11, 12}
+                {1, 2, 3}, 
+                {5, 6, 7}, 
+                {9, 10, 11}
             });
-            _subMatrix = new SubMatrix(_matrix, 0, 1, 2, 3);
+            _matrixStorage = new SparseMatrixStorage(3);
+
+            foreach (var tuple in _matrix.EnumerateIndexed())
+                _matrixStorage[tuple.Item1, tuple.Item2] = tuple.Item3;
+
+            _subMatrix = new SubMatrix(_matrixStorage, 0, 1, 2, 2);
         }
 
         [TestMethod]
@@ -34,7 +40,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         {
             _subMatrix[0, 1] = 100;
 
-            Assert.AreEqual(100, _matrix[0, 2], 0.000001);
+            Assert.AreEqual(100, _matrixStorage[0, 2], 0.000001);
         }
 
         [TestMethod]
