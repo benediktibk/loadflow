@@ -89,6 +89,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\NodeVoltageCalculator.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\Selection.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SelectionToStringConverter.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SparseMatrixStorage.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SubMatrix.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeWithIndex.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputable.cs" />
