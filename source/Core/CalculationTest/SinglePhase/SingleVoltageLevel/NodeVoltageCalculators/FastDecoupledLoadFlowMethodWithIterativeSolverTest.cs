@@ -53,6 +53,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int>();
             var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
             var pvBusVoltages = new List<double>();
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -79,6 +80,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int>();
             var buses = new Dictionary<int, int> { { 1, 0 }, { 0, 1 } };
             var pvBusVoltages = new List<double>();
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -105,6 +107,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
             var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 } };
             var pvBusVoltages = new List<double> { 21, 22 };
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -131,6 +134,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int> { { 1, 0 }, { 0, 1 } };
             var buses = new Dictionary<int, int> { { 1, 0 }, { 0, 1 } };
             var pvBusVoltages = new List<double> { 21, 22 };
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -158,6 +162,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int> { { 1, 0 } };
             var buses = new Dictionary<int, int> { { 0, 0 }, { 2, 1 }, { 1, 2 } };
             var pvBusVoltages = new List<double> { 36 };
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -186,6 +191,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int> { { 2, 0 } };
             var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 }, { 2, 2 } };
             var pvBusVoltages = new List<double> { 36 };
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);
@@ -214,6 +220,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var pvBuses = new Dictionary<int, int>();
             var buses = new Dictionary<int, int> { { 0, 0 }, { 1, 1 }, { 2, 2 } };
             var pvBusVoltages = new List<double>();
+            calculator.InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
 
             var improvedVoltages = calculator.CalculateImprovedVoltages(admittances, voltages, constantCurrents, powersRealError,
                 powersImaginaryError, pvBusVoltages, 1e-12, pqBuses, pvBuses, buses);

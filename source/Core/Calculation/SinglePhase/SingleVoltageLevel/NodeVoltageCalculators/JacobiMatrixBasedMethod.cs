@@ -19,10 +19,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         public double TargetPrecision { get; private set; }
 
         public abstract Vector<Complex> CalculateImprovedVoltages(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents, IList<double> powersRealError, IList<double> powersImaginaryError, IList<double> pvBusVoltages, double residualImprovementFactor, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex);
+        public abstract void InitializeMatrixStorage(int pqBusCount, int pvBusCount);
 
         public override Vector<Complex> CalculateUnknownVoltages(IReadOnlyAdmittanceMatrix admittances, IList<Complex> totalAdmittanceRowSums, double nominalVoltage, Vector<Complex> initialVoltages, Vector<Complex> constantCurrents, IList<PqNodeWithIndex> pqBuses, IList<PvNodeWithIndex> pvBuses)
         {
             ResetProgress();
+            InitializeMatrixStorage(pqBuses.Count, pvBuses.Count);
             Vector<Complex> currentVoltages = DenseVector.OfVector(initialVoltages);
             var iterations = 0;
             IList<double> powersRealDifference;

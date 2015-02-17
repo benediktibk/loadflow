@@ -13,12 +13,16 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
     {
         private readonly IIterativeSolver<double> _solver;
         private readonly IPreconditioner<double> _preconditioner;
+        private static SparseMatrixStorage _changeMatrixRealPowerByAngle;
+        private static SparseMatrixStorage _changeMatrixImaginaryPowerByAmplitude;
 
         public FastDecoupledLoadFlowMethod(double targetPrecision, int maximumIterations, bool iterativeSolver)
             : base(targetPrecision, maximumIterations)
         {
             _solver = new BiCgStab();
             _preconditioner = new ILU0Preconditioner();
+            _changeMatrixImaginaryPowerByAmplitude = null;
+            _changeMatrixRealPowerByAngle = null;
             IterativeSolver = iterativeSolver;
         }
 
@@ -66,6 +70,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return improvedVoltages;
         }
 
+        public override void InitializeMatrixStorage(int pqBusCount, int pvBusCount)
+        {
+            _changeMatrixRealPowerByAngle = new SparseMatrixStorage(pqBusCount + pvBusCount);
+            _changeMatrixImaginaryPowerByAmplitude = pqBusCount > 0
+                ? new SparseMatrixStorage(pqBusCount)
+                : null;
+        }
+
         private Vector<double> SolveLinearEquationSystem(Matrix<double> changeMatrix, Vector<double> errorVector, double residualImprovementFactor, double powerMaximumError)
         {
             var residualStopCriterion = new ResidualStopCriterion<double>(powerMaximumError * residualImprovementFactor);
@@ -96,18 +108,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex,
             out Matrix<double> changeMatrixRealPowerByAngle, out Matrix<double> changeMatrixImaginaryPowerByAmplitude)
         {
-            var storageRealPowerByAngle = new SparseMatrixStorage(busToMatrixIndex.Count);
-            var storageImaginaryPowerByAmplitude = pqBusToMatrixIndex.Count > 0
-                ? new SparseMatrixStorage(pqBusToMatrixIndex.Count)
-                : null;
+            if (_changeMatrixImaginaryPowerByAmplitude != null)
+                _changeMatrixImaginaryPowerByAmplitude.Reset();
+            _changeMatrixRealPowerByAngle.Reset();
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
                 var busRow = entry.Item1;
                 var busColumn = entry.Item2;
                 var admittance = entry.Item3;
-                FillChangeMatrixImaginaryPowerByAmplitude(storageImaginaryPowerByAmplitude, voltages, pqBusToMatrixIndex, busRow, busColumn, admittance);
-                FillChangeMatrixRealPowerByAngle(storageRealPowerByAngle, voltages, busToMatrixIndex, busRow, busColumn, admittance);
+                FillChangeMatrixImaginaryPowerByAmplitude(_changeMatrixImaginaryPowerByAmplitude, voltages, pqBusToMatrixIndex, busRow, busColumn, admittance);
+                FillChangeMatrixRealPowerByAngle(_changeMatrixRealPowerByAngle, voltages, busToMatrixIndex, busRow, busColumn, admittance);
             }
 
             foreach (var bus in busToMatrixIndex)
@@ -116,7 +127,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var busIndex = bus.Key;
                 var voltage = voltages[busIndex];
                 var current = constantCurrents[busIndex];
-                storageRealPowerByAngle[matrixIndex, matrixIndex] +=
+                _changeMatrixRealPowerByAngle[matrixIndex, matrixIndex] +=
                     voltage.Magnitude * current.Magnitude * Math.Sin(voltage.Phase - current.Phase);
             }
 
@@ -126,12 +137,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var busIndex = bus.Key;
                 var current = constantCurrents[busIndex];
                 var voltage = voltages[busIndex];
-                storageImaginaryPowerByAmplitude[matrixIndex, matrixIndex] +=
+                _changeMatrixImaginaryPowerByAmplitude[matrixIndex, matrixIndex] +=
                     current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
             }
 
-            changeMatrixRealPowerByAngle = storageRealPowerByAngle.ToMatrix();
-            changeMatrixImaginaryPowerByAmplitude = storageImaginaryPowerByAmplitude != null ? storageImaginaryPowerByAmplitude.ToMatrix() : null;
+            changeMatrixRealPowerByAngle = _changeMatrixRealPowerByAngle.ToMatrix();
+            changeMatrixImaginaryPowerByAmplitude = _changeMatrixImaginaryPowerByAmplitude != null ? _changeMatrixImaginaryPowerByAmplitude.ToMatrix() : null;
         }
 
         private static void FillChangeMatrixRealPowerByAngle(SparseMatrixStorage changeMatrixRealPowerByAngle, IList<Complex> voltages, IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance)

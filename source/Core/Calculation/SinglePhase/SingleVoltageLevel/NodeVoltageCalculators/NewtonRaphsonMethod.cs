@@ -6,16 +6,18 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Solvers;
-using SparseMatrix = MathNet.Numerics.LinearAlgebra.Double.SparseMatrix;
 
 namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 {
     public class NewtonRaphsonMethod : JacobiMatrixBasedMethod
     {
+        private SparseMatrixStorage _changeMatrixStorage;
+
         public NewtonRaphsonMethod(double targetPrecision, int maximumIterations, bool iterativeSolver)
             : base(targetPrecision, maximumIterations)
         {
             IterativeSolver = iterativeSolver;
+            _changeMatrixStorage = null;
         }
 
         public bool IterativeSolver { get; private set; }
@@ -25,6 +27,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             var changeMatrix = CalculateChangeMatrix(admittances, voltages, constantCurrents, pqBusToMatrixIndex, pvBusToMatrixIndex, busToMatrixIndex);
             var voltageChanges = CalculateVoltageChanges(powersRealError, powersImaginaryError, changeMatrix, residualImprovementFactor, IterativeSolver);
             return CalculateImprovedVoltagesFromVoltageChanges(voltages, pqBusToMatrixIndex, pvBusToMatrixIndex, pvBusVoltages, voltageChanges);
+        }
+
+        public override void InitializeMatrixStorage(int pqBusCount, int pvBusCount)
+        {
+            _changeMatrixStorage = new SparseMatrixStorage(pqBusCount * 2 + pvBusCount);
         }
 
         public static DenseVector CalculateImprovedVoltagesFromVoltageChanges(IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex,
@@ -67,17 +74,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             return voltageChanges;
         }
 
-        public static Matrix<double> CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
+        public Matrix<double> CalculateChangeMatrix(IReadOnlyAdmittanceMatrix admittances, Vector<Complex> voltages, Vector<Complex> constantCurrents,
             IReadOnlyDictionary<int, int> pqBusToMatrixIndex, IReadOnlyDictionary<int, int> pvBusToMatrixIndex, IReadOnlyDictionary<int, int> busToMatrixIndex)
         {
-            var changeMatrixStorage = new SparseMatrixStorage(pqBusToMatrixIndex.Count*2 + pvBusToMatrixIndex.Count);
-            var realPowerByRealPart = new SubMatrix(changeMatrixStorage, 0, 0, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
-            var realPowerByImaginaryPart = new SubMatrix(changeMatrixStorage, 0, pqBusToMatrixIndex.Count, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
-            var imaginaryPowerByRealPart = new SubMatrix(changeMatrixStorage, busToMatrixIndex.Count, 0, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count);
-            var imaginaryPowerByImaginaryPart = new SubMatrix(changeMatrixStorage, busToMatrixIndex.Count, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count);
-            var realPowerByAngle = new SubMatrix(changeMatrixStorage, 0, 2 * pqBusToMatrixIndex.Count, busToMatrixIndex.Count,
+            _changeMatrixStorage.Reset();
+            var realPowerByRealPart = new SubMatrix(_changeMatrixStorage, 0, 0, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
+            var realPowerByImaginaryPart = new SubMatrix(_changeMatrixStorage, 0, pqBusToMatrixIndex.Count, busToMatrixIndex.Count, pqBusToMatrixIndex.Count);
+            var imaginaryPowerByRealPart = new SubMatrix(_changeMatrixStorage, busToMatrixIndex.Count, 0, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count);
+            var imaginaryPowerByImaginaryPart = new SubMatrix(_changeMatrixStorage, busToMatrixIndex.Count, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count);
+            var realPowerByAngle = new SubMatrix(_changeMatrixStorage, 0, 2 * pqBusToMatrixIndex.Count, busToMatrixIndex.Count,
                 pvBusToMatrixIndex.Count);
-            var imaginaryPowerByAngle = new SubMatrix(changeMatrixStorage, busToMatrixIndex.Count, 2 * pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count,
+            var imaginaryPowerByAngle = new SubMatrix(_changeMatrixStorage, busToMatrixIndex.Count, 2 * pqBusToMatrixIndex.Count, pqBusToMatrixIndex.Count,
                 pvBusToMatrixIndex.Count);
 
             foreach (var entry in admittances.EnumerateIndexed())
@@ -120,7 +127,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     voltage.Magnitude * current.Magnitude * Math.Sin(voltage.Phase - current.Phase);
             }
 
-            return changeMatrixStorage.ToMatrix();
+            return _changeMatrixStorage.ToMatrix();
         }
 
         private static void FillChangeMatrixRealPowerByRealPart(SubMatrix changeMatrix, IList<Complex> voltages,
