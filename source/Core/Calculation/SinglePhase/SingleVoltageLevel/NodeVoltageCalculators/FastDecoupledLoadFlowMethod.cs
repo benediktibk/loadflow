@@ -96,16 +96,18 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             IList<Complex> constantCurrents, IReadOnlyDictionary<int, int> busToMatrixIndex, IReadOnlyDictionary<int, int> pqBusToMatrixIndex,
             out Matrix<double> changeMatrixRealPowerByAngle, out Matrix<double> changeMatrixImaginaryPowerByAmplitude)
         {
-            changeMatrixRealPowerByAngle = new SparseMatrix(busToMatrixIndex.Count);
-            changeMatrixImaginaryPowerByAmplitude = pqBusToMatrixIndex.Count > 0 ? new SparseMatrix(pqBusToMatrixIndex.Count) : null;
+            var storageRealPowerByAngle = new SparseMatrixStorage(busToMatrixIndex.Count);
+            var storageImaginaryPowerByAmplitude = pqBusToMatrixIndex.Count > 0
+                ? new SparseMatrixStorage(pqBusToMatrixIndex.Count)
+                : null;
 
             foreach (var entry in admittances.EnumerateIndexed())
             {
                 var busRow = entry.Item1;
                 var busColumn = entry.Item2;
                 var admittance = entry.Item3;
-                FillChangeMatrixImaginaryPowerByAmplitude(changeMatrixImaginaryPowerByAmplitude, voltages, pqBusToMatrixIndex, busRow, busColumn, admittance);
-                FillChangeMatrixRealPowerByAngle(changeMatrixRealPowerByAngle, voltages, busToMatrixIndex, busRow, busColumn, admittance);
+                FillChangeMatrixImaginaryPowerByAmplitude(storageImaginaryPowerByAmplitude, voltages, pqBusToMatrixIndex, busRow, busColumn, admittance);
+                FillChangeMatrixRealPowerByAngle(storageRealPowerByAngle, voltages, busToMatrixIndex, busRow, busColumn, admittance);
             }
 
             foreach (var bus in busToMatrixIndex)
@@ -114,8 +116,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var busIndex = bus.Key;
                 var voltage = voltages[busIndex];
                 var current = constantCurrents[busIndex];
-                changeMatrixRealPowerByAngle[matrixIndex, matrixIndex] +=
-                    voltage.Magnitude * current.Magnitude * Math.Sin(voltage.Phase - current.Phase);
+                storageRealPowerByAngle.Add(matrixIndex, matrixIndex, voltage.Magnitude * current.Magnitude * Math.Sin(voltage.Phase - current.Phase));
             }
 
             foreach (var bus in pqBusToMatrixIndex)
@@ -124,12 +125,14 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                 var busIndex = bus.Key;
                 var current = constantCurrents[busIndex];
                 var voltage = voltages[busIndex];
-                changeMatrixImaginaryPowerByAmplitude[matrixIndex, matrixIndex] +=
-                    current.Magnitude * Math.Sin(current.Phase - voltage.Phase);
+                storageImaginaryPowerByAmplitude.Add(matrixIndex, matrixIndex, current.Magnitude * Math.Sin(current.Phase - voltage.Phase));
             }
+
+            changeMatrixRealPowerByAngle = storageRealPowerByAngle.ToMatrix();
+            changeMatrixImaginaryPowerByAmplitude = storageImaginaryPowerByAmplitude != null ? storageImaginaryPowerByAmplitude.ToMatrix() : null;
         }
 
-        private static void FillChangeMatrixRealPowerByAngle(Matrix<double> changeMatrixRealPowerByAngle, IList<Complex> voltages, IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance)
+        private static void FillChangeMatrixRealPowerByAngle(SparseMatrixStorage changeMatrixRealPowerByAngle, IList<Complex> voltages, IReadOnlyDictionary<int, int> busToMatrixIndex, int busRow, int busColumn, Complex admittance)
         {
             var realPowerByAngleRow = busToMatrixIndex[busRow];
             var realPowerByAngleColumn = busToMatrixIndex[busColumn];
@@ -139,13 +142,11 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             var voltageRow = voltages[busRow];
             var voltageColumn = voltages[busColumn];
-            changeMatrixRealPowerByAngle[realPowerByAngleRow, realPowerByAngleColumn] =
-                admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
-            changeMatrixRealPowerByAngle[realPowerByAngleRow, realPowerByAngleRow] +=
-                admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase);
+            changeMatrixRealPowerByAngle.Add(realPowerByAngleRow, realPowerByAngleColumn, admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase));
+            changeMatrixRealPowerByAngle.Add(realPowerByAngleRow, realPowerByAngleRow, admittance.Magnitude * voltageRow.Magnitude * voltageColumn.Magnitude * Math.Sin(admittance.Phase + voltageColumn.Phase - voltageRow.Phase));
         }
 
-        private static void FillChangeMatrixImaginaryPowerByAmplitude(Matrix<double> changeMatrixImaginaryPowerByAmplitude, IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
+        private static void FillChangeMatrixImaginaryPowerByAmplitude(SparseMatrixStorage changeMatrixImaginaryPowerByAmplitude, IList<Complex> voltages, IReadOnlyDictionary<int, int> pqBusToMatrixIndex, int busRow, int busColumn, Complex admittance)
         {
             int imaginaryPowerByAmplitudeRow;
 
@@ -156,24 +157,20 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             int imaginaryPowerByAmplitudeColumn;
             if (!pqBusToMatrixIndex.TryGetValue(busColumn, out imaginaryPowerByAmplitudeColumn))
             {
-                Complex voltageColumn1 = voltages[busColumn];
-                changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow] +=
-                    admittance.Magnitude * voltageColumn1.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn1.Phase);
+                var voltageColumn1 = voltages[busColumn];
+                changeMatrixImaginaryPowerByAmplitude.Add(imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow, admittance.Magnitude * voltageColumn1.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn1.Phase));
                 return;
             }
 
             if (imaginaryPowerByAmplitudeRow == imaginaryPowerByAmplitudeColumn)
             {
-                changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeColumn, imaginaryPowerByAmplitudeColumn] -=
-                    2 * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase);
+                changeMatrixImaginaryPowerByAmplitude.Subtract(imaginaryPowerByAmplitudeColumn, imaginaryPowerByAmplitudeColumn, 2 * admittance.Magnitude * voltageRow.Magnitude * Math.Sin(admittance.Phase));
                 return;
             }
 
             var voltageColumn = voltages[busColumn];
-            changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeColumn] =
-                admittance.Magnitude * voltageRow.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
-            changeMatrixImaginaryPowerByAmplitude[imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow] +=
-                admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase);
+            changeMatrixImaginaryPowerByAmplitude.Add(imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeColumn, admittance.Magnitude * voltageRow.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase));
+            changeMatrixImaginaryPowerByAmplitude.Add(imaginaryPowerByAmplitudeRow, imaginaryPowerByAmplitudeRow, admittance.Magnitude * voltageColumn.Magnitude * Math.Sin(voltageRow.Phase - admittance.Phase - voltageColumn.Phase));
         }
     }
 }
