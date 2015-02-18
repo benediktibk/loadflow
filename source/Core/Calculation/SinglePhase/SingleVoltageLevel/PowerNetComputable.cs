@@ -232,7 +232,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
             return result;
         }
 
-        private Vector<Complex> ExtractConstantCurrents(IReadOnlyList<int> nodeIndices)
+        private Vector<Complex> ExtractConstantCurrents(IReadOnlyCollection<int> nodeIndices)
         {
             var result = new SparseVector(nodeIndices.Count);
             var i = 0;

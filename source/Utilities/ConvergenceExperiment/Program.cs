@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Numerics;
-using System.Threading;
-using Calculation.SinglePhase.SingleVoltageLevel;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using SincalConnector;
-using PowerNetComputable = Calculation.SinglePhase.SingleVoltageLevel.PowerNetComputable;
 
 namespace ConvergenceExperiment
 {
@@ -20,13 +16,14 @@ namespace ConvergenceExperiment
             var calculators = new Dictionary<string, INodeVoltageCalculator>
             {
                 {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
-                {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
-                {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)}
+                {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
+                {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)},
+                {"HELM, 100 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 70, 100, true)}
             };
             var file = new StreamWriter("results.csv", false);
             file.WriteLine("method;relative power error;elapsed time");
             var powerNet = new PowerNetDatabaseAdapter(
-                "C:\\Users\\benediktibk\\Desktop\\modifiziert\\einphasig, ohne Regelstufen, ohne geregelte Generatoren, ohne PV, ohne Generatoren\\10_2015_files\\database.mdb", 0.5);
+                "C:\\Users\\benediktibk\\Desktop\\modifiziert\\einphasig, ohne Regelstufen, ohne geregelte Generatoren, ohne PV, ohne Generatoren\\10_2015_files\\database.mdb", 0.1);
             var stopWatch = new Stopwatch();
 
             foreach (var calculator in calculators)

@@ -34,7 +34,7 @@ Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(con
 {	
 	Vector<Floating, ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);
-	auto maximumIterations = std::min(10*_dimension, 2000);
+	auto maximumIterations = std::max(2*_dimension, 100);
 	Vector<Floating, ComplexFloating> residual(_dimension);
 	Vector<Floating, ComplexFloating> temp(_dimension); 
 	_systemMatrix.multiply(temp, x);
