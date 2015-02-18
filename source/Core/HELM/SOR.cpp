@@ -28,6 +28,7 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto bCurrent = Vector<Floating, ComplexFloating>(_dimension);
 	auto i = 0;
+	auto bSquaredNorm = b.squaredNorm();
 
 	do
 	{
@@ -53,7 +54,7 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 		_systemMatrix.multiply(bCurrent, x);
 		residual.subtract(bCurrent, b);
 		++i;
-	} while(std::abs(residual.squaredNorm()) > epsilonSquared && i < _maximumIterations);
+	} while(std::abs(residual.squaredNorm()/bSquaredNorm) > epsilonSquared && i < _maximumIterations);
 
 	return x;
 }

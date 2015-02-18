@@ -19,8 +19,8 @@ namespace ConvergenceExperiment
             const double targetPrecision = 1e-10;
             var calculators = new Dictionary<string, INodeVoltageCalculator>
             {
-                {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
                 {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
+                {"HELM mit Stromiteration, 64 Bit, iterativ", new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true), new CurrentIteration(targetPrecision, maximumIterations, true))},
                 {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)}
             };
             var file = new StreamWriter("results.csv", false);
@@ -35,6 +35,7 @@ namespace ConvergenceExperiment
 
                 stopWatch.Restart();
                 var relativePowerError = CalculateRelativePowerError(calculator.Value, powerNet);
+                Console.WriteLine("relative power error: " + relativePowerError);
                 stopWatch.Stop();
                 file.WriteLine(calculator.Key + ";" + relativePowerError + ";" + stopWatch.Elapsed.TotalSeconds);
                 file.Flush();
