@@ -36,8 +36,9 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 	auto residual = Vector<Floating, ComplexFloating>(_dimension);
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto bCurrent = Vector<Floating, ComplexFloating>(_dimension);
-	auto i = 0;
+	auto iterations = 0;
 	auto bSquaredNorm = bPreconditioned.squaredNorm();
+	auto relativeError = epsilonSquared + Floating(1);
 
 	do
 	{
@@ -59,11 +60,15 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 			auto secondSummand = ComplexFloating((Floating(1) - _omega))*x(i);
 			x.set(i, firstSummand + secondSummand);
 		}
+		++iterations;
 
-		_systemMatrix.multiply(bCurrent, x);
-		residual.subtract(bCurrent, bPreconditioned);
-		++i;
-	} while(std::abs(residual.squaredNorm()/bSquaredNorm) > epsilonSquared && i < _maximumIterations);
+		if (iterations%128 == 0)
+		{
+			_systemMatrix.multiply(bCurrent, x);
+			residual.subtract(bCurrent, bPreconditioned);
+			relativeError = std::abs(residual.squaredNorm()/bSquaredNorm);
+		}
+	} while(relativeError > epsilonSquared && iterations < _maximumIterations);
 
 	return x;
 }
