@@ -19,10 +19,10 @@ namespace ConvergenceExperiment
             const double targetPrecision = 1e-10;
             var calculators = new Dictionary<string, INodeVoltageCalculator>
             {
-                {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
-                {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)},
-                {"Newton-Raphson, iterativ", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
                 {"FDLF, iterativ", new FastDecoupledLoadFlowMethod(targetPrecision, maximumIterations, true)},
+                {"Newton-Raphson, iterativ", new NewtonRaphsonMethod(targetPrecision, maximumIterations, true)},
+                {"HELM, 64 Bit, iterativ", new HolomorphicEmbeddedLoadFlowMethod(targetPrecision, 50, 64, true)},
+                {"Stromiteration, iterativ", new CurrentIteration(targetPrecision, maximumIterations, true)}
             };
             var file = new StreamWriter("results.csv", false);
             file.WriteLine("method;relative power error;elapsed time");
