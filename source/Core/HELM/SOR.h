@@ -16,6 +16,7 @@ private:
 	const int _dimension;
 	const Floating _omega;
 	const int _maximumIterations;
-	SparseMatrix<Floating, ComplexFloating> const &_systemMatrix;
+	SparseMatrix<Floating, ComplexFloating> _systemMatrix;
+	SparseMatrix<Floating, ComplexFloating> _preconditioner;
 };
 

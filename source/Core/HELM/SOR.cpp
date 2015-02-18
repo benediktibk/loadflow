@@ -13,28 +13,37 @@ SOR<Floating, ComplexFloating>::SOR(const SparseMatrix<Floating, ComplexFloating
 	_dimension(systemMatrix.getColumnCount()),
 	_omega(omega),
 	_maximumIterations(maximumIterations),
-	_systemMatrix(systemMatrix)
+	_systemMatrix(systemMatrix),
+	_preconditioner(_dimension, _dimension)
 {
 	assert(systemMatrix.getColumnCount() == systemMatrix.getRowCount());
 	assert(omega > Floating(0) && omega < Floating(2));
 	assert(maximumIterations > 0);
+
+	auto diagonal = _systemMatrix.getInverseMainDiagonal();
+	_systemMatrix.multiplyWithDiagonalMatrix(diagonal);
+
+	for (auto i = 0; i < _dimension; ++i)
+		_preconditioner.set(i, i, diagonal(i));	
 }
 
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {
+	auto bPreconditioned = Vector<Floating, ComplexFloating>(b.getCount());
+	_preconditioner.multiply(bPreconditioned, b);
 	auto x = Vector<Floating, ComplexFloating>(_dimension);
 	auto residual = Vector<Floating, ComplexFloating>(_dimension);
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto bCurrent = Vector<Floating, ComplexFloating>(_dimension);
 	auto i = 0;
-	auto bSquaredNorm = b.squaredNorm();
+	auto bSquaredNorm = bPreconditioned.squaredNorm();
 
 	do
 	{
 		for (auto i = 0; i < _dimension; ++i)
 		{
-			auto firstSummand = b(i);
+			auto firstSummand = bPreconditioned(i);
 			auto rowIterator = _systemMatrix.getRowIterator(i);
 
 			for (;rowIterator.getColumn() < i; rowIterator.next())
@@ -52,7 +61,7 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 		}
 
 		_systemMatrix.multiply(bCurrent, x);
-		residual.subtract(bCurrent, b);
+		residual.subtract(bCurrent, bPreconditioned);
 		++i;
 	} while(std::abs(residual.squaredNorm()/bSquaredNorm) > epsilonSquared && i < _maximumIterations);
 
