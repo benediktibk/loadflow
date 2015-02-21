@@ -316,12 +316,6 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationStepBy
 	CoefficientStorage< Complex<long double>, long double > coefficientStorage(6, 1, pqBuses, pvBuses, admittances);
 	AnalyticContinuation< long double, Complex<long double> > continuation(coefficientStorage, 0, 6);
 	Vector<long double, Complex<long double> > coefficients(1);
-
-	coefficients.set(0, Complex<long double>(0, 0));
-	coefficientStorage.addCoefficients(coefficients);
-	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0, 0), continuation.getResult(), 0.00001))
-		return false;
 	
 	coefficients.set(0, Complex<long double>(0.5, 0));
 	coefficientStorage.addCoefficients(coefficients);
@@ -332,25 +326,29 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationStepBy
 	coefficients.set(0, Complex<long double>(0.0625, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.57142857, 0), continuation.getResult(), 0.00001))
+	auto result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.56250000000000000, 0), result, 0.00001))
 		return false;
 
 	coefficients.set(0, Complex<long double>(0.01660156, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.58510638, 0), continuation.getResult(), 0.00001))
+	result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.58510637834314194, 0), result, 0.00001))
 		return false;
 
 	coefficients.set(0, Complex<long double>(0.00473809, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.58574349, 0), continuation.getResult(), 0.00001))
+	result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.58573197128947940, 0), result, 0.00001))
 		return false;
 
 	coefficients.set(0, Complex<long double>(0.00137754, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.58578573, 0), continuation.getResult(), 0.00001))
+	result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.58578574861861932, 0), result, 0.00001))
 		return false;
 
 	return true;
