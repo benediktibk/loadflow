@@ -203,7 +203,7 @@ Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calcula
 		auto id = bus.getId();
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
 		auto value = constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification);
-		assert(isValueFinite(std::abs2(value)));
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));
 		rightHandSide.set(id, value);
 	}
 	
@@ -215,7 +215,7 @@ Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calcula
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
 		auto value = admittanceRowSum + constantCurrent;
-		assert(isValueFinite(std::abs2(value)));
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));
 		rightHandSide.set(id, value);
 	}
 
@@ -235,7 +235,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		auto power = createComplexFloating(bus.getPower());
 		auto current = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
 		auto value = operator+(current, operator+(_totalAdmittanceRowSums[id], _embeddingModification));
-		assert(isValueFinite(std::abs2(value)));
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));
 		rightHandSide.set(id, value);
 	}
 	
@@ -246,7 +246,7 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		auto id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		auto value = calculateRightHandSide(bus) - admittanceRowSum;
-		assert(isValueFinite(std::abs2(value)));		
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));	
 		rightHandSide.set(id, value);
 	}
 	
@@ -266,7 +266,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		auto id = bus.getId();
 		auto power = createComplexFloating(bus.getPower());
 		auto value = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
-		assert(isValueFinite(std::abs2(value)));
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));
 		rightHandSide.set(id, value);
 	}
 		
@@ -276,7 +276,7 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		PVBus const& bus = _pvBuses[i];
 		auto id = bus.getId();
 		auto value = calculateRightHandSide(bus);
-		assert(isValueFinite(std::abs2(value)));
+		assert(isValueFinite(static_cast<double>(std::abs2(value))));
 		rightHandSide.set(id, value);
 	}
 	
