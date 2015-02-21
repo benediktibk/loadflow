@@ -4,6 +4,7 @@
 #include "BiCGSTAB.h"
 #include "SOR.h"
 #include "LUDecomposition.h"
+#include "NumericalTraits.h"
 #include <sstream>
 #include <map>
 #include <cmath>
@@ -201,7 +202,9 @@ Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calcula
 		const PQBus &bus = _pqBuses[i];
 		auto id = bus.getId();
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
-		rightHandSide.set(id, constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification));
+		auto value = constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification);
+		assert(isValueFinite(std::abs2(value)));
+		rightHandSide.set(id, value);
 	}
 	
 	#pragma omp parallel for
@@ -211,7 +214,9 @@ Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calcula
 		auto id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
-		rightHandSide.set(id, admittanceRowSum + constantCurrent);
+		auto value = admittanceRowSum + constantCurrent;
+		assert(isValueFinite(std::abs2(value)));
+		rightHandSide.set(id, value);
 	}
 
 	return _solver->solve(rightHandSide);
@@ -229,7 +234,9 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		auto id = bus.getId();
 		auto power = createComplexFloating(bus.getPower());
 		auto current = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
-		rightHandSide.set(id, operator+(current, operator+(_totalAdmittanceRowSums[id], _embeddingModification)));
+		auto value = operator+(current, operator+(_totalAdmittanceRowSums[id], _embeddingModification));
+		assert(isValueFinite(std::abs2(value)));
+		rightHandSide.set(id, value);
 	}
 	
 	#pragma omp parallel for
@@ -238,7 +245,9 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		PVBus const& bus = _pvBuses[i];
 		auto id = bus.getId();
 		ComplexFloating const& admittanceRowSum = _totalAdmittanceRowSums[id];
-		rightHandSide.set(id, calculateRightHandSide(bus) - admittanceRowSum);
+		auto value = calculateRightHandSide(bus) - admittanceRowSum;
+		assert(isValueFinite(std::abs2(value)));		
+		rightHandSide.set(id, value);
 	}
 	
 	auto coefficients = _solver->solve(rightHandSide);
@@ -256,7 +265,9 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		const PQBus &bus = _pqBuses[i];
 		auto id = bus.getId();
 		auto power = createComplexFloating(bus.getPower());
-		rightHandSide.set(id, conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id))));
+		auto value = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
+		assert(isValueFinite(std::abs2(value)));
+		rightHandSide.set(id, value);
 	}
 		
 	#pragma omp parallel for
@@ -264,7 +275,9 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 	{
 		PVBus const& bus = _pvBuses[i];
 		auto id = bus.getId();
-		rightHandSide.set(id, calculateRightHandSide(bus));
+		auto value = calculateRightHandSide(bus);
+		assert(isValueFinite(std::abs2(value)));
+		rightHandSide.set(id, value);
 	}
 	
 	auto coefficients = _solver->solve(rightHandSide);

@@ -31,7 +31,7 @@ public:
 };
 
 
-template<typename T> bool isFinite(T const &arg)
+template<typename T> bool isValueFinite(T const &arg)
 {
     return arg == arg && 
            arg != std::numeric_limits<T>::infinity() &&
