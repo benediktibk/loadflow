@@ -33,8 +33,12 @@ public:
 
 template<typename T> bool isValueFinite(T const &arg)
 {
-    return arg == arg && 
-           arg != std::numeric_limits<T>::infinity() &&
-           arg != -std::numeric_limits<T>::infinity();
+	if (arg == T(0))
+		return true;
+
+    auto equal = arg == arg;
+    auto notPositiveInfinity = arg != std::numeric_limits<T>::infinity();
+    auto notNegativeInfinity = arg != -std::numeric_limits<T>::infinity();
+	return equal && notPositiveInfinity && notNegativeInfinity;
 }
 

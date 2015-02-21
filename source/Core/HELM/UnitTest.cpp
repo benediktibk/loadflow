@@ -9,6 +9,7 @@
 #include "Vector.h"
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
+#include "NumericalTraits.h"
 
 using namespace std;
 
@@ -69,6 +70,8 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexMultiPrecision()
 {
 	Complex<MultiPrecision> one(MultiPrecision(2), MultiPrecision(3));
 	Complex<MultiPrecision> two(MultiPrecision(5), MultiPrecision(7));
+	Complex<long double> zeroLongDouble(0, 0);
+	Complex<MultiPrecision> zeroMulti(MultiPrecision(zeroLongDouble.real()), MultiPrecision(zeroLongDouble.imag()));
 
 	Complex<MultiPrecision> add = one + two;
 	Complex<MultiPrecision> subtract = one - two;
@@ -97,6 +100,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexMultiPrecision()
 	Complex<MultiPrecision> zero;
 
 	if (onlyImaginaryValue == zero)
+		return false;
+
+	if (!isValueFinite(std::abs2(zero)))
+		return false;
+
+	if (!isValueFinite(std::abs2(zeroMulti)))
+		return false;
+
+	if (zero != zeroMulti)
 		return false;
 
 	return true;
@@ -354,12 +366,11 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationBunchA
 	AnalyticContinuation< long double, Complex<long double> > continuation(coefficientStorage, 0, 6);
 	Vector<long double, Complex<long double> > coefficients(1);
 
-	coefficients.set(0, Complex<long double>(0, 0));
-	coefficientStorage.addCoefficients(coefficients);
 	coefficients.set(0, Complex<long double>(0.5, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.5, 0), continuation.getResult(), 0.00001))
+	auto result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.5, 0), result, 0.00001))
 		return false;
 	
 	coefficients.set(0, Complex<long double>(0.0625, 0));
@@ -369,13 +380,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsAnalyticContinuationBunchA
 	coefficients.set(0, Complex<long double>(0.00473809, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.58574349, 0), continuation.getResult(), 0.00001))
+	result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.58573197128947940, 0), result, 0.00001))
 		return false;
 	
 	coefficients.set(0, Complex<long double>(0.00137754, 0));
 	coefficientStorage.addCoefficients(coefficients);
 	continuation.updateWithLastCoefficients();
-	if (!areEqual(Complex<long double>(0.58578573, 0), continuation.getResult(), 0.00001))
+	result = continuation.getResult();
+	if (!areEqual(Complex<long double>(0.58578574861861932, 0), result, 0.00001))
 		return false;
 
 	return true;

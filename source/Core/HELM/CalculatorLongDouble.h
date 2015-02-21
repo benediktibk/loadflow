@@ -8,7 +8,7 @@ class CalculatorLongDouble :
 public:
 	CalculatorLongDouble(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, bool iterativeSolver);
 	
-protected:
+public:
 	virtual long double createFloating(double value) const;
 };
 

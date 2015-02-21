@@ -10,7 +10,7 @@ class CalculatorMulti :
 public:
 	CalculatorMulti(double targetPrecision, int numberOfCoefficients, int nodeCount, int pqBusCount, int pvBusCount, double nominalVoltage, int bitPrecision, bool iterativeSolver);
 	
-protected:
+public:
 	virtual MultiPrecision createFloating(double value) const;
 
 private:

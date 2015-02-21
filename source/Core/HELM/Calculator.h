@@ -36,7 +36,7 @@ public:
 	virtual double getRelativePowerError();
 	virtual int getMaximumPossibleCoefficientCount();
 
-protected:
+public:
 	virtual Floating createFloating(double value) const = 0;
 	ComplexFloating createComplexFloating(Complex<long double> const &value) const;
 
