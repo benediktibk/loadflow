@@ -55,36 +55,47 @@ Calculator<Floating, ComplexFloating>::~Calculator()
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setAdmittance(int row, int column, Complex<long double> value)
 {
-	_admittances.set(row, column, createComplexFloating(value));
+	auto valueCasted = createComplexFloating(value);
+	assert(isValueFinite(std::abs2(valueCasted)));
+	_admittances.set(row, column, valueCasted);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setAdmittanceRowSum(int row, Complex<long double> value)
 {
-	_totalAdmittanceRowSums[row] = createComplexFloating(value);
+	auto valueCasted = createComplexFloating(value);
+	assert(isValueFinite(std::abs2(valueCasted)));
+	_totalAdmittanceRowSums[row] = valueCasted;
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setPQBus(int busId, int node, Complex<long double> power)
 {
+	assert(isValueFinite(std::abs2(power)));
 	_pqBuses[busId] = PQBus(node, power);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setPVBus(int busId, int node, double powerReal, double voltageMagnitude)
 {
+	assert(isValueFinite(powerReal));
+	assert(isValueFinite(voltageMagnitude));
 	_pvBuses[busId] = PVBus(node, powerReal, voltageMagnitude);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::setConstantCurrent(int node, Complex<long double> value)
 {
-	_constantCurrents.set(node, createComplexFloating(value));
+	auto valueCasted = createComplexFloating(value);
+	assert(isValueFinite(std::abs2(valueCasted)));
+	_constantCurrents.set(node, valueCasted);
 }
 
 template<typename Floating, typename ComplexFloating>
 void Calculator<Floating, ComplexFloating>::calculate()
 {          
+	assert(_constantCurrents.isFinite());
+
 	{
 		lock_guard<mutex> lock(_progressMutex);
 		_progress = 0;
