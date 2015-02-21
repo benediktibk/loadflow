@@ -146,7 +146,7 @@ bool Vector<Floating, ComplexFloating>::isFinite() const
 	for (auto i = 0; i < _count; ++i)
 	{
 		auto value = static_cast<double>(std::abs2(_values[i]));
-		if (!isValueFinite(value))
+		if (!isFinite(value))
 			return false;
 	}
 

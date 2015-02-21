@@ -25,12 +25,12 @@ BiCGSTAB<Floating, ComplexFloating>::BiCGSTAB(const SparseMatrix<Floating, Compl
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {	
-	//assert(b.isFinite());
+	assert(b.isFinite());
 
 	Vector<Floating, ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);
 	
-	//assert(x.isFinite());
+	assert(x.isFinite());
 
 	auto maximumIterations = std::max(2*_dimension, 100);
 	Vector<Floating, ComplexFloating> residual(_dimension);
