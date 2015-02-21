@@ -18,6 +18,7 @@ public:
 	void pointwiseMultiply(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y);
 	void subtract(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y);
 	void conjugate();
+	bool isFinite() const;
 
 	ComplexFloating const& operator()(int i) const;
 	Vector<Floating, ComplexFloating> const& operator=(Vector<Floating, ComplexFloating> const &rhs);

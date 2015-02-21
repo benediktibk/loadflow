@@ -1,6 +1,7 @@
 #include "Vector.h"
 #include "Complex.h"
 #include "MultiPrecision.h"
+#include "NumericalTraits.h"
 #include <assert.h>
 #include <string.h>
 #include <algorithm>
@@ -137,6 +138,19 @@ void Vector<Floating, ComplexFloating>::conjugate()
 	#pragma omp parallel for
 	for (auto i = 0; i < _count; ++i)
 		_values[i] = std::conj(_values[i]);
+}
+
+template<typename Floating, typename ComplexFloating> 
+bool Vector<Floating, ComplexFloating>::isFinite() const
+{	
+	for (auto i = 0; i < _count; ++i)
+	{
+		auto value = static_cast<double>(std::abs2(_values[i]));
+		if (!isValueFinite(value))
+			return false;
+	}
+
+	return true;
 }
 
 template<class Floating, class ComplexFloating>

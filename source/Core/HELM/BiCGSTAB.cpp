@@ -7,13 +7,6 @@
 template class BiCGSTAB<long double, Complex<long double>>;
 template class BiCGSTAB<MultiPrecision, Complex<MultiPrecision>>;
 
-template<typename T> bool isfinite(T const &arg)
-{
-    return arg == arg && 
-           arg != std::numeric_limits<T>::infinity() &&
-           arg != -std::numeric_limits<T>::infinity();
-}
-
 template<class Floating, class ComplexFloating>
 BiCGSTAB<Floating, ComplexFloating>::BiCGSTAB(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon) :
 	_dimension(systemMatrix.getRowCount()),
@@ -32,8 +25,13 @@ BiCGSTAB<Floating, ComplexFloating>::BiCGSTAB(const SparseMatrix<Floating, Compl
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {	
+	//assert(b.isFinite());
+
 	Vector<Floating, ComplexFloating> x(_dimension);
 	_preconditioner.multiply(x, b);
+	
+	//assert(x.isFinite());
+
 	auto maximumIterations = std::max(2*_dimension, 100);
 	Vector<Floating, ComplexFloating> residual(_dimension);
 	Vector<Floating, ComplexFloating> temp(_dimension); 
@@ -99,12 +97,8 @@ Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(con
 		++i;
 	}
 
-	for (auto i = 0; i < _dimension; ++i)
-	{
-		auto value = static_cast<double>(std::abs2(x(i)));
-		if (!isfinite(value))
-			throw overflow_error("BiCGSTAB did not converge to a proper value");
-	}
+	if (!x.isFinite())
+		throw overflow_error("BiCGSTAB did not converge to a proper value");
 
 	return x;
 }
