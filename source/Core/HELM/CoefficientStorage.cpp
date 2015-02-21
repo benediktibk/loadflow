@@ -235,7 +235,7 @@ template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::insertInverseCoefficient(int node, ComplexType const& value)
 {
 	assert(_inverseCoefficients.count(node) == 1);
-	assert(isValueFinite(static_cast<double>(std::abs2(value))));
+	assert(isValueFinite(std::abs2(value)));
 	_inverseCoefficients[node].push_back(value);
 }
 
@@ -243,7 +243,7 @@ template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::insertSquaredCoefficient(int node, ComplexType const& value)
 {
 	assert(_squaredCoefficients.count(node) == 1);
-	assert(isValueFinite(static_cast<double>(std::abs2(value))));
+	assert(isValueFinite(std::abs2(value)));
 	_squaredCoefficients[node].push_back(value);
 }
 
@@ -251,7 +251,7 @@ template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::insertCombinedCoefficient(int node, ComplexType const& value)
 {
 	assert(_combinedCoefficients.count(node) == 1);
-	assert(isValueFinite(static_cast<double>(std::abs2(value))));
+	assert(isValueFinite(std::abs2(value)));
 	_combinedCoefficients[node].push_back(value);
 }
 
@@ -259,6 +259,6 @@ template<typename ComplexType, typename RealType>
 void CoefficientStorage<ComplexType, RealType>::insertWeightedCoefficent(int node, ComplexType const& value)
 {
 	assert(_weightedCoefficients.count(node) == 1);
-	assert(isValueFinite(static_cast<double>(std::abs2(value))));
+	assert(isValueFinite(std::abs2(value)));
 	_weightedCoefficients[node].push_back(value);
 }
