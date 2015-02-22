@@ -44,12 +44,7 @@ namespace ConvergenceExperiment
         private static double CalculateRelativePowerError(INodeVoltageCalculator calculator, PowerNetDatabaseAdapter powerNet)
         {
             double result;
-
-            var success = powerNet.CalculateNodeVoltages(calculator, out result);
-
-            if (!success)
-                result = 1e10;
-
+             powerNet.CalculateNodeVoltages(calculator, out result);
             return result;
         }
     }
