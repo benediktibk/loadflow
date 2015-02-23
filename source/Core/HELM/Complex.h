@@ -1,6 +1,8 @@
 #pragma once
 
-#include <ostream>
+#include <iostream>
+#include <sstream>
+#include <string>
 #include "MultiPrecision.h"
 
 template<typename T>
@@ -69,7 +71,23 @@ bool operator!=(Complex<T> const& lhs, Complex<T> const& rhs)
 template<typename T>
 std::ostream& operator<<(std::ostream &stream, Complex<T> const& value)
 {
-	stream << "(" << value.real() << ", " << value.imag() << ")";
+	stream << "(" << value.real() << "," << value.imag() << ")";
+	return stream;
+}
+
+template<typename T>
+std::istream& operator>>(std::istream &stream, Complex<T> &value)
+{
+	string completeString;
+	std::getline(stream, completeString, ')');
+	auto comma = completeString.find(',');
+	auto realString = stringstream(completeString.substr(1, comma - 1));
+	auto imagString = stringstream(completeString.substr(comma + 1, completeString.size() - comma));
+	T real;
+	T imag;
+	realString >> real;
+	imagString >> imag;
+	value = Complex<T>(real, imag);
 	return stream;
 }
 

@@ -10,6 +10,7 @@
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
+#include <sstream>
 
 using namespace std;
 
@@ -61,6 +62,16 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexDouble()
 		return false;
 
 	if (Complex<double>(0, 1.0/3) == Complex<double>())
+		return false;
+
+	Complex<double> original(1.23456, 0.00000006789);
+	Complex<double> parsed;
+	stringstream stream;
+	stream << original;
+	stream.seekg(ios_base::beg);
+	stream >> parsed;
+
+	if (original != parsed)
 		return false;
 
 	return true;
@@ -874,6 +885,25 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixSet()
 		return false;
 
 	return true;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixStreaming()
+{
+	SparseMatrix<long double, Complex<long double> > original(3, 4);
+	original.set(0, 1, Complex<long double>(2, 0));
+	original.set(0, 2, Complex<long double>(3, 0));
+	original.set(0, 3, Complex<long double>(4, 0));
+	original.set(1, 0, Complex<long double>(5, 0));
+	original.set(1, 3, Complex<long double>(60, 0));
+	original.set(2, 2, Complex<long double>(7, 0));
+	original.set(2, 0, Complex<long double>(80, 0));
+	SparseMatrix<long double, Complex<long double> > parsed(3, 4);
+	stringstream stream;
+	stream << original;
+	stream.seekg(ios_base::beg);
+	stream >> parsed;
+
+	return parsed == original;
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiply()
