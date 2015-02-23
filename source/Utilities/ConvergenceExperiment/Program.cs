@@ -23,7 +23,7 @@ namespace ConvergenceExperiment
             var file = new StreamWriter("results.csv", false);
             file.WriteLine("method;relative power error;elapsed time");
             var powerNet = new PowerNetDatabaseAdapter(
-                "C:\\Users\\benediktibk\\Desktop\\modifiziert\\einphasig, ohne Regelstufen, ohne geregelte Generatoren, ohne PV, ohne Generatoren\\10_2015_files\\database.mdb", 0.1);
+                "F:\\Ablegen\\einphasig, ohne Regelstufen, ohne geregelte Generatoren, ohne PV, ohne Generatoren\\10_2015_files\\database.mdb", 0.1);
             var stopWatch = new Stopwatch();
 
             foreach (var calculator in calculators)

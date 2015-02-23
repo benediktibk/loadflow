@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Calculation.SinglePhase.SingleVoltageLevel;
@@ -56,8 +57,10 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
 
             foreach (var partialPowerNet in partialPowerNets)
             {
+                Console.WriteLine("partial power net " + partialPowerNet.NodeCount);
                 double partialRelativePowerError;
                 var partialResult = partialPowerNet.CalculateNodeResults(out partialRelativePowerError);
+                Console.WriteLine("partial relative power error: " + relativePowerError);
                 relativePowerError += partialRelativePowerError;
 
                 if (partialResult == null)

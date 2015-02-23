@@ -86,6 +86,7 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             HolomorphicEmbeddedLoadFlowMethodNativeMethods.DeleteLoadFlowCalculator(_calculator);
             _calculator = -1;
             _calculatorMutex.ReleaseMutex();
+            Console.Write(StatusMessage);
             return voltages;
         }
 

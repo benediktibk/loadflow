@@ -92,7 +92,7 @@ namespace SincalConnector
             var nodeResultsCasted = nodeResults.ToDictionary(nodeResult => nodeResult.Key, nodeResult => new NodeResult(nodeResult.Key, nodeResult.Value.Voltage, nodeResult.Value.Power));
             _powerNet.FixNodeResults(nodeResultsCasted);
 
-            using (var connection = new OleDbConnection(ConnectionString))
+/*            using (var connection = new OleDbConnection(ConnectionString))
             {
                 connection.Open();
                 var commandFactory = new SqlCommandFactory(connection);
@@ -106,7 +106,7 @@ namespace SincalConnector
                     command.ExecuteNonQuery();
 
                 connection.Close();
-            }
+            }*/
 
             return true;
         }
