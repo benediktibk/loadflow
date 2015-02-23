@@ -2,18 +2,18 @@
 
 #include "ILinearEquationSystemSolver.h"
 #include "SparseMatrix.h"
+#include "IPivotFinder.h"
 
 template<class Floating, class ComplexFloating>
 class LUDecomposition :
 	public ILinearEquationSystemSolver<Floating, ComplexFloating>
 {
-public:
-	LUDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
-
-	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
-
 protected:
-	virtual int findPivotIndex(SparseMatrix<Floating, ComplexFloating> const &upper, int row) const = 0;
+	LUDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix, IPivotFinder<Floating, ComplexFloating> *pivotFinder);
+
+public:
+	virtual ~LUDecomposition();
+	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 
 private:
 	void calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
@@ -26,5 +26,6 @@ private:
 	SparseMatrix<Floating, ComplexFloating> _upper;
 	SparseMatrix<Floating, ComplexFloating> _permutation;
 	Vector<Floating, ComplexFloating> _preconditioner;
+	const IPivotFinder<Floating, ComplexFloating> *_pivotFinder;
 };
 

@@ -7,15 +7,24 @@ template class LUDecomposition<long double, Complex<long double>>;
 template class LUDecomposition<MultiPrecision, Complex<MultiPrecision>>;
 
 template<class Floating, class ComplexFloating>
-LUDecomposition<Floating, ComplexFloating>::LUDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix) :
+LUDecomposition<Floating, ComplexFloating>::LUDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix, IPivotFinder<Floating, ComplexFloating> *pivotFinder) :
 	_dimension(systemMatrix.getRowCount()),
 	_left(_dimension, _dimension),
 	_upper(_dimension, _dimension),
 	_permutation(_dimension, _dimension),
-	_preconditioner(_dimension)
+	_preconditioner(_dimension),
+	_pivotFinder(pivotFinder)
 {
 	assert(systemMatrix.getRowCount() == systemMatrix.getColumnCount());
+	assert(pivotFinder != 0);
 	calculateDecomposition(systemMatrix);
+}
+
+template<class Floating, class ComplexFloating>
+LUDecomposition<Floating, ComplexFloating>::~LUDecomposition()
+{
+	delete _pivotFinder;
+	_pivotFinder = 0;
 }
 
 template<class Floating, class ComplexFloating>
@@ -40,7 +49,7 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 
 	for (auto i = 0; i < _dimension - 1; ++i)
 	{
-		auto pivotIndex = findPivotIndex(_upper, i);
+		auto pivotIndex = (*_pivotFinder)(_upper, i);
 		auto pivotElement = _upper(pivotIndex, i);
 		_upper.swapRows(i, pivotIndex);
 		_left.swapRows(i, pivotIndex);

@@ -8,8 +8,5 @@ class LUDecompositionStable :
 {
 public:
 	LUDecompositionStable(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
-
-protected:
-	virtual int findPivotIndex(SparseMatrix<Floating, ComplexFloating> const &upper, int row) const;
 };
 
