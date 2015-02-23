@@ -65,7 +65,7 @@ void Calculator<Floating, ComplexFloating>::setAdmittanceRowSum(int row, Complex
 {
 	auto valueCasted = createComplexFloating(value);
 	assert(isValueFinite(std::abs2(valueCasted)));
-	_totalAdmittanceRowSums[row] = valueCasted + ComplexFloating(Floating(row));
+	_totalAdmittanceRowSums[row] = valueCasted;
 }
 
 template<typename Floating, typename ComplexFloating>

@@ -98,6 +98,7 @@
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\FactoryTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SubMatrixTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\SparseMatrixStorageTest.cs" />
+    <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\BiCGSTABTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\PowerNetComputableTest.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeAssert.cs" />
     <Compile Include="SinglePhase\SingleVoltageLevel\NodeVoltageCalculators\HolomorphicEmbeddedLoadFlowMethodTest.cs" />
@@ -129,6 +130,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="testdata\matrix.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="testdata\matrix_small.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="testdata\vector.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="testdata\vector_small.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Choose>

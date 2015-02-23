@@ -174,9 +174,17 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             {
                 var totalRowSum = totalAdmittanceRowSums[row];
 
-                if (totalRowSum.Magnitude > maximumMagnitude*1e-15)
-                    HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(calculator, row, totalRowSum.Real,
-                        totalRowSum.Imaginary);
+                if (totalRowSum.Magnitude < maximumMagnitude*1e-15)
+                    totalRowSum = 0;
+
+                /*! 
+                 * This modificiation increases the stability of the iterative linear equation solver 
+                 * and has no further effect on the result. In fact, this value can be chosen arbitrarly.
+                 */
+                totalRowSum += new Complex(row, row + 1 - admittances.NodeCount) / admittances.NodeCount * maximumMagnitude * 1e-2;
+
+                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(calculator, row, totalRowSum.Real,
+                    totalRowSum.Imaginary);
             }
         }
 

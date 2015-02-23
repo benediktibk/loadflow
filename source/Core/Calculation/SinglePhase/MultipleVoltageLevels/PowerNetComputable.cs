@@ -60,7 +60,7 @@ namespace Calculation.SinglePhase.MultipleVoltageLevels
                 Console.WriteLine("partial power net " + partialPowerNet.NodeCount);
                 double partialRelativePowerError;
                 var partialResult = partialPowerNet.CalculateNodeResults(out partialRelativePowerError);
-                Console.WriteLine("partial relative power error: " + relativePowerError);
+                Console.WriteLine("partial relative power error: " + partialRelativePowerError);
                 relativePowerError += partialRelativePowerError;
 
                 if (partialResult == null)

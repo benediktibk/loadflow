@@ -11,6 +11,7 @@
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
 #include <sstream>
+#include <fstream>
 
 using namespace std;
 
@@ -30,6 +31,18 @@ bool areEqual(Complex<MultiPrecision> const& one, Complex<MultiPrecision> const&
 {
 	return	std::abs(one.real() - two.real()) < MultiPrecision(delta) &&
 			std::abs(one.imag() - two.imag()) < MultiPrecision(delta);
+}
+
+bool areEqual(Vector<long double, Complex<long double>> const& one, Vector<long double, Complex<long double>> const& two, double delta)
+{
+	if (one.getCount() != two.getCount())
+		return false;
+
+	for (auto i = 0; i < one.getCount(); ++i)
+		if (!areEqual(one(i), two(i), delta))
+			return false;
+
+	return true;
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsComplexDouble()
@@ -567,6 +580,25 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 		return false;
 
 	return true;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
+{
+	auto n = 15025;
+	SparseMatrix<long double, Complex<long double>> A(n, n);
+	Vector<long double, Complex<long double>> x(n);
+	Vector<long double, Complex<long double>> b(n);
+	fstream file("testdata\\matrix.csv", ios_base::in);
+	file >> A;
+	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+
+	for (auto i = 0; i < n; ++i)
+		x.set(i, Complex<long double>(i));
+
+	A.multiply(b, x);
+	auto result = iterativeSolver.solve(b);
+
+	return areEqual(x, result, 1e-5);
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConstructor()
