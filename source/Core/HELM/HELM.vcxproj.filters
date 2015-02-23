@@ -69,6 +69,9 @@
     <ClCompile Include="SOR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LUDecompositionStable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalculatorRegister.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SOR.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LUDecompositionStable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

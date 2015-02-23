@@ -3,7 +3,7 @@
 #include "Complex.h"
 #include "BiCGSTAB.h"
 #include "SOR.h"
-#include "LUDecomposition.h"
+#include "LUDecompositionStable.h"
 #include "NumericalTraits.h"
 #include <sstream>
 #include <map>
@@ -112,7 +112,7 @@ void Calculator<Floating, ComplexFloating>::calculate()
 	if (_iterativeSolver)
 		_solver = new BiCGSTAB<Floating, ComplexFloating>(_admittances, Floating(_targetPrecision*1e-10));
 	else
-		_solver = new LUDecomposition<Floating, ComplexFloating>(_admittances);
+		_solver = new LUDecompositionStable<Floating, ComplexFloating>(_admittances);
 
 	for (auto i = 0; i < _nodeCount; ++i)
 		_continuations.push_back(new AnalyticContinuation<Floating, ComplexFloating>(*_coefficientStorage, i, _numberOfCoefficients));

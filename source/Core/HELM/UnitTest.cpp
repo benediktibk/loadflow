@@ -4,7 +4,7 @@
 #include "AnalyticContinuation.h"
 #include "ILinearEquationSystemSolver.h"
 #include "BiCGSTAB.h"
-#include "LUDecomposition.h"
+#include "LUDecompositionStable.h"
 #include "SOR.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
@@ -433,7 +433,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemOne()
 	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
-	LUDecomposition<long double, Complex<long double>> luSolver(A);
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);
@@ -478,7 +478,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemTwo()
 	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
-	LUDecomposition<long double, Complex<long double>> luSolver(A);
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);
@@ -523,7 +523,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 	Vector<long double, Complex<long double> > b(3);
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
-	LUDecomposition<long double, Complex<long double>> luSolver(A);
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 	SOR<long double, Complex<long double>> sorSolver(A, 1e-10, 1, 100);
 	SOR<long double, Complex<long double>> sorSolverOver(A, 1e-10, 1.2, 100);
 	SOR<long double, Complex<long double>> sorSolverUnder(A, 1e-10, 0.8, 100);

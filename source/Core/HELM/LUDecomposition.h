@@ -12,6 +12,9 @@ public:
 
 	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 
+protected:
+	virtual int findPivotIndex(SparseMatrix<Floating, ComplexFloating> const &upper, int row) const = 0;
+
 private:
 	void calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
 	Vector<Floating, ComplexFloating> forwardSubstitution(Vector<Floating, ComplexFloating> const &b) const;

@@ -130,6 +130,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClCompile Include="Complex.cpp" />
     <ClCompile Include="BiCGSTAB.cpp" />
     <ClCompile Include="LUDecomposition.cpp" />
+    <ClCompile Include="LUDecompositionStable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiPrecision.cpp" />
     <ClCompile Include="PQBus.cpp" />
@@ -153,6 +154,7 @@ xcopy /Y /I $(SolutionDir)external\mpir\lib\$(ConfigurationName)\mpir.dll $(Solu
     <ClInclude Include="BiCGSTAB.h" />
     <ClInclude Include="ILinearEquationSystemSolver.h" />
     <ClInclude Include="LUDecomposition.h" />
+    <ClInclude Include="LUDecompositionStable.h" />
     <ClInclude Include="MultiPrecision.h" />
     <ClInclude Include="NumericalTraits.h" />
     <ClInclude Include="PQBus.h" />
