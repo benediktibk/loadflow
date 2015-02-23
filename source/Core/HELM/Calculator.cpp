@@ -65,7 +65,7 @@ void Calculator<Floating, ComplexFloating>::setAdmittanceRowSum(int row, Complex
 {
 	auto valueCasted = createComplexFloating(value);
 	assert(isValueFinite(std::abs2(valueCasted)));
-	_totalAdmittanceRowSums[row] = valueCasted;
+	_totalAdmittanceRowSums[row] = valueCasted + ComplexFloating(Floating(row));
 }
 
 template<typename Floating, typename ComplexFloating>
@@ -213,7 +213,8 @@ Vector<Floating, ComplexFloating> Calculator<Floating, ComplexFloating>::calcula
 		const PQBus &bus = _pqBuses[i];
 		auto id = bus.getId();
 		ComplexFloating const& constantCurrent = _constantCurrents(id);
-		auto value = constantCurrent - (_totalAdmittanceRowSums[id] + _embeddingModification);
+		ComplexFloating const& totalAdmittanceRowSum = _totalAdmittanceRowSums[id];
+		auto value = constantCurrent - (totalAdmittanceRowSum + _embeddingModification);
 		assert(isValueFinite(std::abs2(value)));
 		rightHandSide.set(id, value);
 	}
@@ -244,8 +245,10 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		PQBus const& bus = _pqBuses[i];
 		auto id = bus.getId();
 		auto power = createComplexFloating(bus.getPower());
-		auto current = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
-		auto value = operator+(current, operator+(_totalAdmittanceRowSums[id], _embeddingModification));
+		ComplexFloating const& totalAdmittanceRowSum = _totalAdmittanceRowSums[id];
+		ComplexFloating const& lastInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
+		auto current = conj(operator*(power, lastInverseCoefficient));
+		auto value = operator+(current, operator+(totalAdmittanceRowSum, _embeddingModification));
 		assert(isValueFinite(std::abs2(value)));
 		rightHandSide.set(id, value);
 	}
