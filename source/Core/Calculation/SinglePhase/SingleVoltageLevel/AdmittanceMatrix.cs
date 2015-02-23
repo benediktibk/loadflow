@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
@@ -63,6 +65,10 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
 
         public void CalculateVoltages(Vector<Complex> x, Vector<Complex> b, IIterativeSolver<Complex> solver, Iterator<Complex> iterator)
         {
+/*            var customCulture = (CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+            File.WriteAllLines("C:\\temp\\vector.csv", b.Select(y => "(" + y.Real + "," + y.Imaginary + ")"));*/
             solver.Solve(_values, b, x, iterator, new DiagonalPreconditioner());
         }
 

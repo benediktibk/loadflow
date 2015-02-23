@@ -139,6 +139,9 @@
     <None Include="testdata\vector.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="testdata\vector_currentiteration.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="testdata\vector_small.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -69,6 +69,20 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.AreEqual(0, error, 1e-2);
         }
 
+        [TestMethod]
+        public void Solve_AdmittanceMatrixOneVersionThree_SmallError()
+        {
+            const int dimension = 15025;
+            var A = LoadMatrix("testdata\\matrix.csv", dimension);
+            var b = LoadVector("testdata\\vector_currentiteration.csv", dimension);
+            var x = new DenseVector(dimension);
+
+            _solver.Solve(A, b, x, _iterator, _preconditioner);
+
+            var error = CalculateError(A, x, b);
+            Assert.AreEqual(0, error, 1e-5);
+        }
+
         private static double CalculateError(Matrix<Complex> A, Vector<Complex> x, Vector<Complex> b)
         {
             var bNorm = b.L2Norm();
