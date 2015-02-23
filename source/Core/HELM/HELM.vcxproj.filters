@@ -75,6 +75,12 @@
     <ClCompile Include="PivotFinderBiggestElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PivotFinderSmallestFillIn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LUDecompositionSparse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalculatorRegister.h">
@@ -147,6 +153,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PivotFinderBiggestElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PivotFinderSmallestFillIn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LUDecompositionSparse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

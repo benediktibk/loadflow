@@ -5,6 +5,7 @@
 #include "ILinearEquationSystemSolver.h"
 #include "BiCGSTAB.h"
 #include "LUDecompositionStable.h"
+#include "LUDecompositionSparse.h"
 #include "SOR.h"
 #include "Vector.h"
 #include "SparseMatrix.h"
@@ -434,9 +435,11 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemOne()
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
 	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
+	LUDecompositionSparse<long double, Complex<long double>> luSolverSparse(A);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);
+	auto luResultSparse = luSolverSparse.solve(b);
 
 	if (iterativeResult.getCount() != 3)
 		return false;
@@ -454,6 +457,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemOne()
 	if (!areEqual(x(1), luResult(1), 0.000001))
 		return false;
 	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	if (luResultSparse.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResultSparse(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResultSparse(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResultSparse(2), 0.000001))
 		return false;
 
 	return true;
@@ -479,9 +491,11 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemTwo()
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
 	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
+	LUDecompositionSparse<long double, Complex<long double>> luSolverSparse(A);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);
+	auto luResultSparse = luSolverSparse.solve(b);
 
 	if (iterativeResult.getCount() != 3)
 		return false;
@@ -499,6 +513,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemTwo()
 	if (!areEqual(x(1), luResult(1), 0.000001))
 		return false;
 	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	if (luResultSparse.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResultSparse(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResultSparse(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResultSparse(2), 0.000001))
 		return false;
 
 	return true;
@@ -524,12 +547,14 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 	A.multiply(b, x);
 	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
 	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
+	LUDecompositionSparse<long double, Complex<long double>> luSolverSparse(A);
 	SOR<long double, Complex<long double>> sorSolver(A, 1e-10, 1, 100);
 	SOR<long double, Complex<long double>> sorSolverOver(A, 1e-10, 1.2, 100);
 	SOR<long double, Complex<long double>> sorSolverUnder(A, 1e-10, 0.8, 100);
 
 	auto iterativeResult = iterativeSolver.solve(b);
 	auto luResult = luSolver.solve(b);
+	auto luResultSparse = luSolverSparse.solve(b);
 	auto sorResult = sorSolver.solve(b);
 	auto sorResultOver = sorSolverOver.solve(b);
 	auto sorResultUnder = sorSolverUnder.solve(b);
@@ -550,6 +575,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 	if (!areEqual(x(1), luResult(1), 0.000001))
 		return false;
 	if (!areEqual(x(2), luResult(2), 0.000001))
+		return false;
+
+	if (luResultSparse.getCount() != 3)
+		return false;
+	if (!areEqual(x(0), luResultSparse(0), 0.000001))
+		return false;
+	if (!areEqual(x(1), luResultSparse(1), 0.000001))
+		return false;
+	if (!areEqual(x(2), luResultSparse(2), 0.000001))
 		return false;
 
 	if (sorResult.getCount() != 3)

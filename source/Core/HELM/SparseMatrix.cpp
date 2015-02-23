@@ -190,6 +190,41 @@ int SparseMatrix<Floating, ComplexFloating>::findAbsoluteMaximumOfColumn(int col
 }
 
 template<class Floating, class ComplexFloating>
+std::vector<std::pair<int, ComplexFloating>> SparseMatrix<Floating, ComplexFloating>::findNonZeroValuesInColumnWithSmallestElementCount(int column, int rowStart) const
+{
+	if (!isValidRowIndex(rowStart))
+		throw std::range_error("invalid row index");
+	if (!isValidColumnIndex(column))
+		throw std::range_error("invalid column index");
+
+	std::vector<std::pair<int, ComplexFloating>> result;
+	size_t elementCount = _columnCount + 1;
+
+	for (auto row = rowStart; row < _rowCount; ++row)
+	{
+		auto currentElementCount = _values[row].size();
+
+		if (currentElementCount > elementCount)
+			continue;
+		
+		auto value = operator()(row, column);
+
+		if (std::abs2(value) == Floating(0))
+			continue;
+
+		if (currentElementCount < elementCount)
+		{
+			elementCount = currentElementCount;
+			result.clear();
+		}
+
+		result.push_back(std::pair<int, ComplexFloating>(row, value));
+	}
+
+	return result;
+}
+
+template<class Floating, class ComplexFloating>
 void SparseMatrix<Floating, ComplexFloating>::swapRows(int one, int two)
 {
 	if (!isValidRowIndex(one))

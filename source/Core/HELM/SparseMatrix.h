@@ -22,6 +22,7 @@ public:
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row) const;
 	SparseMatrixRowIterator<ComplexFloating> getRowIterator(int row, int startColumn) const;
 	int findAbsoluteMaximumOfColumn(int column, int rowStart) const;
+	std::vector<std::pair<int, ComplexFloating>> findNonZeroValuesInColumnWithSmallestElementCount(int column, int rowStart) const;
 	void swapRows(int one, int two);
 	std::vector<std::pair<int, ComplexFloating>> getRowValuesAndColumns(int row, int startColumn) const;
 	void compress();
