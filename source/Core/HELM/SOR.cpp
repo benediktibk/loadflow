@@ -68,7 +68,10 @@ Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Ve
 			residual.subtract(bCurrent, bPreconditioned);
 			relativeError = std::abs(residual.squaredNorm()/bSquaredNorm);
 		}
-	} while(relativeError > epsilonSquared && iterations < _maximumIterations);
+
+		if (!x.isFinite())
+			throw overflow_error("SOR did not converge to a proper value");
+	} while(relativeError > epsilonSquared && iterations < _maximumIterations);	
 
 	return x;
 }
