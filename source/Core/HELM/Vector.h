@@ -1,6 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <iostream>
+#include <sstream>
 
 template<class Floating, class ComplexFloating>
 class Vector
@@ -33,3 +36,44 @@ private:
 	mutable std::vector<Floating> _tempImaginary;
 };
 
+template<class Floating, class ComplexFloating>
+bool operator==(Vector<Floating, ComplexFloating> const &one, Vector<Floating, ComplexFloating> const &two)
+{
+	if (one.getCount() != two.getCount())
+		return false;
+
+	for (auto i = 0; i < one.getCount(); ++i)
+		if (one(i) != two(i))
+			return false;
+
+	return true;
+}
+
+template<class Floating, class ComplexFloating>
+std::ostream& operator<<(std::ostream &stream, Vector<Floating, ComplexFloating> const &vector)
+{
+	for (auto i = 0; i < vector.getCount(); ++i)
+		stream << vector(i) << std::endl;
+
+	return stream;
+}
+
+template<class Floating, class ComplexFloating>
+std::istream& operator>>(std::istream &stream, Vector<Floating, ComplexFloating> &vector)
+{
+	string nextLine;
+	std::getline(stream, nextLine);
+	auto i = 0;
+
+	while(nextLine.size() > 0)
+	{
+		stringstream lineStream(nextLine);
+		ComplexFloating value;
+		lineStream >> value;
+		vector.set(i, value);
+		std::getline(stream, nextLine);
+		++i;
+	}
+
+	return stream;
+}

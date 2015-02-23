@@ -779,6 +779,21 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorSubtract()
 	return true;
 }
 
+extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorStreaming()
+{
+	Vector<long double, Complex<long double> > original(3);
+	original.set(0, Complex<long double>(1, 0));
+	original.set(1, Complex<long double>(2, 0));
+	original.set(2, Complex<long double>(3, 0));
+	Vector<long double, Complex<long double> > parsed(3);	
+	stringstream stream;
+	stream << original;
+	stream.seekg(ios_base::beg);
+	stream >> parsed;
+
+	return parsed == original;
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConjugate()
 {
 	Vector<long double, Complex<long double> > a(3);
