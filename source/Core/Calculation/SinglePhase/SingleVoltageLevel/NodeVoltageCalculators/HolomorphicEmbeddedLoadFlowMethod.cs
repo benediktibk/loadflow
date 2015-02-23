@@ -168,11 +168,15 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
                     value.Imaginary);
             }
 
+            var maximumMagnitude = admittances.FindMaximumMagnitude();
+
             for (var row = 0; row < admittances.NodeCount; ++row)
             {
                 var totalRowSum = totalAdmittanceRowSums[row];
-                HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(calculator, row, totalRowSum.Real,
-                    totalRowSum.Imaginary);
+
+                if (totalRowSum.Magnitude > maximumMagnitude*1e-15)
+                    HolomorphicEmbeddedLoadFlowMethodNativeMethods.SetAdmittanceRowSum(calculator, row, totalRowSum.Real,
+                        totalRowSum.Imaginary);
             }
         }
 

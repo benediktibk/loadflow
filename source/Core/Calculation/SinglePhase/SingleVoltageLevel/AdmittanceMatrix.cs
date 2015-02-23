@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics;
-using MathNet.Numerics.Integration;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Complex.Solvers;
@@ -70,6 +69,13 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         public LU<Complex> CalculateFactorization()
         {
             return _values.LU();
+        }
+
+        public double FindMaximumMagnitude()
+        {
+            var values = _values.Enumerate(Zeros.AllowSkip);
+            var resultSquared = values.Select(value => value.MagnitudeSquared()).Max();
+            return Math.Sqrt(resultSquared);
         }
 
         public Vector<Complex> CalculateAllPowers(Vector<Complex> voltages, Vector<Complex> constantCurrents)

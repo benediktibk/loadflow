@@ -23,5 +23,6 @@ namespace Calculation.SinglePhase.SingleVoltageLevel
         IEnumerable<Tuple<int, int, Complex>> EnumerateIndexed();
         void CalculateVoltages(Vector<Complex> x, Vector<Complex> b, IIterativeSolver<Complex> solver, Iterator<Complex> iterator);
         LU<Complex> CalculateFactorization();
+        double FindMaximumMagnitude();
     }
 }
