@@ -1,7 +1,4 @@
-function [ output_args ] = loadVector( input_args )
-%LOADVECTOR Summary of this function goes here
-%   Detailed explanation goes here
-
-
+function [x] = loadVector(fileName)
+    content = load(fileName);
+    x = content(:,1) + i*content(:,2);
 end
-
