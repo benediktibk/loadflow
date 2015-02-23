@@ -247,8 +247,8 @@ void Calculator<Floating, ComplexFloating>::calculateSecondCoefficient()
 		auto power = createComplexFloating(bus.getPower());
 		ComplexFloating const& totalAdmittanceRowSum = _totalAdmittanceRowSums[id];
 		ComplexFloating const& lastInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
-		auto current = conj(operator*(power, lastInverseCoefficient));
-		auto value = operator+(current, operator+(totalAdmittanceRowSum, _embeddingModification));
+		auto current = conj(power*lastInverseCoefficient);
+		auto value = current + totalAdmittanceRowSum + _embeddingModification;
 		assert(isValueFinite(std::abs2(value)));
 		rightHandSide.set(id, value);
 	}
@@ -279,7 +279,8 @@ void Calculator<Floating, ComplexFloating>::calculateNextCoefficient()
 		const PQBus &bus = _pqBuses[i];
 		auto id = bus.getId();
 		auto power = createComplexFloating(bus.getPower());
-		auto value = conj(operator*(power, _coefficientStorage->getLastInverseCoefficient(id)));
+		ComplexFloating const& lastInverseCoefficient = _coefficientStorage->getLastInverseCoefficient(id);
+		auto value = conj(power*lastInverseCoefficient);
 		assert(isValueFinite(std::abs2(value)));
 		rightHandSide.set(id, value);
 	}
