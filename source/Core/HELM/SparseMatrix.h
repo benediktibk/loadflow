@@ -30,7 +30,7 @@ public:
 	Vector<Floating, ComplexFloating> getInverseMainDiagonal() const;
 	void multiplyWithDiagonalMatrix(Vector<Floating, ComplexFloating> const &diagonalValues);
 	int calculateBandwidth() const;
-	std::vector<int> reduceBandwidth() const;
+	std::vector<int> reduceBandwidth();
 	void transpose();
 	void permutateRows(std::vector<int> permutation);
 

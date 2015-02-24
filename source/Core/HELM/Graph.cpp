@@ -83,7 +83,7 @@ std::map<int, int> Graph::calculateReverseCuthillMcKee() const
 				neighboursReduced.push_back(neighbour);
 
 		queueSet.insert(neighboursReduced.cbegin(), neighboursReduced.cend());
-		queue.merge(neighboursReduced);
+		queue.merge(neighboursReduced, [](const Node *a, const Node *b) -> bool { return a->getDegree() < b->getDegree(); });
 	}
 
 	std::reverse(result.begin(), result.end());

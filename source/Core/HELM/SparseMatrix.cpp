@@ -392,7 +392,7 @@ int SparseMatrix<Floating, ComplexFloating>::calculateBandwidth() const
 }
 
 template<class Floating, class ComplexFloating>
-std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth() const
+std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth()
 {
 	assert(_rowCount == _columnCount);
 
@@ -406,7 +406,18 @@ std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth() cons
 			graph.connect(row, iterator.getColumn());
 
 	auto mapping = graph.calculateReverseCuthillMcKee();
-	return std::vector<int>();
+	std::vector<int> permutation;
+	permutation.reserve(getRowCount());
+
+	for (auto pair : mapping)
+		permutation.push_back(pair.second);
+
+	permutateRows(permutation);
+	transpose();
+	permutateRows(permutation);
+	transpose();
+
+	return permutation;
 }
 
 template<class Floating, class ComplexFloating>
