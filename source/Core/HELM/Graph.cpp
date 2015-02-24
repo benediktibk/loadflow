@@ -2,6 +2,7 @@
 #include "Node.h"
 #include <list>
 #include <algorithm>
+#include <assert.h>
 
 Graph::Graph()
 { }
@@ -34,59 +35,53 @@ void Graph::connect(int one, int two)
 	nodeTwo->connect(nodeOne);
 }
 
-std::map<int, int> Graph::calculateReverseCuthillMcKee() const
+std::vector<int> Graph::calculateReverseCuthillMcKee() const
 {
-	std::set<const Node*> leftOver;
 	std::vector<const Node*> result;
 	std::set<const Node*> resultSet;
 	result.reserve(_nodes.size());
-
-	for (auto i = _nodes.cbegin() + 1; i != _nodes.cend(); ++i)
-		leftOver.insert(*i);
-
-	result.push_back(_nodes.front());
-	resultSet.insert(_nodes.front());
+	std::list<const Node*> leftOver(_nodes.cbegin(), _nodes.cend());
+	auto position = 0;
 
 	while(result.size() < _nodes.size())
 	{
-		const Node *node = result.back();
+		while(position == result.size())
+		{
+			auto candidate = leftOver.front();
+			leftOver.pop_front();
 
+			if (resultSet.count(candidate) != 0)
+				continue;
+
+			result.push_back(candidate);
+			resultSet.insert(candidate);
+		}
+
+		const Node *node = result[position];
 		auto neighbours = node->getNeighboursSortedByDegree();
-		std::list<const Node*> neighboursReduced;
-
-		for (auto neighbour : neighbours)
-			if (resultSet.count(neighbour) == 0)
-				neighboursReduced.push_back(neighbour);
-
-		if (!neighboursReduced.empty())
-		{
-			result.insert(result.end(), neighboursReduced.cbegin(), neighboursReduced.cend());
-			resultSet.insert(neighboursReduced.cbegin(), neighboursReduced.cend());
-			
-			for (auto neighbour : neighboursReduced)
-				leftOver.erase(leftOver.find(neighbour));
-		}
-		else
-		{
-			node = *leftOver.begin();
-			leftOver.erase(leftOver.begin());
-			result.push_back(node);
-			resultSet.insert(node);
-		}
+		auto neighboursReduced = filterOut(neighbours, resultSet);
+		result.insert(result.end(), neighboursReduced.cbegin(), neighboursReduced.cend());
+		resultSet.insert(neighboursReduced.cbegin(), neighboursReduced.cend());
+		++position;
 	}
 
 	std::reverse(result.begin(), result.end());
 	std::vector<int> indices;
-	indices.reserve(_nodes.size());
+	indices.reserve(result.size());
 
-	for (auto i : _nodes)
+	for (auto i : result)
 		indices.push_back(i->getIndex());
 
-	std::sort(indices.begin(), indices.end());
-	std::map<int, int> resultMap;
+	return indices;
+}
 
-	for (auto i = 0; i < _nodes.size(); ++i)
-		resultMap.insert(std::pair<int, int>(result[i]->getIndex(), indices[i]));
+std::list<const Node*> Graph::filterOut(std::list<const Node*> const &nodes, std::set<const Node*> const &filter)
+{		
+	std::list<const Node*> result;
 
-	return resultMap;
+	for (auto node : nodes)
+		if (filter.count(node) == 0)
+			result.push_back(node);
+
+	return result;
 }

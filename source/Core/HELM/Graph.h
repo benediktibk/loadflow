@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <map>
+#include <set>
+#include <list>
 
 class Node;
 
@@ -14,7 +16,10 @@ public:
 
 	void addNode(int index);
 	void connect(int one, int two);
-	std::map<int, int> calculateReverseCuthillMcKee() const;
+	std::vector<int> calculateReverseCuthillMcKee() const;
+
+private:
+	static std::list<const Node*> filterOut(std::list<const Node*> const &nodes, std::set<const Node*> const &filter);
 
 private:
 	std::vector<Node*> _nodes;

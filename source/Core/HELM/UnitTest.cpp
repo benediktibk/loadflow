@@ -1507,40 +1507,84 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiplyWithSt
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthillMcKee()
 {
-	Graph graph;
-	graph.addNode(1);
-	graph.addNode(2);
-	graph.addNode(3);
-	graph.addNode(4);
-	graph.addNode(5);
-	graph.addNode(6);
-	graph.addNode(7);
-	graph.addNode(8);
-	graph.connect(1, 5);
-	graph.connect(2, 3);
-	graph.connect(2, 6);
-	graph.connect(2, 8);
-	graph.connect(3, 5);
-	graph.connect(4, 7);
-	graph.connect(6, 8);
+	Graph graphOne;
+	Graph graphTwo;
 
-	auto result = graph.calculateReverseCuthillMcKee();
+	for (auto i = 1; i <= 8; ++i)
+		graphOne.addNode(i);
 
-	if (result[7] != 1)
+	for (auto i = 1; i <= 10; ++i)
+		graphTwo.addNode(i);
+
+	graphOne.connect(1, 5);
+	graphOne.connect(2, 3);
+	graphOne.connect(2, 6);
+	graphOne.connect(2, 8);
+	graphOne.connect(3, 5);
+	graphOne.connect(4, 7);
+	graphOne.connect(6, 8);
+
+	graphTwo.connect(1, 2);
+	graphTwo.connect(1, 4);
+	graphTwo.connect(1, 9);
+	graphTwo.connect(2, 9);
+	graphTwo.connect(2, 3);
+	graphTwo.connect(3, 5);
+	graphTwo.connect(3, 9);
+	graphTwo.connect(4, 5);
+	graphTwo.connect(4, 6);
+	graphTwo.connect(4, 9);
+	graphTwo.connect(4, 10);
+	graphTwo.connect(5, 8);
+	graphTwo.connect(5, 9);
+	graphTwo.connect(5, 10);
+	graphTwo.connect(6, 7);
+	graphTwo.connect(6, 10);
+	graphTwo.connect(7, 8);
+	graphTwo.connect(7, 10);
+	graphTwo.connect(8, 10);
+	graphTwo.connect(9, 10);
+
+	auto result = graphTwo.calculateReverseCuthillMcKee();
+
+	if (result[9] != 1)
 		return false;
-	if (result[4] != 2)
+	if (result[8] != 2)
 		return false;
-	if (result[8] != 3)
+	if (result[7] != 4)
 		return false;
-	if (result[6] != 4)
+	if (result[6] != 9)
 		return false;
-	if (result[2] != 5)
+	if (result[5] != 3)
+		return false;
+	if (result[4] != 6)
+		return false;
+	if (result[3] != 5)
+		return false;
+	if (result[2] != 10)
+		return false;
+	if (result[1] != 7)
+		return false;
+	if (result[0] != 8)
+		return false;
+
+	result = graphOne.calculateReverseCuthillMcKee();
+
+	if (result[0] != 7)
+		return false;
+	if (result[1] != 4)
+		return false;
+	if (result[2] != 8)
 		return false;
 	if (result[3] != 6)
 		return false;
-	if (result[5] != 7)
+	if (result[4] != 2)
 		return false;
-	if (result[1] != 8)
+	if (result[5] != 3)
+		return false;
+	if (result[6] != 5)
+		return false;
+	if (result[7] != 1)
 		return false;
 
 	return true;

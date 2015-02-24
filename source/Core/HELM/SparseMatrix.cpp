@@ -405,12 +405,7 @@ std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth()
 		for (auto iterator = getRowIterator(row); iterator.isValid(); iterator.next())
 			graph.connect(row, iterator.getColumn());
 
-	auto mapping = graph.calculateReverseCuthillMcKee();
-	std::vector<int> permutation;
-	permutation.reserve(getRowCount());
-
-	for (auto pair : mapping)
-		permutation.push_back(pair.second);
+	auto permutation = graph.calculateReverseCuthillMcKee();
 
 	permutateRows(permutation);
 	transpose();
