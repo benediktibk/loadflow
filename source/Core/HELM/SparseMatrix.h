@@ -33,6 +33,7 @@ public:
 	std::vector<int> reduceBandwidth();
 	void transpose();
 	void permutateRows(std::vector<int> permutation);
+	SparseMatrix<Floating, ComplexFloating> createReducedMatrix(int rows, int columns) const;
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);

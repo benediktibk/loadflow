@@ -1080,14 +1080,25 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixPermutateRows(
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixReduceBandwidth()
 {
 	auto n = 15025;
+	auto m = 50;
 	SparseMatrix<long double, Complex<long double>> A(n, n);
 	fstream file("testdata\\matrix.csv", ios_base::in);
 	file >> A;
+	auto AReduced = A.createReducedMatrix(m, m);
+	
+	AReduced.reduceBandwidth();
+
+	auto result = AReduced.calculateBandwidth();
+	if (result > 8)
+		return false;
 
 	A.reduceBandwidth();
 
-	auto result = A.calculateBandwidth();
-	return result == 338;
+	result = A.calculateBandwidth();
+	if (result > 338)
+		return false;
+
+	return true;
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiply()

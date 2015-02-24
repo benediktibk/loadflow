@@ -488,6 +488,23 @@ void SparseMatrix<Floating, ComplexFloating>::permutateRows(std::vector<int> per
 }
 
 template<class Floating, class ComplexFloating>
+SparseMatrix<Floating, ComplexFloating> SparseMatrix<Floating, ComplexFloating>::createReducedMatrix(int rows, int columns) const
+{
+	if (rows > getRowCount())
+		throw std::invalid_argument("row count to big");
+	if (columns > getColumnCount())
+		throw std::invalid_argument("column count to big");
+
+	SparseMatrix<Floating, ComplexFloating> result(rows, columns);
+
+	for (auto row = 0; row < rows; ++row)
+		for (auto rowIterator = getRowIterator(row); rowIterator.isValid() && rowIterator.getColumn() < columns; rowIterator.next())
+			result.set(row, rowIterator.getColumn(), rowIterator.getValue());
+
+	return result;
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;
