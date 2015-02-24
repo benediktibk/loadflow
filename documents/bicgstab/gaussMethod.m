@@ -1,4 +1,8 @@
-function x = gaussVerfahren(A, b)
+function x = gaussMethod(A, b)
+    if (issparse(A))
+        order = symrcm(A);
+        A = A(order, order);
+    end
     [L, U, P] = luDecomposition(A);
     [y] = vorwaertsSubstitution(L, P, b);
     [x] = rueckwaertsSubstitution(U, y);

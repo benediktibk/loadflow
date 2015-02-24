@@ -22,5 +22,36 @@ lowerBandwidth = bandwidth(AReduced, 'lower');
 upperBandwidth = bandwidth(AReduced, 'upper');
 disp(strcat('bandwith of reduced A:',num2str(max([lowerBandwidth, upperBandwidth]))));
 
-%% Decomposition
-[L, U, P] = luDecomposition(AReduced);
+%% Comparison of memory usage
+mCandidates = 100:50:500;
+count = size(mCandidates, 2);
+bytesDirect = zeros(count, 1);
+bytesReduced = zeros(count, 1);
+i = 1;
+
+for m = mCandidates
+    disp(m);
+    A = loadMatrix('matrix.csv', n);
+    A = A(1:m, 1:m);
+    order = symrcm(A);
+    AReduced = A(order, order);
+    
+    [L, U,] = luDecomposition(A);
+    [LReduced, UReduced,] = luDecomposition(AReduced);
+    
+    sL = whos('L');
+    sU = whos('U');
+    bytesDirect(i) = sL.bytes + sU.bytes;
+    sL = whos('LReduced');
+    sU = whos('UReduced');
+    bytesReduced(i) = sL.bytes + sU.bytes;
+    i = i + 1;
+end
+
+%% Plot memory usage
+close all;
+figure;
+plot(bytesReduced, 'g');
+hold on;
+plot(bytesDirect, 'r');
+hold off;
