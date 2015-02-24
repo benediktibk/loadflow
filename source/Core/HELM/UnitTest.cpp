@@ -624,13 +624,13 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 	Vector<long double, Complex<long double>> b(n);
 	fstream file("testdata\\matrix.csv", ios_base::in);
 	file >> A;
-	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+	LUDecompositionSparse<long double, Complex<long double>> luSolverSparse(A);
 
 	for (auto i = 0; i < n; ++i)
 		x.set(i, Complex<long double>(i));
 
 	A.multiply(b, x);
-	auto result = iterativeSolver.solve(b);
+	auto result = luSolverSparse.solve(b);
 
 	return areEqual(x, result, 1e-5);
 }
