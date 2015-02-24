@@ -36,54 +36,43 @@ void Graph::connect(int one, int two)
 
 std::map<int, int> Graph::calculateReverseCuthillMcKee() const
 {
-	std::vector<const Node*> nodesSorted;
-	std::list<const Node*> queue;
-	std::set<const Node*> queueSet;
+	std::set<const Node*> leftOver;
 	std::vector<const Node*> result;
 	std::set<const Node*> resultSet;
 	result.reserve(_nodes.size());
-	nodesSorted.reserve(_nodes.size());
 
-	for (auto i = _nodes.cbegin(); i != _nodes.cend(); ++i)
-		nodesSorted.push_back(*i);
+	for (auto i = _nodes.cbegin() + 1; i != _nodes.cend(); ++i)
+		leftOver.insert(*i);
 
-	std::sort(nodesSorted.begin(), nodesSorted.end(), [](const Node *a, const Node *b) -> bool { return a->getDegree() < b->getDegree(); } );
-	std::list<const Node*> nodesSortedList(nodesSorted.cbegin(), nodesSorted.cend());
+	result.push_back(_nodes.front());
+	resultSet.insert(_nodes.front());
 
 	while(result.size() < _nodes.size())
 	{
-		const Node *nextNode = 0;
+		const Node *node = result.back();
 
-		if (queue.empty())
-		{
-			while(nextNode == 0)
-			{
-				const Node *node = nodesSortedList.front();
-				nodesSortedList.pop_front();
-
-				if (resultSet.count(node) == 0)
-					nextNode = node;
-			}
-		}
-		else
-		{
-			nextNode = queue.front();
-			queue.pop_front();
-			queueSet.erase(queueSet.find(nextNode));
-		}
-
-		result.push_back(nextNode);
-		resultSet.insert(nextNode);
-
-		auto neighbours = nextNode->getNeighboursSortedByDegree();
+		auto neighbours = node->getNeighboursSortedByDegree();
 		std::list<const Node*> neighboursReduced;
 
 		for (auto neighbour : neighbours)
-			if (resultSet.count(neighbour) == 0 && queueSet.count(neighbour) == 0)
+			if (resultSet.count(neighbour) == 0)
 				neighboursReduced.push_back(neighbour);
 
-		queueSet.insert(neighboursReduced.cbegin(), neighboursReduced.cend());
-		queue.merge(neighboursReduced, [](const Node *a, const Node *b) -> bool { return a->getDegree() < b->getDegree(); });
+		if (!neighboursReduced.empty())
+		{
+			result.insert(result.end(), neighboursReduced.cbegin(), neighboursReduced.cend());
+			resultSet.insert(neighboursReduced.cbegin(), neighboursReduced.cend());
+			
+			for (auto neighbour : neighboursReduced)
+				leftOver.erase(leftOver.find(neighbour));
+		}
+		else
+		{
+			node = *leftOver.begin();
+			leftOver.erase(leftOver.begin());
+			result.push_back(node);
+			resultSet.insert(node);
+		}
 	}
 
 	std::reverse(result.begin(), result.end());
