@@ -205,7 +205,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         [TestMethod]
-        public void SparseMatrixFindCalculateBandwidth()
+        public void SparseMatrixCalculateBandwidth()
         {
             Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsSparseMatrixCalculateBandwidth());
         }
