@@ -1177,6 +1177,18 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixFindAbsoluteMa
 	return maximumRowsShouldBe == maximumRows;
 }
 
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixCalculateBandwidth()
+{
+	auto n = 15025;
+	SparseMatrix<long double, Complex<long double>> A(n, n);
+	fstream file("testdata\\matrix.csv", ios_base::in);
+	file >> A;
+
+	auto result = A.calculateBandwidth();
+
+	return result == 15012;
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixChangeRows()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(4, 4);

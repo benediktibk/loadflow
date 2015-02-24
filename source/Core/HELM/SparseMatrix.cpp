@@ -370,6 +370,26 @@ void SparseMatrix<Floating, ComplexFloating>::multiplyWithDiagonalMatrix(Vector<
 }
 
 template<class Floating, class ComplexFloating>
+int SparseMatrix<Floating, ComplexFloating>::calculateBandwidth() const
+{
+	int result = 1;
+
+	for (auto row = 0; row < _rowCount; ++row)
+	{
+		std::vector<int> const &columns = _columns[row];
+
+		if (columns.empty())
+			continue;
+
+		auto start = std::min(columns[0], row);
+		auto end = std::max(columns[columns.size() - 1], row);
+		result = std::max(result, end - start);
+	}
+
+	return result - 1;
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;
