@@ -246,6 +246,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsSparseMatrixMultiplyWithStartAndEndColumn());
         }
 
+        [TestMethod]
+        public void GraphCalculateReverseCuthillMcKee()
+        {
+            Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsGraphCalculateReverseCuthillMcKee());
+        }
+
         public static void CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out Complex a,
             out Complex b, out Complex c)
         {

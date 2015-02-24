@@ -11,6 +11,7 @@
 #include "SparseMatrix.h"
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
+#include "Graph.h"
 #include <sstream>
 #include <fstream>
 
@@ -1407,6 +1408,47 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiplyWithSt
 		return false;
 
 	if (four != Complex<long double>(20*2 + 40*3 + 50*4, 0))
+		return false;
+
+	return true;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthillMcKee()
+{
+	Graph graph;
+	graph.addNode(1);
+	graph.addNode(2);
+	graph.addNode(3);
+	graph.addNode(4);
+	graph.addNode(5);
+	graph.addNode(6);
+	graph.addNode(7);
+	graph.addNode(8);
+	graph.connect(1, 5);
+	graph.connect(2, 3);
+	graph.connect(2, 6);
+	graph.connect(2, 8);
+	graph.connect(3, 5);
+	graph.connect(4, 7);
+	graph.connect(6, 8);
+
+	auto result = graph.calculateReverseCuthillMcKee();
+
+	if (result[7] != 1)
+		return false;
+	if (result[4] != 2)
+		return false;
+	if (result[8] != 3)
+		return false;
+	if (result[6] != 4)
+		return false;
+	if (result[2] != 5)
+		return false;
+	if (result[3] != 6)
+		return false;
+	if (result[5] != 7)
+		return false;
+	if (result[1] != 8)
 		return false;
 
 	return true;
