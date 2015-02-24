@@ -2,11 +2,13 @@
 #include "Complex.h"
 #include "MultiPrecision.h"
 #include "SparseMatrixRowIterator.h"
+#include "Graph.h"
 #include <algorithm>
 #include <functional>
 #include <list>
 #include <utility>
 #include <exception>
+#include <assert.h>
 
 template class SparseMatrix<long double, Complex<long double> >;
 template class SparseMatrix<MultiPrecision, Complex<MultiPrecision> >;
@@ -138,7 +140,7 @@ SparseMatrixRowIterator<ComplexFloating> SparseMatrix<Floating, ComplexFloating>
 		throw std::range_error("invalid column index");
 	int startPosition;
 	findPosition(row, startColumn, startPosition);
-	return SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size());
+	return SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size(), row);
 }
 
 template<class Floating, class ComplexFloating>
@@ -390,6 +392,70 @@ int SparseMatrix<Floating, ComplexFloating>::calculateBandwidth() const
 }
 
 template<class Floating, class ComplexFloating>
+std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth() const
+{
+	assert(_rowCount == _columnCount);
+
+	Graph graph;
+
+	for (auto i = 0; i < _rowCount; ++i)
+		graph.addNode(i);
+
+	for (auto row = 0; row < _rowCount; ++row)
+		for (auto iterator = getRowIterator(row); iterator.isValid(); iterator.next())
+			graph.connect(row, iterator.getColumn());
+
+	auto mapping = graph.calculateReverseCuthillMcKee();
+	return std::vector<int>();
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::transpose()
+{
+	assert(_rowCount == _columnCount);
+
+	std::vector<std::vector<int>> columns;
+	std::vector<std::vector<ComplexFloating>> values;
+	std::vector<SparseMatrixRowIterator<ComplexFloating>*> rowIterators;
+	std::vector<SparseMatrixRowIterator<ComplexFloating>*> rowIteratorsTemp;
+	rowIterators.reserve(_rowCount);
+	rowIteratorsTemp.reserve(_rowCount);
+	columns.resize(_rowCount, std::vector<int>());
+	values.resize(_rowCount, std::vector<ComplexFloating>());
+
+	for (auto row = 0; row < _rowCount; ++row)
+		rowIterators.push_back(getRowIteratorPointer(row));
+
+	for (auto column = 0; column < _rowCount; ++column)
+	{
+		rowIteratorsTemp.clear();
+		rowIterators.swap(rowIteratorsTemp);
+		
+		for (auto rowIterator = rowIteratorsTemp.begin(); rowIterator != rowIteratorsTemp.end(); ++rowIterator)
+			if ((*rowIterator)->isValid())
+				rowIterators.push_back(*rowIterator);
+			else
+				delete *rowIterator;
+
+		for (auto rowIterator = rowIterators.begin(); rowIterator != rowIterators.end(); ++rowIterator)
+		{
+			if ((*rowIterator)->getColumn() != column)
+				continue;
+
+			columns[column].push_back((*rowIterator)->getRow());
+			values[column].push_back((*rowIterator)->getValue());
+			(*rowIterator)->next();
+		}
+	}
+
+	for (auto rowIterator = rowIterators.begin(); rowIterator != rowIterators.end(); ++rowIterator)
+		delete *rowIterator;
+
+	_values.swap(values);
+	_columns.swap(columns);
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;
@@ -516,4 +582,14 @@ ComplexFloating SparseMatrix<Floating, ComplexFloating>::multiply(Vector<Floatin
 	}
 
 	return resultTotal;
+}
+
+template<class Floating, class ComplexFloating>
+SparseMatrixRowIterator<ComplexFloating>* SparseMatrix<Floating, ComplexFloating>::getRowIteratorPointer(int row) const
+{
+	if (!isValidRowIndex(row))
+		throw std::range_error("invalid row index");
+	int startPosition;
+	findPosition(row, 0, startPosition);
+	return new SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size(), row);
 }

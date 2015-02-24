@@ -9,6 +9,7 @@ class Graph
 {
 public:
 	Graph();
+	Graph(int capacity);
 	~Graph();
 
 	void addNode(int index);

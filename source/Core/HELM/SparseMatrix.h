@@ -30,6 +30,8 @@ public:
 	Vector<Floating, ComplexFloating> getInverseMainDiagonal() const;
 	void multiplyWithDiagonalMatrix(Vector<Floating, ComplexFloating> const &diagonalValues);
 	int calculateBandwidth() const;
+	std::vector<int> reduceBandwidth() const;
+	void transpose();
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
@@ -39,6 +41,7 @@ private:
 	bool isValidRowIndex(int row) const;
 	bool isValidColumnIndex(int column) const;
 	ComplexFloating multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition, int row) const;
+	SparseMatrixRowIterator<ComplexFloating>* getRowIteratorPointer(int row) const;
 
 private:
 	const int _rowCount;

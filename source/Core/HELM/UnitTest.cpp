@@ -619,6 +619,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 {
+	return false;
 	auto n = 15025;
 	SparseMatrix<long double, Complex<long double>> A(n, n);
 	Vector<long double, Complex<long double>> x(n);
@@ -638,6 +639,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFive()
 {
+	return false;
 	auto n = 15025;
 	SparseMatrix<long double, Complex<long double>> A(n, n);
 	Vector<long double, Complex<long double>> b(n);
@@ -1007,6 +1009,37 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixStreaming()
 	stream >> parsed;
 
 	return parsed == original;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixTranspose()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(4, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	
+	matrix.transpose();
+
+	if (matrix(1, 0) != Complex<long double>(2, 0))
+		return false;
+	if (matrix(2, 0) != Complex<long double>(3, 0))
+		return false;
+	if (matrix(3, 0) != Complex<long double>(4, 0))
+		return false;
+	if (matrix(0, 1) != Complex<long double>(5, 0))
+		return false;
+	if (matrix(3, 1) != Complex<long double>(60, 0))
+		return false;
+	if (matrix(2, 2) != Complex<long double>(7, 0))
+		return false;
+	if (matrix(0, 2) != Complex<long double>(80, 0))
+		return false;
+
+	return true;
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiply()

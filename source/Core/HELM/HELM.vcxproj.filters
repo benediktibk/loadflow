@@ -113,9 +113,6 @@
     <ClInclude Include="ICalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CoefficientStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>

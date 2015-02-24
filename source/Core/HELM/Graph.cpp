@@ -6,6 +6,11 @@
 Graph::Graph()
 { }
 
+Graph::Graph(int capacity)
+{
+	_nodes.reserve(capacity);
+}
+
 Graph::~Graph()
 {
 	for (auto i = _nodes.begin(); i != _nodes.end(); ++i)
