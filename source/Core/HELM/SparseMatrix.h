@@ -32,6 +32,7 @@ public:
 	int calculateBandwidth() const;
 	std::vector<int> reduceBandwidth() const;
 	void transpose();
+	void permutateRows(std::vector<int> permutation);
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);

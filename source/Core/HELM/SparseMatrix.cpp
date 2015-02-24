@@ -456,6 +456,27 @@ void SparseMatrix<Floating, ComplexFloating>::transpose()
 }
 
 template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::permutateRows(std::vector<int> permutation)
+{
+	if (permutation.size() != getRowCount())
+		throw std::invalid_argument("size of permutation does not match row count");
+	
+	std::vector<std::vector<int>> columns;
+	std::vector<std::vector<ComplexFloating>> values;
+	columns.resize(getRowCount(), std::vector<int>());
+	values.resize(getRowCount(), std::vector<ComplexFloating>());
+
+	for (auto i = 0; i < getRowCount(); ++i)
+	{
+		values[i].swap(_values[permutation[i]]);
+		columns[i].swap(_columns[permutation[i]]);
+	}
+
+	_values.swap(values);
+	_columns.swap(columns);
+}
+
+template<class Floating, class ComplexFloating>
 ComplexFloating const& SparseMatrix<Floating, ComplexFloating>::operator()(int row, int column) const
 {
 	int position;

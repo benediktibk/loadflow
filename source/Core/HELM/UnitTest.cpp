@@ -1042,6 +1042,41 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixTranspose()
 	return true;
 }
 
+extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixPermutateRows()
+{
+	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
+	matrix.set(0, 1, Complex<long double>(2, 0));
+	matrix.set(0, 2, Complex<long double>(3, 0));
+	matrix.set(0, 3, Complex<long double>(4, 0));
+	matrix.set(1, 0, Complex<long double>(5, 0));
+	matrix.set(1, 3, Complex<long double>(60, 0));
+	matrix.set(2, 2, Complex<long double>(7, 0));
+	matrix.set(2, 0, Complex<long double>(80, 0));
+	vector<int> permutation;
+	permutation.push_back(2);
+	permutation.push_back(0);
+	permutation.push_back(1);
+
+	matrix.permutateRows(permutation);
+
+	if (matrix(1, 1) != Complex<long double>(2, 0))
+		return false;
+	if (matrix(1, 2) != Complex<long double>(3, 0))
+		return false;
+	if (matrix(1, 3) != Complex<long double>(4, 0))
+		return false;
+	if (matrix(2, 0) != Complex<long double>(5, 0))
+		return false;
+	if (matrix(2, 3) != Complex<long double>(60, 0))
+		return false;
+	if (matrix(0, 2) != Complex<long double>(7, 0))
+		return false;
+	if (matrix(0, 0) != Complex<long double>(80, 0))
+		return false;
+
+	return true;
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixMultiply()
 {
 	SparseMatrix<long double, Complex<long double> > matrix(3, 4);
