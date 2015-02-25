@@ -91,6 +91,7 @@ int Graph::findPseudoPeriphereNode() const
 		{
 			result = candidate;
 			eccentricity = layering.size();
+			candidates = layering.back();
 		}
 		else
 			improvedResult = false;

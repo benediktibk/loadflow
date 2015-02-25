@@ -1680,3 +1680,28 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCreateLayeringFrom()
 
 	return true;
 }
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphFindPseudoPeriphereNode()
+{
+	Graph graph;	
+
+	for (auto i = 1; i <= 8; ++i)
+		graph.addNode(i);
+
+	graph.connect(1, 2);
+	graph.connect(1, 3);
+	graph.connect(1, 5);
+	graph.connect(1, 6);
+	graph.connect(2, 3);
+	graph.connect(2, 4);
+	graph.connect(2, 5);
+	graph.connect(3, 6);
+	graph.connect(5, 6);
+	graph.connect(5, 8);
+	graph.connect(6, 8);
+	graph.connect(7, 8);
+
+	auto result = graph.findPseudoPeriphereNode();
+
+	return result == 4 || result == 7;
+}
