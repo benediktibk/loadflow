@@ -76,9 +76,15 @@ std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
 
 int Graph::findPseudoPeriphereNode() const
 {
+	int eccentricity;
+	return findPseudoPeriphereNode(eccentricity);
+}
+
+int Graph::findPseudoPeriphereNode(int &eccentricity) const
+{
 	std::set<const Node*> candidates;
 	candidates.insert(_nodes.front());
-	auto eccentricity = 0;
+	eccentricity = 0;
 	const Node *result = 0;
 	bool improvedResult = true;
 

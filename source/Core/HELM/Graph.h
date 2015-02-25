@@ -20,6 +20,7 @@ public:
 	std::vector<int> calculateReverseCuthillMcKee(int startNode) const;
 	std::vector<std::vector<int>> createLayeringFrom(int startNode) const;
 	int findPseudoPeriphereNode() const;
+	int findPseudoPeriphereNode(int &eccentricity) const;
 	int calculateSecondLevelDegree(int index) const;
 
 private:

@@ -288,6 +288,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
             Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsGraphFindPseudoPeriphereNode());
         }
 
+        [TestMethod]
+        public void GraphFindPseudoPeriphereNodeOfAdmittanceMatrix()
+        {
+            Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsGraphFindPseudoPeriphereNodeOfAdmittanceMatrix());
+        }
+
         public static void CalculateCorrectCoefficientsForTwoNodesWithImaginaryConnectionAndPVBusVersionTwo(out Complex a,
             out Complex b, out Complex c)
         {

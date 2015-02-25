@@ -1746,3 +1746,17 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphFindPseudoPeriphereNo
 
 	return result == 4 || result == 7;
 }
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphFindPseudoPeriphereNodeOfAdmittanceMatrix()
+{
+	auto n = 15025;
+	SparseMatrix<long double, Complex<long double>> A(n, n);
+	fstream file("testdata\\matrix.csv", ios_base::in);
+	file >> A;
+	auto graph = A.createGraph();
+	auto eccentricity = 0;
+
+	auto result = graph->findPseudoPeriphereNode(eccentricity);
+
+	return eccentricity >= 190;
+}
