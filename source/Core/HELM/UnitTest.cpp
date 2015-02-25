@@ -1596,17 +1596,17 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthi
 		return false;
 	if (result[7] != 3)
 		return false;
-	if (result[6] != 5)
+	if (result[6] != 9)
 		return false;
-	if (result[5] != 6)
+	if (result[5] != 4)
 		return false;
-	if (result[4] != 8)
+	if (result[4] != 5)
 		return false;
 	if (result[3] != 10)
 		return false;
-	if (result[2] != 9)
+	if (result[2] != 6)
 		return false;
-	if (result[1] != 4)
+	if (result[1] != 8)
 		return false;
 	if (result[0] != 7)
 		return false;

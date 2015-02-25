@@ -41,14 +41,14 @@ std::vector<int> Graph::calculateReverseCuthillMcKee() const
 	return calculateReverseCuthillMcKee(nodes);
 }
 
-std::vector<int> Graph::calculateReverseCuthillMcKee(int startNode) const
+std::vector<int> Graph::calculateReverseCuthillMcKee(int startNodeIndex) const
 {
-	auto node = _nodesByIndex.at(startNode);
+	auto startNode = _nodesByIndex.at(startNodeIndex);
 	std::list<const Node*> nodes;
-	nodes.push_back(node);
+	nodes.push_back(startNode);
 
 	for (auto node : _nodes)
-		if (node != node)
+		if (node != startNode)
 			nodes.push_back(node);
 
 	return calculateReverseCuthillMcKee(nodes);
