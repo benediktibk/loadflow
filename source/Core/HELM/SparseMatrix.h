@@ -37,6 +37,7 @@ public:
 	void permutateRows(std::vector<int> const &permutation);
 	void permutateColumns(std::vector<int> const &permutation);
 	SparseMatrix<Floating, ComplexFloating> createReducedMatrix(int rows, int columns) const;
+	Graph* createGraph() const;
 
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
@@ -47,7 +48,6 @@ private:
 	bool isValidColumnIndex(int column) const;
 	ComplexFloating multiply(Vector<Floating, ComplexFloating> const &vector, int startPosition, int endPosition, int row) const;
 	SparseMatrixRowIterator<ComplexFloating>* getRowIteratorPointer(int row) const;
-	Graph* createGraph() const;
 
 private:
 	const int _rowCount;
