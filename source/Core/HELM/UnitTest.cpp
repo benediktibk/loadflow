@@ -686,7 +686,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSeven(
 	Vector<long double, Complex<long double>> b(n);
 	fstream matrixFile("testdata\\matrix.csv", ios_base::in);
 	matrixFile >> A;
-	fstream vectorFile("testdata\\vector_helm.csv", ios_base::in);
+	fstream vectorFile("testdata\\vector.csv", ios_base::in);
 	vectorFile >> b;
 	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 
