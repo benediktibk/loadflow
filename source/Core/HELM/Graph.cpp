@@ -37,18 +37,44 @@ void Graph::connect(int one, int two)
 
 std::vector<int> Graph::calculateReverseCuthillMcKee() const
 {
+	std::list<const Node*> leftOver(_nodes.cbegin(), _nodes.cend());
+	return calculateReverseCuthillMcKee(leftOver);
+}
+
+std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
+{
+	auto layering = createLayeringFrom(_nodesByIndex.at(startNode));	
+	std::vector<std::vector<int>> layeringIndices;
+	layeringIndices.reserve(layering.size());
+	
+	for (auto &layer : layering)
+	{
+		std::vector<int> indices;
+		indices.reserve(layer.size());
+
+		for (auto node : layer)
+			indices.push_back(node->getIndex());
+
+		layeringIndices.push_back(std::vector<int>(indices.cbegin(), indices.cend()));
+	}
+
+	return layeringIndices;
+}
+
+std::vector<int> Graph::calculateReverseCuthillMcKee(std::list<const Node*> nodes)
+{
 	std::vector<const Node*> result;
 	std::set<const Node*> resultSet;
-	result.reserve(_nodes.size());
-	std::list<const Node*> leftOver(_nodes.cbegin(), _nodes.cend());
+	result.reserve(nodes.size());
 	auto position = 0;
+	auto nodeCount = nodes.size();
 
-	while(result.size() < _nodes.size())
+	while(result.size() < nodeCount)
 	{
 		while(position == result.size())
 		{
-			auto candidate = leftOver.front();
-			leftOver.pop_front();
+			auto candidate = nodes.front();
+			nodes.pop_front();
 
 			if (resultSet.count(candidate) != 0)
 				continue;
@@ -73,26 +99,6 @@ std::vector<int> Graph::calculateReverseCuthillMcKee() const
 		indices.push_back(i->getIndex());
 
 	return indices;
-}
-
-std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
-{
-	auto layering = createLayeringFrom(_nodesByIndex.at(startNode));	
-	std::vector<std::vector<int>> layeringIndices;
-	layeringIndices.reserve(layering.size());
-	
-	for (auto &layer : layering)
-	{
-		std::vector<int> indices;
-		indices.reserve(layer.size());
-
-		for (auto node : layer)
-			indices.push_back(node->getIndex());
-
-		layeringIndices.push_back(std::vector<int>(indices.cbegin(), indices.cend()));
-	}
-
-	return layeringIndices;
 }
 
 std::vector<std::set<const Node*>> Graph::createLayeringFrom(const Node *startNode)
