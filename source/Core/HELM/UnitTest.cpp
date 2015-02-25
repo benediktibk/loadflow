@@ -14,6 +14,7 @@
 #include "Graph.h"
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -1585,6 +1586,73 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthi
 	if (result[6] != 5)
 		return false;
 	if (result[7] != 1)
+		return false;
+
+	return true;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCreateLayeringFrom()
+{
+	Graph graph;
+
+	for (auto i = 1; i <= 10; ++i)
+		graph.addNode(i);
+
+	graph.connect(1, 2);
+	graph.connect(1, 4);
+	graph.connect(1, 9);
+	graph.connect(2, 9);
+	graph.connect(2, 3);
+	graph.connect(3, 5);
+	graph.connect(3, 9);
+	graph.connect(4, 5);
+	graph.connect(4, 6);
+	graph.connect(4, 9);
+	graph.connect(4, 10);
+	graph.connect(5, 8);
+	graph.connect(5, 9);
+	graph.connect(5, 10);
+	graph.connect(6, 7);
+	graph.connect(6, 10);
+	graph.connect(7, 8);
+	graph.connect(7, 10);
+	graph.connect(8, 10);
+	graph.connect(9, 10);
+
+	auto layering = graph.createLayeringFrom(3);
+
+	for (auto &layer : layering)
+		sort(layer.begin(), layer.end());
+
+	if (layering.size() != 4)
+		return false;
+	if (layering[0].size() != 1)
+		return false;
+	if (layering[0][0] != 3)
+		return false;
+	if (layering[1].size() != 3)
+		return false;
+	if (layering[1][0] != 2)
+		return false;
+	if (layering[1][1] != 5)
+		return false;
+	if (layering[1][2] != 9)
+		return false;
+	if (layering[2].size() != 4)
+		return false;
+	if (layering[2][0] != 1)
+		return false;
+	if (layering[2][1] != 4)
+		return false;
+	if (layering[2][2] != 8)
+		return false;
+	if (layering[2][3] != 10)
+		return false;
+	if (layering[3].size() != 2)
+		return false;
+	if (layering[3][0] != 6)
+		return false;
+	if (layering[3][1] != 7)
 		return false;
 
 	return true;

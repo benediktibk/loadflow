@@ -32,6 +32,11 @@ int Node::getIndex() const
 	return _index;
 }
 
+std::vector<const Node*> const& Node::getNeighbours() const
+{
+	return _neighbours;
+}
+
 std::list<const Node*> Node::getNeighboursSortedByDegree() const
 {
 	std::list<const Node*> result(_neighbours.cbegin(), _neighbours.cend());

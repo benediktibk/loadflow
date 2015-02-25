@@ -75,6 +75,63 @@ std::vector<int> Graph::calculateReverseCuthillMcKee() const
 	return indices;
 }
 
+std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
+{
+	auto layering = createLayeringFrom(_nodesByIndex.at(startNode));	
+	std::vector<std::vector<int>> layeringIndices;
+	layeringIndices.reserve(layering.size());
+	
+	for (auto &layer : layering)
+	{
+		std::vector<int> indices;
+		indices.reserve(layer.size());
+
+		for (auto node : layer)
+			indices.push_back(node->getIndex());
+
+		layeringIndices.push_back(std::vector<int>(indices.cbegin(), indices.cend()));
+	}
+
+	return layeringIndices;
+}
+
+std::vector<std::set<const Node*>> Graph::createLayeringFrom(const Node *startNode)
+{	
+	std::vector<std::set<const Node*>> layering;
+	layering.push_back(std::set<const Node*>());
+	layering[0].insert(startNode);
+	bool addedNewLayer = true;
+
+	while(addedNewLayer)
+	{
+		std::set<const Node*> nextLayer;
+		auto &lastLayer = layering.back();
+
+		for (auto node : lastLayer)
+		{
+			auto &neighbours = node->getNeighbours();
+
+			for (auto neighbour : neighbours)
+			{
+				if (nextLayer.count(neighbour) > 0)
+					continue;
+				
+				if (containedInLayering(layering, neighbour))
+					continue;
+
+				nextLayer.insert(neighbour);
+			}
+		}
+
+		if (nextLayer.empty())
+			addedNewLayer = false;
+		else
+			layering.push_back(nextLayer);
+	}
+
+	return layering;
+}
+
 std::list<const Node*> Graph::filterOut(std::list<const Node*> const &nodes, std::set<const Node*> const &filter)
 {		
 	std::list<const Node*> result;
@@ -84,4 +141,13 @@ std::list<const Node*> Graph::filterOut(std::list<const Node*> const &nodes, std
 			result.push_back(node);
 
 	return result;
+}
+
+bool Graph::containedInLayering(std::vector<std::set<const Node*>> const &layering, const Node *node)
+{
+	for (auto &layer : layering)
+		if (layer.count(node) > 0)
+			return true;
+
+	return false;
 }

@@ -13,6 +13,7 @@ public:
 	void connect(const Node *node);
 	int getDegree() const;
 	int getIndex() const;
+	std::vector<const Node*> const& getNeighbours() const;
 	std::list<const Node*> getNeighboursSortedByDegree() const;
 
 private:
