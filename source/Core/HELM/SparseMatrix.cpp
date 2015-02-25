@@ -457,7 +457,7 @@ void SparseMatrix<Floating, ComplexFloating>::transpose()
 }
 
 template<class Floating, class ComplexFloating>
-void SparseMatrix<Floating, ComplexFloating>::permutateRows(std::vector<int> permutation)
+void SparseMatrix<Floating, ComplexFloating>::permutateRows(std::vector<int> const &permutation)
 {
 	if (permutation.size() != getRowCount())
 		throw std::invalid_argument("size of permutation does not match row count");
@@ -475,6 +475,47 @@ void SparseMatrix<Floating, ComplexFloating>::permutateRows(std::vector<int> per
 
 	_values.swap(values);
 	_columns.swap(columns);
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::permutateColumns(std::vector<int> const &permutation)
+{
+	if (permutation.size() != getColumnCount())
+		throw std::invalid_argument("size of permutation does not match column count");
+
+	typedef std::pair<int, ComplexFloating> ColumnValue;
+	std::vector<ColumnValue> columnValues;
+	std::vector<int> permutationInverted;
+	permutationInverted.resize(permutation.size(), -1);
+
+	for (auto i = 0; i < getColumnCount(); ++i)
+		permutationInverted[permutation[i]] = i;
+
+	for (auto row = 0; row < _rowCount; ++row)
+	{
+		auto &values = _values[row];
+		auto &columns = _columns[row];
+		columnValues.clear();
+		columnValues.reserve(_values[row].size());
+
+		for (auto iterator = getRowIterator(row); iterator.isValid(); iterator.next())
+		{
+			auto column = permutationInverted[iterator.getColumn()];
+			auto &value = iterator.getValue();
+			columnValues.push_back(ColumnValue(column, value));
+		}
+
+		std::sort(columnValues.begin(), columnValues.end(), [](ColumnValue const &a, ColumnValue const &b) -> bool { return a.first < b.first; });
+
+		values.clear();
+		columns.clear();
+
+		for (auto columnValue : columnValues)
+		{
+			columns.push_back(columnValue.first);
+			values.push_back(columnValue.second);
+		}
+	}
 }
 
 template<class Floating, class ComplexFloating>
