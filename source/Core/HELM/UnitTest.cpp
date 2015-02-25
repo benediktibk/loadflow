@@ -639,7 +639,6 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFive()
 {
-	return false;
 	auto n = 15025;
 	SparseMatrix<long double, Complex<long double>> A(n, n);
 	Vector<long double, Complex<long double>> b(n);
@@ -647,9 +646,9 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFive()
 	matrixFile >> A;
 	fstream vectorFile("testdata\\vector_currentiteration.csv", ios_base::in);
 	vectorFile >> b;
-	BiCGSTAB<long double, Complex<long double>> iterativeSolver(A, 1e-10);
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 
-	auto x = iterativeSolver.solve(b);
+	auto x = luSolver.solve(b);
 
 	Vector<long double, Complex<long double>> bEstimate(n);
 	Vector<long double, Complex<long double>> residual(n);
