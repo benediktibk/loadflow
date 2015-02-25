@@ -27,7 +27,6 @@ private:
 	SparseMatrix<Floating, ComplexFloating> _permutation;
 	SparseMatrix<Floating, ComplexFloating> _permutationBandwidthReduction;
 	SparseMatrix<Floating, ComplexFloating> _permutationBandwidthReductionInverse;
-	Vector<Floating, ComplexFloating> _preconditioner;
 	const IPivotFinder<Floating, ComplexFloating> *_pivotFinder;
 };
 
