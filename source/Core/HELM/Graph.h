@@ -28,6 +28,10 @@ private:
 	static bool containedInLayering(std::vector<std::set<const Node*>> const &layering, const Node *node);
 
 private:
+	Graph(Graph const & rhs) { }
+	void operator=(Graph const &rhs) { }
+
+private:
 	std::vector<Node*> _nodes;
 	std::map<int, Node*> _nodesByIndex;
 };
