@@ -634,9 +634,6 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 	A.multiply(b, x);
 	auto result = luSolver.solve(b);
 
-	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::trunc);
-	blub << result;
-
 	return areEqual(x, result, 1e-5);
 }
 
@@ -679,9 +676,6 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSix()
 
 	AReduced.multiply(b, x);
 	auto result = luSolver.solve(b);
-
-	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::trunc);
-	blub << result;
 
 	return areEqual(x, result, 1e-5);
 }
