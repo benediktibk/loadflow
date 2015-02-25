@@ -14,6 +14,7 @@ class SparseMatrix
 {
 public:
 	SparseMatrix(int rows, int columns);
+	SparseMatrix(std::vector<int> const &permutation);
 
 	int getRowCount() const;
 	int getColumnCount() const;
@@ -43,6 +44,8 @@ public:
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
 
 private:
+	void checkDimensions() const;
+	void initialize();
 	bool findPosition(int row, int column, int &position) const;
 	bool isValidRowIndex(int row) const;
 	bool isValidColumnIndex(int column) const;

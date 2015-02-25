@@ -19,13 +19,21 @@ SparseMatrix<Floating, ComplexFloating>::SparseMatrix(int rows, int columns) :
 	_columnCount(columns),
 	_zero(Floating(0), Floating(0))
 {
-	if (getRowCount() <= 0)
-		throw std::range_error("row count must be positive");
-	if (getColumnCount() <= 0)
-		throw std::range_error("column count must be positive");
+	checkDimensions();
+	initialize();
+}
 
-	_columns.resize(getRowCount(), std::vector<int>());
-	_values.resize(getRowCount(), std::vector<ComplexFloating>());
+template<class Floating, class ComplexFloating>
+SparseMatrix<Floating, ComplexFloating>::SparseMatrix(std::vector<int> const &permutation) :
+	_rowCount(permutation.size()),
+	_columnCount(permutation.size()),
+	_zero(Floating(0), Floating(0))
+{
+	checkDimensions();
+	initialize();
+
+	for (auto i = 0; i < getRowCount(); ++i)
+		set(i, permutation[i], ComplexFloating(Floating(1)));
 }
 
 template<class Floating, class ComplexFloating>
@@ -551,6 +559,22 @@ SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFlo
 	_columns = rhs._columns;
 	_values = rhs._values;
 	return *this;
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::checkDimensions() const
+{
+	if (getRowCount() <= 0)
+		throw std::range_error("row count must be positive");
+	if (getColumnCount() <= 0)
+		throw std::range_error("column count must be positive");
+}
+
+template<class Floating, class ComplexFloating>
+void SparseMatrix<Floating, ComplexFloating>::initialize()
+{
+	_columns.resize(getRowCount(), std::vector<int>());
+	_values.resize(getRowCount(), std::vector<ComplexFloating>());
 }
 
 template<class Floating, class ComplexFloating>

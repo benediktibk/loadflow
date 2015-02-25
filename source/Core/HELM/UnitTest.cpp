@@ -944,6 +944,27 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixConstructor()
 	if (value != Complex<long double>(0, 0))
 		return false;
 
+	auto n = 5;
+	vector<int> permutation;
+	permutation.push_back(4);
+	permutation.push_back(2);
+	permutation.push_back(0);
+	permutation.push_back(3);
+	permutation.push_back(1);
+	Vector<long double, Complex<long double>> x(n);
+	Vector<long double, Complex<long double>> y(n);
+
+	for (auto i = 0; i < n; ++i)
+		x.set(i, Complex<long double>(i + 1));
+
+	SparseMatrix<long double, Complex<long double>> P(permutation);
+
+	P.multiply(y, x);
+	
+	for (auto i = 0; i < n; ++i)
+		if (y(i) != Complex<long double>(permutation[i] + 1))
+			return false;
+
 	return true;
 }
 
