@@ -43,6 +43,8 @@ public:
 	ComplexFloating const& operator()(int row, int column) const;
 	SparseMatrix<Floating, ComplexFloating> const& operator=(SparseMatrix<Floating, ComplexFloating> const &rhs);
 
+	static std::vector<int> invertPermutation(std::vector<int> const &permutation);
+
 private:
 	void checkDimensions() const;
 	void initialize();

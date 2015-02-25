@@ -491,11 +491,7 @@ void SparseMatrix<Floating, ComplexFloating>::permutateColumns(std::vector<int> 
 
 	typedef std::pair<int, ComplexFloating> ColumnValue;
 	std::vector<ColumnValue> columnValues;
-	std::vector<int> permutationInverted;
-	permutationInverted.resize(permutation.size(), -1);
-
-	for (auto i = 0; i < getColumnCount(); ++i)
-		permutationInverted[permutation[i]] = i;
+	auto permutationInverted = invertPermutation(permutation);
 
 	for (auto row = 0; row < _rowCount; ++row)
 	{
@@ -559,6 +555,18 @@ SparseMatrix<Floating, ComplexFloating> const& SparseMatrix<Floating, ComplexFlo
 	_columns = rhs._columns;
 	_values = rhs._values;
 	return *this;
+}
+
+template<class Floating, class ComplexFloating>
+std::vector<int> SparseMatrix<Floating, ComplexFloating>::invertPermutation(std::vector<int> const &permutation)
+{	
+	std::vector<int> result;
+	result.resize(permutation.size(), -1);
+
+	for (auto i = 0; i < permutation.size(); ++i)
+		result[permutation[i]] = i;
+
+	return result;
 }
 
 template<class Floating, class ComplexFloating>
