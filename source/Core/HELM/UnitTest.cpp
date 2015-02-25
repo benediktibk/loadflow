@@ -1132,7 +1132,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixReduceBandwidt
 	A.reduceBandwidth();
 
 	result = A.calculateBandwidth();
-	if (result > 338)
+	if (result > 735)
 		return false;
 
 	return true;
