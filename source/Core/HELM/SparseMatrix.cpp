@@ -403,9 +403,7 @@ std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth()
 	graph = 0;
 
 	permutateRows(permutation);
-	transpose();
-	permutateRows(permutation);
-	transpose();
+	permutateColumns(permutation);
 
 	return permutation;
 }
