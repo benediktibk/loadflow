@@ -16,8 +16,10 @@ public:
 
 	void addNode(int index);
 	void connect(int one, int two);
-	std::vector<int> calculateReverseCuthillMcKee() const;	
+	std::vector<int> calculateReverseCuthillMcKee() const;
+	std::vector<int> calculateReverseCuthillMcKee(int startNode) const;
 	std::vector<std::vector<int>> createLayeringFrom(int startNode) const;
+	int findPseudoPeriphereNode() const;
 
 private:
 	static std::vector<int> calculateReverseCuthillMcKee(std::list<const Node*> nodes);

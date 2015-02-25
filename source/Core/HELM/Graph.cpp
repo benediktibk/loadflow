@@ -37,8 +37,21 @@ void Graph::connect(int one, int two)
 
 std::vector<int> Graph::calculateReverseCuthillMcKee() const
 {
-	std::list<const Node*> leftOver(_nodes.cbegin(), _nodes.cend());
-	return calculateReverseCuthillMcKee(leftOver);
+	std::list<const Node*> nodes(_nodes.cbegin(), _nodes.cend());
+	return calculateReverseCuthillMcKee(nodes);
+}
+
+std::vector<int> Graph::calculateReverseCuthillMcKee(int startNode) const
+{
+	auto node = _nodesByIndex.at(startNode);
+	std::list<const Node*> nodes;
+	nodes.push_back(node);
+
+	for (auto node : _nodes)
+		if (node != node)
+			nodes.push_back(node);
+
+	return calculateReverseCuthillMcKee(nodes);
 }
 
 std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
@@ -59,6 +72,31 @@ std::vector<std::vector<int>> Graph::createLayeringFrom(int startNode) const
 	}
 
 	return layeringIndices;
+}
+
+int Graph::findPseudoPeriphereNode() const
+{
+	std::set<const Node*> candidates;
+	candidates.insert(_nodes.front());
+	auto eccentricity = 0;
+	const Node *result = 0;
+	bool improvedResult = true;
+
+	while(improvedResult)
+	{
+		auto candidate = *(candidates.begin());
+		auto layering = createLayeringFrom(candidate);
+
+		if (layering.size() > eccentricity)
+		{
+			result = candidate;
+			eccentricity = layering.size();
+		}
+		else
+			improvedResult = false;
+	}
+
+	return result->getIndex();
 }
 
 std::vector<int> Graph::calculateReverseCuthillMcKee(std::list<const Node*> nodes)

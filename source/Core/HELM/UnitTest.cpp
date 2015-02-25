@@ -1546,7 +1546,26 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthi
 	graphTwo.connect(8, 10);
 	graphTwo.connect(9, 10);
 
-	auto result = graphTwo.calculateReverseCuthillMcKee();
+	auto result = graphOne.calculateReverseCuthillMcKee();
+
+	if (result[0] != 7)
+		return false;
+	if (result[1] != 4)
+		return false;
+	if (result[2] != 8)
+		return false;
+	if (result[3] != 6)
+		return false;
+	if (result[4] != 2)
+		return false;
+	if (result[5] != 3)
+		return false;
+	if (result[6] != 5)
+		return false;
+	if (result[7] != 1)
+		return false;
+
+	result = graphTwo.calculateReverseCuthillMcKee();
 
 	if (result[9] != 1)
 		return false;
@@ -1569,23 +1588,27 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCalculateReverseCuthi
 	if (result[0] != 8)
 		return false;
 
-	result = graphOne.calculateReverseCuthillMcKee();
+	result = graphTwo.calculateReverseCuthillMcKee(2);
 
-	if (result[0] != 7)
+	if (result[9] != 2)
 		return false;
-	if (result[1] != 4)
+	if (result[8] != 1)
 		return false;
-	if (result[2] != 8)
-		return false;
-	if (result[3] != 6)
-		return false;
-	if (result[4] != 2)
-		return false;
-	if (result[5] != 3)
+	if (result[7] != 3)
 		return false;
 	if (result[6] != 5)
 		return false;
-	if (result[7] != 1)
+	if (result[5] != 6)
+		return false;
+	if (result[4] != 8)
+		return false;
+	if (result[3] != 10)
+		return false;
+	if (result[2] != 9)
+		return false;
+	if (result[1] != 4)
+		return false;
+	if (result[0] != 7)
 		return false;
 
 	return true;
