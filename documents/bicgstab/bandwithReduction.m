@@ -22,6 +22,27 @@ lowerBandwidth = bandwidth(AReduced, 'lower');
 upperBandwidth = bandwidth(AReduced, 'upper');
 disp(strcat('bandwith of reduced A:',num2str(max([lowerBandwidth, upperBandwidth]))));
 
+%% Plot of decomposition structures
+close all;
+[L, U, P] = lu(A);
+[row, col] = find(L);
+scatter(row, col);
+title('L');
+figure;
+[row, col] = find(U);
+scatter(row, col);
+title('U');
+
+[L, U, P] = lu(AReduced);
+[row, col] = find(L);
+figure;
+scatter(row, col);
+title('L, reduced');
+figure;
+[row, col] = find(U);
+scatter(row, col);
+title('U, reduced');
+
 %% Comparison of memory usage
 mCandidates = 100:50:500;
 count = size(mCandidates, 2);

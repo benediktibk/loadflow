@@ -620,20 +620,19 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemThree(
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 {
-	return false;
 	auto n = 15025;
 	SparseMatrix<long double, Complex<long double>> A(n, n);
 	Vector<long double, Complex<long double>> x(n);
 	Vector<long double, Complex<long double>> b(n);
 	fstream file("testdata\\matrix.csv", ios_base::in);
 	file >> A;
-	LUDecompositionSparse<long double, Complex<long double>> luSolverSparse(A);
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
 
 	for (auto i = 0; i < n; ++i)
 		x.set(i, Complex<long double>(i));
 
 	A.multiply(b, x);
-	auto result = luSolverSparse.solve(b);
+	auto result = luSolver.solve(b);
 
 	return areEqual(x, result, 1e-5);
 }

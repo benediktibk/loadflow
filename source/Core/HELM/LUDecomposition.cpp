@@ -71,14 +71,14 @@ void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMa
 		{
 			const ComplexFloating &currentValue = _upper(j, i);
 			auto factor = currentValue/pivotElement;
-			_left.set(j, i, factor);
 
 			if (currentValue == zero)
 				continue;
-
+			
 			auto factorNegative = factor*ComplexFloating(Floating(-1));
 			_upper.addWeightedRowElements(j, factorNegative, pivotRow);
 			_upper.set(j, i, zero);
+			_left.set(j, i, factor);
 		}
 	}	
 
