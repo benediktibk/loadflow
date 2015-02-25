@@ -12,6 +12,8 @@ LUDecomposition<Floating, ComplexFloating>::LUDecomposition(SparseMatrix<Floatin
 	_left(_dimension, _dimension),
 	_upper(_dimension, _dimension),
 	_permutation(_dimension, _dimension),
+	_permutationBandwidthReduction(_dimension, _dimension),
+	_permutationBandwidthReductionInverse(_dimension, _dimension),
 	_preconditioner(_dimension),
 	_pivotFinder(pivotFinder)
 {
@@ -31,15 +33,24 @@ template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {
 	assert(_dimension == b.getCount());
-	auto y = forwardSubstitution(b);
-	return backwardSubstitution(y);
+	Vector<Floating, ComplexFloating> bPermutated(_dimension);
+	Vector<Floating, ComplexFloating> xPermutated(_dimension);
+	_permutationBandwidthReductionInverse.multiply(bPermutated, b);
+	auto y = forwardSubstitution(bPermutated);
+	auto x = backwardSubstitution(y);
+	_permutationBandwidthReduction.multiply(xPermutated, x);
+	return xPermutated;
 }
 
 template<class Floating, class ComplexFloating>
 void LUDecomposition<Floating, ComplexFloating>::calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix)
 {
-	_preconditioner = systemMatrix.getInverseMainDiagonal();
 	_upper = systemMatrix;
+	auto permutationOrder = _upper.reduceBandwidth();
+	auto permutationOrderInverted = SparseMatrix<Floating, ComplexFloating>::invertPermutation(permutationOrder);
+	_permutationBandwidthReduction = SparseMatrix<Floating, ComplexFloating>(permutationOrder);
+	_permutationBandwidthReductionInverse = SparseMatrix<Floating, ComplexFloating>(permutationOrderInverted);
+	_preconditioner = _upper.getInverseMainDiagonal();
 	_upper.multiplyWithDiagonalMatrix(_preconditioner);
 	auto one = ComplexFloating(Floating(1));
 	auto zero = ComplexFloating(Floating(0));
