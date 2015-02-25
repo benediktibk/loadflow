@@ -34,10 +34,10 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::so
 	assert(_dimension == b.getCount());
 	Vector<Floating, ComplexFloating> bPermutated(_dimension);
 	Vector<Floating, ComplexFloating> xPermutated(_dimension);
-	_permutationBandwidthReductionInverse.multiply(bPermutated, b);
+	_permutationBandwidthReduction.multiply(bPermutated, b);
 	auto y = forwardSubstitution(bPermutated);
 	auto x = backwardSubstitution(y);
-	_permutationBandwidthReduction.multiply(xPermutated, x);
+	_permutationBandwidthReductionInverse.multiply(xPermutated, x);
 	return xPermutated;
 }
 

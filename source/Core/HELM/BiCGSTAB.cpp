@@ -22,18 +22,9 @@ BiCGSTAB<Floating, ComplexFloating>::BiCGSTAB(const SparseMatrix<Floating, Compl
 	}
 }
 
-#include <fstream>
-
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> BiCGSTAB<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {	
-	{
-		fstream matrix("C:\\temp\\matrix.csv", ios_base::out | ios_base::trunc);
-		fstream vector("C:\\temp\\vector.csv", ios_base::out | ios_base::trunc);
-		matrix << _systemMatrix;
-		vector << b;
-	}
-
 	assert(b.isFinite());
 
 	Vector<Floating, ComplexFloating> x(_dimension);

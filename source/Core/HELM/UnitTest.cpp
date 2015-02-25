@@ -634,6 +634,9 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFour()
 	A.multiply(b, x);
 	auto result = luSolver.solve(b);
 
+	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::trunc);
+	blub << result;
+
 	return areEqual(x, result, 1e-5);
 }
 
@@ -657,6 +660,30 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemFive()
 	residual.subtract(bEstimate, b);
 	auto error = sqrt(abs(residual.squaredNorm()/b.squaredNorm()));
 	return error < 1e-5;
+}
+
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSix()
+{
+	auto n = 15025;
+	auto m = 20;
+	SparseMatrix<long double, Complex<long double>> A(n, n);
+	Vector<long double, Complex<long double>> x(m);
+	Vector<long double, Complex<long double>> b(m);
+	fstream file("testdata\\matrix.csv", ios_base::in);
+	file >> A;
+	auto AReduced = A.createReducedMatrix(m, m);
+	LUDecompositionSparse<long double, Complex<long double>> luSolver(AReduced);
+
+	for (auto i = 0; i < m; ++i)
+		x.set(i, Complex<long double>(i + 1));
+
+	AReduced.multiply(b, x);
+	auto result = luSolver.solve(b);
+
+	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::trunc);
+	blub << result;
+
+	return areEqual(x, result, 1e-5);
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConstructor()
