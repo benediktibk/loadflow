@@ -679,6 +679,27 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSix()
 	return areEqual(x, result, 1e-5);
 }
 
+extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSeven()
+{
+	auto n = 15025;
+	SparseMatrix<long double, Complex<long double>> A(n, n);
+	Vector<long double, Complex<long double>> b(n);
+	fstream matrixFile("testdata\\matrix.csv", ios_base::in);
+	matrixFile >> A;
+	fstream vectorFile("testdata\\vector_helm.csv", ios_base::in);
+	vectorFile >> b;
+	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
+
+	auto x = luSolver.solve(b);
+
+	Vector<long double, Complex<long double>> bEstimate(n);
+	Vector<long double, Complex<long double>> residual(n);
+	A.multiply(bEstimate, x);
+	residual.subtract(bEstimate, b);
+	auto error = sqrt(abs(residual.squaredNorm()/b.squaredNorm()));
+	return error < 1e-20;
+}
+
 extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConstructor()
 {
 	Vector<long double, Complex<long double> > a(3);

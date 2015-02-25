@@ -91,6 +91,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         }
 
         [TestMethod]
+        public void LinearEquationSystemSeven()
+        {
+            Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsLinearEquationSystemSeven());
+        }
+
+        [TestMethod]
         public void VectorConstructor()
         {
             Assert.IsTrue(HolomorphicEmbeddedLoadFlowMethodTestNativeMethods.RunTestsVectorConstructor());
