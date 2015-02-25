@@ -1714,6 +1714,11 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphCreateLayeringFrom()
 	if (layering[3][1] != 7)
 		return false;
 
+	auto secondLevelDegree = graph.calculateSecondLevelDegree(8);
+
+	if (secondLevelDegree != 7)
+		return false;
+
 	return true;
 }
 

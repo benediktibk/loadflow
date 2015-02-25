@@ -27,6 +27,19 @@ int Node::getDegree() const
 	return _neighbours.size();
 }
 
+int Node::calculateSecondLevelDegree() const
+{
+	std::set<const Node*> nodes;
+
+	for (auto i : _neighbours)
+	{
+		auto &neighbours = i->getNeighbours();
+		nodes.insert(neighbours.cbegin(), neighbours.cend());
+	}
+
+	return nodes.size() - 1;
+}
+
 int Node::getIndex() const
 {
 	return _index;

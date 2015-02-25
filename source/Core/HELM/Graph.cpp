@@ -100,6 +100,12 @@ int Graph::findPseudoPeriphereNode() const
 	return result->getIndex();
 }
 
+int Graph::calculateSecondLevelDegree(int index) const
+{
+	auto node = _nodesByIndex.at(index);
+	return node->calculateSecondLevelDegree();
+}
+
 std::vector<int> Graph::calculateReverseCuthillMcKee(std::list<const Node*> nodes)
 {
 	std::vector<const Node*> result;
