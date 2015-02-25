@@ -396,16 +396,11 @@ std::vector<int> SparseMatrix<Floating, ComplexFloating>::reduceBandwidth()
 {
 	assert(_rowCount == _columnCount);
 
-	Graph graph;
-
-	for (auto i = 0; i < _rowCount; ++i)
-		graph.addNode(i);
-
-	for (auto row = 0; row < _rowCount; ++row)
-		for (auto iterator = getRowIterator(row); iterator.isValid(); iterator.next())
-			graph.connect(row, iterator.getColumn());
-
-	auto permutation = graph.calculateReverseCuthillMcKee();
+	auto graph = createGraph();
+	auto startNode = graph->findPseudoPeriphereNode();
+	auto permutation = graph->calculateReverseCuthillMcKee(startNode);
+	delete graph;
+	graph = 0;
 
 	permutateRows(permutation);
 	transpose();
@@ -636,4 +631,19 @@ SparseMatrixRowIterator<ComplexFloating>* SparseMatrix<Floating, ComplexFloating
 	int startPosition;
 	findPosition(row, 0, startPosition);
 	return new SparseMatrixRowIterator<ComplexFloating>(_values[row], _columns[row], startPosition, _columns[row].size(), row);
+}
+
+template<class Floating, class ComplexFloating>
+Graph* SparseMatrix<Floating, ComplexFloating>::createGraph() const
+{
+	auto graph = new Graph();
+
+	for (auto i = 0; i < _rowCount; ++i)
+		graph->addNode(i);
+
+	for (auto row = 0; row < _rowCount; ++row)
+		for (auto iterator = getRowIterator(row); iterator.isValid(); iterator.next())
+			graph->connect(row, iterator.getColumn());
+
+	return graph;
 }
