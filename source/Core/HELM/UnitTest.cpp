@@ -1126,7 +1126,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsSparseMatrixReduceBandwidt
 	AReduced.reduceBandwidth();
 
 	auto result = AReduced.calculateBandwidth();
-	if (result > 8)
+	if (result > 14)
 		return false;
 
 	A.reduceBandwidth();
