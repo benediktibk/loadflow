@@ -34,11 +34,55 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::so
 	assert(_dimension == b.getCount());
 	Vector<Floating, ComplexFloating> bPermutated(_dimension);
 	Vector<Floating, ComplexFloating> xPermutated(_dimension);
+	Vector<Floating, ComplexFloating> residual(_dimension);
+	Vector<Floating, ComplexFloating> xImproved(_dimension);
 	_permutationBandwidthReduction.multiply(bPermutated, b);
-	auto y = forwardSubstitution(bPermutated);
-	auto x = backwardSubstitution(y);
+	auto bSquaredNorm = bPermutated.squaredNorm();
+	auto x = solveInternal(bPermutated);
+	auto lastError = calculateError(x, bPermutated, bSquaredNorm, residual);
+	auto improved = true;
+	auto maximumIterations = 1000;
+	auto iteration = 0;
+
+	// iterative refinement
+	while(improved && iteration < maximumIterations)
+	{
+		auto improvement = solveInternal(residual);
+		xImproved.add(x, improvement);
+		auto error = calculateError(xImproved, bPermutated, bSquaredNorm, residual);
+
+		if (error < lastError)
+		{
+			x = xImproved;
+			lastError = error;
+		}
+		else
+			improved = false;
+
+		++iteration;
+	}
+
 	_permutationBandwidthReductionInverse.multiply(xPermutated, x);
 	return xPermutated;
+}
+
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::solveInternal(const Vector<Floating, ComplexFloating> &b) const
+{
+	auto y = forwardSubstitution(b);
+	return backwardSubstitution(y);
+}
+
+template<class Floating, class ComplexFloating>
+Floating LUDecomposition<Floating, ComplexFloating>::calculateError(const Vector<Floating, ComplexFloating> &x, const Vector<Floating, ComplexFloating> &b, ComplexFloating const &bSquaredNorm, Vector<Floating, ComplexFloating> &residual) const
+{
+	Vector<Floating, ComplexFloating> tempOne(_dimension);
+	Vector<Floating, ComplexFloating> tempTwo(_dimension);
+	_upper.multiply(tempOne, x);
+	_left.multiply(tempTwo, tempOne);
+	residual.subtract(b, tempTwo);
+	auto residualSquaredNorm = residual.squaredNorm();
+	return std::sqrt(std::abs(residualSquaredNorm/bSquaredNorm));
 }
 
 template<class Floating, class ComplexFloating>

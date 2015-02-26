@@ -20,6 +20,7 @@ public:
 	void addWeightedSum(ComplexFloating const &xWeight, Vector<Floating, ComplexFloating> const &x, ComplexFloating const &yWeight, Vector<Floating, ComplexFloating> const &y);
 	void pointwiseMultiply(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y);
 	void subtract(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y);
+	void add(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y);
 	void conjugate();
 	bool isFinite() const;
 

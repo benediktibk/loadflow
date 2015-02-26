@@ -697,6 +697,8 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSeven(
 	A.multiply(bEstimate, x);
 	residual.subtract(bEstimate, b);
 	auto error = sqrt(abs(residual.squaredNorm()/b.squaredNorm()));
+	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::app);
+	blub << "1000;" << error << endl;
 	return error < 1e-20;
 }
 

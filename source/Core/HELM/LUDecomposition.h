@@ -16,6 +16,8 @@ public:
 	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
 
 private:
+	Vector<Floating, ComplexFloating> solveInternal(const Vector<Floating, ComplexFloating> &b) const;
+	Floating calculateError(const Vector<Floating, ComplexFloating> &x, const Vector<Floating, ComplexFloating> &b, ComplexFloating const &bSquaredNorm, Vector<Floating, ComplexFloating> &residual) const;
 	void calculateDecomposition(SparseMatrix<Floating, ComplexFloating> const &systemMatrix);
 	Vector<Floating, ComplexFloating> forwardSubstitution(Vector<Floating, ComplexFloating> const &b) const;
 	Vector<Floating, ComplexFloating> backwardSubstitution(Vector<Floating, ComplexFloating> const &y) const;

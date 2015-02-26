@@ -133,6 +133,17 @@ void Vector<Floating, ComplexFloating>::subtract(Vector<Floating, ComplexFloatin
 }
 
 template<class Floating, class ComplexFloating>
+void Vector<Floating, ComplexFloating>::add(Vector<Floating, ComplexFloating> const &x, Vector<Floating, ComplexFloating> const &y)
+{
+	assert(getCount() == x.getCount());
+	assert(getCount() == y.getCount());
+	
+	#pragma omp parallel for
+	for (auto i = 0; i < _count; ++i)
+		_values[i] = x._values[i] + y._values[i];
+}
+
+template<class Floating, class ComplexFloating>
 void Vector<Floating, ComplexFloating>::conjugate()
 {
 	#pragma omp parallel for
