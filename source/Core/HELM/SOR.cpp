@@ -30,9 +30,14 @@ SOR<Floating, ComplexFloating>::SOR(const SparseMatrix<Floating, ComplexFloating
 template<class Floating, class ComplexFloating>
 Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(const Vector<Floating, ComplexFloating> &b) const
 {
+	return solve(Vector<Floating, ComplexFloating>(_dimension), b);
+}
+
+template<class Floating, class ComplexFloating>
+Vector<Floating, ComplexFloating> SOR<Floating, ComplexFloating>::solve(Vector<Floating, ComplexFloating> x, const Vector<Floating, ComplexFloating> &b) const
+{
 	auto bPreconditioned = Vector<Floating, ComplexFloating>(b.getCount());
 	_preconditioner.multiply(bPreconditioned, b);
-	auto x = Vector<Floating, ComplexFloating>(_dimension);
 	auto residual = Vector<Floating, ComplexFloating>(_dimension);
 	auto epsilonSquared = _epsilon*_epsilon;
 	auto bCurrent = Vector<Floating, ComplexFloating>(_dimension);

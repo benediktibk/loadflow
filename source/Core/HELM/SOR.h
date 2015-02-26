@@ -10,6 +10,7 @@ public:
 	SOR(const SparseMatrix<Floating, ComplexFloating> &systemMatrix, Floating epsilon, Floating omega, int maximumIterations);
 
 	virtual Vector<Floating, ComplexFloating> solve(const Vector<Floating, ComplexFloating> &b) const;
+	virtual Vector<Floating, ComplexFloating> solve(Vector<Floating, ComplexFloating> x, const Vector<Floating, ComplexFloating> &b) const;
 
 private:	
 	const Floating _epsilon;
