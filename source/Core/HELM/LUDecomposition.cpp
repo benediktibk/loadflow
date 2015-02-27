@@ -41,7 +41,7 @@ Vector<Floating, ComplexFloating> LUDecomposition<Floating, ComplexFloating>::so
 	auto x = solveInternal(bPermutated);
 	auto lastError = calculateError(x, bPermutated, bSquaredNorm, residual);
 	auto improved = true;
-	auto maximumIterations = 1000;
+	auto maximumIterations = 10;
 	auto iteration = 0;
 
 	// iterative refinement

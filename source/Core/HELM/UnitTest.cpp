@@ -15,6 +15,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <chrono>
 
 using namespace std;
 
@@ -674,6 +675,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSix()
 		x.set(i, Complex<long double>(i + 1));
 
 	AReduced.multiply(b, x);
+
 	auto result = luSolver.solve(b);
 
 	return areEqual(x, result, 1e-5);
@@ -689,17 +691,15 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsLinearEquationSystemSeven(
 	fstream vectorFile("testdata\\vector.csv", ios_base::in);
 	vectorFile >> b;
 	LUDecompositionStable<long double, Complex<long double>> luSolver(A);
-
+	
 	auto x = luSolver.solve(b);
-
+	
 	Vector<long double, Complex<long double>> bEstimate(n);
 	Vector<long double, Complex<long double>> residual(n);
 	A.multiply(bEstimate, x);
 	residual.subtract(bEstimate, b);
 	auto error = sqrt(abs(residual.squaredNorm()/b.squaredNorm()));
-	fstream blub("C:\\temp\\blub.csv", ios_base::out | ios_base::app);
-	blub << "1000;" << error << endl;
-	return error < 1e-20;
+	return error < 1e-4;
 }
 
 extern "C" __declspec(dllexport) bool __cdecl RunTestsVectorConstructor()
