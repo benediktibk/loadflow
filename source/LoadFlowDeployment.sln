@@ -49,13 +49,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SincalConnectorIntegrationT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationExample", "Utilities\CalculationExample\CalculationExample.csproj", "{0F2DCD2C-E9BB-4453-BCB8-E3BE8E22A9F2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E01C9D5-8861-435E-9198-3E68E21BE765}"
-	ProjectSection(SolutionItems) = preProject
-		Performance_HELM.psess = Performance_HELM.psess
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvergenceExperiment", "Utilities\ConvergenceExperiment\ConvergenceExperiment.csproj", "{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,16 +181,6 @@ Global
 		{0F2DCD2C-E9BB-4453-BCB8-E3BE8E22A9F2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0F2DCD2C-E9BB-4453-BCB8-E3BE8E22A9F2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0F2DCD2C-E9BB-4453-BCB8-E3BE8E22A9F2}.Release|Win32.ActiveCfg = Release|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,7 +193,6 @@ Global
 		{FB199312-CB0F-4CE3-9856-B5D6FE72670F} = {53B7E426-873E-426A-A4A9-962C5340AE5A}
 		{42A09A84-3AFE-4780-B1D1-1B0FD1EA5D15} = {53B7E426-873E-426A-A4A9-962C5340AE5A}
 		{0F2DCD2C-E9BB-4453-BCB8-E3BE8E22A9F2} = {53B7E426-873E-426A-A4A9-962C5340AE5A}
-		{54DE8ADB-A1F9-4FE1-AD1B-B8EB8E2D6D51} = {53B7E426-873E-426A-A4A9-962C5340AE5A}
 		{BD7FCEE3-5F5C-4EB8-8C74-686334EBE7F8} = {B345C250-B9E7-40E9-957F-C1ADD8803F93}
 		{9F597517-A825-4611-9234-F64B207499D1} = {B345C250-B9E7-40E9-957F-C1ADD8803F93}
 		{F0CA0263-C6D4-492C-AD75-BEBF209D26EF} = {B345C250-B9E7-40E9-957F-C1ADD8803F93}
