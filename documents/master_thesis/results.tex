@@ -15,11 +15,11 @@ To answer these questions I have run several experiments. The ones related to th
 	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
 		\hline
 		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
-		Current Iteration & 1e-5 & 100 & & & iterative \\ \hline
-		Newton-Raphson & 1e-5 & 100 & & & iterative \\ \hline
-		HELM 64 Bit & 1e-5 & & 64 & 50 & iterative \\ \hline
-		HELM 200 Bit & 1e-5 & & 200 & 100 & iterative \\ \hline
-		HELM 64 Bit with Current \mbox{Iteration} & 1e-5 & 100 & 64 & 50 & iterative \\ \hline
+		\emph{Current Iteration} & 1e-5 & 100 & & & iterative \\ \hline
+		\emph{Newton-Raphson} & 1e-5 & 100 & & & iterative \\ \hline
+		\emph{HELM} 64 Bit & 1e-5 & & 64 & 50 & iterative \\ \hline
+		\emph{HELM} 200 Bit & 1e-5 & & 200 & 100 & iterative \\ \hline
+		\emph{HELM} 64 Bit with \emph{Current \mbox{Iteration}} & 1e-5 & 100 & 64 & 50 & iterative \\ \hline
 	\end{tabularx}
 	\caption{Algorithm parameters for the runtime and accuracy comparison}
 	\label{tab:comparison_parameter}
@@ -30,18 +30,18 @@ To answer these questions I have run several experiments. The ones related to th
 	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
 		\hline
 		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
-		HELM, 64 Bit, iterative & 1e-10 & & 64 & 50 & iterative \\ \hline
-		HELM, 64 Bit, LU & 1e-10 & & 64 & 50 & LU \\ \hline
-		HELM with \mbox{Current Iteration}, 64 Bit, LU & 1e-10 & 100 & 64 & 50 & LU \\ \hline
-		HELM, 100 Bit, LU & 1e-10 & & 100 & 70 & LU \\ \hline
-		HELM, 200 Bit, LU & 1e-10 & & 200 & 100 & LU \\ \hline
-		HELM, 1000 Bit, LU & 1e-10 & & 1000 & 200 & LU \\ \hline
-		HELM, 10000 Bit, LU & 1e-10 & & 10000 & 300 & LU \\ \hline
-		Current Iteration, iterative & 1e-10 & 100 & & & iterative \\ \hline
-		Current Iteration, LU & 1e-10 & 100 & & & LU \\ \hline
-		Newton-Raphson, iterative & 1e-10 & 100 & & & iterative \\ \hline
-		Newton-Raphson, LU & 1e-10 & 100 & & & LU \\ \hline
-		Newton-Raphson, SINCAL & 1e-10 & 100 & & & \\ \hline
+		\emph{HELM}, 64 Bit, iterative & 1e-10 & & 64 & 50 & iterative \\ \hline
+		\emph{HELM}, 64 Bit, LU & 1e-10 & & 64 & 50 & LU \\ \hline
+		\emph{HELM} with \mbox{\emph{Current Iteration}}, 64 Bit, LU & 1e-10 & 100 & 64 & 50 & LU \\ \hline
+		\emph{HELM}, 100 Bit, LU & 1e-10 & & 100 & 70 & LU \\ \hline
+		\emph{HELM}, 200 Bit, LU & 1e-10 & & 200 & 100 & LU \\ \hline
+		\emph{HELM}, 1000 Bit, LU & 1e-10 & & 1000 & 200 & LU \\ \hline
+		\emph{HELM}, 10000 Bit, LU & 1e-10 & & 10000 & 300 & LU \\ \hline
+		\emph{Current Iteration}, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		\emph{Current Iteration}, LU & 1e-10 & 100 & & & LU \\ \hline
+		\emph{Newton-Raphson}, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		\emph{Newton-Raphson}, LU & 1e-10 & 100 & & & LU \\ \hline
+		\emph{Newton-Raphson}, SINCAL & 1e-10 & 100 & & & \\ \hline
 	\end{tabularx}
 	\caption{Algorithm parameters for the convergence comparison}
 	\label{tab:comparison2_parameter}
@@ -122,5 +122,62 @@ If we zoom into this chart we get at the first step \figref{comparison_convergen
 
 \section{Calculation of Large-Scale Powernets}
 \label{sec:large_scale_powernets}
+	
+To evaluate \emph{HELM} in the scenarion of large-scale powernets I used the power net of \emph{infra fürth}, which they kindly provided me for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these not supported elements.
+
+Another important thing to point out is the switching state, the version I received was configured in a way that the total net was split up into three parts. For the comparison later on I used this initial version, as well as one where these three parts are connected together. In the connected version there is then one big net with more than 50000 nodes.
+
+As algorithms for the comparison I have selected:
+\begin{itemize}
+	\item \emph{HELM} with a 64 Bit datatype and LU factorization
+	\item \emph{Current Iteration} with an iterative solver
+	\item \emph{HELM} with 64 Bit datatype and LU factorization and as second step \emph{Current Iteration} with an iterative solver
+	\item \emph{PSS SINCAL} with the default configuration
+\end{itemize}
+Unfortunately, the library I used for the linear algebra in the iterative load-flow algorithms was not able to calculate the LU factorization at all in a reasonable amount of time. Additionally, the calculation of the Jacobian matrix was not very efficient too, due to the sparse matrix implementation. Therefore, I had to leave out my implementation of \emph{FDLF} and \emph{Newton-Raphson}, but this class of algorithms is still represented in the comparison through \emph{PSS SINCAL}.
+
+As I implemented \emph{HELM} in \emph{C++} and optimized the LU factorization for these circumstances, I was able to select this combination for the tests. By the way, this shows that the performance of the algorithms depends heavily on the implementation of the linear algebra.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/big_net_separate_relative_power_error}
+	\caption[Comparison, \emph{infra fürth}, separate, error]{relative power error of the algorithms for the separated version of the power net of \emph{infra fürth}}
+	\label{fig:big_net_separate_relative_power_error}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/big_net_combined_relative_power_error}
+	\caption[Comparison, \emph{infra fürth}, connected, error]{relative power error of the algorithms for the connected version of the power net of \emph{infra fürth}}
+	\label{fig:big_net_combined_relative_power_error}
+\end{figure}
+
+First, I would like to point out the relative power errors of the algorithms for these two versions of the power net in \figref{big_net_separate_relative_power_error} and \figref{big_net_combined_relative_power_error}. For most applications of a load-flow algorithm this accuracy should be sufficient.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/big_net_separate_runtime}
+	\caption[Comparison, \emph{infra fürth}, separate, runtime]{runtime of the algorithms for the separated version of the power net of \emph{infra fürth}}
+	\label{fig:big_net_separate_runtime}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/big_net_combined_runtime}
+	\caption[Comparison, \emph{infra fürth}, connected, runtime]{runtime of the algorithms for the connected version of the power net of \emph{infra fürth}}
+	\label{fig:big_net_combined_runtime}
+\end{figure}
+
+Second, the comparison of the runtime in \figref{big_net_separate_runtime} and \figref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the real game changer here is the linear algebra, as the admittance matrix has a bad condition in these scenarios.
 
 \section{Conclusion}
+In conclusion, \emph{HELM} is superior to the iterative methods, regarding the convergence behaviour. This advantage comes directly from the theoretical background, where so far only \emph{HELM} can be proven to have a perfect convergence behaviour. The only limitation which is left here is caused by the machine epsilon of the computer. Considering the runtime, \emph{HELM} can not reach the performance of for instance \emph{FDLF} if the later one converges within only a few iterations.
+
+In summary, there exist mainly two reasons not to use \emph{HELM}:
+\begin{enumerate}
+	\item The calculation has to be done fast
+	\item A certain control is used in the power net, which is not yet supported by \emph{HELM}
+\end{enumerate}
+The first drawback here is immanent in \emph{HELM}, but the second one will be a topic for future research.
+
+Finally, in practical applications it is handy to have a fallback in case the iterative methods do not converge.
