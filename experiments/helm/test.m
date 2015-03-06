@@ -1,7 +1,15 @@
 okay = testWynnEpsilon();
 
 if okay
-    display('wynn epsilon is okay');
+    display('Wynns Epsilon Algorithm is okay');
 else
-    display('ERROR: wynn epsilon is not okay !');
+    display('ERROR: Wynns Epsilon Algorithm is not okay!');
+end
+
+okay = testHelm();
+
+if okay
+    display('HELM is okay');
+else
+    display('ERROR: HELM is not okay!');
 end

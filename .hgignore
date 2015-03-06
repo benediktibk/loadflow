@@ -44,3 +44,4 @@ documents/master_thesis/tikz/*.aux
 documents/bicgstab/*.asv
 source/*.vspx
 source/*.etl
+experiments/**/*.m~
