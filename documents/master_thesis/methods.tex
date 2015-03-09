@@ -476,7 +476,7 @@ and for the specified powers
 	\end{bmatrix}.
 \end{equation}
 
-To be able to apply \emph{Newton-Raphson} I now need the derivation of the power function with respect to the entries in the voltage change vector. I will start with a separation of the power at each node into its real and imaginary part, and then derive these functions with respect to the voltage magnitudes and angles.
+To be able to apply \emph{Newton-Raphson} I need at this point the derivation of the power function with respect to the entries in the voltage change vector. I will start with a separation of the power at each node into its real and imaginary part, and then derive these functions with respect to the voltage magnitudes and angles.
 
 As a first step, \eqinref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
 \begin{align}
@@ -513,7 +513,7 @@ and
 				& - |Y_{kk}| |U_k|^2 \sin \left( \theta_{kk} \right) - |I_k| |U_k| \sin \left( \delta_k - \gamma_k \right).
 	\end{split}
 \end{equation}
-I can now differentiate these formulas with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
+I can then differentiate these formulas with respect to $U_k$, $U_i$ ($i \ne k$), $\delta_k$ and $\delta_i$ ($i \ne k$):
 \begin{equation}
 	\begin{split}
 		\frac{\partial P_k}{\partial |U_k|} = 
@@ -589,7 +589,7 @@ Through a representation in cartesian coordinates I end up with the voltage vect
 \end{equation}
 where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses, and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
 
-For the Jacobian matrix I need now the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqinref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+For the Jacobian matrix I need in this case the derivatives of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqinref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
@@ -713,7 +713,7 @@ The starting point for \emph{HELM} is \eqinref{pq_bus}, where the slack busses a
 		\sum_i Y_{ki} U_{i}(s) = s I_k + \frac{s S_k^\star}{U_k^\star(s^\star)} + (1 - s) Y_k.
 		\label{eq:pq_bus_embedded}
 \end{equation}
-In this equation I have now an additional parameter $s$, where a selection of $s = 1$ would result in the original formulation. Consequently, the target is to evalute the functions $U_i(s)$ at the point $s = 1$.
+In this equation there is an additional parameter $s$, where setting this parameter to one would result in the original formulation. Consequently, the target is to evalute the functions $U_i(s)$ at the point $s = 1$.
 
 The additional term $(1 - s) Y_{total}$ vanishes at the point $s = 1$ and is only needed to avoid that the first coefficients of a Laurent series become 0. In fact, the value $Y_{total}$ can be chosen arbitrarly. In \citep{helmPatentSept2009} the expression
 \begin{equation}
@@ -927,7 +927,7 @@ and for all other coefficients
 	\sum_i Y_{ki} c_{i,n} = \frac{2 P_k}{|U_k|^2} c_{k,n-1} - \frac{1}{|U_k|^2} x_{k,n-1} - c_{k,n-1} + \frac{I_k^\star}{|U_k|^2} v_{k,n-1}.
 \end{equation}
 
-At this point now, all necessary formulas are available to be able to calculate the coefficients up to a certain index. The next step is then the analytic continuation, which evaluates the voltage functions at a certain point.
+At this point, all necessary formulas are available to be able to calculate the coefficients up to a certain index. The next step is then the analytic continuation, which evaluates the voltage functions at a certain point.
 
 \subsubsection{Analytic Continuation with Wynn's Epsilon Algorithm}
 
