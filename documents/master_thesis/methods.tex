@@ -673,7 +673,7 @@ The iterative process to improve the voltages is then:
 \subsection{Fast-decoupled-load-flow}
 \label{sec:fdlf}
 
-The \emph{FDLF} is a modification of the \emph{Newton-Raphson} method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind I can neglect two quarters of the Jacobian matrix in \eqinref{power_jacobian_newton_raphson} and reduce it to
+The \emph{FDLF} \cite{fdlf} is a modification of the \emph{Newton-Raphson} method, which is based on an observation already discussed previously. The change in voltage magnitudes is mostly driven by the reactive power flow and the change in the voltage angles by the real power flow. With this in mind I can neglect two quarters of the Jacobian matrix in \eqinref{power_jacobian_newton_raphson} and reduce it to
 \begin{equation}
 	\mat S' (\vec x^{(k)}) \approx 
 	\begin{bmatrix}
