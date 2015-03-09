@@ -89,7 +89,7 @@ Last but not least I had also to concentrate on numerical stability. For this pu
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
-The tool of choice in europe, especially at the Institute of Power Transmission Systems at the Technische Universität München, for load-flow calculations is \emph{PSS SINCAL}. Consequently, the tool developed during this thesis has a parser for this file format. This parser allows to read a power net from the file and write back the calculated node voltages.
+The tool developed during this thesis has a parser for the file format of \emph{PSS SINCAL}. This parser allows to read a power net from the file and write back the calculated node voltages.
 
 The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 \begin{itemize}
@@ -102,7 +102,9 @@ The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 	\end{itemize}
 \end{itemize}
 
-The main information about the electrical characteristics of the power net are stored in the \emph{MS Access}-database. Fortunately, this database is documented very well online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf} and by the documents delivered together with the application.
+The main information about the electrical characteristics of the power net are stored in a database, for instance a \emph{MS Access}-database. It is also possible to use for this a \emph{Oracle Database} or \emph{MS SQL Server}, but as the nets I used during this thesis had a \emph{MS Access}-database beneath I implemented only a parser for this configuration.
+
+Fortunately, this database is documented very well \mbox{online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf}} and by the documents delivered together with the application.
 
 The most important tables in this database are:
 \begin{itemize}

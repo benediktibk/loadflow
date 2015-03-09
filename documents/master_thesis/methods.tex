@@ -1,6 +1,6 @@
 \chapter{Load-Flow Calculation}
 
-To clarify the situation, I will start with the problem formulation in \secref{problem_formulation}. Afterwards, I will go more into detail of the certain steps which are necessary to model a power net in \secinref{scaling} and \secinref{modelling}. The final part of this chapter is then the description of the implemented calculation methods \secref{calculation_methods}. To be able to compare the iterative methods with \emph{HELM} I implemented them too, therefore I will include these derivations and formulas in the last section.
+To clarify the situation, I will start with the problem formulation in \secref{problem_formulation}. Afterwards, I will go more into detail of the certain steps which are necessary to model a power net in \secinref{scaling} and \secinref{modelling}. The final part of this chapter is then the description of the implemented calculation methods \secref{calculation_methods}. As commercial tools apply a lot of optimizations and modifications to the implementations of the iterative methods, I implemented them too. Through this I was able to make a more faire comparison between the methods. Additionally, to point out the differences between the iterative methods and \emph{HELM} and their characteristics, I include the formulas and derivations for the iterative methods in the last section.
 
 \section{Problem Formulation}
 \label{sec:problem_formulation}
@@ -35,7 +35,7 @@ If the loads and inputs would be current-controlled I could already stop at this
 	\sum_i Y_{ki} U_i = I_k + \frac{S_k^\star}{U_k^\star},
 	\label{eq:pq_bus}
 \end{equation}
-which is already the definition of a PQ-bus. As a short side remark, a positive power means in this formulation that power is drawn from the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
+which is already the definition of a PQ-bus. As a short side remark, a positive power means in this formulation that power is fed into the net. Consequently, real loads are modelled with a negative sign and generators with a positive one.
 
 Another possible type of bus is a slack bus. At this bus the voltage is defined, therefore I do not have to add a line to the equation system. Such a bus occurs as a part from neighbour busses through the branch currents $Y_{ki} U_i$. I can represent all these known branch currents on the right hand side of \eqinref{pq_bus} through
 \begin{equation}
@@ -570,7 +570,7 @@ With these derivations I can calculate the derivation of the power functions, wh
 \end{equation}
 
 \subsubsection{Real and Imaginary Part}
-For the representation of the voltages through real and imaginary parts, I have one problem: PV-busses. For these busses the voltage magnitude is already set, and I only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantage of this is less complexity in the formulas, as I can avoid the sines and cosines which occured in \eqinref{pk_magnitudek}, \eqinref{qk_magnitudek}, \eqinref{pk_magnitudei}, \eqinref{qk_magnitudei}, \eqinref{pk_phasek}, \eqinref{qk_phasek}, \eqinref{pk_phasei} and \eqinref{qk_phasei}. For huge problems this change has a significant impact on the performance of the overall algorithm, although I can only use this improvement for PQ-busses.
+For the representation of the voltages through real and imaginary parts, I have one problem: PV-busses. For these busses the voltage magnitude is already set, and I only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantage of this is less complexity in the formulas, as I can avoid the sines and cosines which occured in the derivatives of P and Q. For huge problems this change has a significant impact on the performance of the overall algorithm, although I can only use this improvement for PQ-busses.
 
 Through a representation in cartesian coordinates I end up with the voltage vector
 \begin{equation}
@@ -589,7 +589,7 @@ Through a representation in cartesian coordinates I end up with the voltage vect
 \end{equation}
 where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses, and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
 
-For the Jacobian matrix I need now, additionally to \eqinref{pk_phasek}, \eqinref{qk_phasek}, \eqinref{pk_phasei} and \eqinref{qk_phasei}, the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqinref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+For the Jacobian matrix I need now the derivations of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqinref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\

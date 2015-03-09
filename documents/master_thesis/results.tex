@@ -54,7 +54,11 @@ To answer these questions I have run several experiments. The ones related to th
 	\label{fig:comparison_deviation}
 \end{figure}
 
-To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secinref{implementation_helm}, but I will show additional results regarding this aspect in this chapter. The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabinref{comparison_parameter}, the settings for the convergence border tests are in \tabinref{comparison2_parameter}.
+To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secinref{implementation_helm}, but I will show additional results regarding this aspect in this chapter.
+
+The selected algorithms for this comparison cover nearly the whole possible spectrum which is implemented in the tool, including the usage of \emph{HELM} to calculate seed values for an iterative method. This special application of \emph{HELM} is represented by the algorithm \emph{HELM} with \emph{Current Iteration}.
+
+The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabinref{comparison_parameter}, the settings for the convergence border tests are in \tabinref{comparison2_parameter}.
 
 To eliminate influences by other processes or the garbage collection on the runtime, I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviations \figref{comparison_deviation}.
 
@@ -69,9 +73,9 @@ To eliminate influences by other processes or the garbage collection on the runt
 
 One key point is the runtime, and this depends heavily on the implementation of not only the algorithms themselves, but also on the used tools like the library for the sparse linear algebra. Therefore, I am not able to make absolute statements here, especially because I even implemented \emph{HELM} in a different language than the other algorithms and optimized the linear algebra there.
 
-The first important message here is only that \emph{HELM} with 64 Bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as it can be seen in \figinref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the Vorstadtnetz, \emph{HELM} is even faster than this iterative approach. 
+The first important message here is that \emph{HELM} with 64 Bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as it can be seen in \figinref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the Vorstadtnetz, \emph{HELM} is even faster than this iterative approach. 
 
-Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secinref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the later one.
+Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secinref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the latter one.
 
 The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore deterioates the performance of the algorithm significantly. Consequently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
 
