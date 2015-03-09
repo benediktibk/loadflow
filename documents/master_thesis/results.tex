@@ -5,7 +5,7 @@ The most interesting questions regarding \emph{HELM} are
 	\item How well does \emph{HELM} work compared to the iterative methods?
 	\item Is \emph{HELM} able to calculate large scale power nets, for which the iterative methods do not converge?
 \end{itemize}
-To answer these questions I have run several experiments. The ones related to the first question can be found in \secref{comparison_algorithms}. To answer the second question I will describe in \secref{large_scale_power nets} the results of running \emph{HELM} on a large scale power net with a few thousand nodes.
+To answer these questions I have run several experiments. The ones related to the first question can be found in \secinref{comparison_algorithms}. To answer the second question I will describe in \secinref{large_scale_power nets} the results of running \emph{HELM} on a large scale power net with a few thousand nodes.
 
 \section{Comparison of the Load-flow Algorithms}
 \label{sec:comparison_algorithms}
@@ -54,7 +54,7 @@ To answer these questions I have run several experiments. The ones related to th
 	\label{fig:comparison_deviation}
 \end{figure}
 
-To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secref{implementation_helm}, but I will show additional results regarding this aspect in this chapter. The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabref{comparison_parameter}, the settings for the convergence border tests are in \tabref{comparison2_parameter}.
+To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms then regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secinref{implementation_helm}, but I will show additional results regarding this aspect in this chapter. The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabinref{comparison_parameter}, the settings for the convergence border tests are in \tabinref{comparison2_parameter}.
 
 To eliminate influences by other processes or the garbage collection on the runtime, I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviations \figref{comparison_deviation}.
 
@@ -69,9 +69,9 @@ To eliminate influences by other processes or the garbage collection on the runt
 
 One key point is the runtime, and this depends heavily on the implementation of not only the algorithms themselves, but also on the used tools like the library for the sparse linear algebra. Therefore, I am not able to make absolute statements here, especially because I even implemented \emph{HELM} in a different language than the other algorithms and optimized the linear algebra there.
 
-The first important message here is only that \emph{HELM} with 64 Bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as it can be seen in \figref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the Vorstadtnetz, \emph{HELM} is even faster than this iterative approach. 
+The first important message here is only that \emph{HELM} with 64 Bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as it can be seen in \figinref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the Vorstadtnetz, \emph{HELM} is even faster than this iterative approach. 
 
-Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the later one.
+Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is a very handy approach. In \secinref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we also take the runtime into account the combination is not really a drawback. Considering this, I recommend to use always \emph{HELM} with the \emph{Current Iteration} instead of only the later one.
 
 The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 Bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore deterioates the performance of the algorithm significantly. Consequently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 Bit failed.
 
@@ -95,9 +95,11 @@ The accuracies of the algorithms \figref{comparison_accuracy} were all sufficien
 
 To test and compare the convergence behaviour of the different algorithms I used one of the example nets from the institute, the so-called \emph{Vorstadtnetz}. In this net I then increased the load at the most outer ends of the radial net up to that point, where the algorithm did not converge anymore. To find this convergence border more efficiently, I applied the bisection method.
 
-The first and most obvious conclusion, which can be drawn from \figref{comparison_convergence_border_1}, is that the iterative solver for the internal linear equation systems deteriorates the convergence behaviour of \emph{HELM} significantly. Additionally, at least for this special case, the implementation of \emph{Newton-Raphson} in \emph{SINCAL} has a worse convergence behaviour with these settings, compared to my implementation. But I want to make clear that this depends heavily on the settings of the algorithm, and I could only guess how the certain parameters are actually implemented in \emph{SINCAL}. Therefore, it is not really possible to draw a useful conclusion from this experiment.
+The first and most obvious conclusion, which can be drawn from \figinref{comparison_convergence_border_1}, is that the iterative solver for the internal linear equation systems deteriorates the convergence behaviour of \emph{HELM} significantly. 
 
-If we zoom into this chart we get at the first step \figref{comparison_convergence_border_2}, which reveals that \emph{HELM} in its pure form outperforms the other methods, considering the convergence behaviour. After another zoom step one can see in \figref{comparison_convergence_border_3} that a more accurate datatype improves the convergence behaviour of \emph{HELM}, although only a few thousand watts. Additionally, such extrordinary settings effect the runtime of the algorithm significantly, as it then takes a few hours to calculate such a net, compared to only a few seconds with 64 Bit.
+Secondly, at least for this special case, the implementation of \emph{Newton-Raphson} in \emph{SINCAL} has a worse convergence behaviour with these settings, compared to my implementation. But I want to make clear that this depends heavily on the settings of the algorithm, and I could only guess how the certain parameters are actually implemented in \emph{SINCAL}. Therefore, it is not really possible to draw a useful conclusion from this experiment regarding the implemention in \emph{SINCAL}.
+
+If we zoom into this chart we get at the first step \figinref{comparison_convergence_border_2}, which reveals that \emph{HELM} in its pure form outperforms the other methods, considering the convergence behaviour. After another zoom step one can see in \figinref{comparison_convergence_border_3} that a more accurate datatype improves the convergence behaviour of \emph{HELM}, although only a few thousand watts. Additionally, such extrordinary settings effect the runtime of the algorithm significantly, as it then takes a few hours to calculate such a net, compared to only a few seconds with 64 Bit.
 
 \begin{figure}
 	\centering
@@ -152,7 +154,7 @@ As I implemented \emph{HELM} in \emph{C++} and optimized the LU factorization fo
 	\label{fig:big_net_combined_relative_power_error}
 \end{figure}
 
-First, I would like to point out the relative power errors of the algorithms for these two versions of the power net in \figref{big_net_separate_relative_power_error} and \figref{big_net_combined_relative_power_error}. For most applications of a load-flow algorithm this accuracy should be sufficient.
+First, I would like to point out the relative power errors of the algorithms for these two versions of the power net in \figinref{big_net_separate_relative_power_error} and \figinref{big_net_combined_relative_power_error}. For most applications of a load-flow algorithm this accuracy should be sufficient.
 
 \begin{figure}
 	\centering
@@ -168,7 +170,7 @@ First, I would like to point out the relative power errors of the algorithms for
 	\label{fig:big_net_combined_runtime}
 \end{figure}
 
-Second, the comparison of the runtime in \figref{big_net_separate_runtime} and \figref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the real game changer here is the linear algebra, as the admittance matrix has a bad condition in these scenarios.
+Second, the comparison of the runtime in \figinref{big_net_separate_runtime} and \figinref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the real game changer here is the linear algebra, as the admittance matrix has a bad condition in these scenarios.
 
 \section{Conclusion}
 In conclusion, \emph{HELM} is superior to the iterative methods, regarding the convergence behaviour. This advantage comes directly from the theoretical background, where so far only \emph{HELM} can be proven to have a perfect convergence behaviour. The only limitation which is left here is caused by the machine epsilon of the computer. Considering the runtime, \emph{HELM} can not reach the performance of for instance \emph{FDLF} if the latter one converges within only a few iterations.
