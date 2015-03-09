@@ -420,7 +420,7 @@ the occurence of $\vec f (\vec x)$ with its definition to get
 	\mat S' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:newton_raphson_equation_system}
 \end{equation}
-In this formula we have on the left side as a matrix the derivation of the power function with respect to the voltages $\mat S' (\vec x_k)$, the voltage changes $\Delta \vec x^{(k)} = \left( \vec x^{(k+1)} - \vec x^{(k)} \right)$ and on the right side the current power mismatch 
+In this formula we have on the left side as a matrix the derivative of the power function with respect to the voltages $\mat S' (\vec x_k)$, the voltage changes $\Delta \vec x^{(k)} = \left( \vec x^{(k+1)} - \vec x^{(k)} \right)$ and on the right side the current power mismatch 
 \begin{equation}
 	\Delta \vec S (\vec x^{(k)}) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:power_mismatch}
@@ -476,7 +476,7 @@ and for the specified powers
 	\end{bmatrix}.
 \end{equation}
 
-To be able to apply \emph{Newton-Raphson} I need at this point the derivation of the power function with respect to the entries in the voltage change vector. I will start with a separation of the power at each node into its real and imaginary part, and then derive these functions with respect to the voltage magnitudes and angles.
+To be able to apply \emph{Newton-Raphson} I need at this point the derivative of the power function with respect to the entries in the voltage change vector. I will start with a separation of the power at each node into its real and imaginary part, and then derive these functions with respect to the voltage magnitudes and angles.
 
 As a first step, \eqinref{pq_bus} is transformed into an explicit calculation of the power at the bus $k$
 \begin{align}
@@ -555,7 +555,7 @@ I can then differentiate these formulas with respect to $U_k$, $U_i$ ($i \ne k$)
 	\label{eq:qk_phasei}
 \end{equation}
 
-With these derivations I can calculate the derivation of the power functions, which form the Jacobian matrix
+With these derivatives I can calculate the elements of the Jacobian matrix
 \begin{equation}
 	\mat S_1' (\vec x^{(k)}) = 
 	\begin{bmatrix}
