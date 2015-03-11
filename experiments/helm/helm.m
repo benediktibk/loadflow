@@ -19,7 +19,7 @@ function [voltages] = helm(admittances, slackIndices, slackVoltages, rightHandSi
         end
     end
     
-    voltages = zeros(1:n, 1);
+    voltages = zeros(n, 1);
     
     for i = 1:n
         voltages(i) = wynnEpsilon(cumsum(coefficients(:, i)));
