@@ -12,13 +12,13 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   width="567.90002"
-   height="282.75"
+   width="567.8916"
+   height="314.30402"
    xml:space="preserve"
-   sodipodi:docname="Doc1.pdf"><metadata
+   sodipodi:docname="big_net_separate_relative_power_error.svg"><metadata
      id="metadata8"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs6"><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath24"><path
@@ -94,25 +94,25 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
      id="namedview4"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="0.22424933"
-     inkscape:cx="284.02501"
-     inkscape:cy="-154.95001"
-     inkscape:window-x="45"
-     inkscape:window-y="102"
-     inkscape:window-maximized="0"
+     inkscape:zoom="1.2685458"
+     inkscape:cx="248.74069"
+     inkscape:cy="10.7491"
+     inkscape:window-x="-3"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
      inkscape:current-layer="g10" /><g
      id="g10"
      inkscape:groupmode="layer"
      inkscape:label="Doc1"
-     transform="matrix(1.25,0,0,-1.25,-88.05,963.9)"><path
+     transform="matrix(1.25,0,0,-1.25,-88.046309,965.47652)"><path
        d="m 70.8,545.28 453.6,0 0,225.84 -453.6,0 0,-225.84 z"
        style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
        id="path12"
@@ -184,7 +184,8 @@
              sodipodi:role="line"
              id="tspan78">1E-06</tspan></text>
 </g></g><g
-       id="g80"><g
+       id="g80"
+       transform="translate(0,-23.333805)"><g
          id="g82"
          clip-path="url(#clipPath84)"><text
            transform="matrix(1,0,0,-1,176.52,565.46)"
@@ -195,7 +196,8 @@
              sodipodi:role="line"
              id="tspan90">HELM (LU)</tspan></text>
 </g></g><g
-       id="g92"><g
+       id="g92"
+       transform="translate(1.2612868,-23.964448)"><g
          id="g94"
          clip-path="url(#clipPath96)"><text
            transform="matrix(1,0,0,-1,272.9,565.46)"
@@ -206,28 +208,17 @@
              sodipodi:role="line"
              id="tspan102">Current Iteration (iterative)</tspan></text>
 </g></g><g
-       id="g104"><g
-         id="g106"
-         clip-path="url(#clipPath108)"><text
-           transform="matrix(1,0,0,-1,389.64,576.43)"
-           id="text112"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.6339998 9.9540005 13.788 21.483 23.517 26.243999 29.988001 35.765999 38.493 40.527 47.015999 49.058998 52.074001 56.736 58.77 63.567001 68.363998 71.504997 74.600998 79.154999 83.834999 86.849998 88.884003 91.152 94.167 98.595001 101.826 106.029 109.143 111.186 115.866"
-             y="0"
-             sodipodi:role="line"
-             id="tspan114">HELM (LU) with Current Iteration</tspan></text>
-</g></g><g
-       id="g116"><g
-         id="g118"
-         clip-path="url(#clipPath120)"><text
-           transform="matrix(1,0,0,-1,431.95,565.46)"
-           id="text124"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 2.7539999 4.7969999 7.8119998 12.24 15.471 19.782 22.797001 24.830999 28.899 33.354"
-             y="0"
-             sodipodi:role="line"
-             id="tspan126">(iterative)</tspan></text>
-</g></g><g
+       clip-path="url(#clipPath108)"
+       id="g106"
+       transform="translate(-1.2612868,-35.316029)"><text
+         id="text112"
+         transform="matrix(1,0,0,-1,389.64,576.43)"><tspan
+           id="tspan114"
+           sodipodi:role="line"
+           y="0"
+           x="0 5.6339998 9.9540005 13.788 21.483 23.517 26.243999 29.988001 35.765999 38.493 40.527 47.015999 49.058998 52.074001 56.736 58.77 63.567001 68.363998 71.504997 74.600998 79.154999 83.834999 86.849998 88.884003 91.152 94.167 98.595001 101.826 106.029 109.143 111.186 115.866"
+           style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM (LU) with Current Iteration</tspan></text>
+</g><g
        id="g128"><g
          id="g130"
          clip-path="url(#clipPath132)"><text
@@ -239,10 +230,24 @@
              sodipodi:role="line"
              id="tspan138">relative power error [1]</tspan></text>
 </g></g><g
-       id="g140"><g
+       id="g140"
+       transform="matrix(1,0,0,1.1115226,84.506212,-84.066834)"><g
          id="g142"
-         clip-path="url(#clipPath144)"><path
+         clip-path="url(#clipPath144)"
+         transform="translate(-84.506212,-0.60210607)"><path
            d="m 70.8,545.28 453.6,0 0,225.84 -453.6,0 0,-225.84 z"
            style="fill:none;stroke:#d9d9d9;stroke-width:0.72000003;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
            id="path148"
-           inkscape:connector-curvature="0" /></g></g></g></svg>
+           inkscape:connector-curvature="0" /></g></g><g
+       id="g116"
+       transform="translate(-1.2612868,-35.316029)"><g
+         id="g118"
+         clip-path="url(#clipPath120)"><text
+           transform="matrix(1,0,0,-1,431.95,565.46)"
+           id="text124"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 2.7539999 4.7969999 7.8119998 12.24 15.471 19.782 22.797001 24.830999 28.899 33.354"
+             y="0"
+             sodipodi:role="line"
+             id="tspan126">(iterative)</tspan></text>
+</g></g></g></svg>

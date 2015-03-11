@@ -1,6 +1,6 @@
 \chapter{Implementation}
-During this thesis I developed an application which is able to apply all the previously mentioned calculation methods for the load-flow calculation. Most of the application is written in \emph{C\#}, only \emph{HELM} is implemented as a \emph{C++}-library. This became necessary because of the superior abilities of templates over generics. I will give a more detailed explanation of these implementation details of the calculation methods in \secref{implementation_calculation_methods}.
-As input formats there are two options available: a custom format, stored in a \emph{MS SQL}-Database, and the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secref{link_sincal}. Ahead of the discussion of these implementation details, I want to give you a short overview of the software architecture in the next section.
+During this thesis I developed an application which is able to apply all the previously mentioned calculation methods for the load-flow calculation. Most of the application is written in \emph{C\#}, only \emph{HELM} is implemented as a \emph{C++}-library. This became necessary because of the superior abilities of templates over generics. I will give a more detailed explanation of these implementation details of the calculation methods in \secinref{implementation_calculation_methods}.
+As input formats there are two options available: a custom format, stored in a \emph{MS SQL}-Database, and the format used by \emph{PSS SINCAL}. I will explain the implementation of the later one in \secinref{link_sincal}. Ahead of the discussion of these implementation details, I want to give you a short overview of the software architecture in the next section.
 
 \section{Software Architecture}
 
@@ -18,9 +18,9 @@ As input formats there are two options available: a custom format, stored in a \
 	\label{fig:calculation_architecture}
 \end{figure}
 
-The application is splitted up into several subprojects which build upon each other, as it can be seen in \figref{software_architecture}. The most important part is the Calculation, where the calculation methods are implemented. In \figref{calculation_architecture} this subproject is shown in detail; it is made out of hierarchical blocks too. This design has two big advantages: First of all, every single subsystem can be tested seperately, without the necessity to touch the other systems. Secondly, this design is more flexible. For instance, the consideration of unsymmetric situations could be achieved through three instances of a single phase net, one for each symmetric component.
+The application is splitted up into several subprojects which build upon each other, as it can be seen in \figinref{software_architecture}. The most important part is the Calculation, where the calculation methods are implemented. In \figinref{calculation_architecture} this subproject is shown in detail; it is made out of hierarchical blocks too. This design has two big advantages: First of all, every single subsystem can be tested seperately, without the necessity to touch the other systems. Secondly, this design is more flexible. For instance, the consideration of unsymmetric situations could be achieved through three instances of a single phase net, one for each symmetric component.
 
-In \chapref{calculation_api} I show how the API of the Calculation subsystem can be used. For more complex examples I would like to refer to the code of the unit tests.
+In \chapinref{calculation_api} I show how the API of the Calculation subsystem can be used. For more complex examples I would like to refer to the code of the unit tests.
 
 \section{Calculation Methods}
 \label{sec:implementation_calculation_methods}
@@ -30,7 +30,7 @@ I implemented all the iterative methods, like the \emph{Current Iteration}, \emp
 
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:implementation_helm}
-For the implementation of the calculation methods I want to explain first the decision to implement \emph{HELM} in a separate library, written in \emph{C++}. Unfortunately, in some cases the mantissa of a 64 Bit floating point is not sufficient to benefit from the theoretical ideal convergence behaviour of \emph{HELM}. The problem here lies within the very small convergence radius of \eqref{helm_series}. As already mentioned before, the theoretical solution to this is an analytic continuation. At this point then the actual problem is buried, in \emph{Wynn's Epsilon Algorithm} only every second column is converging, the other columns between diverge. Approximately with 50 coefficients the divergence is already at the barrier of the precision of a 64 Bit floating point. The calculation of more coefficients does not improve the results anymore, because the numerical error, caused by the machine epsilon, is bigger than the possible gain in accuracy.
+For the implementation of the calculation methods I want to explain first the decision to implement \emph{HELM} in a separate library, written in \emph{C++}. Unfortunately, in some cases the mantissa of a 64 Bit floating point is not sufficient to benefit from the theoretical ideal convergence behaviour of \emph{HELM}. The problem here lies within the very small convergence radius of \eqinref{helm_series}. As already mentioned before, the theoretical solution to this is an analytic continuation. At this point then the actual problem is buried, in \emph{Wynn's Epsilon Algorithm} only every second column is converging, the other columns between diverge. Approximately with 50 coefficients the divergence is already at the barrier of the precision of a 64 Bit floating point. The calculation of more coefficients does not improve the results anymore, because the numerical error, caused by the machine epsilon, is bigger than the possible gain in accuracy.
 
 \begin{figure}
 	\centering
@@ -39,12 +39,12 @@ For the implementation of the calculation methods I want to explain first the de
 	\label{fig:convergence_border_net}
 \end{figure}
 
-To give a more demonstrative explanation, I want to show you the results of a comparison of the convergence behaviour of the different algorithms. For this purpose I used the net \figref{convergence_border_net}, which is stable for $P \le \SI{0.25}{W}$. In this net I increased the power as long as the algorithm did converge and noted down the value closest to the border of stability. The result of this procedure is \figref{convergence_border}, in which it can be seen that a more accurate floating point datatype enables \emph{HELM} to get closer to the border of stability. The use of \emph{HELM} with only 64 Bit for the initial voltages is already an improvement over the direct application of the \emph{Current Iteration} and \emph{Newton-Raphson} in terms of convergence behaviour. But in the end, only \emph{HELM} with an arbitrary precise datatype is able to get as close as desired to the border of stability, although this advantage is traded in for a lot worse performance.
+To give a more demonstrative explanation, I want to show you the results of a comparison of the convergence behaviour of the different algorithms. For this purpose I used the net in \figinref{convergence_border_net}, which is stable for $P \le \SI{0.25}{W}$. In this net I increased the power as long as the algorithm did converge and noted down the value closest to the border of stability. The result of this procedure is \figinref{convergence_border}, in which it can be seen that a more accurate floating point datatype enables \emph{HELM} to get closer to the border of stability. The use of \emph{HELM} with only 64 Bit for the initial voltages is already an improvement over the direct application of the \emph{Current Iteration} and \emph{Newton-Raphson} in terms of convergence behaviour. But in the end, only \emph{HELM} with an arbitrary precise datatype is able to get as close as desired to the border of stability, although this advantage is traded in for a lot worse performance.
 
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.7]{figures/convergence_border}
-	\caption{Convergence border for \figref{convergence_border_net}}
+	\caption{Convergence border for \figinref{convergence_border_net}}
 	\label{fig:convergence_border}
 \end{figure}
 
@@ -89,7 +89,7 @@ Last but not least I had also to concentrate on numerical stability. For this pu
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
-The tool of choice in europe, especially at the Institute of Power Transmission Systems at the Technische Universität München, for load-flow calculations is \emph{PSS SINCAL}. Consequently, the tool developed during this thesis has a parser for this file format. This parser allows to read a power net from the file and write back the calculated node voltages.
+The tool developed during this thesis has a parser for the file format of \emph{PSS SINCAL}. This parser allows to read a power net from the file and write back the calculated node voltages.
 
 The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 \begin{itemize}
@@ -102,7 +102,9 @@ The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 	\end{itemize}
 \end{itemize}
 
-The main information about the electrical characteristics of the power net are stored in the \emph{MS Access}-database. Fortunately, this database is documented very well online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf} and by the documents delivered together with the application.
+The main information about the electrical characteristics of the power net are stored in a database, for instance a \emph{MS Access}-database. It is also possible to use for this a \emph{Oracle Database} or \emph{MS SQL Server}, but as the nets I used during this thesis had a \emph{MS Access}-database beneath I implemented only a parser for this configuration.
+
+Fortunately, this database is documented very well \mbox{online \footnote{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL\_Datenbankinterface.pdf}} and by the documents delivered together with the application.
 
 The most important tables in this database are:
 \begin{itemize}
