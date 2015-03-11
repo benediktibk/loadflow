@@ -295,6 +295,18 @@ namespace CalculationIntegrationTest.SinglePhase.SingleVoltageLevel.NodeVoltageC
         }
 
         [TestMethod]
+        public void CalculateNodeVoltagesAndPowers_TwoNodesWithOnePvBusVersionTwo_CorrectResults()
+        {
+            var powerNetTestCase =
+                PowerNetTestCaseGenerator.CreateTestTwoNodeProblemWithOnePvBusVersionTwo(_nodeVoltageCalculator);
+
+            var nodeResults = powerNetTestCase.CalculateNodeResults();
+
+            Assert.IsNotNull(nodeResults);
+            NodeAssert.AreEqual(nodeResults, powerNetTestCase.CorrectVoltages, powerNetTestCase.CorrectPowers, 0.0001, 0.02);
+        }
+
+        [TestMethod]
         public void CalculateNodeVoltagesAndPowers_TwoNodesWithImaginaryConnectionAndPQBusVersionTwo_CoefficientsCorrect()
         {
             var powerNetTestCase = PowerNetTestCaseGenerator.CreateTestTwoNodesWithImaginaryConnectionWithPQBusVersionTwo(_nodeVoltageCalculatorMock.Object);

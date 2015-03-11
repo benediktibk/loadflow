@@ -352,12 +352,12 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel
             const double outputPower = 0.23;
             const double outputVoltage = 0.641421356;
             const int inputVoltage = 1;
-            const double powerLoss = (inputVoltage - outputVoltage) / R * inputVoltage;
+            const double inputPower = outputPower/outputVoltage * inputVoltage;
             var admittancesArray = new[,] { { new Complex(Y, 0), new Complex((-1) * Y, 0) }, { new Complex((-1) * Y, 0), new Complex(Y, 0) } };
             _admittances = new AdmittanceMatrix(DenseMatrix.OfArray(admittancesArray));
             _nominalVoltage = 1;
             _voltages = new DenseVector(new[] { new Complex(inputVoltage, 0), new Complex(outputVoltage, 0) });
-            _powers = new DenseVector(new[] { new Complex(outputPower + powerLoss, 0), new Complex((-1)*outputPower, 0) });
+            _powers = new DenseVector(new[] { new Complex(inputPower, 0), new Complex((-1) * outputPower, 0) });
             var powerNet = new PowerNetComputable(nodeVoltageCalculator, _admittances, _nominalVoltage, new Complex[_admittances.NodeCount]);
             powerNet.AddNode(new SlackNode(_voltages.At(0)));
             powerNet.AddNode(new PvNode(_powers.At(1).Real, _voltages.At(1).Magnitude));
