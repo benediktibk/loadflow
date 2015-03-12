@@ -352,13 +352,13 @@ The task for the following calculation methods is to determine the node voltages
 	\item \emph{Holomorphic Embedding Load Flow} \citep{helmIEEE, helmPatentApr2009, helmPatentSept2009}
 \end{itemize}
 
-As short overview I will start with a classification of these methods, based on their properties.
+First, I will classify these methods based on their properties.
 
 \subsection{Classification of Methods}
 
-The first three methods, the \emph{Current Iteration}, \emph{Newton-Raphson} and the \emph{FDLF}, fall into the category of iterative methods. These algorithms are well studied since centuries now, but have two major drawbacks. First of all, they are iterative and need some seed values for the voltages. This leads directly to the second drawback: The iterative methods can not guarantee to find a solution, and their convergence depends heavily on the initial voltages. It may even happen that the iterative methods produce results which are not physically correct, what in this case means that they do not represent a stable operating point. This happens typically only for certain constructed power nets. In practice, the bigger problem is that these methods often do not converge at all, although the power net is in a stable condition.
+The first three methods, the \emph{Current Iteration}, \emph{Newton-Raphson} and the \emph{FDLF}, fall into the category of iterative methods. These algorithms have been well-known for decades now, but have two major drawbacks. Firstly, they are iterative and need some seed values for the voltages. This leads directly to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It even may happen that the iterative methods produce results which are physically incorrect, because they do not represent a stable operating point. This typically happens only for certain constructed power nets. In practice, the bigger problem is that these methods often do not converge at all, although the power net is in a stable condition.
 
-To circumvent these drawbacks a new approach to the load-flow problem was developed, the \emph{Holomorphic Embedding Load Flow}. This algorithm guarantees in theory to converge, if and only if, the system is stable. Therefore, \emph{HELM} would be superior to the iterative methods, but it has some drawbacks in practice which I will discuss in \secinref{comparison_algorithms}. 
+To circumvent these drawbacks a new approach to the load-flow problem was developed, the \emph{Holomorphic Embedding Load Flow}. This algorithm guarantees to converge in theory if and only if, the system is stable. Therefore, \emph{HELM} would be superior to the iterative methods, but it has some practical drawbacks which I will discuss in \secinref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
@@ -371,18 +371,18 @@ and then the rest is moved to the right hand side
 \begin{equation}
 	 U_k = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^\star} - \sum_{i \ne k} Y_{ki} U_i \right).
 \end{equation}
-The resulting equation is again not explicitly solved for $U_k$, as this variable still occurs on the right hand side, but at this appearance the old value from the previous iteration can be used. This leads then to
+The resulting equation is, again, not solved explicitly for $U_k$, as this variable is still found in the right hand side. In this occurence the old value from the previous iteration can be used. This leads to
 \begin{equation}
 	 U_k^{(j + 1)} = \frac{1}{Y_{kk}} \left( I_k + \frac{S_k^\star}{U_k^{(j) \star}} - \sum_{i \ne k} Y_{ki} U_i^{(j)} \right),
 \end{equation}
-where the superindex $j$ denotes the iteration step. For the sake of legibilty with this formula one would actually update the node voltages only after every iteration. In fact, they can be updated every time a new value is calculated.
+where the superindex $j$ denotes the iteration step. For the sake of legibility, this formula would cause the node voltages to be updated after every iteration. In fact, they can be updated every time a new value is determined.
 
-Another approach, which is very similar to the already presented one, is to leave the admittance matrix on the left hand side. With this, it is then possible to calculate all new voltages in one step through solving
+Another approach, which is very similar to the already presented one, is to leave the admittance matrix on the left hand side. With this, it is possible to calculate all new voltages in one step through solving
 \begin{equation}
 	\sum_i Y_{ki} U_i^{(j + 1)} = I_k + \frac{S_k^\star}{U_k^{(j)\star}}.
 \end{equation}
 
-To this point I discussed only the PQ-busses, but PV-busses can be handled too. The PV-bus is considered as a PQ-bus in the first step, and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculate $U_k$ like
+So far, I discussed only the PQ-busses, but PV-busses can be handled too. The PV-bus is considered as a PQ-bus in the first step and afterwards the values are corrected to match the needs of the PV-bus \citep[p. 211]{powerSystemAnalysis}. One possible way to calculate the updated voltage $U_k'$ is to combine the specified voltage magnitude $|U_{k,PV}|$ with the newly calculated $U_k$ like
 \begin{equation}
 	U_k' = |U_{k,PV}| e^{j \angle U_k}.
 \end{equation}
@@ -390,7 +390,7 @@ To this point I discussed only the PQ-busses, but PV-busses can be handled too. 
 \subsection{Newton-Raphson}
 \label{sec:newton_raphson}
 
-In general, under the name \emph{Newton-Raphson} is a method for finding roots of a nonlinear function known. In the area of load-flow calculation the idea is the same. The basic problem is transformed into finding voltages $\vec x$ so that the loads driven by these voltages $\vec S (\vec x)$ are the same as the specified loads $S_{spec}$:
+In general, \emph{Newton-Raphson} is a method for finding roots of a nonlinear function. In the area of load-flow calculation the idea is the same: The basic problem is transformed into finding voltages $\vec x$ such that the loads driven by these voltages $\vec S (\vec x)$ are the same as the specified loads $S_{spec}$:
 \begin{equation}
 	\vec S (\vec x) = S_{spec}
 \end{equation}
@@ -411,11 +411,11 @@ From this series only the linear term is used as an approximation, which leads t
 	\vec f (\vec x) \approx \vec f (\vec x_0) + \vec f' (\vec x_0) \left( \vec x - \vec x_0 \right).
 \end{equation}
 
-As I actually want to find the root of $\vec f (\vec x)$, I set the approximation to 0 and replace in the result
+As I want to find the root of $\vec f (\vec x)$, I set the approximation to 0 and replace the occurence of $\vec f (\vec x)$ with its definition in the result
 \begin{equation}
 	0 = \vec f (\vec x^{(k)}) + \vec f' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right)
 \end{equation}
-the occurence of $\vec f (\vec x)$ with its definition to get
+to get
 \begin{equation}
 	\mat S' (\vec x^{(k)}) \left( \vec x^{(k+1)} - \vec x^{(k)} \right) = \vec S (\vec x^{(k)}) - \vec S_{spec}.
 	\label{eq:newton_raphson_equation_system}
@@ -426,10 +426,10 @@ In this formula we have on the left side as a matrix the derivative of the power
 	\label{eq:power_mismatch}
 \end{equation}
 
-The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase, and a representation through real and imaginary part. As the version with magnitudes and phases is the more common one, I want to start with this one.
+The open question at this point is how to represent the voltages, as they are complex variables. The two possible approaches are a representation through magnitude and phase, and a representation through real and imaginary part. As the version with magnitudes and phases is more common, I start with this one.
 
 \subsubsection{Magnitude and Phase}
-In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power. Consquently, voltages are usually represented in polar coordinates. If I consider $n$ PQ-busses and $m$ PV-busses, I have as voltage vector 
+In real power nets the voltage magnitude $|U_i|$ of a node is mainly depending on the reactive power and the angle of the voltage $\delta_i$ on the real power. Consequently, voltages are usually represented in polar coordinates. If I consider $n$ PQ-busses and $m$ PV-busses, I have as voltage vector 
 \begin{equation}
 	\vec x = 
 	\begin{bmatrix}
@@ -485,7 +485,7 @@ As a first step, \eqinref{pq_bus} is transformed into an explicit calculation of
 		&= \sum_{i \ne k} U_k Y_{ki}^\star U_i^\star + Y_{kk}^\star |U_k|^2 - I_k^\star U_k.
 	\label{eq:complex_power}
 \end{align}
-Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$), which leads us to the expression
+Next, the variables are split up into magnitude and angle ($U_k = |U_k| e^{j \delta_k}$, $I_k = |I_k| e^{j \gamma_k}$, $Y_{ki} = |Y_{ki}| e^{j \theta_{ki}}$), which leads to the expression
 \begin{equation}
 	\begin{split}
 		S_k = 	& \sum_{i \ne k} |U_k| e^{j \delta_k} |Y_{ki}| e^{-j \theta_{ki}} |U_i| e^{-j \delta_i} + |Y_{kk}| e^{-j \theta_{kk}} |U_k|^2 \\
@@ -570,7 +570,7 @@ With these derivatives I can calculate the elements of the Jacobian matrix
 \end{equation}
 
 \subsubsection{Real and Imaginary Part}
-For the representation of the voltages through real and imaginary parts, I have one problem: PV-busses. For these busses the voltage magnitude is already set, and I only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantage of this is less complexity in the formulas, as I can avoid the sines and cosines which occured in the derivatives of P and Q. For huge problems this change has a significant impact on the performance of the overall algorithm, although I can only use this improvement for PQ-busses.
+For the representation of the voltages through real and imaginary parts, I have one problem: PV-busses. For these busses the voltage magnitude is already set and I only have to calculate the phases. Therefore, these busses will still be represented in polar coordinates, but all PQ-busses can be described in a cartesian notation. The advantage of this is less computational complexity in the formulas, as I can avoid the sines and cosines which occured in the derivatives of P and Q. For huge load-flow problems this change has a significant impact on the performance of the overall algorithm, although I can only use this improvement for PQ-busses.
 
 Through a representation in cartesian coordinates I end up with the voltage vector
 \begin{equation}
@@ -589,14 +589,14 @@ Through a representation in cartesian coordinates I end up with the voltage vect
 \end{equation}
 where the entries $U_k^r = \Re{U_k}$ and $U_k^i = \Im{U_k}$ are the real and imaginary parts of the complex node voltages of the $n$ PQ-busses, and $\delta_{n+k}$ are the voltage phases of the $m$ PV-busses.
 
-For the Jacobian matrix I need in this case the derivatives of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To get this I will start with \eqinref{complex_power} and substitute there the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to get
+In this case, for the Jacobian matrix I need the derivatives of $P_k$ and $Q_k$ with respect to $U_{kr}$ and $U_{ki}$. To accomplish this I will start with \eqinref{complex_power} and substitute the voltages, admittances and currents with their cartesian representations $Y_{ki}^r = \Re{Y_{ki}}$, $Y_{ki}^i = \Im{Y_{ki}}$, $I_k^r = \Re{I_k}$ and $I_k^i = \Im{I_k}$ to end up with
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} (U_k^r + j U_k^i) (Y_{ki}^r - j Y_{ki}^i) (U_i^r - j U_i^i) + \\
 			  & (Y_{kk}^r - j Y_{kk}^i) ( (U_k^r)^2 + (U_k^i)^2 ) - (I_k^r - j I_k^i) (U_k^r + j U_k^i)			
 	\end{split}.
 \end{equation}
-Next, I will need the seperation of this into its real and imaginary parts. Therefore, I expand the summands
+Next, I will need the separation of this into its real and imaginary parts. Therefore, I expand the summands
 \begin{equation}
 	\begin{split}
 		S_k = & \sum_{i \ne k} \left( U_k^r Y_{ki}^r U_i^r + U_k^i Y_{ki}^i U_i^r + U_k^i Y_{ki}^r U_i^i - U_k^r Y_{ki}^i U_i^i \right) + \\
@@ -661,7 +661,7 @@ This altogether is then the Jacobian matrix
 \end{equation}
 
 \subsubsection{Summary}
-The iterative process to improve the voltages is then:
+In summary, the iterative process to improve the voltages is:
 \begin{enumerate}
 	\item Calculate the current power mismatch $\Delta \vec S (\vec x^{(k)})$ with \eqinref{power_mismatch}
 	\item Calculate the Jacobian matrix $\vec S' (\vec x^{(k)})$ with \eqinref{power_jacobian_newton_raphson} or \eqinref{power_jacobian_newton_rapshon_2}
