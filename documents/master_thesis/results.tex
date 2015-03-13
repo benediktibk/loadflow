@@ -131,20 +131,20 @@ If we zoom into this chart we get \figinref{comparison_convergence_border_2}, wh
 \section{Calculation of Large-Scale Power Nets}
 \label{sec:large_scale_power nets}
 	
-To evaluate \emph{HELM} in the scenario of large-scale power nets I used the power net of \emph{infra fürth}, which they kindly provided for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these not supported elements.
+To evaluate \emph{HELM} in the scenario of large-scale power nets I used the power net of \emph{infra fürth}, which they kindly provided for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these unsupported elements.
 
-Another important thing to point out is the switching state, the version I received was configured in a way that the total net was split up into three parts. For the comparison later on I used this initial version, as well as one where these three parts were connected together. In the connected version there was then one big net with more than 50000 nodes.
+Another important thing to point out is the switching state. The version I received was configured in a way that the total net was split up into three parts. For the comparison later on I used this initial version, as well as one where these three parts were connected together. In the connected version there was one big net with more than 50000 nodes.
 
 As algorithms for the comparison I selected:
 \begin{itemize}
-	\item \emph{HELM} with a 64 Bit datatype and LU factorization
+	\item \emph{HELM} with a 64 bit datatype and LU factorization
 	\item \emph{Current Iteration} with an iterative solver
-	\item \emph{HELM} with 64 Bit datatype and LU factorization and as second step \emph{Current Iteration} with an iterative solver
+	\item \emph{HELM} with 64 bit datatype and LU factorization and as second step \emph{Current Iteration} with an iterative solver
 	\item \emph{PSS SINCAL} with the default configuration
 \end{itemize}
-Unfortunately, the library I used for the linear algebra in the iterative load-flow algorithms was not able to calculate the LU factorization at all in a reasonable amount of time. Additionally, the calculation of the Jacobian matrix was not very efficient too, due to the sparse matrix implementation. Therefore, I had to leave out my implementation of \emph{FDLF} and \emph{Newton-Raphson}, but this class of algorithms is still represented in the comparison through \emph{PSS SINCAL}.
+Unfortunately, the library I used for the linear algebra in the iterative load-flow algorithms was not able to calculate the LU factorization in a reasonable amount of time. Additionally, the calculation of the Jacobian matrix was not very efficient either, due to the sparse matrix implementation. Therefore, I had to skip my implementation of \emph{FDLF} and \emph{Newton-Raphson}, but this class of algorithms is still represented in the comparison through \emph{PSS SINCAL}.
 
-As I implemented \emph{HELM} in \emph{C++} and optimized the LU factorization for these circumstances, I was able to select this combination for the tests. By the way, this shows that the performance of the algorithms depends heavily on the implementation of the linear algebra.
+As I implemented \emph{HELM} in \emph{C++} and optimized the LU factorization for these circumstances, I was able to select this combination for the tests. This shows that the performance of the algorithms depends heavily on the implementation of the linear algebra.
 
 \begin{figure}
 	\centering
@@ -176,10 +176,10 @@ First, I would like to point out the relative power errors of the algorithms for
 	\label{fig:big_net_combined_runtime}
 \end{figure}
 
-Second, the comparison of the runtime in \figinref{big_net_separate_runtime} and \figinref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the real game changer here is the linear algebra, as the admittance matrix has a bad condition in these scenarios.
+Second, the comparison of the runtime in \figinref{big_net_separate_runtime} and \figinref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the main differences is the implementation of the linear algebra, as the admittance matrix is ill-conditioned in these scenarios.
 
 \section{Conclusion}
-In conclusion, \emph{HELM} is superior to the iterative methods, regarding the convergence behaviour. This advantage comes directly from the theoretical background, where so far only \emph{HELM} can be proven to have a perfect convergence behaviour. The only limitation which is left here is caused by the machine epsilon of the computer. Considering the runtime, \emph{HELM} can not reach the performance of for instance \emph{FDLF} if the latter one converges within only a few iterations.
+\emph{HELM} is superior to the iterative methods with regards to the convergence behaviour. This advantage comes directly from the theoretical background, where so far only \emph{HELM} can be proven to have a perfect convergence behaviour. The only limitation which is left here is caused by the machine epsilon of the computer. Considering the runtime, \emph{HELM} can not reach the performance of for instance \emph{FDLF} if the latter one converges within only a few iterations.
 
 In summary, there exist mainly two reasons not to use \emph{HELM}:
 \begin{enumerate}

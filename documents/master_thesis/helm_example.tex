@@ -8,7 +8,7 @@
 	\label{fig:two_node_net}
 \end{figure}
 
-For the sake of simplicity only the small net from \figinref{two_node_net} is calculated, which has because of only real valued input parameter ($U_1 = \si{1}{V}$, $Z = \si{1}{\Omega}$ and $P = \si{0,23}{W}$) also no imaginary parts in the solution and the intermediate results. The exact solution is determined with the current sum on the second node
+For the sake of simplicity, only the small net from \figinref{two_node_net} is calculated. This example has no imaginary parts in the solution and the intermediate results, because only real-valued input parameters ($U_1 = \si{1}{V}$, $Z = \si{1}{\Omega}$ and $P = \si{0,23}{W}$) are used. The exact solution is determined with the current sum on the second node
 \begin{equation}
 	\frac{U_1 - U_2}{Z} = \frac{P}{U_2}.
 \end{equation}
@@ -68,4 +68,4 @@ The first 15 coefficients and the tableau of the analytic continuation for this 
 	\label{tab:helm_example_data}
 \end{table}
 
-As one can see, the result of \si{0,6414674063}{V} with HELM is already close to the exact solution of \si{0,641421356}{V}, although only 15 coefficients were calculated. This is caused by the very special and minimal example. For realistic problems the analytic continuation is absolutely necessary to get reasonable results.
+As one can see, the result of \si{0,6414674063}{V} with HELM is already close to the exact solution of \si{0,641421356}{V}, although only 15 coefficients were calculated. This is caused by the very special and minimalistic example. For realistic problems the analytic continuation is absolutely necessary to get reasonable results.
