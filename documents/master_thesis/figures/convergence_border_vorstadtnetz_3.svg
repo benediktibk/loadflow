@@ -9,463 +9,257 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="567.89197"
-   height="318.16165"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="Neues Dokument 1">
-  <defs
-     id="defs4">
-    <clipPath
-       id="clipPath3175"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3177"
+   width="564.37592"
+   height="315.94421"
+   xml:space="preserve"
+   sodipodi:docname="Doc3.pdf"><metadata
+     id="metadata8"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs6"><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath24"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="M 9.2e-7,507 595.32,507 l 0,264.12 -595.31999908,0 0,-264.12 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3163"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3165"
+         id="path26"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath36"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3151"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3153"
+         id="path38"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath48"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3139"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3141"
+         id="path50"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath60"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3127"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3129"
+         id="path62"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath72"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3115"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3117"
+         id="path74"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath84"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3103"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3105"
+         id="path86"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath96"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3091"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3093"
+         id="path98"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath108"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3079"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3081"
+         id="path110"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath120"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3067"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3069"
+         id="path122"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath132"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3055"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3057"
+         id="path134"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath144"><path
+         d="m 72,517.5 450.75,0 0,252.75 -450.75,0 0,-252.75 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3043"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3045"
+         id="path146"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath156"><path
+         d="M 4.397e-6,507.75 595.5,507.75 l 0,262.5 -595.499995603,0 0,-262.5 z"
          clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3031"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3033"
-         clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3019"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3021"
-         clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-    <clipPath
-       id="clipPath3007"
-       clipPathUnits="userSpaceOnUse">
-      <path
-         id="path3009"
-         clip-rule="evenodd"
-         d="m 70.8,517.08 453.6,0 0,254.04 -453.6,0 0,-254.04 z"
-         inkscape:connector-curvature="0" />
-    </clipPath>
-  </defs>
-  <sodipodi:namedview
-     id="base"
+         id="path158"
+         inkscape:connector-curvature="0" /></clipPath></defs><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="356.27413"
-     inkscape:cy="156.89288"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
+     id="namedview4"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Ebene 1"
+     inkscape:zoom="0.89664589"
+     inkscape:cx="298.29274"
+     inkscape:cy="69.205659"
+     inkscape:window-x="-3"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g10" /><g
+     id="g10"
      inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-98.903054,-344.7158)">
-    <g
-       transform="matrix(1.25,0,0,-1.25,10.85714,1308.6158)"
-       inkscape:label="Doc4"
-       id="g2993">
-      <path
-         id="path2995"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-         d="m 70.8,516.96 453.6,0 0,254.16 -453.6,0 0,-254.16 z"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path2997"
-         style="fill:none;stroke:#d9d9d9;stroke-width:0.72000003;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
-         d="m 145.44,585.96 368.04,0 m -368.04,34.92 368.04,0 m -368.04,34.8 368.04,0 m -368.04,34.8 368.04,0 m -368.04,34.8 368.04,0 m -368.04,34.8 368.04,0"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path2999"
-         style="fill:#5b9bd5;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         d="m 170.64,648.96 23.04,0 0,-97.8 -23.04,0 0,97.8 z m 73.68,0 23.04,0 0,-97.8 -23.04,0 0,97.8 z m 73.56,12.6 23.04,0 0,-110.4 -23.04,0 0,110.4 z m 73.56,29.64 23.16,0 0,-140.04 -23.16,0 0,140.04 z m 73.68,18.84 23.04,0 0,-158.88 -23.04,0 0,158.88 z"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3001"
-         style="fill:none;stroke:#d9d9d9;stroke-width:0.72000003;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
-         d="m 145.44,551.16 368.04,0"
-         inkscape:connector-curvature="0" />
-      <g
-         id="g3003">
-        <g
-           clip-path="url(#clipPath3007)"
-           id="g3005">
-          <text
-             id="text3011"
-             transform="matrix(1,0,0,-1,98.568,548.64)">
-            <tspan
-               id="tspan3013"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,970E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3015">
-        <g
-           clip-path="url(#clipPath3019)"
-           id="g3017">
-          <text
-             id="text3023"
-             transform="matrix(1,0,0,-1,98.568,583.44)">
-            <tspan
-               id="tspan3025"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,971E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3027">
-        <g
-           clip-path="url(#clipPath3031)"
-           id="g3029">
-          <text
-             id="text3035"
-             transform="matrix(1,0,0,-1,98.568,618.26)">
-            <tspan
-               id="tspan3037"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,972E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3039">
-        <g
-           clip-path="url(#clipPath3043)"
-           id="g3041">
-          <text
-             id="text3047"
-             transform="matrix(1,0,0,-1,98.568,653.09)">
-            <tspan
-               id="tspan3049"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,973E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3051">
-        <g
-           clip-path="url(#clipPath3055)"
-           id="g3053">
-          <text
-             id="text3059"
-             transform="matrix(1,0,0,-1,98.568,687.89)">
-            <tspan
-               id="tspan3061"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,974E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3063">
-        <g
-           clip-path="url(#clipPath3067)"
-           id="g3065">
-          <text
-             id="text3071"
-             transform="matrix(1,0,0,-1,98.568,722.71)">
-            <tspan
-               id="tspan3073"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,975E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3075">
-        <g
-           clip-path="url(#clipPath3079)"
-           id="g3077">
-          <text
-             id="text3083"
-             transform="matrix(1,0,0,-1,98.568,757.54)">
-            <tspan
-               id="tspan3085"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.5630002 6.8130002 11.376 15.939 20.502001 24.84 29.393999 33.957001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">1,976E+06</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3087">
-        <g
-           clip-path="url(#clipPath3091)"
-           id="g3089">
-          <text
-             id="text3095"
-             transform="matrix(1,0,0,-1,151.85,536.93)">
-            <tspan
-               id="tspan3097"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.733 25.767 30.33 34.893002 36.926998 41.750999 43.902 46.917 49.058998 51.092999 54.926998"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM, 64 Bit, LU</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3099">
-        <g
-           clip-path="url(#clipPath3103)"
-           id="g3101">
-          <text
-             id="text3107"
-             transform="matrix(1,0,0,-1,223.2,536.93)">
-            <tspan
-               id="tspan3109"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.733 25.767 30.33 34.893002 39.456001 41.490002 46.305 48.456001 51.471001 53.612999 55.646999 59.480999"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM, 100 Bit, LU</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3111">
-        <g
-           clip-path="url(#clipPath3115)"
-           id="g3113">
-          <text
-             id="text3119"
-             transform="matrix(1,0,0,-1,296.83,536.93)">
-            <tspan
-               id="tspan3121"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.733 25.767 30.33 34.893002 39.456001 41.490002 46.305 48.456001 51.471001 53.612999 55.646999 59.480999"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM, 200 Bit, LU</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3123">
-        <g
-           clip-path="url(#clipPath3127)"
-           id="g3125">
-          <text
-             id="text3131"
-             transform="matrix(1,0,0,-1,368.18,536.93)">
-            <tspan
-               id="tspan3133"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.733 25.767 30.33 34.893002 39.456001 44.019001 46.053001 50.868 53.019001 56.034 58.175999 60.209999 64.043999"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM, 1000 Bit, LU</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3135">
-        <g
-           clip-path="url(#clipPath3139)"
-           id="g3137">
-          <text
-             id="text3143"
-             transform="matrix(1,0,0,-1,445.32,536.93)">
-            <tspan
-               id="tspan3145"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.733 25.767 30.33 34.893002 39.456001 44.019001 48.582001 50.616001 55.431 57.582001 60.597"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM, 10000 Bit,</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3147">
-        <g
-           clip-path="url(#clipPath3151)"
-           id="g3149">
-          <text
-             id="text3155"
-             transform="matrix(1,0,0,-1,471.96,525.94)">
-            <tspan
-               id="tspan3157"
-               sodipodi:role="line"
-               y="0"
-               x="0 3.8399999"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">LU</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3159">
-        <g
-           clip-path="url(#clipPath3163)"
-           id="g3161">
-          <text
-             id="text3167"
-             transform="matrix(-4.4e-8,1,1,4.4e-8,92.856,606.07)">
-            <tspan
-               id="tspan3169"
-               sodipodi:role="line"
-               y="0"
-               x="0 4.2130799 9.4619999 14.75076 19.192921 24.113159 27.589199 32.280361 37.190639 42.45948 46.672562 51.58284 54.092758 59.361599 64.63044 68.106483 73.385277 78.305519 81.781563 84.052437 87.0504 95.914803"
-               style="font-size:9.96000004px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">convergence border [W]</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3171">
-        <g
-           clip-path="url(#clipPath3175)"
-           id="g3173">
-          <path
-             id="path3179"
-             style="fill:none;stroke:#d9d9d9;stroke-width:0.72000003;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
-             d="m 70.8,516.96 453.6,0 0,254.16 -453.6,0 0,-254.16 z"
-             inkscape:connector-curvature="0" />
-        </g>
-      </g>
-    </g>
-  </g>
-</svg>
+     inkscape:label="Doc3"
+     transform="matrix(1.25,0,0,-1.25,-89.999531,962.8125)"><path
+       d="m 72,517.5 451.5,0 0,252.75 -451.5,0 0,-252.75 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path12"
+       inkscape:connector-curvature="0" /><path
+       d="m 146.63,620.63 366,0 m -366,69.75 366,0 m -366,68.99 366,0"
+       style="fill:none;stroke:#d9d9d9;stroke-width:0.75075001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+       id="path14"
+       inkscape:connector-curvature="0" /><path
+       d="m 171.75,648.75 22.5,0 0,-96.75 -22.5,0 0,96.75 z m 72.75,0 23.25,0 0,-96.75 -23.25,0 0,96.75 z m 73.5,12.75 23.25,0 0,-109.5 -23.25,0 0,109.5 z m 72.75,29.25 23.25,0 0,-138.75 -23.25,0 0,138.75 z m 73.5,18.75 23.25,0 0,-157.5 -23.25,0 0,157.5 z"
+       style="fill:#5b9bd5;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path16"
+       inkscape:connector-curvature="0" /><path
+       d="m 146.63,551.63 366,-0.01"
+       style="fill:none;stroke:#d9d9d9;stroke-width:0.75075001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+       id="path18"
+       inkscape:connector-curvature="0" /><g
+       id="g20"><g
+         id="g22"
+         clip-path="url(#clipPath24)"><text
+           transform="matrix(1,0,0,-1,99.825,549.15)"
+           id="text28"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 4.527 6.777 11.304 15.831 20.358 24.875999 29.393999 33.921001"
+             y="0"
+             sodipodi:role="line"
+             id="tspan30">1,970E+06</tspan></text>
+</g></g><g
+       id="g32"><g
+         id="g34"
+         clip-path="url(#clipPath36)"><text
+           transform="matrix(1,0,0,-1,99.825,618.4)"
+           id="text40"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 4.527 6.777 11.304 15.831 20.358 24.875999 29.393999 33.921001"
+             y="0"
+             sodipodi:role="line"
+             id="tspan42">1,972E+06</tspan></text>
+</g></g><g
+       id="g44"><g
+         id="g46"
+         clip-path="url(#clipPath48)"><text
+           transform="matrix(1,0,0,-1,99.825,687.65)"
+           id="text52"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 4.527 6.777 11.304 15.831 20.358 24.875999 29.393999 33.921001"
+             y="0"
+             sodipodi:role="line"
+             id="tspan54">1,974E+06</tspan></text>
+</g></g><g
+       id="g56"><g
+         id="g58"
+         clip-path="url(#clipPath60)"><text
+           transform="matrix(1,0,0,-1,99.825,756.9)"
+           id="text64"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 4.527 6.777 11.304 15.831 20.358 24.875999 29.393999 33.921001"
+             y="0"
+             sodipodi:role="line"
+             id="tspan66">1,976E+06</tspan></text>
+</g></g><g
+       id="g68"><g
+         id="g70"
+         clip-path="url(#clipPath72)"><text
+           transform="matrix(1,0,0,-1,152.67,537.45)"
+           id="text76"><tspan
+             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 5.2525501 9.7469997 13.5014 21.741224 23.997475 25.495625 29.9991 35.242626 37.489849 41.993324 44.231525 47.254902 49.484074 51.722275 55.476673"
+             y="0"
+             sodipodi:role="line"
+             id="tspan78">HELM, 64-bit, LU</tspan></text>
+</g></g><g
+       id="g80"><g
+         id="g82"
+         clip-path="url(#clipPath84)"><text
+           transform="matrix(1,0,0,-1,223.63,537.45)"
+           id="text88"><tspan
+             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 5.2525501 9.7469997 13.5014 21.741224 23.997475 25.495625 29.9991 35.242626 39.746101 41.993324 47.236851 48.735001 51.758373 53.987549 56.22575 59.980148"
+             y="0"
+             sodipodi:role="line"
+             id="tspan90">HELM, 100-bit, LU</tspan></text>
+</g></g><g
+       id="g92"><g
+         id="g94"
+         clip-path="url(#clipPath96)"><text
+           transform="matrix(1,0,0,-1,296.88,537.45)"
+           id="text100"><tspan
+             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 5.2525501 9.7469997 13.5014 21.741224 23.997475 25.495625 29.9991 35.242626 39.746101 41.993324 47.236851 48.735001 51.758373 53.987549 56.22575 59.980148"
+             y="0"
+             sodipodi:role="line"
+             id="tspan102">HELM, 200-bit, LU</tspan></text>
+</g></g><g
+       id="g104"><g
+         id="g106"
+         clip-path="url(#clipPath108)"><text
+           transform="matrix(1,0,0,-1,367.85,537.45)"
+           id="text112"><tspan
+             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 5.2525501 9.7469997 13.5014 21.741224 23.997475 25.495625 29.9991 35.242626 39.746101 44.249577 46.496799 51.740326 53.238476 56.261848 58.491024 60.729225 64.483627"
+             y="0"
+             sodipodi:role="line"
+             id="tspan114">HELM, 1000-bit, LU</tspan></text>
+</g></g><g
+       id="g116"><g
+         id="g118"
+         clip-path="url(#clipPath120)"><text
+           transform="matrix(1,0,0,-1,444.6,537.45)"
+           id="text124"><tspan
+             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 5.2525501 9.7469997 13.5014 21.768299 24.024549 25.522699 30.026175 35.269699 39.773174 44.276649 48.780125 51.027351 56.270874 57.769024 61.5144"
+             y="0"
+             sodipodi:role="line"
+             id="tspan126">HELM, 10000-bit,</tspan></text>
+</g></g><g
+       id="g128"><g
+         id="g130"
+         clip-path="url(#clipPath132)"><text
+           transform="matrix(1,0,0,-1,471.55,526.45)"
+           id="text136"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 3.75"
+             y="0"
+             sodipodi:role="line"
+             id="tspan138">LU</tspan></text>
+</g></g><g
+       id="g140"><g
+         id="g142"
+         clip-path="url(#clipPath144)"><text
+           transform="matrix(-4.4e-8,1,1,4.4e-8,94.375,605.9)"
+           id="text148"><tspan
+             style="font-size:9.75px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="0 4.49475 9.7305002 14.96625 19.461 23.9655 27.709499 32.214001 36.718498 41.95425 46.449001 50.953499 53.946751 59.182499 64.418251 68.162247 73.398003 77.902496 81.6465 83.889 86.882248 95.8815"
+             y="0"
+             sodipodi:role="line"
+             id="tspan150">convergence border [W]</tspan></text>
+</g></g><g
+       id="g152"><g
+         id="g154"
+         clip-path="url(#clipPath156)"><path
+           d="m 72.375,517.87 450.75,0 0,252 -450.75,0 0,-252 z"
+           style="fill:none;stroke:#d9d9d9;stroke-width:0.75075001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+           id="path160"
+           inkscape:connector-curvature="0" /></g></g></g></svg>

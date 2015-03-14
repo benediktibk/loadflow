@@ -75,11 +75,11 @@ To eliminate influences by other processes or the garbage collection at runtime,
 
 One key point is the runtime, and this not only depends on the algorithms themselves, but also on the used tools like the library for the sparse linear algebra. Therefore, I am not able to make absolute statements, especially because I implemented \emph{HELM} in a different language than the other algorithms and optimized the linear algebra in \emph{HELM}.
 
-The first important message here is that \emph{HELM} with 64 bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as seen in \figinref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the \emph{Vorstadtnetz}, \emph{HELM} is even faster than this iterative approach. 
+The first important message here is that \emph{HELM} with 64-bit is considerably fast compared to the \emph{Current Iteration} and \emph{Newton-Raphson}, as seen in \figinref{comparison_runtime}. If \emph{Newton-Raphson} runs into convergence problems like in the case of the \emph{Vorstadtnetz}, \emph{HELM} is even faster than this iterative approach. 
 
 Another conclusion from these tests is that the combination of \emph{HELM} with an iterative method, for instance with the \emph{Current Iteration}, is very useful. In \secinref{implementation_helm} I have already shown that this improves the convergence behaviour, but if we take the runtime into account the combination is not really a drawback. Considering this, I recommend to \emph{always} use \emph{HELM} with the \emph{Current Iteration} instead of only the latter one.
 
-The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64 bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore degrades the performance of the algorithm significantly. Consequently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64 bit failed.
+The last important message is the insufficient performance of \emph{HELM} with a datatype bigger than 64-bit. This setting avoids that floating point operations can be executed within a few clock cycles with the integrated assembler commands and therefore degrades the performance of the algorithm significantly. Consequently, I recommend to use \emph{HELM} with a bigger datatype only in situations where the calculation with \emph{HELM} with 64-bit failed.
 
 \subsection{Accuracy}
 
@@ -105,7 +105,7 @@ The first and most obvious conclusion, which can be drawn from \figinref{compari
 
 Secondly, at least for this special case, the implementation of \emph{Newton-Raphson} in \emph{SINCAL} has a worse convergence behaviour with these settings, compared to my implementation. But I want to make clear that this depends heavily on the settings of the algorithm, and I could only guess how the certain parameters are actually implemented in \emph{SINCAL}. Therefore, it is not really possible to draw a useful conclusion from this experiment regarding the implemention in \emph{SINCAL}.
 
-If we zoom into this chart we get \figinref{comparison_convergence_border_2}, which reveals that \emph{HELM} in its pure form outperforms the other methods, considering the convergence behaviour. After another zoom step one can see in \figinref{comparison_convergence_border_3} that a more accurate datatype improves the convergence behaviour of \emph{HELM}, although only by a few thousand watts. Additionally, such extrordinary settings affect the runtime of the algorithm significantly, as it takes a few hours to calculate such a net, compared to only a few seconds with 64 bit.
+If we zoom into this chart we get \figinref{comparison_convergence_border_2}, which reveals that \emph{HELM} in its pure form outperforms the other methods, considering the convergence behaviour. After another zoom step one can see in \figinref{comparison_convergence_border_3} that a more accurate datatype improves the convergence behaviour of \emph{HELM}, although only by a few thousand watts. Additionally, such extrordinary settings affect the runtime of the algorithm significantly, as it takes a few hours to calculate such a net, compared to only a few seconds with 64-bit.
 
 \begin{figure}
 	\centering
@@ -137,9 +137,9 @@ Another important thing to point out is the switching state. The version I recei
 
 As algorithms for the comparison I selected:
 \begin{itemize}
-	\item \emph{HELM} with a 64 bit datatype and LU factorization
+	\item \emph{HELM} with a 64-bit datatype and LU factorization
 	\item \emph{Current Iteration} with an iterative solver
-	\item \emph{HELM} with 64 bit datatype and LU factorization and as second step \emph{Current Iteration} with an iterative solver
+	\item \emph{HELM} with 64-bit datatype and LU factorization and as second step \emph{Current Iteration} with an iterative solver
 	\item \emph{PSS SINCAL} with the default configuration
 \end{itemize}
 Unfortunately, the library I used for the linear algebra in the iterative load-flow algorithms was not able to calculate the LU factorization in a reasonable amount of time. Additionally, the calculation of the Jacobian matrix was not very efficient either, due to the sparse matrix implementation. Therefore, I had to skip my implementation of \emph{FDLF} and \emph{Newton-Raphson}, but this class of algorithms is still represented in the comparison through \emph{PSS SINCAL}.
