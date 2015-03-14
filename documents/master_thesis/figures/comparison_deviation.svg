@@ -15,10 +15,10 @@
    width="585.00092"
    height="267.19421"
    xml:space="preserve"
-   sodipodi:docname="Doc3.pdf"><metadata
+   sodipodi:docname="comparison_deviation.svg"><metadata
      id="metadata8"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs6"><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath32"><path
@@ -133,6 +133,18 @@
          d="M 4.397e-6,496.5 612,496.5 612,720 4.397e-6,720 l 0,-223.5 z"
          clip-rule="evenodd"
          id="path260"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath128-5"><path
+         d="m 72,507 468,0 0,213 -468,0 0,-213 z"
+         clip-rule="evenodd"
+         id="path130-0"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath128-3"><path
+         d="m 72,507 468,0 0,213 -468,0 0,-213 z"
+         clip-rule="evenodd"
+         id="path130-07"
          inkscape:connector-curvature="0" /></clipPath></defs><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -236,28 +248,6 @@
              y="0"
              id="tspan74">1</tspan></text>
 </g></g><g
-       id="g76"><g
-         id="g78"
-         clip-path="url(#clipPath80)"><text
-           transform="matrix(1,0,0,-1,150.55,549.55)"
-           id="text84"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2470002 9.7379999 13.491 21.735001 23.238001 27.738001 32.976002 34.479 39.716999 41.958"
-             y="0"
-             sodipodi:role="line"
-             id="tspan86">HELM 64 Bit</tspan></text>
-</g></g><g
-       id="g88"><g
-         id="g90"
-         clip-path="url(#clipPath92)"><text
-           transform="matrix(1,0,0,-1,227.55,549.55)"
-           id="text96"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2470002 9.7379999 13.491 21.735001 23.238001 27.738001 32.976002 37.476002 38.979 44.216999 46.458"
-             y="0"
-             sodipodi:role="line"
-             id="tspan98">HELM 200 Bit</tspan></text>
-</g></g><g
        id="g100"><g
          id="g102"
          clip-path="url(#clipPath104)"><text
@@ -283,13 +273,15 @@
        id="g124"><g
          id="g126"
          clip-path="url(#clipPath128)"><text
-           transform="matrix(1,0,0,-1,458.5,549.55)"
-           id="text132"><tspan
+           transform="scale(1,-1)"
+           id="text132"
+           x="451.38098"
+           y="-549.54999"><tspan
              style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2740002 9.7919998 13.545 21.806999 23.309999 27.837 33.102001 34.605 39.869999 42.111 45.125999 46.611 53.379002 55.619999 58.634998"
-             y="0"
+             x="451.38098"
+             y="-549.54999"
              sodipodi:role="line"
-             id="tspan134">HELM 64 Bit with</tspan></text>
+             id="tspan134">HELM 64-bit with</tspan></text>
 </g></g><g
        id="g136"><g
          id="g138"
@@ -415,4 +407,29 @@
            d="m 72.375,506.62 467.25,0 0,213 -467.25,0 0,-213 z"
            style="fill:none;stroke:#d9d9d9;stroke-width:0.75075001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
            id="path262"
-           inkscape:connector-curvature="0" /></g></g></g></svg>
+           inkscape:connector-curvature="0" /></g></g><g
+       transform="translate(-306.17275,-0.98028596)"
+       id="g124-2"><g
+         id="g126-8"
+         clip-path="url(#clipPath128-3)"><text
+           transform="scale(1,-1)"
+           id="text132-7"
+           x="455.53372"
+           y="-550.14325"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="455.53372"
+             y="-550.14325"
+             sodipodi:role="line"
+             id="tspan134-4">HELM 64-bit</tspan></text>
+</g></g><text
+       style="font-size:12px"
+       id="text132-7-0"
+       x="224.73477"
+       y="-549.75616"
+       transform="scale(1,-1)"><tspan
+         style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+         x="224.73477"
+         y="-549.75616"
+         sodipodi:role="line"
+         id="tspan134-4-1">HELM 200-bit</tspan></text>
+</g></svg>

@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="Neues Dokument 1">
+   sodipodi:docname="comparison_accuracy.svg">
   <defs
      id="defs4">
     <clipPath
@@ -215,6 +215,24 @@
          d="m 70.8,564.36 453.6,0 0,206.76 -453.6,0 0,-206.76 z"
          inkscape:connector-curvature="0" />
     </clipPath>
+    <clipPath
+       id="clipPath3171-6"
+       clipPathUnits="userSpaceOnUse">
+      <path
+         id="path3173-9"
+         clip-rule="evenodd"
+         d="m 70.8,564.36 453.6,0 0,206.76 -453.6,0 0,-206.76 z"
+         inkscape:connector-curvature="0" />
+    </clipPath>
+    <clipPath
+       id="clipPath3171-6-0"
+       clipPathUnits="userSpaceOnUse">
+      <path
+         id="path3173-9-0"
+         clip-rule="evenodd"
+         d="m 70.8,564.36 453.6,0 0,206.76 -453.6,0 0,-206.76 z"
+         inkscape:connector-curvature="0" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -227,16 +245,16 @@
      inkscape:cx="349.69508"
      inkscape:cy="120.23591"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g3169"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
+     inkscape:window-x="-3"
+     inkscape:window-y="-3"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -246,7 +264,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -453,40 +471,6 @@
         </g>
       </g>
       <g
-         id="g3119">
-        <g
-           clip-path="url(#clipPath3123)"
-           id="g3121">
-          <text
-             id="text3127"
-             transform="matrix(1,0,0,-1,148.03,607.1)">
-            <tspan
-               id="tspan3129"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.517 28.08 32.643002 34.676998 39.573002 41.643002"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM 64 Bit</tspan>
-          </text>
-        </g>
-      </g>
-      <g
-         id="g3131">
-        <g
-           clip-path="url(#clipPath3135)"
-           id="g3133">
-          <text
-             id="text3139"
-             transform="matrix(1,0,0,-1,222.02,607.1)">
-            <tspan
-               id="tspan3141"
-               sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.517 28.08 32.643002 37.206001 39.240002 44.136002 46.206001"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM 200 Bit</tspan>
-          </text>
-        </g>
-      </g>
-      <g
          id="g3143">
         <g
            clip-path="url(#clipPath3147)"
@@ -521,19 +505,22 @@
         </g>
       </g>
       <g
-         id="g3167">
+         id="g3167"
+         transform="translate(-5.1428571,0.57142857)">
         <g
            clip-path="url(#clipPath3171)"
            id="g3169">
           <text
              id="text3175"
-             transform="matrix(1,0,0,-1,443.95,607.1)">
+             transform="scale(1,-1)"
+             x="441.09286"
+             y="-606.52856">
             <tspan
                id="tspan3177"
                sodipodi:role="line"
-               y="0"
-               x="0 5.6339998 9.9540005 13.788 21.483 23.517 28.08 32.643002 34.676998 39.573002 41.643002 44.631001 46.665001 53.145 55.188 58.202999"
-               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri">HELM 64 Bit with</tspan>
+               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+               x="441.09286"
+               y="-606.52856">HELM 200-bit with</tspan>
           </text>
         </g>
       </g>
@@ -691,6 +678,42 @@
              style="fill:none;stroke:#d9d9d9;stroke-width:0.72000003;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
              d="m 70.8,564.36 453.6,0 0,206.76 -453.6,0 0,-206.76 z"
              inkscape:connector-curvature="0" />
+        </g>
+      </g>
+      <g
+         id="g3167-5"
+         transform="translate(-311.07099,0.39884696)">
+        <g
+           clip-path="url(#clipPath3171-6)"
+           id="g3169-4">
+          <text
+             id="text3175-8"
+             transform="matrix(1,0,0,-1,443.95,607.1)">
+            <tspan
+               id="tspan3177-8"
+               sodipodi:role="line"
+               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+               x="0"
+               y="0">HELM 64-bit</tspan>
+          </text>
+        </g>
+      </g>
+      <g
+         id="g3167-5-1"
+         transform="translate(-227.98345,-0.17258164)">
+        <g
+           clip-path="url(#clipPath3171-6-0)"
+           id="g3169-4-8">
+          <text
+             id="text3175-8-1"
+             transform="matrix(1,0,0,-1,443.95,607.1)">
+            <tspan
+               id="tspan3177-8-6"
+               sodipodi:role="line"
+               style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+               x="0"
+               y="0">HELM 200-bit</tspan>
+          </text>
         </g>
       </g>
     </g>

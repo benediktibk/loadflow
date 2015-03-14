@@ -15,10 +15,10 @@
    width="585.00092"
    height="337.50671"
    xml:space="preserve"
-   sodipodi:docname="Doc2.pdf"><metadata
+   sodipodi:docname="convergence_border.svg"><metadata
      id="metadata8"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs6"><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath24"><path
@@ -127,6 +127,18 @@
          d="M 4.397e-6,441 612,441 612,720 4.397e-6,720 l 0,-279 z"
          clip-rule="evenodd"
          id="path230"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath144-3"><path
+         d="m 72,450.75 468,0 0,269.25 -468,0 0,-269.25 z"
+         clip-rule="evenodd"
+         id="path146-8"
+         inkscape:connector-curvature="0" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath144-2"><path
+         d="m 72,450.75 468,0 0,269.25 -468,0 0,-269.25 z"
+         clip-rule="evenodd"
+         id="path146-1"
          inkscape:connector-curvature="0" /></clipPath></defs><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -146,7 +158,7 @@
      fit-margin-bottom="0"
      inkscape:zoom="1.3485026"
      inkscape:cx="269.18048"
-     inkscape:cy="102.02718"
+     inkscape:cy="161.35224"
      inkscape:window-x="-3"
      inkscape:window-y="-3"
      inkscape:window-maximized="1"
@@ -259,7 +271,8 @@
              sodipodi:role="line"
              id="tspan114">0,2500</tspan></text>
 </g></g><g
-       id="g116"><g
+       id="g116"
+       transform="translate(0,-7.1190074)"><g
          id="g118"
          clip-path="url(#clipPath120)"><text
            transform="matrix(1,0,0,-1,135.33,470.6)"
@@ -270,7 +283,8 @@
              sodipodi:role="line"
              id="tspan126">Current Iteration</tspan></text>
 </g></g><g
-       id="g128"><g
+       id="g128"
+       transform="translate(0,1.7797519)"><g
          id="g130"
          clip-path="url(#clipPath132)"><text
            transform="matrix(1,0,0,-1,200.5,470.6)"
@@ -281,71 +295,33 @@
              sodipodi:role="line"
              id="tspan138">Newton-Raphson</tspan></text>
 </g></g><g
-       id="g140"><g
+       id="g140"
+       transform="translate(8.3055086,-8.3055086)"><g
          id="g142"
          clip-path="url(#clipPath144)"><text
-           transform="matrix(1,0,0,-1,266.92,470.6)"
-           id="text148"><tspan
+           transform="scale(1,-1)"
+           id="text148"
+           x="263.3605"
+           y="-470.60001"><tspan
              style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2470002 9.7379999 13.491 21.735001 23.238001 27.738001 32.976002 34.479 39.716999 41.958 44.973 46.458 53.199001 55.439999 58.455002"
-             y="0"
+             x="263.3605"
+             y="-470.60001"
              sodipodi:role="line"
-             id="tspan150">HELM 64 Bit with</tspan></text>
+             id="tspan150">HELM 64-bit</tspan></text>
 </g></g><g
-       id="g152"><g
+       id="g152"
+       transform="translate(2.3730024,-4.1527543)"><g
          id="g154"
          clip-path="url(#clipPath156)"><text
-           transform="matrix(1,0,0,-1,267.48,459.63)"
-           id="text160"><tspan
+           transform="scale(1,-1)"
+           id="text160"
+           x="249.68248"
+           y="-457.85025"><tspan
              style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 4.5034752 9.7469997 12.7433 15.7396 20.234051 24.737526 27.7609 29.98105 32.255348 35.233601 39.72805 42.733376 47.227825 50.251202 52.471352 56.974827"
-             y="0"
+             x="249.68248"
+             y="-457.85025"
              sodipodi:role="line"
-             id="tspan162">Current Iteration</tspan></text>
-</g></g><g
-       id="g164"><g
-         id="g166"
-         clip-path="url(#clipPath168)"><text
-           transform="matrix(1,0,0,-1,332.98,470.6)"
-           id="text172"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2740002 9.7919998 13.572 21.834 23.355 27.882 33.146999 34.667999 39.932999 42.201 45.216 46.755001 53.522999 55.791 58.806"
-             y="0"
-             sodipodi:role="line"
-             id="tspan174">HELM 64 Bit with</tspan></text>
-</g></g><g
-       id="g176"><g
-         id="g178"
-         clip-path="url(#clipPath180)"><text
-           transform="matrix(1,0,0,-1,332.65,459.63)"
-           id="text184"><tspan
-             style="font-size:9.02499962px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.9926 10.48705 16.488674 19.512051 24.7285 29.231976 32.21925 36.722725 41.217175 45.72065 50.964176 53.960476 59.203999"
-             y="0"
-             sodipodi:role="line"
-             id="tspan186">Newton-Raphson</tspan></text>
-</g></g><g
-       id="g188"><g
-         id="g190"
-         clip-path="url(#clipPath192)"><text
-           transform="matrix(1,0,0,-1,405.93,470.6)"
-           id="text196"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2470002 9.7379999 13.491 21.735001 23.238001 27.738001 32.976002 37.476002 38.979 44.216999 46.458"
-             y="0"
-             sodipodi:role="line"
-             id="tspan198">HELM 200 Bit</tspan></text>
-</g></g><g
-       id="g200"><g
-         id="g202"
-         clip-path="url(#clipPath204)"><text
-           transform="matrix(1,0,0,-1,469.7,470.6)"
-           id="text208"><tspan
-             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-             x="0 5.2470002 9.7379999 13.491 21.735001 23.238001 27.738001 32.976002 37.476002 41.976002 43.479 48.716999 50.958"
-             y="0"
-             sodipodi:role="line"
-             id="tspan210">HELM 2000 Bit</tspan></text>
+             id="tspan162">with Current Iteration</tspan></text>
 </g></g><g
        id="g212"><g
          id="g214"
@@ -364,4 +340,54 @@
            d="m 72.375,450.37 467.25,0 0,269.25 -467.25,0 0,-269.25 z"
            style="fill:none;stroke:#d9d9d9;stroke-width:0.75075001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
            id="path232"
-           inkscape:connector-curvature="0" /></g></g></g></svg>
+           inkscape:connector-curvature="0" /></g></g><g
+       id="g140-8"
+       transform="translate(74.685139,2.735676)"><g
+         id="g142-8"
+         clip-path="url(#clipPath144-3)"><text
+           transform="scale(1,-1)"
+           id="text148-4"
+           x="253.27524"
+           y="-471.19327"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="253.27524"
+             y="-471.19327"
+             sodipodi:role="line"
+             id="tspan150-2">HELM 64-bit with</tspan></text>
+</g></g><text
+       style="font-size:12px"
+       id="text148-4-9"
+       x="327.92941"
+       y="-464.43692"
+       transform="scale(1,-1)"><tspan
+         style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+         x="327.92941"
+         y="-464.43692"
+         sodipodi:role="line"
+         id="tspan150-2-1">Newton-Raphson</tspan></text>
+<g
+       id="g140-6"
+       transform="translate(142.90896,-16.248344)"><g
+         id="g142-5"
+         clip-path="url(#clipPath144-2)"><text
+           transform="scale(1,-1)"
+           id="text148-6"
+           x="258.02127"
+           y="-470.60001"><tspan
+             style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+             x="258.02127"
+             y="-470.60001"
+             sodipodi:role="line"
+             id="tspan150-7">HELM 200-bit</tspan></text>
+</g></g><text
+       style="font-size:12px"
+       id="text148-6-7"
+       x="462.13602"
+       y="-470.36942"
+       transform="scale(1,-1)"><tspan
+         style="font-size:9px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
+         x="462.13602"
+         y="-470.36942"
+         sodipodi:role="line"
+         id="tspan150-7-3">HELM 2000-bit</tspan></text>
+</g></svg>
