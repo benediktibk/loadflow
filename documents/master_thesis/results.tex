@@ -99,7 +99,14 @@ The accuracies of the algorithms \figref{comparison_accuracy} were all sufficien
 
 \subsection{Convergence}
 
-To test and compare the convergence behaviour of the different algorithms I used one of the example nets from the Institute, the so-called \emph{Vorstadtnetz}. In this net I increased the load at the most outer ends of the radial net up to that point, where the algorithm did not converge anymore. To find this convergence border more efficiently, I applied the bisection method.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/vorstadtnetz}
+	\caption[\emph{Vorstadtnetz}]{\emph{Vorstadtnetz}, used for the convergence comparison}
+	\label{fig:vorstadtnetz}
+\end{figure}
+
+To test and compare the convergence behaviour of the different algorithms I used one of the example nets from the Institute, the so-called \emph{Vorstadtnetz} \figref{vorstadtnetz} with nearly 300 nodes. In this net I increased the load at the most outer ends of the radial net up to that point, where the algorithm did not converge anymore. To find this convergence border more efficiently, I applied the bisection method.
 
 The first and most obvious conclusion, which can be drawn from \figinref{comparison_convergence_border_1}, is that the iterative solver for the internal linear equation systems deteriorates the convergence behaviour of \emph{HELM} significantly. 
 
@@ -130,8 +137,15 @@ If we zoom into this chart we get \figinref{comparison_convergence_border_2}, wh
 
 \section{Calculation of Large-Scale Power Nets}
 \label{sec:large_scale_power nets}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/infra_fuerth_netz}
+	\caption[net of \emph{infra fürth}]{net of \emph{infra fürth}}
+	\label{fig:infra_fuerth_net}
+\end{figure}
 	
-To evaluate \emph{HELM} in the scenario of large-scale power nets I used the power net of \emph{infra fürth}, which they kindly provided for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these unsupported elements.
+To evaluate \emph{HELM} in the scenario of large-scale power nets I used the power net of \emph{infra fürth} \figref{infra_fuerth_net}, which they kindly provided for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these unsupported elements.
 
 Another important thing to point out is the switching state. The version I received was configured in a way that the total net was split up into three parts. For the comparison later on I used this initial version, as well as one where these three parts were connected together. In the connected version there was one big net with more than 50000 nodes.
 
