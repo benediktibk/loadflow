@@ -12,8 +12,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   width="61.110222"
-   height="8.706665"
+   width="585.00092"
+   height="267.19421"
    xml:space="preserve"
    sodipodi:docname="comparison_runtime.svg"><metadata
      id="metadata8"><rdf:RDF><cc:Work
@@ -144,9 +144,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="1.9070707"
-     inkscape:cx="104.53405"
-     inkscape:cy="9.5323585"
+     inkscape:zoom="1.3485026"
+     inkscape:cx="169.79605"
+     inkscape:cy="173.79642"
      inkscape:window-x="-3"
      inkscape:window-y="-3"
      inkscape:window-maximized="1"
@@ -154,7 +154,7 @@
      id="g10"
      inkscape:groupmode="layer"
      inkscape:label="Doc2"
-     transform="matrix(1.25,0,0,-1.25,-281.54163,695.48486)"><path
+     transform="matrix(1.25,0,0,-1.25,-89.999531,900)"><path
        d="m 72,507 468,0 0,213 -468,0 0,-213 z"
        style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
        id="path12"
@@ -383,23 +383,23 @@
            inkscape:connector-curvature="0" /></g></g><text
        transform="scale(1.0315451,-0.96941957)"
        id="text144-3"
-       x="136.46202"
-       y="-566.53064"
+       x="137.68201"
+       y="-567.8288"
        style="font-size:11.63303566px"><tspan
          style="font-size:8.72477627px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-         x="136.46202"
-         y="-566.53064"
+         x="137.68201"
+         y="-567.8288"
          sodipodi:role="line"
          id="tspan146-0">HELM 64-bit</tspan></text>
 <text
        transform="scale(1.0315451,-0.96941957)"
-       id="text144-3-2"
-       x="211.91011"
-       y="-566.53058"
+       id="text144-3-7"
+       x="214.0062"
+       y="-567.17334"
        style="font-size:11.63303566px"><tspan
          style="font-size:8.72477627px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#595959;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Calibri;-inkscape-font-specification:Calibri"
-         x="211.91011"
-         y="-566.53058"
+         x="214.0062"
+         y="-567.17334"
          sodipodi:role="line"
-         id="tspan146-0-0">HELM 200-bit</tspan></text>
+         id="tspan146-0-4">HELM 200-bit</tspan></text>
 </g></svg>
