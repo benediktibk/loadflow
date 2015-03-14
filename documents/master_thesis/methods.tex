@@ -358,7 +358,7 @@ First, I will classify these methods based on their properties.
 
 The first three methods, the \emph{Current Iteration}, \emph{Newton-Raphson} and the \emph{FDLF}, fall into the category of iterative methods. These algorithms have been well-known for decades now, but have two major drawbacks. Firstly, they are iterative and need some seed values for the voltages. This leads directly to the second drawback: The iterative methods can not guarantee to find a solution and their convergence depends heavily on the initial voltages. It even may happen that the iterative methods produce results which are physically incorrect, because they do not represent a stable operating point. This typically happens only for certain constructed power nets. In practice, the bigger problem is that these methods often do not converge at all, although the power net is in a stable condition.
 
-To circumvent these drawbacks a new approach to the load-flow problem was developed, the \emph{Holomorphic Embedding Load Flow}. This algorithm guarantees to converge in theory if and only if, the system is stable. Therefore, \emph{HELM} would be superior to the iterative methods, but it has some practical drawbacks which I will discuss in \secinref{comparison_algorithms}. 
+To circumvent these drawbacks a new approach to the load-flow problem was developed, the \emph{Holomorphic Embedding Load Flow}. This algorithm guarantees to converge in theory if and only if the system is stable. Therefore, \emph{HELM} would be superior to the iterative methods, but it has some practical drawbacks which I will discuss in \secinref{comparison_algorithms}. 
 
 \subsection{Current Iteration}
 \label{sec:current_iteration}
@@ -704,7 +704,7 @@ The steps for solving the load-flow problem are nearly the same as for the \emph
 \subsection{Holomorphic Embedding Load Flow}
 \label{sec:helm}
 
-\emph{HELM} is a comparatively young algorithm for the load-flow problem, as it was developed in 2012 by Antonio Trias \citep{helmIEEE}. The basic idea is to replace the voltages with voltage functions and their respective Laurent series. Through this approach it is possible to guarantee that the algorithm will converge if, and only if, the power net is stable. With this advantage in mind I will cover the theory behind  \emph{HELM} in the upcoming section, the practical implications will be discussed later in \secinref{results}.
+\emph{HELM} is a comparatively young algorithm for the load-flow problem, as it was developed in 2012 by Antonio Trias \citep{helmIEEE}. The basic idea is to replace the voltages with voltage functions and their respective Laurent series. Through this approach it is possible to guarantee that the algorithm will converge if and only if the power net is stable. With this advantage in mind I will cover the theory behind  \emph{HELM} in the upcoming section, the practical implications will be discussed later in \secinref{results}.
 
 \subsubsection{Calculation of Coefficients}
 
