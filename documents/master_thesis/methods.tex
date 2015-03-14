@@ -8,6 +8,7 @@ To clarify the situation, I will start with the problem formulation in \secinref
 The aim of a load-flow analysis is to determine the voltages in the power net. Any further information, like currents in connections or critically low voltages, can be derived from these voltages. Therefore, I will consider the problem solved if the voltages are determined.
 
 \begin{figure}
+	\centering
 	\includegraphics[width=\textwidth]{figures/adam_beck_complex.jpg}
 	\caption[Sir Adam Beck Hydroelectric Generating Stations]{Sir Adam Beck Hydroelectric Generating Stations (\small{\url{http://en.wikipedia.org/wiki/Sir_Adam_Beck_Hydroelectric_Generating_Stations}})}
 	\label{fig:power_plant}
@@ -151,6 +152,8 @@ and
 	i_2 = -G_D u_1,
 \end{equation}
 can be replaced by two voltage-controlled current sources as illustrated in \figinref{gyrator_equivalent}.
+
+\newpage
 
 \subsubsection{Ideal Transformer}
 
