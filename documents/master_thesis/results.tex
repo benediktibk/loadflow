@@ -102,13 +102,6 @@ If we zoom into this chart we get \figinref{comparison_convergence_border_2}, wh
 
 \section{Calculation of Large-Scale Power Nets}
 \label{sec:large_scale_power nets}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{figures/infra_fuerth_netz}
-	\caption[net of \emph{infra fürth}]{net of \emph{infra fürth}}
-	\label{fig:infra_fuerth_net}
-\end{figure}
 	
 To evaluate \emph{HELM} in the scenario of large-scale power nets I used the power net of \emph{infra fürth} \figref{infra_fuerth_net}, which they kindly provided for this purpose. Due to the current limitations of \emph{HELM} I had to adapt the power net. For instance, \emph{HELM} currently does not support non-linear current controlled sources, which were used in the power net of \emph{infra fürth} for the photovoltaic installations, as well as for the generators. To circumvent this I removed all these unsupported elements.
 
@@ -156,6 +149,13 @@ First, I would like to point out the relative power errors of the algorithms for
 \end{figure}
 
 Second, the comparison of the runtime in \figinref{big_net_separate_runtime} and \figinref{big_net_combined_runtime} shows that \emph{HELM} is able to get close to the performance of \emph{PSS SINCAL}. Contrary, the \emph{Current Iteration} with the iterative solver for the linear equation systems is outperformed by \emph{HELM} and \emph{PSS SINCAL} by orders of magnitude. Obviously, the main differences is the implementation of the linear algebra, as the admittance matrix is ill-conditioned in these scenarios.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/infra_fuerth_netz}
+	\caption[net of \emph{infra fürth}]{net of \emph{infra fürth}}
+	\label{fig:infra_fuerth_net}
+\end{figure}
 
 \section{Conclusion}
 \emph{HELM} is superior to the iterative methods with regards to the convergence behaviour. This advantage comes directly from the theoretical background, where so far only \emph{HELM} can be proven to have a perfect convergence behaviour. The only limitation which is left here is caused by the machine epsilon of the computer. Considering the runtime, \emph{HELM} can not reach the performance of for instance \emph{FDLF} if the latter one converges within only a few iterations.
