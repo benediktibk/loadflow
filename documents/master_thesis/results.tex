@@ -10,57 +10,18 @@ To answer these questions I have run several experiments. The ones related to th
 \section{Comparison of the Load-flow Algorithms}
 \label{sec:comparison_algorithms}
 
-\begin{table}
-	\centering
-	\small
-	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
-		\hline
-		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
-		\emph{Current Iteration} & 1e-5 & 100 & & & iterative \\ \hline
-		\emph{Newton-Raphson} & 1e-5 & 100 & & & iterative \\ \hline
-		\emph{HELM} 64-bit & 1e-5 & & 64 & 50 & iterative \\ \hline
-		\emph{HELM} 200-bit & 1e-5 & & 200 & 100 & iterative \\ \hline
-		\emph{HELM} 64-bit with \emph{Current \mbox{Iteration}} & 1e-5 & 100 & 64 & 50 & iterative \\ \hline
-	\end{tabularx}
-	\caption{Algorithm parameters for the runtime and accuracy comparison}
-	\label{tab:comparison_parameter}
-\end{table}
-
-\begin{table}
-	\centering
-	\small
-	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
-		\hline
-		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
-		\emph{HELM}, 64-bit, iterative & 1e-10 & & 64 & 50 & iterative \\ \hline
-		\emph{HELM}, 64-bit, LU & 1e-10 & & 64 & 50 & LU \\ \hline
-		\emph{HELM} with \emph{Current Iteration}, 64-bit, LU & 1e-10 & 100 & 64 & 50 & LU \\ \hline
-		\emph{HELM}, 100-bit, LU & 1e-10 & & 100 & 70 & LU \\ \hline
-		\emph{HELM}, 200-bit, LU & 1e-10 & & 200 & 100 & LU \\ \hline
-		\emph{HELM}, 1000-bit, LU & 1e-10 & & 1000 & 200 & LU \\ \hline
-		\emph{HELM}, 10000-bit, LU & 1e-10 & & 10000 & 300 & LU \\ \hline
-		\emph{Current Iteration}, iterative & 1e-10 & 100 & & & iterative \\ \hline
-		\emph{Current Iteration}, LU & 1e-10 & 100 & & & LU \\ \hline
-		\emph{Newton-Raphson}, iterative & 1e-10 & 100 & & & iterative \\ \hline
-		\emph{Newton-Raphson}, LU & 1e-10 & 100 & & & LU \\ \hline
-		\emph{Newton-Raphson}, SINCAL & 1e-10 & 100 & & & \\ \hline
-	\end{tabularx}
-	\caption{Algorithm parameters for the convergence comparison}
-	\label{tab:comparison2_parameter}
-\end{table}
-
 To compare the different load-flow algorithms I used the sample nets of the Institute and compared the algorithms regarding their runtime and accuracy. I have already considered the improved convergence behaviour in \secinref{implementation_helm}, but I will show additional results regarding this aspect in this chapter.
 
-The selected algorithms for this comparison cover nearly the whole possible spectrum which is implemented in the tool, including the usage of \emph{HELM} to calculate seed values for an iterative method. This special application of \emph{HELM} is represented by the algorithm \emph{HELM} with \emph{Current Iteration}.
-
-The parameters for the algorithms in the accuracy and runtime comparison can be found in \tabinref{comparison_parameter}, the settings for the convergence border tests are in \tabinref{comparison2_parameter}.
-
-\begin{figure}
+\begin{figure}[hb]
 	\centering
 	\includegraphics[scale=0.7]{figures/comparison_deviation}
 	\caption[Comparison, relative standard deviation of runtime]{Relative standard deviation of the runtime of the algorithms}
 	\label{fig:comparison_deviation}
 \end{figure}
+
+The selected algorithms for this comparison cover nearly the whole possible spectrum which is implemented in the tool, including the usage of \emph{HELM} to calculate seed values for an iterative method. This special application of \emph{HELM} is represented by the algorithm \emph{HELM} with \emph{Current Iteration}.
+
+The parameters for the algorithms can be found in \chapinref{algorithm_parameters}. The settings for the accuracy and runtime comparison are in \tabinref{comparison_parameter}, the settings for the convergence border tests are in \tabinref{comparison2_parameter}.
 
 To eliminate influences by other processes or the garbage collection at runtime, I ran the calculations five times. The resulting runtimes did not vary much considering the relative standard deviations \figref{comparison_deviation}.
 
@@ -88,7 +49,9 @@ As an accuracy metric I used the relative power error, which is the ratio betwee
 	\epsilon_r = \frac{\sum |P_i - P_{spec,i}| + \sum |Q_i - Q_{spec,i}|}{\sum |P_{spec,i}| + \sum |Q_{spec,i}|}
 \end{equation}
 
-The accuracies of the algorithms \figref{comparison_accuracy} were all sufficient for most applications, although a difference can be seen between pure iterative approaches and the ones with \emph{HELM}. The latter ones are able to deliver more accurate results for these nets. Keeping in mind that \emph{HELM} is even as fast as the \emph{Current Iteration}, there is no reason to use the \emph{Current Iteration} instead of \emph{HELM}. Also, \emph{HELM} together with the \emph{Current Iteration} produces more accurate and reliable results than the \emph{Current Iteration} only.
+The accuracies of the algorithms \figref{comparison_accuracy} were all sufficient for most applications, although a difference can be seen between pure iterative approaches and the ones with \emph{HELM}. The latter ones are able to deliver more accurate results for these nets.
+
+Keeping in mind that \emph{HELM} is even as fast as the \emph{Current Iteration}, there is no reason to use the \emph{Current Iteration} instead of \emph{HELM}. Also, \emph{HELM} together with the \emph{Current Iteration} produces more accurate and reliable results than the \emph{Current Iteration} only.
 
 \begin{figure}
 	\centering
@@ -96,6 +59,8 @@ The accuracies of the algorithms \figref{comparison_accuracy} were all sufficien
 	\caption[Comparison, accuracy]{Relative power error of the algorithms}
 	\label{fig:comparison_accuracy}
 \end{figure}
+
+\newpage
 
 \subsection{Convergence}
 

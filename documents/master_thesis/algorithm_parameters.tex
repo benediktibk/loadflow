@@ -1,0 +1,41 @@
+\chapter{Algorithm Parameters for the Comparison}
+\label{chap:algorithm_parameters}
+
+\begin{table}[h]
+	\centering
+	\small
+	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
+		\hline
+		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
+		\emph{HELM}, 64-bit, iterative & 1e-10 & & 64 & 50 & iterative \\ \hline
+		\emph{HELM}, 64-bit, LU & 1e-10 & & 64 & 50 & LU \\ \hline
+		\emph{HELM} with \emph{Current Iteration}, 64-bit, LU & 1e-10 & 100 & 64 & 50 & LU \\ \hline
+		\emph{HELM}, 100-bit, LU & 1e-10 & & 100 & 70 & LU \\ \hline
+		\emph{HELM}, 200-bit, LU & 1e-10 & & 200 & 100 & LU \\ \hline
+		\emph{HELM}, 1000-bit, LU & 1e-10 & & 1000 & 200 & LU \\ \hline
+		\emph{HELM}, 10000-bit, LU & 1e-10 & & 10000 & 300 & LU \\ \hline
+		\emph{Current Iteration}, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		\emph{Current Iteration}, LU & 1e-10 & 100 & & & LU \\ \hline
+		\emph{Newton-Raphson}, iterative & 1e-10 & 100 & & & iterative \\ \hline
+		\emph{Newton-Raphson}, LU & 1e-10 & 100 & & & LU \\ \hline
+		\emph{Newton-Raphson}, SINCAL & 1e-10 & 100 & & & \\ \hline
+	\end{tabularx}
+	\caption{Algorithm parameters for the convergence comparison}
+	\label{tab:comparison2_parameter}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\small
+	\begin{tabularx}{\textwidth}{|X|p{0.9cm}|p{0.8cm}|p{0.9cm}|p{0.8cm}|p{1.3cm}|}
+		\hline
+		method & \rotatebox[origin=c]{90}{target precision} & \rotatebox[origin=c]{90}{maximum iterations} & \rotatebox[origin=c]{90}{datatype size} & \rotatebox[origin=c]{90}{maximum coefficients} & \rotatebox[origin=c]{90}{solver} \\ \hline
+		\emph{Current Iteration} & 1e-5 & 100 & & & iterative \\ \hline
+		\emph{Newton-Raphson} & 1e-5 & 100 & & & iterative \\ \hline
+		\emph{HELM} 64-bit & 1e-5 & & 64 & 50 & iterative \\ \hline
+		\emph{HELM} 200-bit & 1e-5 & & 200 & 100 & iterative \\ \hline
+		\emph{HELM} 64-bit with \emph{Current \mbox{Iteration}} & 1e-5 & 100 & 64 & 50 & iterative \\ \hline
+	\end{tabularx}
+	\caption{Algorithm parameters for the runtime and accuracy comparison}
+	\label{tab:comparison_parameter}
+\end{table}
