@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Misc;
 
@@ -92,7 +93,7 @@ namespace SincalConnector
             var nodeResultsCasted = nodeResults.ToDictionary(nodeResult => nodeResult.Key, nodeResult => new NodeResult(nodeResult.Key, nodeResult.Value.Voltage, nodeResult.Value.Power));
             _powerNet.FixNodeResults(nodeResultsCasted);
 
-/*            using (var connection = new OleDbConnection(ConnectionString))
+            using (var connection = new OleDbConnection(ConnectionString))
             {
                 connection.Open();
                 var commandFactory = new SqlCommandFactory(connection);
@@ -106,9 +107,15 @@ namespace SincalConnector
                     command.ExecuteNonQuery();
 
                 connection.Close();
-            }*/
+            }
 
             return true;
+        }
+
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames,
+            out double powerBase)
+        {
+            _powerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
         }
 
         public IList<NodeResult> GetNodeResultsFromDatabase()

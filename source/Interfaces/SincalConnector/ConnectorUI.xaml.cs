@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Microsoft.Win32;
 
 namespace SincalConnector
@@ -59,9 +61,40 @@ namespace SincalConnector
             _connectorData.InputFile = openFileDialog.FileName;
         }
 
-        private void CalculateClicked(object sender, RoutedEventArgs e)
+        private void CalculateVoltagesClicked(object sender, RoutedEventArgs e)
         {
             _calculationThread.CalculatePowerNet();
+        }
+
+        private void CalculateAdmittancesClicked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var powerNet = new PowerNetDatabaseAdapter(_connectorData.InputFile, 1);
+                AdmittanceMatrix matrix;
+                IReadOnlyList<string> nodeNames;
+                double powerBase;
+                powerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
+
+                var singleVoltageMatrix = matrix.SingleVoltageAdmittanceMatrix;
+
+                using (var file = new System.IO.StreamWriter(@"admittances.csv"))
+                    foreach (var entry in singleVoltageMatrix.EnumerateIndexed())
+                        file.WriteLine(entry.Item1 + ";" + entry.Item2 + ";" + entry.Item3.Real + ";" + entry.Item3.Imaginary);
+
+                using (var file = new System.IO.StreamWriter(@"nodeNames.csv"))
+                    foreach (var entry in nodeNames)
+                        file.WriteLine(entry);
+
+                using (var file = new System.IO.StreamWriter(@"scaling.csv"))
+                    file.WriteLine("power base [W];" + powerBase);
+
+                LogThreadSafe("files created");
+            }
+            catch (Exception exception)
+            {
+                LogThreadSafe(exception.Message);
+            }
         }
 
         private void LogThreadSafe(string message)

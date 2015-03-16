@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Calculation.SinglePhase.MultipleVoltageLevels;
 using Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators;
 using Calculation.ThreePhase;
 using Misc;
@@ -30,6 +31,13 @@ namespace SincalConnector
             slackPhaseShift = ContainsTransformers && CountOfElementsWithSlackBus == 1 ? _symmetricPowerNet.SlackPhaseShift : new Angle();
             nominalPhaseShiftByIds = nominalPhaseShifts.ToDictionary(nominalPhaseShift => nominalPhaseShift.Key.Id, nominalPhaseShift => nominalPhaseShift.Value);
             return _symmetricPowerNet.CalculateNodeVoltages(out relativePowerError);
+        }
+
+        public void CalculateAdmittanceMatrix(out AdmittanceMatrix matrix, out IReadOnlyList<string> nodeNames,
+            out double powerBase)
+        {
+            _symmetricPowerNet = CreateSymmetricPowerNet(null);
+            _symmetricPowerNet.CalculateAdmittanceMatrix(out matrix, out nodeNames, out powerBase);
         }
 
         private SymmetricPowerNet CreateSymmetricPowerNet(INodeVoltageCalculator nodeVoltageCalculator)
