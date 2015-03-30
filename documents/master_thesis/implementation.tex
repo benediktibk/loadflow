@@ -77,19 +77,19 @@ However, the system matrix of the linear equation system is the admittance matri
 
 As there must not be a zero-row, a version of a sparse matrix with one array for each row is superior to CRS \cite{sparseMatricesJava} or CCS \cite{sparseMatricesJava}. Through this decision regarding the internal representation of the sparse matrix, during the calculation of the LU-decomposition it is possible to avoid a lot of memory reallocations, which become the most expensive operations if the sparse matrix is represented internally as CRS or CCS. The decision to store the matrices row- and not column-oriented is related to the matrix multiplication and the forward and backward substitution, which benefit from this format in terms of runtime.
 
-The multiplication of a sparse matrix with a dense vector can leverage the special sparse matrix format and the dense vectors. The key point is to iterate only over the nonzero elements over each row in the matrix and select the respective elements of the vector in $\mathcal O(1)$. Additionally, the operation can be parallelized effectively, as all elements in the result vector are independent from each other.
+The multiplication of a sparse matrix with a dense vector can leverage the special sparse matrix format and the dense vectors. The key point is to only iterate over the nonzero elements at each row in the matrix and select the respective elements of the vector in $\mathcal O(1)$. Additionally, the operation can be parallelized effectively, as all elements in the result vector are independent from each other.
 
 Operations on the dense vectors, like the dot product or adding two vectors, can be parallelized as well. With regards to the performance of the operations, the dense storage of the values is very convenient.
 
 The iterative solver \emph{BiCGSTAB} benefits from the already optimized matrix and vector operations. Additionally, it is possible to avoid a few memory allocations and move operations through implementing all these operations in-place.
 
-The calculation of a LU-factorization and the forward and back subsitution can not benefit from multiple cores well, at least for small datatypes like a double, where the floating point operations are not that expensive. For bigger datatypes with more expensive operations there is also a small speedup possible.
+The calculation of a LU-factorization and the forward and backward subsitution can not benefit from multiple cores, at least for small datatypes like a double, where the floating point operations are not that expensive. For bigger datatypes with more expensive operations there is a small speedup possible.
 
 Additionally, I had to concentrate on numerical stability. For this purpose, I sorted all values in ascending order before I summed them up. This special modification has a negative impact on the performance, but it improves the convergence behaviour of \emph{HELM}.
 
 \section{Link to PSS SINCAL}
 \label{sec:link_sincal}
-The tool developed during this thesis has a parser for the file format of \emph{PSS SINCAL}. This parser allows to read a power net from the file and write back the calculated node voltages.
+The tool developed during the research for this thesis has a parser for the file format of \emph{PSS SINCAL}. This parser allows to read a power net from the file and write back the calculated node voltages.
 
 The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 \begin{itemize}
@@ -102,7 +102,7 @@ The basic structure of a power net in \emph{PSS SINCAL} is as follows:
 	\end{itemize}
 \end{itemize}
 
-The main information about the electrical characteristics of the power net are stored in a database, for instance a \emph{MS Access} database. It is also possible to use \emph{Oracle Database} or \emph{Microsoft SQL Server}. However, during this thesis only nets with a \emph{MS Access} database were used. Therefore, I implemented only a parser for this configuration.
+The main information about the electrical characteristics of the power net are stored in a database, for instance a \emph{MS Access} database. It is also possible to use \emph{Oracle Database} or \emph{Microsoft SQL Server}. However, for this thesis only nets with a \emph{MS Access} database were used. Therefore, I only implemented a parser for this configuration.
 
 Fortunately, this database is documented very well online\footnote{\url{http://sincal.s3.amazonaws.com/doc/Misc/SINCAL_Datenbankinterface.pdf}; accessed on 14.03.2015} and by the documents delivered together with the application.
 
@@ -116,6 +116,6 @@ The most important relations in this database are:
 	\item LFNodeResult: contains the node results of the load-flow calculation
 \end{itemize}
 
-Of course, \emph{PSS SINCAL} supports a lot more net elements and ways to describe them than the tool developed during this thesis supports. Therefore, for more sophisticated or exotic selections in the database the tool will fail to parse the power net. Especially unsymmetric power nets and short circuit calculations are not supported by this tool. Consequently, the tool neglects the values related to these calculations.
+\emph{PSS SINCAL} obviously supports a lot more net elements and ways to describe them than the tool developed for this thesis supports. Therefore, for more sophisticated or exotic selections in the database the tool will fail to parse the power net. Especially unsymmetric power nets and short circuit calculations are not supported by this tool. Consequently, the tool neglects the values related to these calculations.
 
-For more detailed information about the database I would like to refer to the official documentation, or the implementation of the parser in the subsystem \emph{SincalConnector}. This part of the software also has a few unit tests, which may be used as documentation too.
+For more detailed information on the database I would like to refer to the official documentation or the implementation of the parser in the subsystem \emph{SincalConnector}. This part of the software also has a few unit tests, which may also be used as documentation.
