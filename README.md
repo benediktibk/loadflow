@@ -3,7 +3,7 @@ LoadFlow
 LoadFlow - a framework for load flow calculation. Node voltages can be calculated with Current Iteration, Newton-Raphson, Fast-decoupled-load-flow and Holomorphic Embedding Load Flow.
 As interface currently supported are a MS SQL database and the file format of PSS SINCAL.
 
-### How do I build the software? ###
+### How do I build this software? ###
 
 The whole project can be built using Visual Studio 2012. The solution contains several projects, including:
 
