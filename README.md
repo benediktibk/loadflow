@@ -21,3 +21,5 @@ This user interface enables the usage of the custom file format, which is stored
 
 #### Calculation ####
 The project Calculation is a class-library, and it would be the starting point for custom projects and applications which should leverage the already implemented methods. For further information regarding the usage I would like to refer to the unit and integration tests.
+
+To use either the SincalConnector or the DatabaseUI you have to select the respective project in the solution as the startup project.
