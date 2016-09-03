@@ -3,6 +3,7 @@
 #include "MultiPrecision.h"
 #include "NumericalTraits.h"
 #include <assert.h>
+#include <algorithm>
 
 template class BiCGSTAB<long double, Complex<long double>>;
 template class BiCGSTAB<MultiPrecision, Complex<MultiPrecision>>;

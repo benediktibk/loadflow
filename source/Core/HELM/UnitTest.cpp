@@ -1817,7 +1817,7 @@ extern "C" __declspec(dllexport) bool __cdecl RunTestsGraphFindPseudoPeriphereNo
 	fstream file("testdata\\matrix.csv", ios_base::in);
 	file >> A;
 	auto graph = A.createGraph();
-	auto eccentricity = 0;
+	size_t eccentricity = 0;
 
 	auto result = graph->findPseudoPeriphereNode(eccentricity);
 

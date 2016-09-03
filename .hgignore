@@ -17,6 +17,8 @@ source/*.sdf
 source/*.opensdf
 source/*.sln.DotSettings
 source/**/*.user
+source/**/*.VC.opendb
+source/**/.suo
 source/Interfaces/SincalConnectorIntegrationTest/testdata/**/*.ldb
 source/Interfaces/SincalConnectorIntegrationTest/testdata/~*~.sin
 source/Interfaces/SincalConnectorIntegrationTest/testdata/~*~_files/*

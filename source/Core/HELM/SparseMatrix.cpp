@@ -563,7 +563,7 @@ std::vector<int> SparseMatrix<Floating, ComplexFloating>::invertPermutation(std:
 	std::vector<int> result;
 	result.resize(permutation.size(), -1);
 
-	for (auto i = 0; i < permutation.size(); ++i)
+	for (size_t i = 0; i < permutation.size(); ++i)
 		result[permutation[i]] = i;
 
 	return result;
