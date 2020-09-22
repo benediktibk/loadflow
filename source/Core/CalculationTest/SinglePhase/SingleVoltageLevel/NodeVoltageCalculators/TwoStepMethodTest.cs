@@ -28,7 +28,7 @@ namespace CalculationTest.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
         public override INodeVoltageCalculator CreateNodeVoltageCalculator()
         {
-            return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(@"D:\Users\benedikt.schmidt\Entwicklung\loadflow-git\source\Debug", 0.000001, 50, 64, true),
+            return new TwoStepMethod(new HolomorphicEmbeddedLoadFlowMethod(0.000001, 50, 64, true),
                 new CurrentIteration(0.000001, 1000, true));
         }
     }
