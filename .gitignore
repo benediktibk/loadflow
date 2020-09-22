@@ -5,3 +5,4 @@
 *.csproj.user
 **/log/**
 **/Debug/**
+*.vcxproj.user
