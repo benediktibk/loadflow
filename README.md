@@ -5,7 +5,7 @@ As interface currently supported are a MS SQL database and the file format of PS
 
 ### How do I build this software? ###
 
-The whole project can be built using Visual Studio 2012. The solution contains several projects, including:
+The whole project can be built using Visual Studio 2019. The solution contains several projects, including:
 
  * Interfaces/SincalConnector: a dedicated application which can be used to calculate power nets from PSS SINCAL
  * Interfaces/DatabaseUI: a UI for the custom file format, stored in a MS SQL database
