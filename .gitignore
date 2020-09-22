@@ -1,0 +1,7 @@
+**/packages/**
+**/.vs/**
+**/obj/**
+**/bin/**
+*.csproj.user
+**/log/**
+**/Debug/**
