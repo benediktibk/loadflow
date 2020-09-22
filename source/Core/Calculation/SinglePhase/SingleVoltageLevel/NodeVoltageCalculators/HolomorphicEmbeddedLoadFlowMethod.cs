@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -12,6 +13,12 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
         private int _calculator = -1;
         private readonly Mutex _calculatorMutex;
         private int _maximumPossibleCoefficientCount;
+
+        public HolomorphicEmbeddedLoadFlowMethod(string dllPath, double targetPrecision, int numberOfCoefficients, int bitPrecision, bool iterativeSolver) :
+            this(targetPrecision, numberOfCoefficients, bitPrecision, iterativeSolver) 
+        {
+            SetDllDirectory(dllPath);
+        }
 
         public HolomorphicEmbeddedLoadFlowMethod(double targetPrecision, int numberOfCoefficients, int bitPrecision, bool iterativeSolver)
         {
@@ -195,5 +202,8 @@ namespace Calculation.SinglePhase.SingleVoltageLevel.NodeVoltageCalculators
 
             return calculator;
         }
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetDllDirectory(string yourPath);
     }
 }
